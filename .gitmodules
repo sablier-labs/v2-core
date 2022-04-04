@@ -5,6 +5,10 @@
 [submodule "lib/prb-contracts"]
 	path = "lib/prb-contracts"
 	url = "https://github.com/paulrberg/prb-contracts"
+
 [submodule "lib/prb-math"]
-	path = lib/prb-math
-	url = https://github.com/paulrberg/prb-math
+	path = "lib/prb-math"
+	url = "https://github.com/paulrberg/prb-math"
+[submodule "lib/forge-std"]
+	path = lib/forge-std
+	url = https://github.com/brockelmore/forge-std
