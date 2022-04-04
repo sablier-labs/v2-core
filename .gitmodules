@@ -1,6 +1,10 @@
 [submodule "lib/ds-test"]
 	path = "lib/ds-test"
 	url = "https://github.com/dapphub/ds-test"
+
 [submodule "lib/prb-contracts"]
-	path = lib/prb-contracts
-	url = https://github.com/paulrberg/prb-contracts
+	path = "lib/prb-contracts"
+	url = "https://github.com/paulrberg/prb-contracts"
+[submodule "lib/prb-math"]
+	path = lib/prb-math
+	url = https://github.com/paulrberg/prb-math
