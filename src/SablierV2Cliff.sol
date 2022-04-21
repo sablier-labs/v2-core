@@ -82,9 +82,9 @@ contract SablierV2Cliff is ISablierV2Cliff {
 
         // If the start time is greater than or equal to the block timestamp, return zero.
         uint256 currentTime = block.timestamp;
-        if (cliffStream.startTime >= currentTime) {
+        /* if (cliffStream.startTime >= currentTime) {
             return 0;
-        }
+        } */
 
         // If the cliff time is greater than the block timestamp, return zero.
         if (currentTime > cliffStream.cliffTime) {
