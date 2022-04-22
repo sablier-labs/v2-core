@@ -29,9 +29,9 @@ abstract contract SablierV2CliffUnitTest is SablierV2UnitTest {
 
     uint256 internal immutable DEFAULT_DEPOSIT;
     uint256 internal constant DEFAULT_DURATION = 3600 seconds;
-    uint256 internal constant DEFAULT_CLIFF_TIME = 900 seconds;
     uint256 internal immutable DEFAULT_START_TIME;
     uint256 internal immutable DEFAULT_STOP_TIME;
+    uint256 internal immutable DEFAULT_CLIFF_TIME;
     uint256 internal immutable DEFAULT_WITHDRAW_AMOUNT;
     uint256 internal constant DEFAULT_TIME_OFFSET = 900 seconds;
 
@@ -46,6 +46,7 @@ abstract contract SablierV2CliffUnitTest is SablierV2UnitTest {
         DEFAULT_DEPOSIT = bn(3600);
         DEFAULT_START_TIME = block.timestamp;
         DEFAULT_STOP_TIME = block.timestamp + DEFAULT_DURATION;
+        DEFAULT_CLIFF_TIME = block.timestamp + DEFAULT_TIME_OFFSET;
         DEFAULT_WITHDRAW_AMOUNT = bn(900);
     }
 
