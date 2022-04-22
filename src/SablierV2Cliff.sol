@@ -406,7 +406,7 @@ contract SablierV2Cliff is ISablierV2Cliff {
 
         // Checks: the cliff time is not greater than the stop time.
         if (cliffTime > stopTime) {
-            revert SablierV2Cliff__StopTimeGreaterThanStopTime(stopTime, cliffTime);
+            revert SablierV2Cliff__CliffTimeGreaterThanStopTime(stopTime, cliffTime);
         }
 
         // Effects: create and store the cliff stream.
