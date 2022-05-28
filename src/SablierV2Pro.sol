@@ -271,7 +271,7 @@ contract SablierV2Pro is
         }
     }
 
-    /// INTERNAL NON-CONSTANT FUNCTIONS ///
+    /// INTERNAL FUNCTIONS ///
 
     /// @dev See the documentation for the public functions that call this internal function.
     function cancelInternal(uint256 streamId) internal streamExists(streamId) onlySenderOrRecipient(streamId) {
@@ -414,45 +414,6 @@ contract SablierV2Pro is
 
     /// HELPER FUNCTIONS ///
 
-    /// @dev This function returns the elements for calculating withdrawable amount.
-    function getElements(Stream memory stream, uint256 currentTime)
-        internal
-        pure
-        returns (
-            UD60x18 powerQuotient,
-            UD60x18 amount,
-            UD60x18 previousAmount
-        )
-    {
-        // You can pass any variable length because they are all equal to each other.
-        uint256 length = stream.segmentAmounts.length;
-        uint256 previousMilestone = stream.startTime;
-        uint256 milestone;
-        uint256 exponent;
-
-        uint256 index = 0;
-        while (previousMilestone < currentTime && index < length) {
-            milestone = stream.segmentMilestones[index];
-            exponent = stream.segmentExponents[index];
-            // This order matters.
-            previousAmount = previousAmount.add(amount);
-            amount = UD60x18.wrap(stream.segmentAmounts[index]);
-
-            if (milestone >= currentTime) {
-                UD60x18 elapsedTime = toUD60x18(currentTime - previousMilestone);
-                UD60x18 totalTime = toUD60x18(milestone - previousMilestone);
-                UD60x18 quotient = elapsedTime.div(totalTime);
-                powerQuotient = quotient.powu(exponent);
-            }
-
-            previousMilestone = milestone;
-
-            unchecked {
-                index += 1;
-            }
-        }
-    }
-
     /// @dev This function checks arrays length:
     /// segmentAmounts.length == segmentExponents.length == segmentMilestones.length,
     /// 0 < length <= 5,
@@ -540,6 +501,45 @@ contract SablierV2Pro is
         // Checks: amounts cumulated is equal to deposit amount.
         if (depositAmount != UD60x18.unwrap(cumulativeAmount)) {
             revert SablierV2Pro__DepositIsNotEqualToSegmentAmounts(depositAmount, cumulativeAmount);
+        }
+    }
+
+    /// @dev This function returns the elements for calculating withdrawable amount.
+    function getElements(Stream memory stream, uint256 currentTime)
+        internal
+        pure
+        returns (
+            UD60x18 powerQuotient,
+            UD60x18 amount,
+            UD60x18 previousAmount
+        )
+    {
+        // You can pass any variable length because they are all equal to each other.
+        uint256 length = stream.segmentAmounts.length;
+        uint256 previousMilestone = stream.startTime;
+        uint256 milestone;
+        uint256 exponent;
+
+        uint256 index = 0;
+        while (previousMilestone < currentTime && index < length) {
+            milestone = stream.segmentMilestones[index];
+            exponent = stream.segmentExponents[index];
+            // This order matters.
+            previousAmount = previousAmount.add(amount);
+            amount = UD60x18.wrap(stream.segmentAmounts[index]);
+
+            if (milestone >= currentTime) {
+                UD60x18 elapsedTime = toUD60x18(currentTime - previousMilestone);
+                UD60x18 totalTime = toUD60x18(milestone - previousMilestone);
+                UD60x18 quotient = elapsedTime.div(totalTime);
+                powerQuotient = quotient.powu(exponent);
+            }
+
+            previousMilestone = milestone;
+
+            unchecked {
+                index += 1;
+            }
         }
     }
 }

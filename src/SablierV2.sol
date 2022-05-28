@@ -73,6 +73,19 @@ abstract contract SablierV2 is ISablierV2 {
 
     /// HELPER FUNCTIONS ///
 
+    /// @dev This function checks if two numbers are equal to each other and greater than zero.
+    function checkLengths(uint256 lengthOne, uint256 lengthTwo) internal pure returns (uint256 length) {
+        if (lengthOne != lengthTwo) {
+            revert SablierV2__ArraysLengthIsNotEqual(lengthOne, lengthTwo);
+        }
+
+        if (lengthOne == 0) {
+            revert SablierV2__ArrayLengthIsZero(lengthOne);
+        }
+
+        length = lengthOne;
+    }
+
     /// @dev This function checks basic requiremenets for `create` function.
     function checkRequiremenets(
         address sender,
@@ -100,18 +113,5 @@ abstract contract SablierV2 is ISablierV2 {
         if (startTime > stopTime) {
             revert SablierV2__StartTimeGreaterThanStopTime(startTime, stopTime);
         }
-    }
-
-    /// @dev This function checks if two numbers are equal to each other and greater than zero.
-    function checkLengths(uint256 lengthOne, uint256 lengthTwo) internal pure returns (uint256 length) {
-        if (lengthOne != lengthTwo) {
-            revert SablierV2__ArraysLengthIsNotEqual(lengthOne, lengthTwo);
-        }
-
-        if (lengthOne == 0) {
-            revert SablierV2__ArrayLengthIsZero(lengthOne);
-        }
-
-        length = lengthOne;
     }
 }
