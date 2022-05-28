@@ -58,6 +58,15 @@ interface ISablierV2 {
     /// @notice The id of the stream.
     error SablierV2__WithdrawAmountZero(uint256 streamId);
 
+    /// @notice Emitted when attempti to withdraw to a zero address.
+    error SablierV2__WithdrawToZeroAddress(address to);
+
+    /// @notice Emitted when attempting to withdraw from multiple streams with different arrays length.
+    error SablierV2__ArraysLengthIsNotEqual(uint256 streamIdsLength, uint256 amountsLength);
+
+    /// @notice Emitted when attempting to withdraw or cancel from multiple streams with an empty array.
+    error SablierV2__ArrayLengthIsZero(uint256 streamIdsLenght);
+
     /// EVENTS ///
 
     /// @notice Emitted when an authorization to create streams is granted.
@@ -114,6 +123,18 @@ interface ISablierV2 {
     /// @param streamId The id of the stream to cancel.
     function cancel(uint256 streamId) external;
 
+    /// @notice Cancels multiple streams and transfers any remaining amounts to the sender and the recipient.
+    ///
+    /// @dev Emits a {Cancel} event.
+    ///
+    /// Requiremenets:
+    /// - `streamIds` must be non-empty and each element must point to an existing stream.
+    /// - `msg.sender` must be either the sender or recipient.
+    /// - The stream must be cancelable.
+    ///
+    /// @param streamIds The ids of the streams to cancel.
+    function cancelAll(uint256[] calldata streamIds) external;
+
     /// @notice Makes the stream non-cancelable.
     ///
     /// @dev Emits a {Renounce} event.
@@ -139,6 +160,45 @@ interface ISablierV2 {
     /// - `msg.sender` must be either the sender or recipient.
     /// - `amount` cannot execeed the withdrawable amount.
     function withdraw(uint256 streamId, uint256 amount) external;
+
+    /// @notice Withdraws tokens from the stream to `to` address.
+    ///
+    /// @dev Emits a {Withdraw} event.
+    ///
+    /// Requirements:
+    /// - `streamId` must point to an existing stream.
+    /// - `msg.sender` must be either the sender or recipient.
+    /// - `amount` cannot execeed the withdrawable amount.
+    /// - `to` cannot be the zero address.
+    function withdrawTo(
+        uint256 streamId,
+        uint256 amount,
+        address to
+    ) external;
+
+    /// @notice Withdraws tokens from multiple streams to the recipient's account.
+    ///
+    /// @dev Emits a {Withdraw} event.
+    ///
+    /// Requirements:
+    /// - `streamIds` must be non-empty and each element of the array must point to an existing stream.
+    /// - `msg.sender` must be either the sender or recipient.
+    /// - `amounts` must be non-empty and each element cannot execeed the withdrawable amount.
+    function withdrawAll(uint256[] calldata streamIds, uint256[] calldata amounts) external;
+
+    /// @notice Withdraws tokens from multiple streams to `to` address.
+    ///
+    /// @dev Emits a {Withdraw} event.
+    ///
+    /// Requirements:
+    /// - `streamIds` must be non-empty and each element of the array must point to an existing stream.
+    /// - `msg.sender` must be either the sender or recipient.
+    /// - `amounts` must be non-empty and each element cannot execeed the withdrawable amount.
+    function withdrawAllTo(
+        uint256[] calldata streamIds,
+        uint256[] calldata amounts,
+        address to
+    ) external;
 
     /// @notice Atomically decreases the authorization given by `msg.sender` to `funder` to create streams.
     ///
