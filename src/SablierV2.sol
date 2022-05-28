@@ -71,7 +71,7 @@ abstract contract SablierV2 is ISablierV2 {
         emit Authorize(sender, funder, amount);
     }
 
-    /// HELPER FUNCTION ///
+    /// HELPER FUNCTIONS ///
 
     /// @dev This function checks basic requiremenets for `create` function.
     function checkRequiremenets(
