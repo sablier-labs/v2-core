@@ -59,7 +59,7 @@ interface ISablierV2 {
     error SablierV2__WithdrawAmountZero(uint256 streamId);
 
     /// @notice Emitted when attempti to withdraw to a zero address.
-    error SablierV2__WithdrawToZeroAddress(address to);
+    error SablierV2__WithdrawToZeroAddress();
 
     /// @notice Emitted when attempting to withdraw from multiple streams with different arrays length.
     error SablierV2__ArraysLengthIsNotEqual(uint256 streamIdsLength, uint256 amountsLength);

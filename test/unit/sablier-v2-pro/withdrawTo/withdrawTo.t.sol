@@ -2,11 +2,11 @@
 pragma solidity >=0.8.13;
 
 import { ISablierV2 } from "@sablier/v2-core/interfaces/ISablierV2.sol";
-import { ISablierV2Cliff } from "@sablier/v2-core/interfaces/ISablierV2Cliff.sol";
+import { ISablierV2Pro } from "@sablier/v2-core/interfaces/ISablierV2Pro.sol";
 
-import { SablierV2CliffUnitTest } from "../SablierV2CliffUnitTest.t.sol";
+import { SablierV2ProUnitTest } from "../SablierV2ProUnitTest.t.sol";
 
-contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
+contract SablierV2Pro__Withdraw__UnitTest is SablierV2ProUnitTest {
     uint256 internal streamId;
 
     /// @dev A setup function invoked before each test case.
@@ -21,15 +21,24 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
         vm.startPrank(users.recipient);
     }
 
+    /// @dev When the address to receive the tokens is zero, it should revert.
+    function testCannotWithdrawTo__WithdrawToZeroAddress() external {
+        address to = address(0);
+        vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawToZeroAddress.selector));
+        uint256 withdrawAmount = 0;
+        sablierV2Pro.withdrawTo(streamId, withdrawAmount, to);
+    }
+
     /// @dev When the stream does not exist, it should revert.
     function testCannotWithdraw__StreamNonExistent() external {
         uint256 nonStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__StreamNonExistent.selector, nonStreamId));
         uint256 withdrawAmount = 0;
-        sablierV2Cliff.withdraw(nonStreamId, withdrawAmount);
+        address to = stream.recipient;
+        sablierV2Pro.withdrawTo(nonStreamId, withdrawAmount, to);
     }
 
-    /// @dev When the caller is neither the sender nor the recipient, it should revert.
+    /// @dev When the stream does not exist, it should revert.
     function testCannotWithdraw__Unauthorized() external {
         // Make Eve the `msg.sender` in this test case.
         vm.stopPrank();
@@ -38,34 +47,23 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, streamId, users.eve));
         uint256 withdrawAmount = 0;
-        sablierV2Cliff.withdraw(streamId, withdrawAmount);
-    }
-
-    /// @dev When the caller is the sender, it should make the withdrawal.
-    function testWithdraw__CallerSender() external {
-        // Make the sender the `msg.sender` in this test case.
-        vm.stopPrank();
-        vm.startPrank(users.sender);
-
-        // Warp to 100 seconds after the start time (1% of the default stream duration).
-        vm.warp(stream.startTime + DEFAULT_TIME_OFFSET);
-        uint256 withdrawAmount = DEFAULT_WITHDRAW_AMOUNT;
-
-        // Run the test.
-        sablierV2Cliff.withdraw(streamId, withdrawAmount);
+        address to = stream.recipient;
+        sablierV2Pro.withdrawTo(streamId, withdrawAmount, to);
     }
 
     /// @dev When the withdraw amount is zero, it should revert.
     function testCannotWithdraw__WithdrawAmountZero() public {
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawAmountZero.selector, streamId));
         uint256 withdrawAmount = 0;
-        sablierV2Cliff.withdraw(streamId, withdrawAmount);
+        address to = stream.recipient;
+        sablierV2Pro.withdrawTo(streamId, withdrawAmount, to);
     }
 
     /// @dev When the amount is greater than the withdrawable amount, it should revert.
     function testCannotWithdraw__WithdrawAmountGreaterThanWithdrawableAmount() public {
         uint256 withdrawAmountMaxUint256 = type(uint256).max;
         uint256 withdrawableAmount = 0;
+        address to = stream.recipient;
         vm.expectRevert(
             abi.encodeWithSelector(
                 ISablierV2.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
@@ -74,7 +72,7 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
                 withdrawableAmount
             )
         );
-        sablierV2Cliff.withdraw(streamId, withdrawAmountMaxUint256);
+        sablierV2Pro.withdrawTo(streamId, withdrawAmountMaxUint256, to);
     }
 
     /// @dev When the stream ended, it should withdraw everything.
@@ -84,7 +82,8 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
 
         // Run the test.
         uint256 withdrawAmount = stream.depositAmount;
-        sablierV2Cliff.withdraw(streamId, withdrawAmount);
+        address to = stream.recipient;
+        sablierV2Pro.withdrawTo(streamId, withdrawAmount, to);
     }
 
     /// @dev When the stream ended, it should delete the stream.
@@ -94,9 +93,10 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
 
         // Run the test.
         uint256 withdrawAmount = stream.depositAmount;
-        sablierV2Cliff.withdraw(streamId, withdrawAmount);
-        ISablierV2Cliff.Stream memory expectedStream;
-        ISablierV2Cliff.Stream memory deletedStream = sablierV2Cliff.getStream(streamId);
+        address to = stream.recipient;
+        sablierV2Pro.withdrawTo(streamId, withdrawAmount, to);
+        ISablierV2Pro.Stream memory expectedStream;
+        ISablierV2Pro.Stream memory deletedStream = sablierV2Pro.getStream(streamId);
         assertEq(expectedStream, deletedStream);
     }
 
@@ -108,8 +108,9 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
         // Run the test.
         vm.expectEmit(true, true, false, true);
         uint256 withdrawAmount = stream.depositAmount;
-        emit Withdraw(streamId, stream.recipient, withdrawAmount);
-        sablierV2Cliff.withdraw(streamId, withdrawAmount);
+        address to = stream.recipient;
+        emit Withdraw(streamId, to, withdrawAmount);
+        sablierV2Pro.withdrawTo(streamId, withdrawAmount, to);
     }
 
     /// @dev When the stream is ongoing, it should make the withdrawal.
@@ -118,7 +119,8 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
         vm.warp(stream.startTime + DEFAULT_TIME_OFFSET);
 
         // Run the test.
-        sablierV2Cliff.withdraw(streamId, DEFAULT_WITHDRAW_AMOUNT);
+        address to = stream.recipient;
+        sablierV2Pro.withdrawTo(streamId, DEFAULT_WITHDRAW_AMOUNT, to);
     }
 
     /// @dev When the stream is ongoing, it should update the withdrawn amount.
@@ -128,9 +130,10 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
 
         // Run the test.
         uint256 withdrawnAmount = DEFAULT_WITHDRAW_AMOUNT;
+        address to = stream.recipient;
         uint256 expectedWithdrawnAmount = stream.withdrawnAmount + withdrawnAmount;
-        sablierV2Cliff.withdraw(streamId, withdrawnAmount);
-        ISablierV2Cliff.Stream memory stream = sablierV2Cliff.getStream(streamId);
+        sablierV2Pro.withdrawTo(streamId, withdrawnAmount, to);
+        ISablierV2Pro.Stream memory stream = sablierV2Pro.getStream(streamId);
         uint256 actualWithdrawnAmount = stream.withdrawnAmount;
         assertEq(expectedWithdrawnAmount, actualWithdrawnAmount);
     }
@@ -141,9 +144,10 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
         vm.warp(stream.startTime + DEFAULT_TIME_OFFSET);
 
         // Run the test.
-        vm.expectEmit(true, true, false, true);
         uint256 withdrawAmount = DEFAULT_WITHDRAW_AMOUNT;
-        emit Withdraw(streamId, stream.recipient, withdrawAmount);
-        sablierV2Cliff.withdraw(streamId, withdrawAmount);
+        address to = stream.recipient;
+        vm.expectEmit(true, true, false, true);
+        emit Withdraw(streamId, to, withdrawAmount);
+        sablierV2Pro.withdrawTo(streamId, withdrawAmount, to);
     }
 }

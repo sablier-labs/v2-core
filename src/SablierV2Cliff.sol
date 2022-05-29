@@ -303,10 +303,16 @@ contract SablierV2Cliff is
         uint256 amount,
         address to
     ) external {
+        // Checks: the `msg.sender` is the recipient of the stream.
+        if (msg.sender != streams[streamId].recipient) {
+            revert SablierV2__Unauthorized(streamId, msg.sender);
+        }
+
         // Checks: the address that will receive the tokens is not zero.
         if (to == address(0)) {
-            revert SablierV2__WithdrawToZeroAddress(to);
+            revert SablierV2__WithdrawToZeroAddress();
         }
+
         withdrawInternal(streamId, amount, to);
     }
 
@@ -318,12 +324,17 @@ contract SablierV2Cliff is
     ) external {
         // Checks: the address that will receive the tokens is not zero.
         if (to == address(0)) {
-            revert SablierV2__WithdrawToZeroAddress(to);
+            revert SablierV2__WithdrawToZeroAddress();
         }
 
         uint256 length = checkLengths(streamIds.length, amounts.length);
 
         for (uint256 i = 0; i < length; ) {
+            // Checks: the `msg.sender` is the recipient of all the streams.
+            if (msg.sender != streams[streamIds[i]].recipient) {
+                revert SablierV2__Unauthorized(streamIds[i], msg.sender);
+            }
+
             withdrawInternal(streamIds[i], amounts[i], to);
 
             unchecked {
