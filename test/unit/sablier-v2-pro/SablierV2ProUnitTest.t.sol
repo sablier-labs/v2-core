@@ -49,13 +49,13 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
 
     /// @dev A setup function invoked before each test case.
     function setUp() public virtual {
-        uint256[] memory DEFAULT_SEGMENT_AMOUNTS = fixedSizeToDynamic(
+        uint256[] memory DEFAULT_SEGMENT_AMOUNTS = fixedSizeTwoToDynamic(
             [DEFAULT_SEGMENT_AMOUNT_1, DEFAULT_SEGMENT_AMOUNT_2]
         );
-        uint256[] memory DEFAULT_SEGMENT_EXPONENTS = fixedSizeToDynamic(
+        uint256[] memory DEFAULT_SEGMENT_EXPONENTS = fixedSizeTwoToDynamic(
             [DEFAULT_SEGMENT_EXPONENT_1, DEFAULT_SEGMENT_EXPONENT_2]
         );
-        uint256[] memory DEFAULT_SEGMENT_MILESTONES = fixedSizeToDynamic(
+        uint256[] memory DEFAULT_SEGMENT_MILESTONES = fixedSizeTwoToDynamic(
             [DEFAULT_SEGMENT_MILESTONE_1, DEFAULT_SEGMENT_MILESTONE_2]
         );
 
@@ -129,7 +129,7 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
     }
 
     /// @dev Helper function to return a dynamic array from a single number.
-    function fixedSizeToDynamic(uint256 toReturn) internal pure returns (uint256[] memory result) {
+    function fixedSizeSingleToDynamic(uint256 toReturn) internal pure returns (uint256[] memory result) {
         uint256[] memory aux = new uint256[](1);
         aux[0] = toReturn;
 
@@ -137,7 +137,7 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
     }
 
     /// @dev Helper function to return a dynamic array from a fixed size array.
-    function fixedSizeToDynamic(uint256[2] memory toReturn) internal pure returns (uint256[] memory result) {
+    function fixedSizeTwoToDynamic(uint256[2] memory toReturn) internal pure returns (uint256[] memory result) {
         uint256[] memory aux = new uint256[](2);
         aux[0] = toReturn[0];
         aux[1] = toReturn[1];
@@ -146,15 +146,28 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
     }
 
     /// @dev Helper function to return a dynamic array from a fixed size array.
-    function fixedSizeToDynamic(uint256[6] memory toReturn) internal pure returns (uint256[] memory result) {
-        uint256[] memory aux = new uint256[](6);
-        aux[0] = toReturn[0];
-        aux[1] = toReturn[1];
-        aux[2] = toReturn[2];
-        aux[3] = toReturn[3];
-        aux[4] = toReturn[4];
-        aux[5] = toReturn[5];
+    function fixedSizeFiftyOneToDynamic(uint256[51] memory toReturn) internal pure returns (uint256[] memory result) {
+        uint256[] memory aux = new uint256[](51);
+        for (uint256 i = 0; i < toReturn.length; i++) {
+            aux[i] = toReturn[i];
+        }
 
         result = aux;
+    }
+
+    function createSegmentArrays()
+        internal
+        view
+        returns (
+            uint256[51] memory segmentAmounts,
+            uint256[51] memory segmentExponents,
+            uint256[51] memory segmentMilestones
+        )
+    {
+        for (uint256 i = 0; i < 51; i++) {
+            segmentAmounts[i] = DEFAULT_SEGMENT_AMOUNT_1;
+            segmentExponents[i] = DEFAULT_SEGMENT_EXPONENT_1;
+            segmentMilestones[i] = DEFAULT_SEGMENT_MILESTONE_1;
+        }
     }
 }

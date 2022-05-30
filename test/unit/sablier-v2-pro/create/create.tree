@@ -32,12 +32,12 @@ create.t.sol
                                       ├── when the previous milestone is equal or greater than milestone
                                       │   └── it should revert
                                       └── when the previous milestone is not equal or greater than milestone
-                                          ├── when the exponent is not greater than one
+                                          ├── when the exponent is zero
                                           │   └── it should revert
-                                          └── when the exponent is greater than one
-                                              ├── when the exponent is greater than three
+                                          └── when the exponent is not zero
+                                              ├── when the exponent is greater than ten
                                               │   └── it should revert
-                                              └── when the exponent is not greater than three
+                                              └── when the exponent is not greater than ten
                                                   ├── when amount cumulated is not equal to deposit amount
                                                   │   └── it should revert
                                                   ├── when amount cumulated is equal to deposit amount

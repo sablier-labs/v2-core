@@ -240,7 +240,7 @@ contract SablierV2Pro is
         uint256 streamId,
         uint256 amount,
         address to
-    ) external {
+    ) external streamExists(streamId) {
         // Checks: the `msg.sender` is the recipient of the stream.
         if (msg.sender != streams[streamId].recipient) {
             revert SablierV2__Unauthorized(streamId, msg.sender);
@@ -268,6 +268,10 @@ contract SablierV2Pro is
         uint256 length = checkLengths(streamIds.length, amounts.length);
 
         for (uint256 i = 0; i < length; ) {
+            // Checks: `streamId` points to a stream that exists.
+            if (streams[streamIds[i]].sender == address(0)) {
+                revert SablierV2__StreamNonExistent(streamIds[i]);
+            }
             // Checks: the `msg.sender` is the recipient of all the streams.
             if (msg.sender != streams[streamIds[i]].recipient) {
                 revert SablierV2__Unauthorized(streamIds[i], msg.sender);
@@ -279,7 +283,7 @@ contract SablierV2Pro is
                 i += 1;
             }
         }
-    }}
+    }
 
     /// INTERNAL FUNCTIONS ///
 
@@ -335,7 +339,7 @@ contract SablierV2Pro is
 
         uint256 length = checkArraysLength(segmentAmounts.length, segmentExponents.length, segmentMilestones.length);
 
-        checkSegmentVariables(
+        checkSegmentRequirements(
             segmentAmounts,
             segmentExponents,
             segmentMilestones,
