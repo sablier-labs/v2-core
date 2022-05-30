@@ -331,7 +331,7 @@ contract SablierV2Pro is
         bool cancelable
     ) internal returns (uint256 streamId) {
         // See SablierV2 contract.
-        checkRequiremenets(sender, recipient, depositAmount, startTime, stopTime);
+        checkBasicRequiremenets(sender, recipient, depositAmount, startTime, stopTime);
 
         uint256 length = checkArraysLength(segmentAmounts.length, segmentExponents.length, segmentMilestones.length);
 
@@ -446,7 +446,7 @@ contract SablierV2Pro is
         if (amountsLength == 0) {
             revert SablierV2Pro__SegmentVariablesLengthIsOutOfBounds(amountsLength);
         }
-        if (amountsLength > 5) {
+        if (amountsLength > 50) {
             revert SablierV2Pro__SegmentVariablesLengthIsOutOfBounds(amountsLength);
         }
 
@@ -458,7 +458,7 @@ contract SablierV2Pro is
     /// amounts cumulated == `depositAmount`,
     /// 1 <= exponent <= 3,
     /// startTime <= previousMilestone < milestone <= stopTime.
-    function checkSegmentVariables(
+    function checkSegmentRequirements(
         uint256[] memory segmentAmounts,
         uint256[] memory segmentExponents,
         uint256[] memory segmentMilestones,
@@ -496,10 +496,10 @@ contract SablierV2Pro is
             exponent = segmentExponents[i];
 
             // Checks: the exponent is not out of bounds.
-            if (exponent < 1) {
+            if (exponent == 0) {
                 revert SablierV2Pro__SegmentExponentIsOutOfBounds(segmentExponents[i]);
             }
-            if (exponent > 3) {
+            if (exponent > 10) {
                 revert SablierV2Pro__SegmentExponentIsOutOfBounds(segmentExponents[i]);
             }
 

@@ -391,7 +391,7 @@ contract SablierV2Cliff is
         bool cancelable
     ) internal returns (uint256 streamId) {
         // See SablierV2 contract.
-        checkRequiremenets(sender, recipient, depositAmount, startTime, stopTime);
+        checkBasicRequiremenets(sender, recipient, depositAmount, startTime, stopTime);
 
         // Checks: the start time is not greater than the cliff time.
         if (startTime > cliffTime) {

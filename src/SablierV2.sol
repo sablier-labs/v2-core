@@ -87,7 +87,7 @@ abstract contract SablierV2 is ISablierV2 {
     }
 
     /// @dev This function checks basic requiremenets for `create` function.
-    function checkRequiremenets(
+    function checkBasicRequiremenets(
         address sender,
         address recipient,
         uint256 depositAmount,

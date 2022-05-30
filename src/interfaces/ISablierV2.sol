@@ -181,7 +181,7 @@ interface ISablierV2 {
     ///
     /// Requirements:
     /// - `streamId` must point to an existing stream.
-    /// - `msg.sender` must be either the sender or recipient.
+    /// - `msg.sender` must be the recipient.
     /// - `amount` cannot execeed the withdrawable amount.
     /// - `to` cannot be the zero address.
     /// @param streamId The id of the stream to withdraw.
@@ -199,7 +199,7 @@ interface ISablierV2 {
     ///
     /// Requirements:
     /// - `streamIds` must be non-empty and each element of the array must point to an existing stream.
-    /// - `msg.sender` must be either the sender or recipient.
+    /// - `msg.sender` must be the recipient.
     /// - `amounts` must be non-empty and each element cannot execeed the withdrawable amount.
     /// @param streamIds The ids of the streams to withdraw.
     /// @param amounts The amounts to withdraw.

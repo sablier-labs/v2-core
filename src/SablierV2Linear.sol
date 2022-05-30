@@ -345,7 +345,7 @@ contract SablierV2Linear is
         bool cancelable
     ) internal returns (uint256 streamId) {
         // See SablierV2 contract.
-        checkRequiremenets(sender, recipient, depositAmount, startTime, stopTime);
+        checkBasicRequiremenets(sender, recipient, depositAmount, startTime, stopTime);
 
         // Effects: create and store the stream.
         streamId = nextStreamId;
