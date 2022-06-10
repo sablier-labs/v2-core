@@ -117,6 +117,17 @@ abstract contract SablierV2UnitTest is Test {
         assertEq(address(a), address(b));
     }
 
+    /// @dev Helper function to create dynamical `uint256` arrays from a fixed number of elements.
+    function createDynamicArray(uint256 element0, uint256 element1)
+        internal
+        pure
+        returns (uint256[] memory dynamicalArray)
+    {
+        dynamicalArray = new uint256[](2);
+        dynamicalArray[0] = element0;
+        dynamicalArray[1] = element1;
+    }
+    
     /// @dev Give user 100 ETH and 1M USD.
     function fundUser(address payable user) internal {
         vm.deal(user, 100 ether);
