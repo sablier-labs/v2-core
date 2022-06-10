@@ -150,17 +150,6 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
         dynamicalArray[0] = element0;
     }
 
-    /// @dev Helper function to create dynamical `uint256` arrays from a fixed number of elements.
-    function createDynamicArray(uint256 element0, uint256 element1)
-        internal
-        pure
-        returns (uint256[] memory dynamicalArray)
-    {
-        dynamicalArray = new uint256[](2);
-        dynamicalArray[0] = element0;
-        dynamicalArray[1] = element1;
-    }
-
     /// @dev Helper function to create dynamical `SD59x18` arrays from a fixed number of elements.
     function createDynamicArray(SD59x18 element0) internal pure returns (SD59x18[] memory dynamicalArray) {
         dynamicalArray = new SD59x18[](1);
