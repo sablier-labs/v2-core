@@ -1,0 +1,51 @@
+withdrawAll.t.sol
+├── when the streamIds array is empty
+│  └── it should revert
+└── when the streamIds array is not empty
+   ├── when the arrays counts are not equal
+   │  └── it should revert
+   └── when the arrays counts are equal
+        ├── when the streamIds array has only non existing streams
+        │  └── it should revert
+        ├── when the streamIds array has only a single non existing stream on the first position
+        │  └── it should revert
+        ├── when the streamIds array has only a single non existing stream on the last position
+        │  └── it should revert
+        └── when the streamIds has only existing stream
+           ├── when the caller of all the streams is neither the sender nor the recipient
+           │  └── it should revert
+           ├── when the caller of the first stream is neither the sender nor the recipient
+           │  └── it should revert
+           ├── when the caller of the last stream is neither the sender nor the recipient
+           │  └── it should revert
+           ├── when the caller of all of the streams is the sender
+           │  └── it should make multiple withdrawals
+           └── when the caller of the streams is the recipient
+              ├── when the amounts array has only zero values
+              │  └── it should revert
+              ├── when the amounts array has only a single zero value on the first position
+              │  └── it should revert
+              ├── when the amounts array has only a single zero value on the last position
+              │  └── it should revert
+              └── when the amounts array has only greater than zero values
+                 ├── when the amounts array has only greater than the withdrawable amount values
+                 │  └── it should revert
+                 ├── when the amounts array has a single greater than the withdrawable amount value on the first position
+                 │  └── it should revert
+                 ├── when the amounts array has a single greater than the withdrawable amount value on the last position
+                 │  └── it should revert
+                 └── when the amounts array has only less than or equal to the withdrawable amount values
+                    ├── when the streamIds has only ended streams
+                    │  ├── it should withdraw everything from all the streams
+                    │  ├── it should delete all the streams
+                    │  └── it should emit multiple Withdraw event
+                    ├── when the streamIds has only not ended streams
+                    │  ├── it should make withdrawals from all the streams
+                    │  ├── it should update the withdrawn amount to all the streams
+                    │  └── it should emit multiple Withdraw event
+                    └── when the streamIds array has ended streams and not ended streams
+                       ├── it should withdraw everything from the ended streams
+                       ├── it should make withdrawals from the not ended streams
+                       ├── it should delete all the ended streams
+                       ├── it should update the withdrawn amount to the not ended streams
+                       └── it should emit multiple Withdraw event
