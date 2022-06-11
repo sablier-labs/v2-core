@@ -37,7 +37,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has only a single non existing stream at the first position, it should revert.
-    function testCannotCancelAll__StreamNonExistent__SingleStream__FirstPosition() external {
+    function testCannotCancelAll__StreamNonExistent__FirstStream() external {
         uint256 nonStreamId = 1729;
         uint256[] memory streamIds = createDynamicArray(nonStreamId, streamId);
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__StreamNonExistent.selector, nonStreamId));
@@ -45,7 +45,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has only a single non existing stream at the last position, it should revert.
-    function testCannotCancelAll__StreamNonExistent__SingleStream__LastPosition() external {
+    function testCannotCancelAll__StreamNonExistent__LastStream() external {
         uint256 nonStreamId = 1729;
         uint256[] memory streamIds = createDynamicArray(streamId, nonStreamId);
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__StreamNonExistent.selector, nonStreamId));
@@ -109,7 +109,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     function testCannotCancelAll__CallerRecipient__AllStreams() external {
         // Make the recipient the `msg.sender` in this test case.
         changePrank(users.recipient);
-        
+
         // Run the test.
         uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
         sablierV2Cliff.cancelAll(streamIds);
@@ -149,7 +149,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has a single non-cancelable stream at the first position, it should revert.
-    function testCannotCancelAll__StreamNonCancelable__SingleStream__FirstPosition() external {
+    function testCannotCancelAll__StreamNonCancelable__FirstStream() external {
         // Create the non-cancelable stream.
         bool cancelable = false;
         uint256 nonCancelableStreamId = sablierV2Cliff.create(
@@ -172,7 +172,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has a single non-cancelable stream at the last position, it should revert.
-    function testCannotCancelAll__StreamNonCancelable__SingleStream__LastPosition() external {
+    function testCannotCancelAll__StreamNonCancelable__LastStream() external {
         // Create the non-cancelable stream.
         bool cancelable = false;
         uint256 nonCancelableStreamId = sablierV2Cliff.create(
@@ -195,7 +195,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has only ended streams, it should cancel all the streams.
-    function testCancelAll__StreamEnded__AllStreams() external {
+    function testCancelAll__AllStreamsEnded() external {
         // Warp to the end of the stream.
         vm.warp(stream.stopTime);
 
@@ -205,7 +205,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has only ended streams, it should delete all the streams.
-    function testCancelAll__StreamEnded__AllStreams__DeleteStreams() external {
+    function testCancelAll__AllStreamsEnded__DeleteStreams() external {
         // Warp to the end of the stream.
         vm.warp(stream.stopTime);
 
@@ -221,7 +221,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has only ended streams, it should emit multiple Cancel events.
-    function testCancelAll__StreamEnded__AllStreams__Events() public {
+    function testCancelAll__AllStreamsEnded__Events() external {
         // Warp to the end of the stream.
         vm.warp(stream.stopTime);
 
@@ -237,7 +237,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has only not ended streams, it should cancel all the streams.
-    function testCancelAll__StreamOngoing__AllStreams() external {
+    function testCancelAll__AllStreamsOngoing() external {
         // Warp to 100 seconds after the start time (1% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
 
@@ -246,7 +246,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has only not ended streams, it should delete all the streams.
-    function testCancelAll__StreamOngoing__AllStreams__DeleteStreams() external {
+    function testCancelAll__AllStreamsOngoing__DeleteStreams() external {
         // Warp to 100 seconds after the start time (1% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
 
@@ -263,7 +263,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has only not ended streams, it should emit multiple Cancel events.
-    function testCancelAll__StreamOngoing__AllStreams__Events() external {
+    function testCancelAll__AllStreamsOngoing__Events() external {
         // Warp to the end of the stream.
         vm.warp(stream.startTime + TIME_OFFSET);
 
@@ -279,9 +279,10 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
     }
 
     /// @dev When the streamIds array has ended streams and not ended streams, it should cancel all the streams.
-    function testCancelAll__StreamEnded__StreamOngoing() external{
+    function testCancelAll__StreamsEnded__StreamsOngoing() external {
         // Create the ended stream.
         uint256 stopTime = stream.startTime + TIME_OFFSET;
+        uint256 ongoingStreamId = streamId;
         uint256 endedStreamId = sablierV2Cliff.create(
             stream.sender,
             stream.recipient,
@@ -297,14 +298,15 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
         vm.warp(stopTime);
 
         // Run the test.
-        uint256[] memory streamIds = createDynamicArray(endedStreamId, streamId);
+        uint256[] memory streamIds = createDynamicArray(endedStreamId, ongoingStreamId);
         sablierV2Cliff.cancelAll(streamIds);
     }
 
     /// @dev When the streamIds array has ended streams and not ended streams, it should delete all the streams.
-    function testCancelAll__StreamEnded__StreamOngoing__DeleteStreams() external {
+    function testCancelAll__StreamsEnded__StreamsOngoing__DeleteStreams() external {
         // Create the ended stream.
         uint256 stopTime = stream.startTime + TIME_OFFSET;
+        uint256 ongoingStreamId = streamId;
         uint256 endedStreamId = sablierV2Cliff.create(
             stream.sender,
             stream.recipient,
@@ -326,15 +328,16 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
         ISablierV2Cliff.Stream memory expectedStream_ended;
         ISablierV2Cliff.Stream memory deletedStream_ended = sablierV2Cliff.getStream(endedStreamId);
         ISablierV2Cliff.Stream memory expectedStream_ongoing;
-        ISablierV2Cliff.Stream memory deletedStream_ongoing = sablierV2Cliff.getStream(streamId);
+        ISablierV2Cliff.Stream memory deletedStream_ongoing = sablierV2Cliff.getStream(ongoingStreamId);
         assertEq(deletedStream_ended, expectedStream_ended);
         assertEq(deletedStream_ongoing, expectedStream_ongoing);
     }
 
     /// @dev When the streamIds array has ended streams and not ended streams, it should emit multiple Cancel events.
-    function testCancelAll__StreamEnded__StreamOngoing__Events() external {
+    function testCancelAll__StreamsEnded__StreamsOngoing__Events() external {
         // Create the ended stream.
         uint256 stopTime = stream.startTime + TIME_OFFSET;
+        uint256 ongoingStreamId = streamId;
         uint256 endedStreamId = sablierV2Cliff.create(
             stream.sender,
             stream.recipient,
@@ -357,8 +360,8 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
         vm.expectEmit(true, true, false, true);
         emit Cancel(endedStreamId, stream.recipient, withdrawAmount_ended, returnAmount_ended);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(streamId, stream.recipient, withdrawAmount_ongoing, returnAmount_ongoing);
-        uint256[] memory streamIds = createDynamicArray(endedStreamId, streamId);
+        emit Cancel(ongoingStreamId, stream.recipient, withdrawAmount_ongoing, returnAmount_ongoing);
+        uint256[] memory streamIds = createDynamicArray(endedStreamId, ongoingStreamId);
         sablierV2Cliff.cancelAll(streamIds);
     }
 }
