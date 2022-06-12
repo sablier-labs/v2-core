@@ -4,9 +4,9 @@ cancelAll.t.sol
 └── when the streamIds array is not empty
    ├── when the streamIds array has only non existing streams
    │  └── it should revert
-   ├── when the streamIds array has only a single non existing stream at the first position
+   ├── when the streamIds array has only a single non existing stream on the first position
    │  └── it should revert
-   ├── when the streamIds array has only a single non existing stream at the last position
+   ├── when the streamIds array has only a single non existing stream on the last position
    │  └── it should revert
    └── when the streamIds array has only existing streams
       ├── when the caller of all the streams is neither the sender nor the recipient
@@ -20,9 +20,9 @@ cancelAll.t.sol
       └── when the stream is the sender
          ├── when the streamIds array has only non-cancelable streams
          │  └── it should revert
-         ├── when the streamIds array has a single non-cancelable stream at the first position
+         ├── when the streamIds array has a single non-cancelable stream on the first position
          │  └── it should revert
-         ├── when the streamIds array has a single non-cancelable stream at the last position
+         ├── when the streamIds array has a single non-cancelable stream on the last position
          │  └── it should revert
          └── when the streamIds array has only cancelable streams
             ├── when the streamIds array has only ended streams

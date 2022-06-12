@@ -36,7 +36,7 @@ contract SablierV2Linear__CancelAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(streamIds);
     }
 
-    /// @dev When the streamIds array has only a single non existing stream at the first position, it should revert.
+    /// @dev When the streamIds array has only a single non existing stream on the first position, it should revert.
     function testCannotCancelAll__StreamNonExistent__FirstStream() external {
         uint256 nonStreamId = 1729;
         uint256[] memory streamIds = createDynamicArray(nonStreamId, streamId);
@@ -44,7 +44,7 @@ contract SablierV2Linear__CancelAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(streamIds);
     }
 
-    /// @dev When the streamIds array has only a single non existing stream at the last position, it should revert.
+    /// @dev When the streamIds array has only a single non existing stream on the last position, it should revert.
     function testCannotCancelAll__StreamNonExistent__LastStream() external {
         uint256 nonStreamId = 1729;
         uint256[] memory streamIds = createDynamicArray(streamId, nonStreamId);
@@ -115,7 +115,7 @@ contract SablierV2Linear__CancelAll__UnitTest is SablierV2LinearUnitTest {
 
     /// @dev When the streamIds array has only non-cancelable streams, it should revert.
     function testCannotCancelAll__StreamNonCancelable__AllStreams() external {
-        // Create the non-cancelable stream.
+        // Create the non-cancelable streams.
         bool cancelable = false;
         uint256 nonCancelableStreamId = sablierV2Linear.create(
             stream.sender,
@@ -144,7 +144,7 @@ contract SablierV2Linear__CancelAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(streamIds);
     }
 
-    /// @dev When the streamIds array has a single non-cancelable stream at the first position, it should revert.
+    /// @dev When the streamIds array has a single non-cancelable stream on the first position, it should revert.
     function testCannotCancelAll__StreamNonCancelable__FirstStream() external {
         // Create the non-cancelable stream.
         bool cancelable = false;
@@ -166,7 +166,7 @@ contract SablierV2Linear__CancelAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(streamIds);
     }
 
-    /// @dev When the streamIds array has a single non-cancelable stream at the last position, it should revert.
+    /// @dev When the streamIds array has a single non-cancelable stream on the last position, it should revert.
     function testCannotCancelAll__StreamNonCancelable__LastStream() external {
         // Create the non-cancelable stream.
         bool cancelable = false;
@@ -287,7 +287,7 @@ contract SablierV2Linear__CancelAll__UnitTest is SablierV2LinearUnitTest {
             stream.cancelable
         );
 
-        // Warp to the end of the first str eam.
+        // Warp to the end of the first stream.
         vm.warp(stopTime);
 
         // Run the test.
