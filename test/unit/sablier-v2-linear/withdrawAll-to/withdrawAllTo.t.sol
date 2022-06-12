@@ -21,7 +21,7 @@ contract SablierV2Linear__WithdrawAllTo__UnitTest is SablierV2LinearUnitTest {
         streamId_2 = createDefaultStream();
         // Make the recipient the `msg.sender` in this test suite.
         changePrank(users.recipient);
-
+        // Setting `eve` the address that will receive the withdrawn tokens.
         to = users.eve;
     }
 
@@ -67,7 +67,7 @@ contract SablierV2Linear__WithdrawAllTo__UnitTest is SablierV2LinearUnitTest {
     }
 
     /// @dev When the streamIds array has only a single non existing stream at the first position, it should revert.
-    function testCannotWithdrawAllTo__StreamNonExistent__SingleStream__FirstPosition() external {
+    function testCannotWithdrawAllTo__StreamNonExistent__FirstStream() external {
         uint256 nonStreamId = 1729;
         uint256[] memory streamIds = createDynamicArray(nonStreamId, streamId);
         uint256[] memory amounts = createDynamicArray(WITHDRAW_AMOUNT, WITHDRAW_AMOUNT);
@@ -76,7 +76,7 @@ contract SablierV2Linear__WithdrawAllTo__UnitTest is SablierV2LinearUnitTest {
     }
 
     /// @dev When the streamIds array has only a single non existing stream at the last position, it should revert.
-    function testCannotWithdrawAllTo__StreamNonExistent__SingleStream__LastPosition() external {
+    function testCannotWithdrawAllTo__StreamNonExistent__LastStream() external {
         uint256 nonStreamId = 1729;
         vm.warp(stream.startTime + TIME_OFFSET);
         uint256[] memory streamIds = createDynamicArray(streamId, nonStreamId);
@@ -86,7 +86,7 @@ contract SablierV2Linear__WithdrawAllTo__UnitTest is SablierV2LinearUnitTest {
     }
 
     /// @dev When the caller is not authorized for none of the streams, it should revert.
-    function testCannotWithdrawAllTos__Unauthorized__AllStreams() external {
+    function testCannotWithdrawAllTo__Unauthorized__AllStreams() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
@@ -98,10 +98,10 @@ contract SablierV2Linear__WithdrawAllTo__UnitTest is SablierV2LinearUnitTest {
     }
 
     /// @dev When the caller is not authorized for the first stream, it should revert.
-    function testCannotWithdrawAllTo__Unauthorized__SingleStream__FirtStream() external {
+    function testCannotWithdrawAllTo__Unauthorized__FirstStream() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
-        // Give allowance for the tokens to be spent by the contract.
+        // Approve the SablierV2Linear contract to spend $USD from the `eve` account.
         usd.approve(address(sablierV2Linear), type(uint256).max);
         // Create eve's stream.
         uint256 streamId_eve = sablierV2Linear.create(
@@ -122,10 +122,10 @@ contract SablierV2Linear__WithdrawAllTo__UnitTest is SablierV2LinearUnitTest {
     }
 
     /// @dev When the caller is not authorized for the last stream, it should revert.
-    function testCannotWithdrawAllTo__Unauthorized__SingleStream__LastStream() external {
+    function testCannotWithdrawAllTo__Unauthorized__LastStream() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
-        // Give allowance for the tokens to be spent by the contract.
+        // Approve the SablierV2Linear contract to spend $USD from the `eve` account.
         usd.approve(address(sablierV2Linear), type(uint256).max);
         // Create eve's stream.
         uint256 streamId_eve = sablierV2Linear.create(
@@ -147,25 +147,276 @@ contract SablierV2Linear__WithdrawAllTo__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
     }
 
-    /// @dev
+    /// @dev When the amounts array has only zero values, it should revert.
+    function testCannotWithdrawAllTo__WithdrawAmountZero__AllStreams() external {
+        vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawAmountZero.selector, streamId));
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(0, 0);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
 
-    /// @dev When the caller of all the stream is the recipient, it should make multiple withdrawals.
-    function testWithdrawAllTo() external {
+    /// @dev When the amounts array has only a single zero value on the first position, it should revert.
+    function testCannotWithdrawAllTo__WithdrawAmountZero__FirstStream() external {
+        vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawAmountZero.selector, streamId));
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(0, WITHDRAW_AMOUNT);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the amounts array has only a single zero value on the last position, it should revert.
+    function testCannotWithdrawAllTo__WithdrawAmountZero__LastStream() external {
+        vm.warp(stream.startTime + TIME_OFFSET);
+        vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawAmountZero.selector, streamId_2));
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(WITHDRAW_AMOUNT, 0);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the amounts array has only greater than the withdrawable amount values, it should revert.
+    function testCannotWithdrawAllTo__WithdrawAmountGreaterThanWithdrawableAmount__AllStreams() external {
+        uint256 withdrawAmountMaxUint256 = type(uint256).max;
+        uint256 withdrawableAmount = WITHDRAW_AMOUNT;
+        vm.warp(stream.startTime + TIME_OFFSET);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                ISablierV2.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
+                streamId,
+                withdrawAmountMaxUint256,
+                withdrawableAmount
+            )
+        );
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(withdrawAmountMaxUint256, withdrawAmountMaxUint256);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the amounts array has a single greater than the withdrawable amount value on the first position,
+    /// it should revert.
+    function testCannotWithdrawAllTo__WithdrawAmountGreaterThanWithdrawableAmount__FirstStream() external {
+        uint256 withdrawAmountMaxUint256 = type(uint256).max;
+        uint256 withdrawableAmount = WITHDRAW_AMOUNT;
+        vm.warp(stream.startTime + TIME_OFFSET);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                ISablierV2.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
+                streamId,
+                withdrawAmountMaxUint256,
+                withdrawableAmount
+            )
+        );
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(withdrawAmountMaxUint256, WITHDRAW_AMOUNT);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the amounts array has a single greater than the withdrawable amount value on the last position,
+    /// it should revert.
+    function testCannotWithdrawAllTo__WithdrawAmountGreaterThanWithdrawableAmount__LastStream() external {
+        uint256 withdrawAmountMaxUint256 = type(uint256).max;
+        uint256 withdrawableAmount = WITHDRAW_AMOUNT;
+        vm.warp(stream.startTime + TIME_OFFSET);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                ISablierV2.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
+                streamId_2,
+                withdrawAmountMaxUint256,
+                withdrawableAmount
+            )
+        );
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(WITHDRAW_AMOUNT, withdrawAmountMaxUint256);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the streamIds has only ended streams, it should withdraw everything from all the streams.
+    function testWithdrawAllTo__AllStreamsEnded() external {
+        // Warp to the end of the stream.
+        vm.warp(stream.stopTime);
+
+        // Run the test.
+        uint256 withdrawAmount = stream.depositAmount;
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(withdrawAmount, withdrawAmount);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the streamIds has only ended streams, it should delete all the streams.
+    function testWithdrawAllTo__AllStreamsEnded__DeleteStreams() external {
+        // Warp to the end of the stream.
+        vm.warp(stream.stopTime);
+
+        // Run the test.
+        uint256 withdrawAmount = stream.depositAmount;
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(withdrawAmount, withdrawAmount);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+        ISablierV2Linear.Stream memory deletedStream = sablierV2Linear.getStream(streamId);
+        ISablierV2Linear.Stream memory expectedStream;
+        ISablierV2Linear.Stream memory deletedStream_2 = sablierV2Linear.getStream(streamId_2);
+        ISablierV2Linear.Stream memory expectedStream_2;
+        assertEq(deletedStream, expectedStream);
+        assertEq(deletedStream_2, expectedStream_2);
+    }
+
+    /// @dev When the streamIds has only ended streams, it should emit multiple Withdraw events.
+    function testWithdrawAllTo__AllStreamsEnded__Events() external {
+        // Warp to the end of the stream.
+        vm.warp(stream.stopTime);
+
+        // Run the test.
+        uint256 withdrawAmount = stream.depositAmount;
+        vm.expectEmit(true, true, false, true);
+        emit Withdraw(streamId, to, withdrawAmount);
+        vm.expectEmit(true, true, false, true);
+        emit Withdraw(streamId_2, to, withdrawAmount);
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(withdrawAmount, withdrawAmount);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the streamIds has only ongoing streams, it should make withdrawals from all the streams.
+    function testWithdrawAllTo__AllStreamsOngoing() external {
+        // Warp to 100 seconds after the start time (1% of the default stream duration).
+        vm.warp(stream.startTime + TIME_OFFSET);
+
+        // Run the test.
+        uint256 withdrawAmount = WITHDRAW_AMOUNT;
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(withdrawAmount, withdrawAmount);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the streamIds has only ongoing streams, it should update the withdrawn amount to all the streams.
+    function testWithdrawAllTo__AllStreamsOngoing__UpdateWithdrawnAmounts() external {
+        // Warp to 100 seconds after the start time (1% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
 
         // Run the test.
         uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
         uint256[] memory amounts = createDynamicArray(WITHDRAW_AMOUNT, WITHDRAW_AMOUNT);
         sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
-
         ISablierV2Linear.Stream memory queriedStream = sablierV2Linear.getStream(streamId);
+        ISablierV2Linear.Stream memory queriedStream_2 = sablierV2Linear.getStream(streamId_2);
+        uint256 actualWithdrawnAmount = queriedStream.withdrawnAmount;
+        uint256 actualWithdrawnAmount_2 = queriedStream_2.withdrawnAmount;
+        uint256 expectedWithdrawnAmount = stream.withdrawnAmount + WITHDRAW_AMOUNT;
+        uint256 expectedWithdrawnAmount_2 = stream.withdrawnAmount + WITHDRAW_AMOUNT;
+        assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
+        assertEq(actualWithdrawnAmount_2, expectedWithdrawnAmount_2);
+    }
+
+    /// @dev When the stream is ongoing, it should emit multiple Withdraw events.
+    function testWithdrawAllTo__AllStreamsOngoing__Events() external {
+        // Warp to 100 seconds after the start time (1% of the default stream duration).
+        vm.warp(stream.startTime + TIME_OFFSET);
+
+        // Run the test.
+        uint256 withdrawAmount = WITHDRAW_AMOUNT;
+        vm.expectEmit(true, true, false, true);
+        emit Withdraw(streamId, to, withdrawAmount);
+        vm.expectEmit(true, true, false, true);
+        emit Withdraw(streamId_2, to, withdrawAmount);
+        uint256[] memory streamIds = createDynamicArray(streamId, streamId_2);
+        uint256[] memory amounts = createDynamicArray(withdrawAmount, withdrawAmount);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the streamIds array has ended streams and not ended streams,
+    /// it should withdraw everything from the ended streams,
+    /// it should make withdrawals from the not ended streams.
+    function testWithdrawAllTo__StreamsEnded__StreamsOngoing() external {
+        // Approve the SablierV2Linear contract to spend $USD from the `recipient` account.
+        usd.approve(address(sablierV2Linear), type(uint256).max);
+        // Create the ended stream.
+        uint256 stopTime = stream.startTime + TIME_OFFSET;
+        uint256 ongoingStreamId = streamId;
+        uint256 endedStreamId = sablierV2Linear.create(
+            stream.sender,
+            stream.recipient,
+            stream.depositAmount,
+            stream.token,
+            stream.startTime,
+            stopTime,
+            stream.cancelable
+        );
+
+        // Warp to the end of the first stream.
+        vm.warp(stopTime);
+
+        // Run the test.
+        uint256 withdrawAmount_ended = stream.depositAmount;
+        uint256 withdrawAmount_ongoing = WITHDRAW_AMOUNT;
+        uint256[] memory streamIds = createDynamicArray(endedStreamId, ongoingStreamId);
+        uint256[] memory amounts = createDynamicArray(withdrawAmount_ended, withdrawAmount_ongoing);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+    }
+
+    /// @dev When the streamIds array has ended streams and not ended streams,
+    /// it should delete all the ended streams,
+    /// it should update the withdrawn amount to the not ended streams.
+    function testWithdrawAllTo__StreamsEnded__StreamsOngoing__DeleteStreams() external {
+        // Approve the SablierV2Linear contract to spend $USD from the `recipient` account.
+        usd.approve(address(sablierV2Linear), type(uint256).max);
+        // Create the ended stream.
+        uint256 stopTime = stream.startTime + TIME_OFFSET;
+        uint256 ongoingStreamId = streamId;
+        uint256 endedStreamId = sablierV2Linear.create(
+            stream.sender,
+            stream.recipient,
+            stream.depositAmount,
+            stream.token,
+            stream.startTime,
+            stopTime,
+            stream.cancelable
+        );
+
+        // Warp to the end of the first stream.
+        vm.warp(stopTime);
+
+        // Run the test.
+        uint256 withdrawAmount_ended = stream.depositAmount;
+        uint256 withdrawAmount_ongoing = WITHDRAW_AMOUNT;
+        uint256[] memory streamIds = createDynamicArray(endedStreamId, ongoingStreamId);
+        uint256[] memory amounts = createDynamicArray(withdrawAmount_ended, withdrawAmount_ongoing);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
+        ISablierV2Linear.Stream memory deletedStream = sablierV2Linear.getStream(endedStreamId);
+        ISablierV2Linear.Stream memory queriedStream = sablierV2Linear.getStream(ongoingStreamId);
+        ISablierV2Linear.Stream memory expectedStream;
         uint256 actualWithdrawnAmount = queriedStream.withdrawnAmount;
         uint256 expectedWithdrawnAmount = stream.withdrawnAmount + WITHDRAW_AMOUNT;
+        assertEq(deletedStream, expectedStream);
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
+    }
 
-        ISablierV2Linear.Stream memory queriedStream_2 = sablierV2Linear.getStream(streamId_2);
-        uint256 actualWithdrawnAmount_2 = queriedStream_2.withdrawnAmount;
-        uint256 expectedWithdrawnAmount_2 = stream.withdrawnAmount + WITHDRAW_AMOUNT;
-        assertEq(actualWithdrawnAmount_2, expectedWithdrawnAmount_2);
+    /// @dev When the streamIds array has ended streams and not ended streams, it should emit Withdraw events.
+    function testWithdrawAllTo__StreamsEnded__StreamsOngoing__Events() external {
+        // Approve the SablierV2Linear contract to spend $USD from the `recipient` account.
+        usd.approve(address(sablierV2Linear), type(uint256).max);
+        // Create the ended stream.
+        uint256 stopTime = stream.startTime + TIME_OFFSET;
+        uint256 ongoingStreamId = streamId;
+        uint256 endedStreamId = sablierV2Linear.create(
+            stream.sender,
+            stream.recipient,
+            stream.depositAmount,
+            stream.token,
+            stream.startTime,
+            stopTime,
+            stream.cancelable
+        );
+
+        // Warp to the end of the first stream.
+        vm.warp(stopTime);
+
+        // Run the test.
+        uint256 withdrawAmount_ended = stream.depositAmount;
+        uint256 withdrawAmount_ongoing = WITHDRAW_AMOUNT;
+        vm.expectEmit(true, true, false, true);
+        emit Withdraw(endedStreamId, to, withdrawAmount_ended);
+        vm.expectEmit(true, true, false, true);
+        emit Withdraw(ongoingStreamId, to, withdrawAmount_ongoing);
+        uint256[] memory streamIds = createDynamicArray(endedStreamId, ongoingStreamId);
+        uint256[] memory amounts = createDynamicArray(withdrawAmount_ended, withdrawAmount_ongoing);
+        sablierV2Linear.withdrawAllTo(streamIds, to, amounts);
     }
 }

@@ -238,7 +238,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
 
     /// @dev When the streamIds array has only not ended streams, it should cancel all the streams.
     function testCancelAll__AllStreamsOngoing() external {
-        // Warp to 100 seconds after the start time (1% of the default stream duration).
+        // Warp to 2_600 seconds after the start time (26% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
 
         // Run the test.
@@ -247,7 +247,7 @@ contract SablierV2Cliff__CancelAll__UnitTest is SablierV2CliffUnitTest {
 
     /// @dev When the streamIds array has only not ended streams, it should delete all the streams.
     function testCancelAll__AllStreamsOngoing__DeleteStreams() external {
-        // Warp to 100 seconds after the start time (1% of the default stream duration).
+        // Warp to 2_600 seconds after the start time (26% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
 
         // Run the test.
