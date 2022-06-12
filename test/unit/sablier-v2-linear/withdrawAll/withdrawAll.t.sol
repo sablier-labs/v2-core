@@ -44,7 +44,7 @@ contract SablierV2Linear__WithdrawAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawAll(streamIds, amounts);
     }
 
-    /// @dev When the streamIds has only non existing streams, it should revert.
+    /// @dev When the streamIds array has only non existing streams, it should revert.
     function testCannotWithdrawAll__StreamNonExistent__AllStreams() external {
         uint256 nonStreamId = 1729;
         uint256 nonStreamId_2 = 1730;
@@ -230,7 +230,7 @@ contract SablierV2Linear__WithdrawAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawAll(streamIds, amounts);
     }
 
-    /// @dev When the streamIds has only ended streams, it should withdraw everything from all the streams.
+    /// @dev When the streamIds array has only ended streams, it should withdraw everything from all the streams.
     function testWithdrawAll__AllStreamsEnded() external {
         // Warp to the end of the stream.
         vm.warp(stream.stopTime);
@@ -242,7 +242,7 @@ contract SablierV2Linear__WithdrawAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawAll(streamIds, amounts);
     }
 
-    /// @dev When the streamIds has only ended streams, it should delete all the streams.
+    /// @dev When the streamIds array has only ended streams, it should delete all the streams.
     function testWithdrawAll__AllStreamsEnded__DeleteStreams() external {
         // Warp to the end of the stream.
         vm.warp(stream.stopTime);
@@ -260,7 +260,7 @@ contract SablierV2Linear__WithdrawAll__UnitTest is SablierV2LinearUnitTest {
         assertEq(deletedStream_2, expectedStream_2);
     }
 
-    /// @dev When the streamIds has only ended streams, it should emit multiple Withdraw events.
+    /// @dev When the streamIds array has only ended streams, it should emit multiple Withdraw events.
     function testWithdrawAll__AllStreamsEnded__Events() external {
         // Warp to the end of the stream.
         vm.warp(stream.stopTime);
@@ -276,7 +276,7 @@ contract SablierV2Linear__WithdrawAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawAll(streamIds, amounts);
     }
 
-    /// @dev When the streamIds has only ongoing streams, it should make withdrawals from all the streams.
+    /// @dev When the streamIds array has only ongoing streams, it should make withdrawals from all the streams.
     function testWithdrawAll__AllStreamsOngoing() external {
         // Warp to 100 seconds after the start time (1% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
@@ -288,7 +288,8 @@ contract SablierV2Linear__WithdrawAll__UnitTest is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawAll(streamIds, amounts);
     }
 
-    /// @dev When the streamIds has only ongoing streams, it should update the withdrawn amount to all the streams.
+    /// @dev When the streamIds array has only ongoing streams,
+    /// it should update the withdrawn amount to all the streams.
     function testWithdrawAll__AllStreamsOngoing__UpdateWithdrawnAmounts() external {
         // Warp to 100 seconds after the start time (1% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
