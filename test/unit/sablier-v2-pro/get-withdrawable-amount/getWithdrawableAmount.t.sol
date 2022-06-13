@@ -6,7 +6,7 @@ import { e, SD59x18 } from "@prb/math/SD59x18.sol";
 import { SablierV2ProUnitTest } from "../SablierV2ProUnitTest.t.sol";
 
 /// @dev Basic tests found in the SablierV2Linear and SablierV2Cliff contracts.
-contract SablierV2Pro__GetWithdrawableAmount__BasicsUnitTest is SablierV2ProUnitTest {
+contract SablierV2Pro__BasicsUnitTest__GetWithdrawableAmount is SablierV2ProUnitTest {
     uint256 internal streamId;
 
     /// @dev A setup function invoked before each test case.
