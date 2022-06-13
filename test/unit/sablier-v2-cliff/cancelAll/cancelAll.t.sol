@@ -64,7 +64,7 @@ contract SablierV2Cliff__UnitTest__CancelAll is SablierV2CliffUnitTest {
     }
 
     /// @dev When the caller is not authorized for the first stream, it should revert.
-    function testCannotCancelAll__CallerUnauthorized__SingleStream__FirtStream() external {
+    function testCannotCancelAll__CallerUnauthorized__FirstStream() external {
         uint256 streamId_eve = sablierV2Cliff.create(
             stream.sender,
             users.eve,
@@ -85,7 +85,7 @@ contract SablierV2Cliff__UnitTest__CancelAll is SablierV2CliffUnitTest {
     }
 
     /// @dev When the stream does not exist, it should revert.
-    function testCannotCancelAll__CallerUnauthorized__SingleStream__LastStream() external {
+    function testCannotCancelAll__CallerUnauthorized__LastStream() external {
         uint256 streamId_eve = sablierV2Cliff.create(
             stream.sender,
             users.eve,
