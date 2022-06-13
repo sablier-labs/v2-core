@@ -74,7 +74,7 @@ contract SablierV2Cliff__UnitTest__WithdrawAll is SablierV2CliffUnitTest {
     }
 
     /// @dev When the caller is not authorized for none of the streams, it should revert.
-    function testCannotWithdrawAll__Unauthorized__AllStreams() external {
+    function testCannotWithdrawAll__CallerUnauthorized__AllStreams() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
@@ -86,7 +86,7 @@ contract SablierV2Cliff__UnitTest__WithdrawAll is SablierV2CliffUnitTest {
     }
 
     /// @dev When the caller is not authorized for the first stream, it should revert.
-    function testCannotWithdrawAll__Unauthorized__FirtStream() external {
+    function testCannotWithdrawAll__CallerUnauthorized__FirtStream() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
         // Approve the SablierV2Cliff contract to spend $USD from the `eve` account.
@@ -111,7 +111,7 @@ contract SablierV2Cliff__UnitTest__WithdrawAll is SablierV2CliffUnitTest {
     }
 
     /// @dev When the caller is not authorized for the last stream, it should revert.
-    function testCannotWithdrawAll__Unauthorized__LastStream() external {
+    function testCannotWithdrawAll__CallerUnauthorized__LastStream() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
         // Approve the SablierV2Cliff contract to spend $USD from the `eve` account.

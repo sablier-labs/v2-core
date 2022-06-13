@@ -86,7 +86,7 @@ contract SablierV2Linear__UnitTest__WithdrawAllTo is SablierV2LinearUnitTest {
     }
 
     /// @dev When the caller is not authorized for none of the streams, it should revert.
-    function testCannotWithdrawAllTo__Unauthorized__AllStreams() external {
+    function testCannotWithdrawAllTo__CallerUnauthorized__AllStreams() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
@@ -98,7 +98,7 @@ contract SablierV2Linear__UnitTest__WithdrawAllTo is SablierV2LinearUnitTest {
     }
 
     /// @dev When the caller is not authorized for the first stream, it should revert.
-    function testCannotWithdrawAllTo__Unauthorized__FirstStream() external {
+    function testCannotWithdrawAllTo__CallerUnauthorized__FirstStream() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
         // Approve the SablierV2Linear contract to spend $USD from the `eve` account.
@@ -122,7 +122,7 @@ contract SablierV2Linear__UnitTest__WithdrawAllTo is SablierV2LinearUnitTest {
     }
 
     /// @dev When the caller is not authorized for the last stream, it should revert.
-    function testCannotWithdrawAllTo__Unauthorized__LastStream() external {
+    function testCannotWithdrawAllTo__CallerUnauthorized__LastStream() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
         // Approve the SablierV2Linear contract to spend $USD from the `eve` account.

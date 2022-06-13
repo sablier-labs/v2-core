@@ -64,7 +64,7 @@ contract SablierV2Linear__UnitTest__CancelAll is SablierV2LinearUnitTest {
     }
 
     /// @dev When the caller is not authorized for the first stream, it should revert.
-    function testCannotCancelAll__Unauthorized__FirstStream() external {
+    function testCannotCancelAll__CallerUnauthorized__FirstStream() external {
         uint256 streamId_eve = sablierV2Linear.create(
             stream.sender,
             users.eve,
@@ -84,7 +84,7 @@ contract SablierV2Linear__UnitTest__CancelAll is SablierV2LinearUnitTest {
     }
 
     /// @dev When the caller is not authorized for the last stream, it should revert.
-    function testCannotCancelAll__Unauthorized__LastStream() external {
+    function testCannotCancelAll__CallerUnauthorized__LastStream() external {
         uint256 streamId_eve = sablierV2Linear.create(
             stream.sender,
             users.eve,
