@@ -44,7 +44,7 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
         // Make the sender the `msg.sender` in this test case.
         changePrank(users.sender);
 
-        // Warp to 2_600 seconds after the start time (26% of the default stream duration).
+        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
         uint256 withdrawAmount = WITHDRAW_AMOUNT;
 
@@ -111,7 +111,7 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
 
     /// @dev When the stream is ongoing, it should make the withdrawal.
     function testWithdraw__StreamOngoing() external {
-        // Warp to 2_600 seconds after the start time (26% of the default stream duration).
+        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
 
         // Run the test.
@@ -120,7 +120,7 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
 
     /// @dev When the stream is ongoing, it should update the withdrawn amount.
     function testWithdraw__StreamOngoing__UpdateWithdrawnAmount() external {
-        // Warp to 2_600 seconds after the start time (26% of the default stream duration).
+        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
 
         // Run the test.
@@ -134,7 +134,7 @@ contract SablierV2Cliff__Withdraw__UnitTest is SablierV2CliffUnitTest {
 
     /// @dev When the stream is ongoing, it should emit a Withdraw event.
     function testWithdraw__StreamOngoing__Event() external {
-        // Warp to 2_600 seconds after the start time (26% of the default stream duration).
+        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(stream.startTime + TIME_OFFSET);
 
         // Run the test.
