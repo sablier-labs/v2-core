@@ -74,7 +74,7 @@ contract SablierV2Cliff__UnitTest__Withdraw is SablierV2CliffUnitTest {
         sablierV2Cliff.withdraw(streamId, withdrawAmountMaxUint256);
     }
 
-    /// @dev When the stream ended, it should cancel adn delete the stream.
+    /// @dev When the stream ended, it should cancel and delete the stream.
     function testWithdraw__StreamEnded() external {
         // Warp to the end of the stream.
         vm.warp(stream.stopTime);

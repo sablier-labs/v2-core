@@ -71,8 +71,7 @@ abstract contract SablierV2 is ISablierV2 {
             uint256 streamId = streamIds[i];
 
             // Cancel the stream only if the `streamId` points to a stream that exists and is cancelable.
-            address sender = getSender(streamId);
-            if (sender != address(0) && isCancelable(streamId)) {
+            if (getSender(streamId) != address(0) && isCancelable(streamId)) {
                 cancelInternal(streamId);
             }
 
@@ -107,7 +106,7 @@ abstract contract SablierV2 is ISablierV2 {
 
     /// INTERNAL CONSTANT FUNCTIONS ///
 
-    /// @dev Checks basic requiremenets for the `create` function arguments.
+    /// @dev Checks the basic requiremenets for the `create` function.
     function checkCreateArguments(
         address sender,
         address recipient,
