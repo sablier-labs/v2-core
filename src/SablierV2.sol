@@ -66,9 +66,9 @@ abstract contract SablierV2 is ISablierV2 {
     function cancelAll(uint256[] calldata streamIds) external {
         // Iterate over the provided array of stream ids and cancel each stream that exists and is cancelable.
         uint256 count = streamIds.length;
-
+        uint256 streamId;
         for (uint256 i = 0; i < count; ) {
-            uint256 streamId = streamIds[i];
+            streamId = streamIds[i];
 
             // Cancel the stream only if the `streamId` points to a stream that exists and is cancelable.
             if (getSender(streamId) != address(0) && isCancelable(streamId)) {

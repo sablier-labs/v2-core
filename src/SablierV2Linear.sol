@@ -285,11 +285,13 @@ contract SablierV2Linear is
         }
 
         // Iterate over the provided array of stream ids and withdraw from each stream.
+        address sender;
+        uint256 streamId;
         for (uint256 i = 0; i < streamIdsCount; ) {
-            uint256 streamId = streamIds[i];
+            streamId = streamIds[i];
 
             // If the `streamId` points to a stream that does not exist, skip it.
-            address sender = streams[streamId].sender;
+            sender = streams[streamId].sender;
             if (sender != address(0)) {
                 // Checks: the `msg.sender` is either the sender or the recipient of the stream.
                 if (msg.sender != sender && msg.sender != streams[streamId].recipient) {
@@ -340,8 +342,9 @@ contract SablierV2Linear is
         }
 
         // Iterate over the provided array of stream ids and withdraw from each stream.
+        uint256 streamId;
         for (uint256 i = 0; i < streamIdsCount; ) {
-            uint256 streamId = streamIds[i];
+            streamId = streamIds[i];
 
             // If the `streamId` points to a stream that does not exist, skip it.
             if (streams[streamId].sender != address(0)) {
