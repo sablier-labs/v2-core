@@ -367,7 +367,7 @@ contract SablierV2Cliff is
     /// INTERNAL NON-CONSTANT FUNCTIONS ///
 
     /// @dev See the documentation for the public functions that call this internal function.
-    function cancelInternal(uint256 streamId) internal override onlySenderOrRecipient(streamId) {
+    function cancelInternal(uint256 streamId) internal override {
         Stream memory stream = streams[streamId];
 
         // Calculate the withdraw and the return amounts.

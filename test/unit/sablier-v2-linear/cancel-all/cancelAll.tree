@@ -8,9 +8,9 @@ cancelAll.t.sol
    │  └── it should cancel and delete the existing streams
    └── when the stream ids array points only to existing streams
       ├── when the caller is neither the sender nor the recipient of any stream
-      │  └── it should revert
+      │  └── it should do nothing
       ├── when the caller is neither the sender nor the recipient of some of the streams
-      │  └── it should revert
+      │  └── it should cancel and delete the allowed streams
       ├── when the caller is the recipient of all streams
       │  └── it should cancel and delete the streams
       └── when the caller is the sender of all streams

@@ -36,25 +36,21 @@ contract SablierV2Cliff__UnitTest__CancelAll is SablierV2CliffUnitTest {
         assertEq(actualStream, expectedStream);
     }
 
-    /// @dev When the caller is neither the sender nor the recipient of any stream, it should revert.
+    /// @dev When the caller is neither the sender nor the recipient of any stream, it should do nothing
     function testCannotCancelAll__CallerUnauthorized__AllStreams() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
-
-        // Run the test.
-        vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
-        );
         sablierV2Cliff.cancelAll(defaultStreamIds);
     }
 
-    /// @dev When the caller is neither the sender nor the recipient of some of the streams, it should revert.
+    /// @dev When the caller is neither the sender nor the recipient of some of the streams, it should cancel
+    /// and delete the allowed streams.
     function testCannotCancelAll__CallerUnauthorized__SomeStreams() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
         // Create a stream with Eve as the sender.
-        uint256 eveStreamId = sablierV2Cliff.create(
+        uint256 streamIdEve = sablierV2Cliff.create(
             users.eve,
             users.eve,
             stream.recipient,
@@ -67,11 +63,11 @@ contract SablierV2Cliff__UnitTest__CancelAll is SablierV2CliffUnitTest {
         );
 
         // Run the test.
-        uint256[] memory streamIds = createDynamicArray(eveStreamId, defaultStreamIds[0]);
-        vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
-        );
+        uint256[] memory streamIds = createDynamicArray(streamIdEve, defaultStreamIds[0]);
         sablierV2Cliff.cancelAll(streamIds);
+        ISablierV2Cliff.Stream memory actualStream = sablierV2Cliff.getStream(streamIdEve);
+        ISablierV2Cliff.Stream memory expectedStream;
+        assertEq(actualStream, expectedStream);
     }
 
     /// @dev When the caller is the recipient of all streams, it should cancel and delete the streams.

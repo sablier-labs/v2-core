@@ -54,6 +54,11 @@ abstract contract SablierV2 is ISablierV2 {
             revert SablierV2__StreamNonExistent(streamId);
         }
 
+        // Checks: the `msg.sender` is either the sender or the recipient of the stream.
+        if (msg.sender != getSender(streamId) && msg.sender != getRecipient(streamId)) {
+            revert SablierV2__Unauthorized(streamId, msg.sender);
+        }
+
         // Checks: the stream is cancelable.
         if (!isCancelable(streamId)) {
             revert SablierV2__StreamNonCancelable(streamId);
@@ -72,7 +77,10 @@ abstract contract SablierV2 is ISablierV2 {
 
             // Cancel the stream only if the `streamId` points to a stream that exists and is cancelable.
             if (getSender(streamId) != address(0) && isCancelable(streamId)) {
-                cancelInternal(streamId);
+                // Cancel the stream only if the caller is either the sender or the recipient of any stream.
+                if (msg.sender == getSender(streamId) || msg.sender == getRecipient(streamId)) {
+                    cancelInternal(streamId);
+                }
             }
 
             // Increment the for loop iterator.

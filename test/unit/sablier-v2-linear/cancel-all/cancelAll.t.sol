@@ -40,11 +40,6 @@ contract SablierV2Linear__UnitTest__CancelAll is SablierV2LinearUnitTest {
     function testCannotCancelAll__CallerUnauthorized__AllStreams() external {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
-
-        // Run the test.
-        vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
-        );
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
 
@@ -67,10 +62,10 @@ contract SablierV2Linear__UnitTest__CancelAll is SablierV2LinearUnitTest {
 
         // Run the test.
         uint256[] memory streamIds = createDynamicArray(streamIdEve, defaultStreamIds[0]);
-        vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
-        );
         sablierV2Linear.cancelAll(streamIds);
+        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(streamIdEve);
+        ISablierV2Linear.Stream memory expectedStream;
+        assertEq(actualStream, expectedStream);
     }
 
     /// @dev When the caller is the recipient of all streams, it should cancel and delete the streams.
