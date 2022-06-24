@@ -20,9 +20,7 @@ contract GodModeERC20 is ERC20 {
         string memory name_,
         string memory symbol_,
         uint8 decimals_
-    ) ERC20(name_, symbol_, decimals_) {
-        // solhint-disable-previous-line no-empty-blocks
-    }
+    ) ERC20(name_, symbol_, decimals_) {}
 
     /// PUBLIC NON-CONSTANT FUNCTIONS ///
 
