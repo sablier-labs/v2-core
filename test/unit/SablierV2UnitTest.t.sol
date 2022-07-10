@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { ERC20GodMode } from "@prb/contracts/token/erc20/ERC20GodMode.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { NonStandardERC20 } from "@prb/contracts/token/erc20/NonStandardERC20.sol";
 import { SD59x18 } from "@prb/math/SD59x18.sol";
@@ -8,14 +9,14 @@ import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { Test } from "forge-std/Test.sol";
 
-import { GodModeERC20 } from "../shared/GodModeERC20.t.sol";
-
-/// @title GodModeERC20
+/// @title SablierV2UnitTest
 /// @author Sablier Labs Ltd.
 /// @notice Common contract members needed across Sablier V2 test contracts.
 /// @dev Strictly for test purposes.
 abstract contract SablierV2UnitTest is Test {
-    /// EVENTS ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                        EVENTS
+    //////////////////////////////////////////////////////////////////////////*/
 
     event Cancel(uint256 indexed streamId, address indexed recipient, uint256 withdrawAmount, uint256 returnAmount);
 
@@ -23,7 +24,9 @@ abstract contract SablierV2UnitTest is Test {
 
     event Withdraw(uint256 indexed streamId, address indexed recipient, uint256 amount);
 
-    /// CONSTANTS ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                        CONSTANTS
+    //////////////////////////////////////////////////////////////////////////*/
 
     uint256 internal constant CLIFF_DURATION = 2_500 seconds;
     uint256 internal constant MAX_UINT_256 = type(uint256).max;
@@ -36,7 +39,9 @@ abstract contract SablierV2UnitTest is Test {
     uint256 internal immutable START_TIME;
     uint256 internal immutable STOP_TIME;
 
-    /// STRUCTS ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                        STRUCTS
+    //////////////////////////////////////////////////////////////////////////*/
 
     struct Users {
         address payable alice;
@@ -45,15 +50,19 @@ abstract contract SablierV2UnitTest is Test {
         address payable sender;
     }
 
-    /// STORAGE ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                        STORAGE
+    //////////////////////////////////////////////////////////////////////////*/
 
     bytes32 internal nextUser = keccak256(abi.encodePacked("user address"));
     NonStandardERC20 internal nonStandardToken = new NonStandardERC20("Stablecoin", "USD", 18);
-    GodModeERC20 internal dai = new GodModeERC20("Dai Stablecoin", "DAI", 18);
-    GodModeERC20 internal usdc = new GodModeERC20("USD Coin", "USDC", 6);
+    ERC20GodMode internal dai = new ERC20GodMode("Dai Stablecoin", "DAI", 18);
+    ERC20GodMode internal usdc = new ERC20GodMode("USD Coin", "USDC", 6);
     Users internal users;
 
-    /// CONSTRUCTOR ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                        CONSTRUCTOR
+    //////////////////////////////////////////////////////////////////////////*/
 
     constructor() {
         // By default the test EVM begins at time zero, but in some of our tests we need to warp back in time, so we
@@ -82,7 +91,9 @@ abstract contract SablierV2UnitTest is Test {
         vm.label(users.alice, "Alice");
     }
 
-    /// CONSTANT FUNCTIONS ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                    CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Helper function that multiplies the `amount` by `10^18` and returns a `uint256.`
     function bn(uint256 amount) internal pure returns (uint256 result) {
@@ -104,7 +115,9 @@ abstract contract SablierV2UnitTest is Test {
         result = UD60x18.wrap(number);
     }
 
-    /// NON-CONSTANT FUNCTIONS ///
+    /*//////////////////////////////////////////////////////////////////////////
+                                NON-CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Helper function to compare two `IERC20` addresses.
     function assertEq(IERC20 a, IERC20 b) internal {
