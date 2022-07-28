@@ -93,7 +93,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         // Create a stream with Eve as the sender.
         uint256 eveStreamId = sablierV2Linear.create(
             users.eve,
-            daiStream.recipient,
+            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -228,9 +228,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         // Run the test.
         uint256 withdrawAmount = daiStream.depositAmount;
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[0], daiStream.recipient, withdrawAmount);
+        emit Withdraw(defaultStreamIds[0], users.recipient, withdrawAmount);
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[1], daiStream.recipient, withdrawAmount);
+        emit Withdraw(defaultStreamIds[1], users.recipient, withdrawAmount);
         uint256[] memory amounts = createDynamicArray(withdrawAmount, withdrawAmount);
         sablierV2Linear.withdrawAll(defaultStreamIds, amounts);
     }
@@ -276,9 +276,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         // Run the test.
         uint256 withdrawAmount = WITHDRAW_AMOUNT_DAI;
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[0], daiStream.recipient, withdrawAmount);
+        emit Withdraw(defaultStreamIds[0], users.recipient, withdrawAmount);
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[1], daiStream.recipient, withdrawAmount);
+        emit Withdraw(defaultStreamIds[1], users.recipient, withdrawAmount);
         sablierV2Linear.withdrawAll(defaultStreamIds, defaultAmounts);
     }
 
@@ -296,7 +296,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         uint256 earlyStopTime = daiStream.startTime + TIME_OFFSET;
         uint256 endedDaiStreamId = sablierV2Linear.create(
             daiStream.sender,
-            daiStream.recipient,
+            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -304,7 +304,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
             earlyStopTime,
             daiStream.cancelable
         );
-        changePrank(daiStream.recipient);
+        changePrank(users.recipient);
 
         // Use the first default stream as the ongoing daiStream.
         uint256 ongoingStreamId = defaultStreamIds[0];
@@ -343,7 +343,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         uint256 earlyStopTime = daiStream.startTime + TIME_OFFSET;
         uint256 endedDaiStreamId = sablierV2Linear.create(
             daiStream.sender,
-            daiStream.recipient,
+            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -351,7 +351,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
             earlyStopTime,
             daiStream.cancelable
         );
-        changePrank(daiStream.recipient);
+        changePrank(users.recipient);
 
         // Use the first default stream as the ongoing daiStream.
         uint256 ongoingStreamId = defaultStreamIds[0];
@@ -364,9 +364,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         uint256 ongoingWithdrawAmount = WITHDRAW_AMOUNT_DAI;
 
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(endedDaiStreamId, daiStream.recipient, endedWithdrawAmount);
+        emit Withdraw(endedDaiStreamId, users.recipient, endedWithdrawAmount);
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(ongoingStreamId, daiStream.recipient, ongoingWithdrawAmount);
+        emit Withdraw(ongoingStreamId, users.recipient, ongoingWithdrawAmount);
 
         uint256[] memory streamIds = createDynamicArray(endedDaiStreamId, ongoingStreamId);
         uint256[] memory amounts = createDynamicArray(endedWithdrawAmount, ongoingWithdrawAmount);

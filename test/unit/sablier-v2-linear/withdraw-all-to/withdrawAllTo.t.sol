@@ -254,7 +254,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         vm.warp(daiStream.startTime + TIME_OFFSET);
 
         // Run the test.
-        address toRecipient = daiStream.recipient;
+        address toRecipient = users.recipient;
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toRecipient, defaultAmounts);
         ISablierV2Linear.Stream memory queriedStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
         ISablierV2Linear.Stream memory queriedStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
@@ -388,7 +388,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         uint256 earlyStopTime = daiStream.startTime + TIME_OFFSET;
         uint256 endedDaiStreamId = sablierV2Linear.create(
             daiStream.sender,
-            daiStream.recipient,
+            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -396,7 +396,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
             earlyStopTime,
             daiStream.cancelable
         );
-        changePrank(daiStream.recipient);
+        changePrank(users.recipient);
 
         // Use the first default stream as the ongoing daiStream.
         uint256 ongoingStreamId = defaultStreamIds[0];
@@ -436,7 +436,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         uint256 earlyStopTime = daiStream.startTime + TIME_OFFSET;
         uint256 endedDaiStreamId = sablierV2Linear.create(
             daiStream.sender,
-            daiStream.recipient,
+            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -444,7 +444,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
             earlyStopTime,
             daiStream.cancelable
         );
-        changePrank(daiStream.recipient);
+        changePrank(users.recipient);
 
         // Use the first default stream as the ongoing daiStream.
         uint256 ongoingStreamId = defaultStreamIds[0];

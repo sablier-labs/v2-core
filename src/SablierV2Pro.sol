@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
+import { ERC721 } from "@solmate/tokens/ERC721.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { SCALE, SD59x18, toSD59x18, ZERO } from "@prb/math/SD59x18.sol";
@@ -13,7 +14,8 @@ import { SablierV2 } from "./SablierV2.sol";
 /// @author Sablier Labs Ltd.
 contract SablierV2Pro is
     ISablierV2Pro, // one dependency
-    SablierV2 // two dependencies
+    SablierV2, // two dependencies
+    ERC721("Sablier V2 Pro", "SAB-V2-PRO")
 {
     using SafeERC20 for IERC20;
 
@@ -53,7 +55,7 @@ contract SablierV2Pro is
 
     /// @inheritdoc ISablierV2
     function getRecipient(uint256 streamId) public view override(ISablierV2, SablierV2) returns (address recipient) {
-        recipient = streams[streamId].recipient;
+        recipient = _ownerOf[streamId];
     }
 
     /// @inheritdoc ISablierV2
@@ -195,8 +197,19 @@ contract SablierV2Pro is
     }
 
     /// @inheritdoc ISablierV2
+    function isApprovedOrOwner(uint256 streamId) public view override(ISablierV2, SablierV2) returns (bool) {
+        address owner = _ownerOf[streamId];
+        return (msg.sender == owner || isApprovedForAll[owner][msg.sender] || getApproved[streamId] == msg.sender);
+    }
+
+    /// @inheritdoc ISablierV2
     function isCancelable(uint256 streamId) public view override(ISablierV2, SablierV2) returns (bool cancelable) {
         cancelable = streams[streamId].cancelable;
+    }
+
+    /// @inheritdoc ERC721
+    function tokenURI(uint256 streamId) public view override streamExists(streamId) returns (string memory) {
+        return "";
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -375,7 +388,7 @@ contract SablierV2Pro is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the public functions that call this internal function.
-    function cancelInternal(uint256 streamId) internal override onlySenderOrRecipient(streamId) {
+    function cancelInternal(uint256 streamId) internal override onlySenderOrRecipientOrApproved(streamId) {
         Stream memory stream = streams[streamId];
 
         // Calculate the withdraw and the return amounts.
@@ -385,12 +398,14 @@ contract SablierV2Pro is
             returnAmount = stream.depositAmount - stream.withdrawnAmount - withdrawAmount;
         }
 
+        address recipient = getRecipient(streamId);
+
         // Effects: delete the stream from storage.
         delete streams[streamId];
 
         // Interactions: withdraw the tokens to the recipient, if any.
         if (withdrawAmount > 0) {
-            stream.token.safeTransfer(stream.recipient, withdrawAmount);
+            stream.token.safeTransfer(recipient, withdrawAmount);
         }
 
         // Interactions: return the tokens to the sender, if any.
@@ -399,7 +414,7 @@ contract SablierV2Pro is
         }
 
         // Emit an event.
-        emit Cancel(streamId, stream.recipient, withdrawAmount, returnAmount);
+        emit Cancel(streamId, recipient, withdrawAmount, returnAmount);
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
@@ -431,7 +446,6 @@ contract SablierV2Pro is
         streams[streamId] = Stream({
             cancelable: cancelable,
             depositAmount: depositAmount,
-            recipient: recipient,
             segmentAmounts: segmentAmounts,
             segmentExponents: segmentExponents,
             segmentMilestones: segmentMilestones,
@@ -441,6 +455,9 @@ contract SablierV2Pro is
             token: token,
             withdrawnAmount: 0
         });
+
+        // Effects: mint the NFT to the recipient's address.
+        _mint(recipient, streamId);
 
         // Effects: bump the next stream id. This cannot realistically overflow, ever.
         unchecked {

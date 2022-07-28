@@ -70,6 +70,12 @@ contract AbstractSablierV2 is SablierV2 {
         cancelable;
     }
 
+    /// @inheritdoc ISablierV2
+    function isApprovedOrOwner(uint256 streamId) public pure override returns (bool result) {
+        streamId;
+        result;
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                            INTERNAL NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/

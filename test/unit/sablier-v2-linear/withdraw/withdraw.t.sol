@@ -128,7 +128,7 @@ contract SablierV2Linear__Unit__Withdraw is SablierV2LinearUnitTest {
         // Run the test.
         vm.expectEmit(true, true, false, true);
         uint256 withdrawAmount = daiStream.depositAmount;
-        emit Withdraw(daiStreamId, daiStream.recipient, withdrawAmount);
+        emit Withdraw(daiStreamId, users.recipient, withdrawAmount);
         sablierV2Linear.withdraw(daiStreamId, withdrawAmount);
     }
 
@@ -165,7 +165,7 @@ contract SablierV2Linear__Unit__Withdraw is SablierV2LinearUnitTest {
         // Run the test.
         uint256 withdrawAmount = WITHDRAW_AMOUNT_DAI;
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(daiStreamId, daiStream.recipient, withdrawAmount);
+        emit Withdraw(daiStreamId, users.recipient, withdrawAmount);
         sablierV2Linear.withdraw(daiStreamId, withdrawAmount);
     }
 }

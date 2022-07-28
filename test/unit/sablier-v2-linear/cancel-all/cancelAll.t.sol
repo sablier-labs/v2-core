@@ -60,7 +60,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         // Create a stream with Eve as the sender.
         uint256 eveStreamId = sablierV2Linear.create(
             users.eve,
-            daiStream.recipient,
+            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -155,9 +155,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 returnAmount = 0;
 
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[0], daiStream.recipient, withdrawAmount, returnAmount);
+        emit Cancel(defaultStreamIds[0], users.recipient, withdrawAmount, returnAmount);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[1], daiStream.recipient, withdrawAmount, returnAmount);
+        emit Cancel(defaultStreamIds[1], users.recipient, withdrawAmount, returnAmount);
 
         uint256[] memory streamIds = createDynamicArray(defaultStreamIds[0], defaultStreamIds[1]);
         sablierV2Linear.cancelAll(streamIds);
@@ -199,9 +199,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 returnAmount = daiStream.depositAmount - WITHDRAW_AMOUNT_DAI;
 
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[0], daiStream.recipient, withdrawAmount, returnAmount);
+        emit Cancel(defaultStreamIds[0], users.recipient, withdrawAmount, returnAmount);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[1], daiStream.recipient, withdrawAmount, returnAmount);
+        emit Cancel(defaultStreamIds[1], users.recipient, withdrawAmount, returnAmount);
 
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
@@ -220,7 +220,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 earlyStopTime = daiStream.startTime + TIME_OFFSET;
         uint256 endedDaiStreamId = sablierV2Linear.create(
             daiStream.sender,
-            daiStream.recipient,
+            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -258,7 +258,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 earlyStopTime = daiStream.startTime + TIME_OFFSET;
         uint256 endedDaiStreamId = sablierV2Linear.create(
             daiStream.sender,
-            daiStream.recipient,
+            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -277,9 +277,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 ongoingReturnAmount = daiStream.depositAmount - WITHDRAW_AMOUNT_DAI;
 
         vm.expectEmit(true, true, false, true);
-        emit Cancel(endedDaiStreamId, daiStream.recipient, endedWithdrawAmount, endedReturnAmount);
+        emit Cancel(endedDaiStreamId, users.recipient, endedWithdrawAmount, endedReturnAmount);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(ongoingStreamId, daiStream.recipient, ongoingWithdrawAmount, ongoingReturnAmount);
+        emit Cancel(ongoingStreamId, users.recipient, ongoingWithdrawAmount, ongoingReturnAmount);
 
         uint256[] memory streamIds = createDynamicArray(endedDaiStreamId, ongoingStreamId);
         sablierV2Linear.cancelAll(streamIds);
