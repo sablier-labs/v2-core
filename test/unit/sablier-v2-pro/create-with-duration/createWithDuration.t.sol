@@ -9,10 +9,9 @@ import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 import { SablierV2ProUnitTest } from "../SablierV2ProUnitTest.t.sol";
 
 contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
-    function testFailCreateWithDuration__LoopCalculationOverflows() external {
+    function testFailCreateWithDuration__LoopCalculationOverflowsGasLimit() external {
         uint256[] memory segmentDeltas = new uint256[](1_000_000);
 
-        // vm.expectRevert(bytes("EvmError: OutOfGas"));
         sablierV2Pro.createWithDuration(
             daiStream.sender,
             daiStream.recipient,
@@ -25,12 +24,15 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         );
     }
 
-    modifier LoopCalculationDoesNotOverflow() {
+    modifier LoopCalculationDoesNotOverflowGasLimit() {
         _;
     }
 
     /// @dev it should revert.
-    function testCannotCreateWithDuration__SegmentDeltasCountNotEqual() external LoopCalculationDoesNotOverflow {
+    function testCannotCreateWithDuration__SegmentDeltasCountNotEqual()
+        external
+        LoopCalculationDoesNotOverflowGasLimit
+    {
         uint256 deltaCount = daiStream.segmentAmounts.length + 1;
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -70,7 +72,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     /// @dev it should revert.
     function testCannotCreateWithDuration__StartTimeGreaterThanCalculatedStopTime()
         external
-        LoopCalculationDoesNotOverflow
+        LoopCalculationDoesNotOverflowGasLimit
         SegmentDeltasEqual
         MilestonesCalculationOverflows
     {
@@ -99,7 +101,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     /// @dev it should revert.
     function testCannotCreateWithDuration__StartTimeGreaterThanCalculatedFirstMilestone()
         external
-        LoopCalculationDoesNotOverflow
+        LoopCalculationDoesNotOverflowGasLimit
         SegmentDeltasEqual
         MilestonesCalculationOverflows
     {
@@ -132,7 +134,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     /// @dev it should revert.
     function testCannotCreateWithDuration__SegmentMilestonesNotOrdered()
         external
-        LoopCalculationDoesNotOverflow
+        LoopCalculationDoesNotOverflowGasLimit
         SegmentDeltasEqual
         MilestonesCalculationOverflows
     {
@@ -173,7 +175,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     /// @dev it should create the stream with duration.
     function testCreateWithDuration()
         external
-        LoopCalculationDoesNotOverflow
+        LoopCalculationDoesNotOverflowGasLimit
         SegmentDeltasEqual
         MilestonesCalculationDoesNotOverflow
     {
