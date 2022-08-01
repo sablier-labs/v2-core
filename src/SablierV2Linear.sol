@@ -181,7 +181,7 @@ contract SablierV2Linear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the public functions that call this internal function.
-    function cancelInternal(uint256 streamId) internal override onlySenderOrRecipientOrApproved(streamId) {
+    function cancelInternal(uint256 streamId) internal override onlySenderOrAuthorized(streamId) {
         Stream memory stream = streams[streamId];
 
         // Calculate the withdraw and the return amounts.

@@ -20,8 +20,8 @@ abstract contract SablierV2 is ISablierV2 {
                                       MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Checks that `msg.sender` is either the sender or the recipient of the stream.
-    modifier onlySenderOrRecipientOrApproved(uint256 streamId) {
+    /// @notice Checks that `msg.sender` is either the sender or the recipient of the stream either approved.
+    modifier onlySenderOrAuthorized(uint256 streamId) {
         if (msg.sender != getSender(streamId) && !isApprovedOrOwner(streamId)) {
             revert SablierV2__Unauthorized(streamId, msg.sender);
         }
@@ -113,7 +113,7 @@ abstract contract SablierV2 is ISablierV2 {
     function withdraw(uint256 streamId, uint256 amount)
         external
         streamExists(streamId)
-        onlySenderOrRecipientOrApproved(streamId)
+        onlySenderOrAuthorized(streamId)
     {
         address to = getRecipient(streamId);
         withdrawInternal(streamId, to, amount);
@@ -141,7 +141,7 @@ abstract contract SablierV2 is ISablierV2 {
             recipient = getRecipient(streamId);
             sender = getSender(streamId);
             if (sender != address(0)) {
-                // Checks: the `msg.sender` is either the sender or the recipient of the stream.
+                // Checks: the `msg.sender` is either the sender or the recipient of the stream either approved.
                 if (msg.sender != sender && !_isApprovedOrOwner) {
                     revert SablierV2__Unauthorized(streamId, msg.sender);
                 }
@@ -182,7 +182,7 @@ abstract contract SablierV2 is ISablierV2 {
 
             // If the `streamId` points to a stream that does not exist, skip it.
             if (getSender(streamId) != address(0)) {
-                // Checks: the `msg.sender` is the recipient of the stream.
+                // Checks: the `msg.sender` is either the recipient of the stream or approved.
                 if (!isApprovedOrOwner(streamId)) {
                     revert SablierV2__Unauthorized(streamId, msg.sender);
                 }
