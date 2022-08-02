@@ -204,7 +204,7 @@ abstract contract SablierV2 is ISablierV2 {
         address to,
         uint256 amount
     ) external streamExists(streamId) {
-        // Checks: the `msg.sender` is the recipient of the stream.
+        // Checks: the `msg.sender` is either the recipient of the stream or is approved.
         if (!isApprovedOrOwner(streamId)) {
             revert SablierV2__Unauthorized(streamId, msg.sender);
         }

@@ -44,14 +44,26 @@ contract SablierV2Linear__Unit__Withdraw is SablierV2LinearUnitTest {
         sablierV2Linear.withdraw(daiStreamId, withdrawAmount);
     }
 
-    modifier CallerSender() {
-        _;
+    /// @dev it should make the withdrawal.
+    function testWithdraw__CallerSender() external StreamExistent {
+        // Make the sender the `msg.sender` in this test case.
+        changePrank(users.sender);
+
+        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
+        vm.warp(daiStream.startTime + TIME_OFFSET);
+        uint256 withdrawAmount = WITHDRAW_AMOUNT_DAI;
+
+        // Run the test.
+        sablierV2Linear.withdraw(daiStreamId, withdrawAmount);
     }
 
     /// @dev it should make the withdrawal.
-    function testWithdraw() external StreamExistent CallerSender {
-        // Make the sender the `msg.sender` in this test case.
-        changePrank(users.sender);
+    function testWithdraw__CallerApproved() external StreamExistent {
+        // Approve Alice for the stream.
+        sablierV2Linear.approve(users.alice, daiStreamId);
+
+        // Make Alice the `msg.sender` in this test case.
+        changePrank(users.alice);
 
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
@@ -77,7 +89,12 @@ contract SablierV2Linear__Unit__Withdraw is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdraw__WithdrawAmountGreaterThanWithdrawableAmount() external {
+    function testCannotWithdraw__WithdrawAmountGreaterThanWithdrawableAmount()
+        external
+        StreamExistent
+        CallerRecipient
+        WithdrawAmountNotZero
+    {
         uint256 withdrawAmountMaxUint256 = UINT256_MAX;
         uint256 withdrawableAmount = 0;
         vm.expectRevert(
@@ -95,13 +112,40 @@ contract SablierV2Linear__Unit__Withdraw is SablierV2LinearUnitTest {
         _;
     }
 
-    /// @dev it should cancel and delete the stream.
+    /// @dev it should revert.
+    function testCannotWithdraw__RecipientNotOwner()
+        external
+        StreamExistent
+        CallerRecipient
+        WithdrawAmountNotZero
+        WithdrawAmountLessThanOrEqualToWithdrawableAmount
+    {
+        // Transfer the stream to alice.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, daiStreamId);
+
+        // Warp to the end of the stream.
+        vm.warp(daiStream.stopTime);
+
+        // Run the test.
+        vm.expectRevert(
+            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, daiStreamId, users.recipient)
+        );
+        uint256 withdrawAmount = daiStream.depositAmount;
+        sablierV2Linear.withdraw(daiStreamId, withdrawAmount);
+    }
+
+    modifier RecipientOwner() {
+        _;
+    }
+
+    /// @dev it should make the withdrawal and delete the stream.
     function testWithdraw__StreamEnded()
         external
         StreamExistent
         CallerRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
+        RecipientOwner
     {
         // Warp to the end of the stream.
         vm.warp(daiStream.stopTime);
@@ -121,6 +165,7 @@ contract SablierV2Linear__Unit__Withdraw is SablierV2LinearUnitTest {
         CallerRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
+        RecipientOwner
     {
         // Warp to the end of the stream.
         vm.warp(daiStream.stopTime);
@@ -139,6 +184,7 @@ contract SablierV2Linear__Unit__Withdraw is SablierV2LinearUnitTest {
         CallerRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
+        RecipientOwner
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
@@ -158,6 +204,7 @@ contract SablierV2Linear__Unit__Withdraw is SablierV2LinearUnitTest {
         CallerRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
+        RecipientOwner
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
