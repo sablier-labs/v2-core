@@ -133,7 +133,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should cancel and delete the streams.
-    function testCancelAll__CallerApprovedAllStreams()
+    function testCancelAll__CallerApprovedThirdPartyAllStreams()
         external
         OnlyExistentStreams
         AllStreamsCancelable
@@ -156,7 +156,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         assertEq(actualStream1, expectedStream);
     }
 
-    modifier CallerRecipient() {
+    modifier CallerRecipientAllStreams() {
         _;
     }
 
@@ -166,11 +166,11 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
-        CallerRecipient
+        CallerRecipientAllStreams
     {
-        // Transfer the streams to alice.
-        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, defaultStreamIds[0]);
-        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, defaultStreamIds[1]);
+        // Transfer the streams to eve.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[0]);
+        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[1]);
 
         // Run the test.
         vm.expectRevert(
@@ -185,10 +185,10 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
-        CallerRecipient
+        CallerRecipientAllStreams
     {
-        // Transfer on of the streams to alice.
-        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, defaultStreamIds[0]);
+        // Transfer one of the streams to eve.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[0]);
 
         // Run the test.
         vm.expectRevert(
@@ -207,7 +207,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
-        CallerRecipient
+        CallerRecipientAllStreams
         RecipientOwnerAllStreams
     {
         // Warp to the end of the stream.
@@ -230,20 +230,19 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
-        CallerRecipient
+        CallerRecipientAllStreams
         RecipientOwnerAllStreams
     {
         // Warp to the end of the stream.
         vm.warp(daiStream.stopTime);
 
         // Run the test.
-        uint256 withdrawAmount = daiStream.depositAmount;
         uint256 returnAmount = 0;
 
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[0], users.recipient, withdrawAmount, returnAmount);
+        emit Cancel(defaultStreamIds[0], users.recipient, daiStream.depositAmount, returnAmount);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[1], users.recipient, withdrawAmount, returnAmount);
+        emit Cancel(defaultStreamIds[1], users.recipient, daiStream.depositAmount, returnAmount);
 
         uint256[] memory streamIds = createDynamicArray(defaultStreamIds[0], defaultStreamIds[1]);
         sablierV2Linear.cancelAll(streamIds);
@@ -255,7 +254,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
-        CallerRecipient
+        CallerRecipientAllStreams
         RecipientOwnerAllStreams
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
@@ -278,20 +277,19 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
-        CallerRecipient
+        CallerRecipientAllStreams
         RecipientOwnerAllStreams
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
 
         // Run the test.
-        uint256 withdrawAmount = WITHDRAW_AMOUNT_DAI;
         uint256 returnAmount = daiStream.depositAmount - WITHDRAW_AMOUNT_DAI;
 
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[0], users.recipient, withdrawAmount, returnAmount);
+        emit Cancel(defaultStreamIds[0], users.recipient, WITHDRAW_AMOUNT_DAI, returnAmount);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[1], users.recipient, withdrawAmount, returnAmount);
+        emit Cancel(defaultStreamIds[1], users.recipient, WITHDRAW_AMOUNT_DAI, returnAmount);
 
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
@@ -302,7 +300,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
-        CallerRecipient
+        CallerRecipientAllStreams
         RecipientOwnerAllStreams
     {
         // Use the first default stream as the ongoing daiStream.
@@ -342,7 +340,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
-        CallerRecipient
+        CallerRecipientAllStreams
         RecipientOwnerAllStreams
     {
         // Use the first default stream as the ongoing daiStream.

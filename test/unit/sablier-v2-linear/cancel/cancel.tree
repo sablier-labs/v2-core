@@ -9,7 +9,7 @@ cancel.t.sol
       │  └── it should revert
       ├── when the caller is the sender
       │  └── it should cancel and delete the stream
-      ├── when the caller is approved
+      ├── when the caller is an approved third-party
       │  └── it should cancel and delete the stream
       └── when the caller is the recipient
          ├── when the recipient transferred the stream and does not own it

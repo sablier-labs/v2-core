@@ -204,14 +204,14 @@ abstract contract SablierV2 is ISablierV2 {
         address to,
         uint256 amount
     ) external streamExists(streamId) {
-        // Checks: the `msg.sender` is either the recipient of the stream or is approved.
-        if (!isApprovedOrOwner(streamId)) {
-            revert SablierV2__Unauthorized(streamId, msg.sender);
-        }
-
         // Checks: the provided address to withdraw to is not zero.
         if (to == address(0)) {
             revert SablierV2__WithdrawZeroAddress();
+        }
+
+        // Checks: the `msg.sender` is either the recipient of the stream or is approved.
+        if (!isApprovedOrOwner(streamId)) {
+            revert SablierV2__Unauthorized(streamId, msg.sender);
         }
         withdrawInternal(streamId, to, amount);
     }

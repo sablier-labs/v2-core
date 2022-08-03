@@ -48,7 +48,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotCancel__CallerNotAuthorized() external StreamExistent StreamCancelable {
+    function testCannotCancel__CallerUnauthorized() external StreamExistent StreamCancelable {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
@@ -74,7 +74,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
     }
 
     /// @dev it should cancel and delete the stream.
-    function testCancel__CallerApproved() external StreamExistent StreamCancelable CallerAuthorized {
+    function testCancel__CallerApprovedThirdParty() external StreamExistent StreamCancelable CallerAuthorized {
         // Approve Alice for the stream.
         sablierV2Linear.approve(users.alice, daiStreamId);
 
@@ -100,8 +100,8 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
         CallerAuthorized
         CallerRecipient
     {
-        // Transfer the stream to alice.
-        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, daiStreamId);
+        // Transfer the stream to eve.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, daiStreamId);
 
         // Run the test.
         vm.expectRevert(
@@ -147,9 +147,8 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectEmit(true, true, false, true);
-        uint256 withdrawAmount = daiStream.depositAmount;
         uint256 returnAmount = 0;
-        emit Cancel(daiStreamId, users.recipient, withdrawAmount, returnAmount);
+        emit Cancel(daiStreamId, users.recipient, daiStream.depositAmount, returnAmount);
         sablierV2Linear.cancel(daiStreamId);
     }
 
@@ -185,10 +184,9 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
         vm.warp(daiStream.startTime + TIME_OFFSET);
 
         // Run the test.
-        uint256 withdrawAmount = WITHDRAW_AMOUNT_DAI;
         uint256 returnAmount = daiStream.depositAmount - WITHDRAW_AMOUNT_DAI;
         vm.expectEmit(true, true, false, true);
-        emit Cancel(daiStreamId, users.recipient, withdrawAmount, returnAmount);
+        emit Cancel(daiStreamId, users.recipient, WITHDRAW_AMOUNT_DAI, returnAmount);
         sablierV2Linear.cancel(daiStreamId);
     }
 }

@@ -74,7 +74,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAll__CallerUnauthorizedAllStreams() external ArraysEqual OnlyExistentStreams {
+    function testCannotWithdrawAll__CallerUnauthorizedThirdPartyAllStreams() external ArraysEqual OnlyExistentStreams {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
@@ -86,7 +86,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAll__CallerUnauthorizedSomeStreams() external ArraysEqual OnlyExistentStreams {
+    function testCannotWithdrawAll__CallerUnauthorizedThirdPartySomeStreams() external ArraysEqual OnlyExistentStreams {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
@@ -113,10 +113,49 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawAll(streamIds, defaultAmounts);
     }
 
+    modifier CallerAuthorizedAllStreams() {
+        _;
+    }
+
     /// @dev it should make the withdrawals and update the withdrawn amounts.
-    function testWithdrawAll__CallerSenderAllStreams() external ArraysEqual OnlyExistentStreams {
+    function testWithdrawAll__CallerSenderAllStreams()
+        external
+        ArraysEqual
+        OnlyExistentStreams
+        CallerAuthorizedAllStreams
+    {
         // Make the sender the `msg.sender` in this test case.
         changePrank(users.sender);
+
+        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
+        vm.warp(daiStream.startTime + TIME_OFFSET);
+
+        // Run the test.
+        sablierV2Linear.withdrawAll(defaultStreamIds, defaultAmounts);
+        ISablierV2Linear.Stream memory queriedStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
+        ISablierV2Linear.Stream memory queriedStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
+
+        uint256 actualWithdrawnAmount0 = queriedStream0.withdrawnAmount;
+        uint256 actualWithdrawnAmount1 = queriedStream1.withdrawnAmount;
+        uint256 expectedWithdrawnAmount0 = WITHDRAW_AMOUNT_DAI;
+        uint256 expectedWithdrawnAmount1 = WITHDRAW_AMOUNT_DAI;
+
+        assertEq(actualWithdrawnAmount0, expectedWithdrawnAmount0);
+        assertEq(actualWithdrawnAmount1, expectedWithdrawnAmount1);
+    }
+
+    /// @dev it should make the withdrawals and update the withdrawn amounts.
+    function testWithdrawAll__CallerApprovedThirdPartyAllStreams()
+        external
+        ArraysEqual
+        OnlyExistentStreams
+        CallerAuthorizedAllStreams
+    {
+        // Approve Alice for all the streams.
+        sablierV2Linear.setApprovalForAll(users.alice, true);
+
+        // Make Alice the `msg.sender` in this test case.
+        changePrank(users.alice);
 
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
@@ -140,11 +179,54 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
+    function testCannotWithdrawAllTo__RecipientNotOwnerAllStreams()
+        external
+        ArraysEqual
+        OnlyExistentStreams
+        CallerAuthorizedAllStreams
+        CallerRecipientAllStreams
+    {
+        // Transfer the streams to eve.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[0]);
+        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[1]);
+
+        // Run the test.
+        vm.expectRevert(
+            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
+        );
+        sablierV2Linear.withdrawAll(defaultStreamIds, defaultAmounts);
+    }
+
+    /// @dev it should revert.
+    function testCannotWithdrawAll__RecipientNotOwnerSomeStreams()
+        external
+        ArraysEqual
+        OnlyExistentStreams
+        CallerAuthorizedAllStreams
+        CallerRecipientAllStreams
+    {
+        // Transfer one of the streams to eve.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[0]);
+
+        // Run the test.
+        vm.expectRevert(
+            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
+        );
+        sablierV2Linear.withdrawAll(defaultStreamIds, defaultAmounts);
+    }
+
+    modifier RecipientOwnerAllStreams() {
+        _;
+    }
+
+    /// @dev it should revert.
     function testCannotWithdrawAll__SomeAmountsZero()
         external
         ArraysEqual
         OnlyExistentStreams
+        CallerAuthorizedAllStreams
         CallerRecipientAllStreams
+        RecipientOwnerAllStreams
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
@@ -164,7 +246,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         external
         ArraysEqual
         OnlyExistentStreams
+        CallerAuthorizedAllStreams
         CallerRecipientAllStreams
+        RecipientOwnerAllStreams
         AllAmountsNotZero
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
@@ -194,7 +278,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         external
         ArraysEqual
         OnlyExistentStreams
+        CallerAuthorizedAllStreams
         CallerRecipientAllStreams
+        RecipientOwnerAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
     {
@@ -218,7 +304,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         external
         ArraysEqual
         OnlyExistentStreams
+        CallerAuthorizedAllStreams
         CallerRecipientAllStreams
+        RecipientOwnerAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
     {
@@ -226,12 +314,11 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         vm.warp(daiStream.stopTime);
 
         // Run the test.
-        uint256 withdrawAmount = daiStream.depositAmount;
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[0], users.recipient, withdrawAmount);
+        emit Withdraw(defaultStreamIds[0], users.recipient, daiStream.depositAmount);
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[1], users.recipient, withdrawAmount);
-        uint256[] memory amounts = createDynamicArray(withdrawAmount, withdrawAmount);
+        emit Withdraw(defaultStreamIds[1], users.recipient, daiStream.depositAmount);
+        uint256[] memory amounts = createDynamicArray(daiStream.depositAmount, daiStream.depositAmount);
         sablierV2Linear.withdrawAll(defaultStreamIds, amounts);
     }
 
@@ -240,7 +327,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         external
         ArraysEqual
         OnlyExistentStreams
+        CallerAuthorizedAllStreams
         CallerRecipientAllStreams
+        RecipientOwnerAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
     {
@@ -266,7 +355,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         external
         ArraysEqual
         OnlyExistentStreams
+        CallerAuthorizedAllStreams
         CallerRecipientAllStreams
+        RecipientOwnerAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
     {
@@ -274,11 +365,10 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         vm.warp(daiStream.startTime + TIME_OFFSET);
 
         // Run the test.
-        uint256 withdrawAmount = WITHDRAW_AMOUNT_DAI;
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[0], users.recipient, withdrawAmount);
+        emit Withdraw(defaultStreamIds[0], users.recipient, WITHDRAW_AMOUNT_DAI);
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[1], users.recipient, withdrawAmount);
+        emit Withdraw(defaultStreamIds[1], users.recipient, WITHDRAW_AMOUNT_DAI);
         sablierV2Linear.withdrawAll(defaultStreamIds, defaultAmounts);
     }
 
@@ -287,7 +377,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         external
         ArraysEqual
         OnlyExistentStreams
+        CallerAuthorizedAllStreams
         CallerRecipientAllStreams
+        RecipientOwnerAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
     {
@@ -334,7 +426,9 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         external
         ArraysEqual
         OnlyExistentStreams
+        CallerAuthorizedAllStreams
         CallerRecipientAllStreams
+        RecipientOwnerAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
     {

@@ -15,7 +15,7 @@ cancelAll.t.sol
       │  └── it should revert
       ├── when the caller is the sender of all streams
       │  └── it should cancel and delete the streams
-      ├── when the caller is the approved for all streams
+      ├── when the caller is an approved third-party for all the streams
       │  └── it should cancel and delete the streams
       └── when the caller is the recipient of all streams
          ├── when the recipient transferred all the streams and does not own any
