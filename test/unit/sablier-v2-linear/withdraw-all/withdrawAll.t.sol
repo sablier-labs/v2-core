@@ -74,7 +74,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAll__CallerUnauthorizedThirdPartyAllStreams() external ArraysEqual OnlyExistentStreams {
+    function testCannotWithdrawAll__CallerUnauthorizedAllStreams() external ArraysEqual OnlyExistentStreams {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
@@ -86,7 +86,7 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAll__CallerUnauthorizedThirdPartySomeStreams() external ArraysEqual OnlyExistentStreams {
+    function testCannotWithdrawAll__CallerUnauthorizedSomeStreams() external ArraysEqual OnlyExistentStreams {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 

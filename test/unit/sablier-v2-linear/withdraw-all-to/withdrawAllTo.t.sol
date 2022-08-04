@@ -106,18 +106,18 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAllTo__CallerThirdPartyAllStreams()
+    function testCannotWithdrawAllTo__CallerUnauthorizedThirdPartyAllStreams()
         external
         ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
     {
-        // Make the sender the `msg.sender` in this test case.
-        changePrank(users.sender);
+        // Make eve the `msg.sender` in this test case.
+        changePrank(users.eve);
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.sender)
+            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
         );
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, defaultAmounts);
     }
@@ -157,7 +157,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAllTo__CallerThirdPartySomeStreams()
+    function testCannotWithdrawAllTo__CallerUnauthorizedThirdPartySomeStreams()
         external
         ToNonZeroAddress
         ArraysEqual
