@@ -9,6 +9,7 @@ import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 import { SablierV2ProUnitTest } from "../SablierV2ProUnitTest.t.sol";
 
 contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
+    /// @dev it should revert.
     function testFailCreateWithDuration__LoopCalculationOverflowsGasLimit() external {
         uint256[] memory segmentDeltas = new uint256[](1_000_000);
 
@@ -29,7 +30,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotCreateWithDuration__SegmentDeltasCountNotEqual()
+    function testCannotCreateWithDuration__SegmentDeltaCountNotEqual()
         external
         LoopCalculationDoesNotOverflowGasLimit
     {
@@ -61,7 +62,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         );
     }
 
-    modifier SegmentDeltasEqual() {
+    modifier SegmentDeltaEqual() {
         _;
     }
 

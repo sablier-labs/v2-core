@@ -2,9 +2,9 @@ createWithDuration.t.sol
 ├── when the loop calculations overflow the block gas limit
 │  └── it should revert
 └── when the loop calculations do not overflow the block gas limit
-   ├── when the segment deltas count is not equal
+   ├── when the segment deltas count are not equal
    │  └── it should revert
-   └── when the segment deltas count is equal
+   └── when the segment deltas count are equal
       ├── when the segment milestone calculations overflow uint256
       │  ├── when the start time is greater than the calculated stop time
       │  │  └── it should revert
