@@ -74,7 +74,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     function testCannotCreateWithDuration__StartTimeGreaterThanCalculatedStopTime()
         external
         LoopCalculationDoesNotOverflowGasLimit
-        SegmentDeltasEqual
+        SegmentDeltaEqual
         MilestonesCalculationOverflows
     {
         uint256 startTime = block.timestamp;
@@ -103,7 +103,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     function testCannotCreateWithDuration__StartTimeGreaterThanCalculatedFirstMilestone()
         external
         LoopCalculationDoesNotOverflowGasLimit
-        SegmentDeltasEqual
+        SegmentDeltaEqual
         MilestonesCalculationOverflows
     {
         uint256 startTime = block.timestamp;
@@ -136,7 +136,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     function testCannotCreateWithDuration__SegmentMilestonesNotOrdered()
         external
         LoopCalculationDoesNotOverflowGasLimit
-        SegmentDeltasEqual
+        SegmentDeltaEqual
         MilestonesCalculationOverflows
     {
         uint256 startTime = block.timestamp;
@@ -177,7 +177,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
     function testCreateWithDuration()
         external
         LoopCalculationDoesNotOverflowGasLimit
-        SegmentDeltasEqual
+        SegmentDeltaEqual
         MilestonesCalculationDoesNotOverflow
     {
         uint256 daiStreamId = sablierV2Pro.createWithDuration(
