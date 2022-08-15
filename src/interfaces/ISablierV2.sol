@@ -120,6 +120,10 @@ interface ISablierV2 {
     /// @return withdrawnAmount The amount withdrawn from the stream, in units of the ERC-20 token's decimals.
     function getWithdrawnAmount(uint256 streamId) external view returns (uint256 withdrawnAmount);
 
+    /// @notice Returns whether the `msg.sender` is authorized to manage `streamId` or not.
+    /// @param streamId The id of the stream to make the query for.
+    function isApprovedOrOwner(uint256 streamId) external view returns (bool);
+
     /// @notice Checks whether the stream is cancelable or not.
     /// @param streamId The id of the stream to make the query for.
     /// @return cancelable Whether the stream is cancelable or not.

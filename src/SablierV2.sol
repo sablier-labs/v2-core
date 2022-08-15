@@ -20,9 +20,9 @@ abstract contract SablierV2 is ISablierV2 {
                                       MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Checks that `msg.sender` is either the sender or the recipient of the stream.
-    modifier onlySenderOrRecipient(uint256 streamId) {
-        if (msg.sender != getSender(streamId) && msg.sender != getRecipient(streamId)) {
+    /// @notice Checks that `msg.sender` is either the sender or the recipient of the stream either approved.
+    modifier isAuthorizedForStream(uint256 streamId) {
+        if (msg.sender != getSender(streamId) && !isApprovedOrOwner(streamId)) {
             revert SablierV2__Unauthorized(streamId, msg.sender);
         }
         _;
@@ -53,6 +53,9 @@ abstract contract SablierV2 is ISablierV2 {
 
     /// @inheritdoc ISablierV2
     function getSender(uint256 streamId) public view virtual override returns (address sender);
+
+    /// @inheritdoc ISablierV2
+    function isApprovedOrOwner(uint256 streamId) public view virtual override returns (bool);
 
     /// @inheritdoc ISablierV2
     function isCancelable(uint256 streamId) public view virtual override returns (bool cancelable);
@@ -110,7 +113,7 @@ abstract contract SablierV2 is ISablierV2 {
     function withdraw(uint256 streamId, uint256 amount)
         external
         streamExists(streamId)
-        onlySenderOrRecipient(streamId)
+        isAuthorizedForStream(streamId)
     {
         address to = getRecipient(streamId);
         _withdraw(streamId, to, amount);
@@ -128,16 +131,18 @@ abstract contract SablierV2 is ISablierV2 {
         // Iterate over the provided array of stream ids and withdraw from each stream.
         address recipient;
         address sender;
+        bool isApprovedOrOwner_;
         uint256 streamId;
         for (uint256 i = 0; i < streamIdsCount; ) {
             streamId = streamIds[i];
 
             // If the `streamId` points to a stream that does not exist, skip it.
+            isApprovedOrOwner_ = isApprovedOrOwner(streamId);
             recipient = getRecipient(streamId);
             sender = getSender(streamId);
             if (sender != address(0)) {
-                // Checks: the `msg.sender` is either the sender or the recipient of the stream.
-                if (msg.sender != sender && msg.sender != recipient) {
+                // Checks: the `msg.sender` is either the sender or the recipient of the stream either approved.
+                if (msg.sender != sender && !isApprovedOrOwner_) {
                     revert SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
@@ -177,8 +182,8 @@ abstract contract SablierV2 is ISablierV2 {
 
             // If the `streamId` points to a stream that does not exist, skip it.
             if (getSender(streamId) != address(0)) {
-                // Checks: the `msg.sender` is the recipient of the stream.
-                if (msg.sender != getRecipient(streamId)) {
+                // Checks: the `msg.sender` is either the recipient of the stream or approved.
+                if (!isApprovedOrOwner(streamId)) {
                     revert SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
@@ -199,14 +204,14 @@ abstract contract SablierV2 is ISablierV2 {
         address to,
         uint256 amount
     ) external streamExists(streamId) {
-        // Checks: the `msg.sender` is the recipient of the stream.
-        if (msg.sender != getRecipient(streamId)) {
-            revert SablierV2__Unauthorized(streamId, msg.sender);
-        }
-
         // Checks: the provided address to withdraw to is not zero.
         if (to == address(0)) {
             revert SablierV2__WithdrawZeroAddress();
+        }
+
+        // Checks: the `msg.sender` is either the recipient of the stream or is approved.
+        if (!isApprovedOrOwner(streamId)) {
+            revert SablierV2__Unauthorized(streamId, msg.sender);
         }
         _withdraw(streamId, to, amount);
     }

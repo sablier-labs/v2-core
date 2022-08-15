@@ -9,3 +9,6 @@
   branch = "refactor/foundry"
 	path = "lib/prb-contracts"
 	url = "https://github.com/paulrberg/prb-contracts"
+[submodule "lib/solmate"]
+	path = "lib/solmate"
+	url = "https://github.com/transmissions11/solmate"
