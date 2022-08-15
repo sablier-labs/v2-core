@@ -1,4 +1,5 @@
 @prb/contracts/=lib/prb-contracts/src/
 @prb/math/=lib/prb-math/contracts/
 @sablier/v2-core/=src/
+@solmate/tokens/=lib/solmate/src/tokens/
 forge-std/=lib/forge-std/src/

@@ -59,7 +59,6 @@ interface ISablierV2Linear is ISablierV2 {
         uint256 startTime;
         uint256 stopTime;
         uint256 withdrawnAmount;
-        address recipient;
         address sender;
         IERC20 token;
         bool cancelable;
