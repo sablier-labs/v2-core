@@ -33,7 +33,7 @@ interface ISablierV2Pro is ISablierV2 {
     error SablierV2Pro__SegmentMilestonesNotOrdered(uint256 index, uint256 previousMilestonene, uint256 milestone);
 
     /// @notice Emitted when attempting to create a stream with the start time greater than the first segment milestone.
-    error SablierV2Pro__StartTimeGreaterThanFirstMilestone(uint256 startTime, uint256 segmentMilestone);
+    error SablierV2Pro__StartTimeGreaterThanFirstMilestone(uint64 startTime, uint256 segmentMilestone);
 
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
@@ -59,11 +59,11 @@ interface ISablierV2Pro is ISablierV2 {
         address indexed recipient,
         uint256 depositAmount,
         IERC20 token,
-        uint256 startTime,
-        uint256 stopTime,
+        uint64 startTime,
+        uint64 stopTime,
         uint256[] segmentAmounts,
         SD59x18[] segmentExponents,
-        uint256[] segmentMilestones,
+        uint64[] segmentMilestones,
         bool cancelable
     );
 
@@ -79,15 +79,15 @@ interface ISablierV2Pro is ISablierV2 {
     /// @member segmentMilestones The unix timestamps in seconds for when each segment ends.
     /// @dev The members are arranged like this to save gas via tight variable packing.
     struct Stream {
-        uint256 depositAmount;
         uint256[] segmentAmounts;
         SD59x18[] segmentExponents;
-        uint256[] segmentMilestones;
-        uint256 startTime;
-        uint256 stopTime;
+        uint64[] segmentMilestones;
+        uint256 depositAmount;
         uint256 withdrawnAmount;
         address sender;
+        uint64 startTime;
         IERC20 token;
+        uint64 stopTime;
         bool cancelable;
     }
 
@@ -108,7 +108,7 @@ interface ISablierV2Pro is ISablierV2 {
     /// @notice Reads the segment milestones used to compose the custom emission curve.
     /// @param streamId The id of the stream to make the query for.
     /// @return segmentMilestones The segment milestones used to composde the custom emission curve.
-    function getSegmentMilestones(uint256 streamId) external view returns (uint256[] memory segmentMilestones);
+    function getSegmentMilestones(uint256 streamId) external view returns (uint64[] memory segmentMilestones);
 
     /// @notice Reads the stream struct.
     /// @param streamId The id of the stream to make the query for.
@@ -153,10 +153,10 @@ interface ISablierV2Pro is ISablierV2 {
         address recipient,
         uint256 depositAmount,
         IERC20 token,
-        uint256 startTime,
+        uint64 startTime,
         uint256[] memory segmentAmounts,
         SD59x18[] memory segmentExponents,
-        uint256[] memory segmentMilestones,
+        uint64[] memory segmentMilestones,
         bool cancelable
     ) external returns (uint256 streamId);
 
@@ -185,7 +185,7 @@ interface ISablierV2Pro is ISablierV2 {
         IERC20 token,
         uint256[] memory segmentAmounts,
         SD59x18[] memory segmentExponents,
-        uint256[] memory segmentDeltas,
+        uint64[] memory segmentDeltas,
         bool cancelable
     ) external returns (uint256 streamId);
 }
