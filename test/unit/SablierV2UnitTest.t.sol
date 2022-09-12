@@ -119,10 +119,12 @@ abstract contract SablierV2UnitTest is Test {
         assertEq(address(a), address(b));
     }
 
+    /// @dev Helper function to compare two `uint64` types.
     function assertUint64Eq(uint64 a, uint64 b) internal {
         assertEq(uint256(a), uint256(b));
     }
 
+    /// @dev Helper function to compare two `uint64` arrays.
     function assertUint64ArrayEq(uint64[] memory a, uint64[] memory b) internal {
         assertEq(a.length, b.length);
 
