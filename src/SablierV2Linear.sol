@@ -6,6 +6,8 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { UD60x18, toUD60x18 } from "@prb/math/UD60x18.sol";
 
+import { Errors } from "./libraries/Errors.sol";
+import { Events } from "./libraries/Events.sol";
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Linear } from "./interfaces/ISablierV2Linear.sol";
 import { SablierV2 } from "./SablierV2.sol";
@@ -213,7 +215,7 @@ contract SablierV2Linear is
         }
 
         // Emit an event.
-        emit Cancel(streamId, recipient, withdrawAmount, returnAmount);
+        emit Events.Cancel(streamId, recipient, withdrawAmount, returnAmount);
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
@@ -232,12 +234,12 @@ contract SablierV2Linear is
 
         // Checks: the cliff time is greater than or equal to the start time.
         if (startTime > cliffTime) {
-            revert SablierV2Linear__StartTimeGreaterThanCliffTime(startTime, cliffTime);
+            revert Errors.SablierV2Linear__StartTimeGreaterThanCliffTime(startTime, cliffTime);
         }
 
         // Checks: the stop time is greater than or equal to the cliff time.
         if (cliffTime > stopTime) {
-            revert SablierV2Linear__CliffTimeGreaterThanStopTime(cliffTime, stopTime);
+            revert Errors.SablierV2Linear__CliffTimeGreaterThanStopTime(cliffTime, stopTime);
         }
 
         // Effects: create and store the stream.
@@ -266,7 +268,7 @@ contract SablierV2Linear is
         token.safeTransferFrom(msg.sender, address(this), depositAmount);
 
         // Emit an event.
-        emit CreateStream(
+        emit Events.CreateLinearStream(
             streamId,
             msg.sender,
             sender,
@@ -286,7 +288,7 @@ contract SablierV2Linear is
         _streams[streamId].cancelable = false;
 
         // Emit an event.
-        emit Renounce(streamId);
+        emit Events.Renounce(streamId);
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
@@ -295,16 +297,8 @@ contract SablierV2Linear is
         address to,
         uint256 amount
     ) internal override {
-        // Checks: the amount must not be zero.
-        if (amount == 0) {
-            revert SablierV2__WithdrawAmountZero(streamId);
-        }
-
-        // Checks: the amount must not be greater than what can be withdrawn.
-        uint256 withdrawableAmount = getWithdrawableAmount(streamId);
-        if (amount > withdrawableAmount) {
-            revert SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(streamId, amount, withdrawableAmount);
-        }
+        // Checks: the common requirements for the `amount` function argument.
+        _checkWithdrawAmount(streamId, amount, getWithdrawableAmount(streamId));
 
         // Effects: update the withdrawn amount.
         unchecked {
@@ -323,6 +317,6 @@ contract SablierV2Linear is
         stream.token.safeTransfer(to, amount);
 
         // Emit an event.
-        emit Withdraw(streamId, to, amount);
+        emit Events.Withdraw(streamId, to, amount);
     }
 }

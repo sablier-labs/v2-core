@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { ISablierV2 } from "@sablier/v2-core/interfaces/ISablierV2.sol";
+import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
+import { Events } from "@sablier/v2-core/libraries/Events.sol";
 import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
@@ -77,7 +78,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
         );
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
@@ -102,7 +103,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         // Run the test.
         uint256[] memory streamIds = createDynamicArray(eveStreamId, defaultStreamIds[0]);
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
         );
         sablierV2Linear.cancelAll(streamIds);
     }
@@ -174,7 +175,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
         );
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
@@ -192,7 +193,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
         );
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
@@ -240,9 +241,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 returnAmount = 0;
 
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[0], users.recipient, daiStream.depositAmount, returnAmount);
+        emit Events.Cancel(defaultStreamIds[0], users.recipient, daiStream.depositAmount, returnAmount);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[1], users.recipient, daiStream.depositAmount, returnAmount);
+        emit Events.Cancel(defaultStreamIds[1], users.recipient, daiStream.depositAmount, returnAmount);
 
         uint256[] memory streamIds = createDynamicArray(defaultStreamIds[0], defaultStreamIds[1]);
         sablierV2Linear.cancelAll(streamIds);
@@ -287,9 +288,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 returnAmount = daiStream.depositAmount - WITHDRAW_AMOUNT_DAI;
 
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[0], users.recipient, WITHDRAW_AMOUNT_DAI, returnAmount);
+        emit Events.Cancel(defaultStreamIds[0], users.recipient, WITHDRAW_AMOUNT_DAI, returnAmount);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(defaultStreamIds[1], users.recipient, WITHDRAW_AMOUNT_DAI, returnAmount);
+        emit Events.Cancel(defaultStreamIds[1], users.recipient, WITHDRAW_AMOUNT_DAI, returnAmount);
 
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
@@ -369,9 +370,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 ongoingReturnAmount = daiStream.depositAmount - WITHDRAW_AMOUNT_DAI;
 
         vm.expectEmit(true, true, false, true);
-        emit Cancel(endedDaiStreamId, users.recipient, endedWithdrawAmount, endedReturnAmount);
+        emit Events.Cancel(endedDaiStreamId, users.recipient, endedWithdrawAmount, endedReturnAmount);
         vm.expectEmit(true, true, false, true);
-        emit Cancel(ongoingStreamId, users.recipient, ongoingWithdrawAmount, ongoingReturnAmount);
+        emit Events.Cancel(ongoingStreamId, users.recipient, ongoingWithdrawAmount, ongoingReturnAmount);
 
         uint256[] memory streamIds = createDynamicArray(endedDaiStreamId, ongoingStreamId);
         sablierV2Linear.cancelAll(streamIds);

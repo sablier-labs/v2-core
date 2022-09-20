@@ -15,16 +15,6 @@ import { Test } from "forge-std/Test.sol";
 /// @dev Strictly for test purposes.
 abstract contract SablierV2UnitTest is Test {
     /*//////////////////////////////////////////////////////////////////////////
-                                       EVENTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    event Cancel(uint256 indexed streamId, address indexed recipient, uint256 withdrawAmount, uint256 returnAmount);
-
-    event Renounce(uint256 indexed streamId);
-
-    event Withdraw(uint256 indexed streamId, address indexed recipient, uint256 amount);
-
-    /*//////////////////////////////////////////////////////////////////////////
                                       CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 

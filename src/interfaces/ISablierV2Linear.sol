@@ -10,44 +10,6 @@ import { ISablierV2 } from "./ISablierV2.sol";
 /// elapsed time divided by the total duration of the stream.
 interface ISablierV2Linear is ISablierV2 {
     /*//////////////////////////////////////////////////////////////////////////
-                                    CUSTOM ERRORS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Emitted when attempting to create a stream with a start time greater than cliff time;
-    error SablierV2Linear__StartTimeGreaterThanCliffTime(uint64 startTime, uint64 cliffTime);
-
-    /// @notice Emitted when attempting to create a stream with a cliff time greater than stop time;
-    error SablierV2Linear__CliffTimeGreaterThanStopTime(uint64 cliffTime, uint64 stopTime);
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                       EVENTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Emitted when a linear stream is created.
-    /// @param streamId The id of the newly created stream.
-    /// @param funder The address which funded the stream.
-    /// @param sender The address from which to stream the tokens, which has the ability to cancel the stream.
-    /// @param recipient The address toward which to stream the tokens.
-    /// @param depositAmount The amount of tokens to be streamed.
-    /// @param token The address of the ERC-20 token to use for streaming.
-    /// @param startTime The unix timestamp in seconds for when the stream will start.
-    /// @param cliffTime The unix timestamp in seconds for when the cliff period will end.
-    /// @param stopTime The unix timestamp in seconds for when the stream will stop.
-    /// @param cancelable Whether the stream will be cancelable or not.
-    event CreateStream(
-        uint256 streamId,
-        address indexed funder,
-        address indexed sender,
-        address indexed recipient,
-        uint256 depositAmount,
-        IERC20 token,
-        uint64 startTime,
-        uint64 cliffTime,
-        uint64 stopTime,
-        bool cancelable
-    );
-
-    /*//////////////////////////////////////////////////////////////////////////
                                        STRUCTS
     //////////////////////////////////////////////////////////////////////////*/
 

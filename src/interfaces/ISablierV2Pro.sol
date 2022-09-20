@@ -10,64 +10,6 @@ import { SD59x18 } from "@prb/math/SD59x18.sol";
 /// @notice Creates streams with custom emission curves.
 interface ISablierV2Pro is ISablierV2 {
     /*//////////////////////////////////////////////////////////////////////////
-                                    CUSTOM ERRORS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Emitted when attempting to create a stream with a deposit amount that does not qual the segment
-    /// amounts sum.
-    error SablierV2Pro__DepositAmountNotEqualToSegmentAmountsSum(uint256 depositAmount, uint256 segmentAmountsSum);
-
-    /// @notice Emitted when attempting to create a stream with segment counts that are not equal.
-    error SablierV2Pro__SegmentCountsNotEqual(uint256 amountLength, uint256 exponentLength, uint256 milestoneLength);
-
-    /// @notice Emitted when attempting to create a stream with one or more out-of-bounds segment count.
-    error SablierV2Pro__SegmentCountOutOfBounds(uint256 count);
-
-    /// @notice Emitted when attempting to create a stream with zero segments.
-    error SablierV2Pro__SegmentCountZero();
-
-    /// @notice Emitted when attempting to create a stream with an out of bounds exponent.
-    error SablierV2Pro__SegmentExponentOutOfBounds(SD59x18 exponent);
-
-    /// @notice Emitted when attempting to create a stream with segment milestones which are not ordered.
-    error SablierV2Pro__SegmentMilestonesNotOrdered(uint256 index, uint256 previousMilestonene, uint256 milestone);
-
-    /// @notice Emitted when attempting to create a stream with the start time greater than the first segment milestone.
-    error SablierV2Pro__StartTimeGreaterThanFirstMilestone(uint64 startTime, uint256 segmentMilestone);
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                       EVENTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Emitted when a pro stream is created.
-    /// @param streamId The id of the newly created stream.
-    /// @param funder The address which funded the stream.
-    /// @param sender The address from which to stream the tokens, which has the ability to cancel the stream.
-    /// @param recipient The address toward which to stream the tokens.
-    /// @param depositAmount The amount of tokens to be streamed.
-    /// @param token The address of the ERC-20 token to use for streaming.
-    /// @param startTime The unix timestamp in seconds for when the stream will start.
-    /// @param stopTime The calculated unix timestamp in seconds for when the stream will stop.
-    /// @param segmentAmounts The array of amounts used to compose the custom emission curve.
-    /// @param segmentExponents The array of exponents used to compose the custom emission curve.
-    /// @param segmentMilestones The array of milestones used to compose the custom emission curve.
-    /// @param cancelable Whether the stream will be cancelable or not.
-    event CreateStream(
-        uint256 streamId,
-        address indexed funder,
-        address indexed sender,
-        address indexed recipient,
-        uint256 depositAmount,
-        IERC20 token,
-        uint64 startTime,
-        uint64 stopTime,
-        uint256[] segmentAmounts,
-        SD59x18[] segmentExponents,
-        uint64[] segmentMilestones,
-        bool cancelable
-    );
-
-    /*//////////////////////////////////////////////////////////////////////////
                                        STRUCTS
     //////////////////////////////////////////////////////////////////////////*/
 

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { ISablierV2 } from "@sablier/v2-core/interfaces/ISablierV2.sol";
+import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
@@ -20,7 +20,7 @@ contract SablierV2Linear__CreateWithDuration is SablierV2LinearUnitTest {
         }
         vm.expectRevert(
             abi.encodeWithSelector(
-                ISablierV2.SablierV2__StartTimeGreaterThanStopTime.selector,
+                Errors.SablierV2__StartTimeGreaterThanStopTime.selector,
                 uint64(block.timestamp),
                 stopTime
             )
@@ -53,7 +53,7 @@ contract SablierV2Linear__CreateWithDuration is SablierV2LinearUnitTest {
         }
         vm.expectRevert(
             abi.encodeWithSelector(
-                ISablierV2.SablierV2__StartTimeGreaterThanStopTime.selector,
+                Errors.SablierV2__StartTimeGreaterThanStopTime.selector,
                 uint64(block.timestamp),
                 stopTime
             )

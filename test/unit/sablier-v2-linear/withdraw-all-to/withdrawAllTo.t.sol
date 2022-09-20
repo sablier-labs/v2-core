@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { ISablierV2 } from "@sablier/v2-core/interfaces/ISablierV2.sol";
+import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
+import { Events } from "@sablier/v2-core/libraries/Events.sol";
 import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
@@ -33,7 +34,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
     /// @dev it should revert.
     function testCannotWithdrawAllTo__ToZeroAddress() external {
-        vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawZeroAddress.selector));
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__WithdrawZeroAddress.selector));
         address toZero = address(0);
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toZero, defaultAmounts);
     }
@@ -48,7 +49,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         uint256[] memory amounts = new uint256[](1);
         vm.expectRevert(
             abi.encodeWithSelector(
-                ISablierV2.SablierV2__WithdrawAllArraysNotEqual.selector,
+                Errors.SablierV2__WithdrawAllArraysNotEqual.selector,
                 streamIds.length,
                 amounts.length
             )
@@ -100,7 +101,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.sender)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.sender)
         );
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, defaultAmounts);
     }
@@ -117,7 +118,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
         );
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, defaultAmounts);
     }
@@ -151,7 +152,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         // Run the test.
         uint256[] memory streamIds = createDynamicArray(reversedStreamId, defaultStreamIds[0]);
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.sender)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.sender)
         );
         sablierV2Linear.withdrawAllTo(streamIds, toAlice, defaultAmounts);
     }
@@ -185,7 +186,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         // Run the test.
         uint256[] memory streamIds = createDynamicArray(eveStreamId, defaultStreamIds[0]);
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.eve)
         );
         sablierV2Linear.withdrawAllTo(streamIds, toAlice, defaultAmounts);
     }
@@ -244,7 +245,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
         );
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, defaultAmounts);
     }
@@ -263,7 +264,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.recipient)
         );
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, defaultAmounts);
     }
@@ -287,7 +288,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
         // Run the test.
         uint256[] memory amounts = createDynamicArray(WITHDRAW_AMOUNT_DAI, 0);
-        vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawAmountZero.selector, defaultStreamIds[1]));
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__WithdrawAmountZero.selector, defaultStreamIds[1]));
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, amounts);
     }
 
@@ -315,7 +316,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         uint256[] memory amounts = createDynamicArray(withdrawableAmount, withdrawAmountMaxUint256);
         vm.expectRevert(
             abi.encodeWithSelector(
-                ISablierV2.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
+                Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
                 defaultStreamIds[1],
                 withdrawAmountMaxUint256,
                 withdrawableAmount
@@ -408,9 +409,9 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[0], toAlice, daiStream.depositAmount);
+        emit Events.Withdraw(defaultStreamIds[0], toAlice, daiStream.depositAmount);
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[1], toAlice, daiStream.depositAmount);
+        emit Events.Withdraw(defaultStreamIds[1], toAlice, daiStream.depositAmount);
 
         uint256[] memory amounts = createDynamicArray(daiStream.depositAmount, daiStream.depositAmount);
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, amounts);
@@ -464,9 +465,9 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[0], toAlice, WITHDRAW_AMOUNT_DAI);
+        emit Events.Withdraw(defaultStreamIds[0], toAlice, WITHDRAW_AMOUNT_DAI);
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(defaultStreamIds[1], toAlice, WITHDRAW_AMOUNT_DAI);
+        emit Events.Withdraw(defaultStreamIds[1], toAlice, WITHDRAW_AMOUNT_DAI);
 
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, defaultAmounts);
     }
@@ -522,7 +523,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         assertEq(actualWithdrawnAmount1, expectedWithdrawnAmount1);
     }
 
-    /// @dev it should emit Withdraw events.
+    /// @dev it should emit Events.Withdraw events.
     function testWithdrawAllTo__SomeStreamsEndedSomeStreamsOngoing__Events()
         external
         ToNonZeroAddress
@@ -561,9 +562,9 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         uint256 ongoingWithdrawAmount = WITHDRAW_AMOUNT_DAI;
 
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(endedDaiStreamId, toAlice, endedWithdrawAmount);
+        emit Events.Withdraw(endedDaiStreamId, toAlice, endedWithdrawAmount);
         vm.expectEmit(true, true, false, true);
-        emit Withdraw(ongoingStreamId, toAlice, ongoingWithdrawAmount);
+        emit Events.Withdraw(ongoingStreamId, toAlice, ongoingWithdrawAmount);
 
         uint256[] memory streamIds = createDynamicArray(endedDaiStreamId, ongoingStreamId);
         uint256[] memory amounts = createDynamicArray(endedWithdrawAmount, ongoingWithdrawAmount);

@@ -3,6 +3,7 @@ pragma solidity >=0.8.13;
 
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 
+import { Errors } from "./libraries/Errors.sol";
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 
 /// @title SablierV2
@@ -23,7 +24,7 @@ abstract contract SablierV2 is ISablierV2 {
     /// @notice Checks that `msg.sender` is either the sender or the recipient of the stream either approved.
     modifier isAuthorizedForStream(uint256 streamId) {
         if (msg.sender != getSender(streamId) && !isApprovedOrOwner(streamId)) {
-            revert SablierV2__Unauthorized(streamId, msg.sender);
+            revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
         }
         _;
     }
@@ -31,7 +32,7 @@ abstract contract SablierV2 is ISablierV2 {
     /// @dev Checks that `streamId` points to a stream that exists.
     modifier streamExists(uint256 streamId) {
         if (getSender(streamId) == address(0)) {
-            revert SablierV2__StreamNonExistent(streamId);
+            revert Errors.SablierV2__StreamNonExistent(streamId);
         }
         _;
     }
@@ -68,7 +69,7 @@ abstract contract SablierV2 is ISablierV2 {
     function cancel(uint256 streamId) external streamExists(streamId) {
         // Checks: the stream is cancelable.
         if (!isCancelable(streamId)) {
-            revert SablierV2__StreamNonCancelable(streamId);
+            revert Errors.SablierV2__StreamNonCancelable(streamId);
         }
 
         _cancel(streamId);
@@ -98,12 +99,12 @@ abstract contract SablierV2 is ISablierV2 {
     function renounce(uint256 streamId) external streamExists(streamId) {
         // Checks: the caller is the sender of the stream.
         if (msg.sender != getSender(streamId)) {
-            revert SablierV2__Unauthorized(streamId, msg.sender);
+            revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
         }
 
         // Checks: the stream is cancelable.
         if (!isCancelable(streamId)) {
-            revert SablierV2__RenounceNonCancelableStream(streamId);
+            revert Errors.SablierV2__RenounceNonCancelableStream(streamId);
         }
 
         _renounce(streamId);
@@ -125,7 +126,7 @@ abstract contract SablierV2 is ISablierV2 {
         uint256 streamIdsCount = streamIds.length;
         uint256 amountsCount = amounts.length;
         if (streamIdsCount != amountsCount) {
-            revert SablierV2__WithdrawAllArraysNotEqual(streamIdsCount, amountsCount);
+            revert Errors.SablierV2__WithdrawAllArraysNotEqual(streamIdsCount, amountsCount);
         }
 
         // Iterate over the provided array of stream ids and withdraw from each stream.
@@ -143,7 +144,7 @@ abstract contract SablierV2 is ISablierV2 {
             if (sender != address(0)) {
                 // Checks: the `msg.sender` is either the sender or the recipient of the stream either approved.
                 if (msg.sender != sender && !isApprovedOrOwner_) {
-                    revert SablierV2__Unauthorized(streamId, msg.sender);
+                    revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
                 // Effects and Interactions: withdraw from the stream.
@@ -165,14 +166,14 @@ abstract contract SablierV2 is ISablierV2 {
     ) external {
         // Checks: the provided address to withdraw to is not zero.
         if (to == address(0)) {
-            revert SablierV2__WithdrawZeroAddress();
+            revert Errors.SablierV2__WithdrawZeroAddress();
         }
 
         // Checks: count of `streamIds` matches `amounts`.
         uint256 streamIdsCount = streamIds.length;
         uint256 amountsCount = amounts.length;
         if (streamIdsCount != amountsCount) {
-            revert SablierV2__WithdrawAllArraysNotEqual(streamIdsCount, amountsCount);
+            revert Errors.SablierV2__WithdrawAllArraysNotEqual(streamIdsCount, amountsCount);
         }
 
         // Iterate over the provided array of stream ids and withdraw from each stream.
@@ -184,7 +185,7 @@ abstract contract SablierV2 is ISablierV2 {
             if (getSender(streamId) != address(0)) {
                 // Checks: the `msg.sender` is either the recipient of the stream or approved.
                 if (!isApprovedOrOwner(streamId)) {
-                    revert SablierV2__Unauthorized(streamId, msg.sender);
+                    revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
                 // Effects and Interactions: withdraw from the stream.
@@ -206,12 +207,12 @@ abstract contract SablierV2 is ISablierV2 {
     ) external streamExists(streamId) {
         // Checks: the provided address to withdraw to is not zero.
         if (to == address(0)) {
-            revert SablierV2__WithdrawZeroAddress();
+            revert Errors.SablierV2__WithdrawZeroAddress();
         }
 
         // Checks: the `msg.sender` is either the recipient of the stream or is approved.
         if (!isApprovedOrOwner(streamId)) {
-            revert SablierV2__Unauthorized(streamId, msg.sender);
+            revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
         }
         _withdraw(streamId, to, amount);
     }
@@ -220,7 +221,7 @@ abstract contract SablierV2 is ISablierV2 {
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Checks the basic requiremenets for the `create` function.
+    /// @dev Checks the basic requiremenets for the `_create` function.
     function _checkCreateArguments(
         address sender,
         address recipient,
@@ -230,22 +231,39 @@ abstract contract SablierV2 is ISablierV2 {
     ) internal pure {
         // Checks: the sender is not the zero address.
         if (sender == address(0)) {
-            revert SablierV2__SenderZeroAddress();
+            revert Errors.SablierV2__SenderZeroAddress();
         }
 
         // Checks: the recipient is not the zero address.
         if (recipient == address(0)) {
-            revert SablierV2__RecipientZeroAddress();
+            revert Errors.SablierV2__RecipientZeroAddress();
         }
 
         // Checks: the deposit amount is not zero.
         if (depositAmount == 0) {
-            revert SablierV2__DepositAmountZero();
+            revert Errors.SablierV2__DepositAmountZero();
         }
 
         // Checks: the start time is not greater than the stop time.
         if (startTime > stopTime) {
-            revert SablierV2__StartTimeGreaterThanStopTime(startTime, stopTime);
+            revert Errors.SablierV2__StartTimeGreaterThanStopTime(startTime, stopTime);
+        }
+    }
+
+    /// @dev Checks the basic requiremenets for the `_withdraw` function.
+    function _checkWithdrawAmount(
+        uint256 streamId,
+        uint256 amount,
+        uint256 withdrawableAmount
+    ) internal pure {
+        // Checks: the amount must not be zero.
+        if (amount == 0) {
+            revert Errors.SablierV2__WithdrawAmountZero(streamId);
+        }
+
+        // Checks: the amount must not be greater than what can be withdrawn.
+        if (amount > withdrawableAmount) {
+            revert Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(streamId, amount, withdrawableAmount);
         }
     }
 

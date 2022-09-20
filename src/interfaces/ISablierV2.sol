@@ -1,78 +1,13 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
-import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-
 /// @title ISablierV2
 /// @notice The common interface between all Sablier V2 streaming contracts.
 /// @author Sablier Labs Ltd.
 interface ISablierV2 {
     /*//////////////////////////////////////////////////////////////////////////
-                                    CUSTOM ERRORS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Emitted when attempting to create a stream with a zero deposit amount.
-    error SablierV2__DepositAmountZero();
-
-    /// @notice Emitted when attempting to create a stream with recipient as the zero address.
-    error SablierV2__RecipientZeroAddress();
-
-    /// @notice Emitted when attempting to renounce an already non-cancelable stream.
-    error SablierV2__RenounceNonCancelableStream(uint256 streamId);
-
-    /// @notice Emitted when attempting to create a stream with the sender as the zero address.
-    error SablierV2__SenderZeroAddress();
-
-    /// @notice Emitted when attempting to create a stream with the start time greater than the stop time.
-    error SablierV2__StartTimeGreaterThanStopTime(uint64 startTime, uint64 stopTime);
-
-    /// @notice Emitted when attempting to cancel a stream that is already non-cancelable.
-    error SablierV2__StreamNonCancelable(uint256 streamId);
-
-    /// @notice Emitted when the stream id points to a nonexistent stream.
-    error SablierV2__StreamNonExistent(uint256 streamId);
-
-    /// @notice Emitted when the caller is not authorized to perform some action.
-    error SablierV2__Unauthorized(uint256 streamId, address caller);
-
-    /// @notice Emitted when attempting to withdraw from multiple streams and the count of the stream ids does
-    /// not match the count of the amounts.
-    error SablierV2__WithdrawAllArraysNotEqual(uint256 streamIdsLength, uint256 amountsLength);
-
-    /// @notice Emitted when attempting to withdraw more than can be withdrawn.
-    error SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(
-        uint256 streamId,
-        uint256 withdrawAmount,
-        uint256 withdrawableAmount
-    );
-
-    /// @notice Emitted when attempting to withdraw zero tokens from a stream.
-    /// @notice The id of the stream.
-    error SablierV2__WithdrawAmountZero(uint256 streamId);
-
-    /// @notice Emitted when attempting to withdraw to a zero address.
-    error SablierV2__WithdrawZeroAddress();
-
-    /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Emitted when a stream is canceled.
-    /// @param streamId The id of the stream.
-    /// @param recipient The address of the recipient.
-    /// @param withdrawAmount The amount of tokens withdrawn to the recipient, in units of the token's decimals.
-    /// @param returnAmount The amount of tokens returned to the sender, in units of the token's decimals.
-    event Cancel(uint256 indexed streamId, address indexed recipient, uint256 withdrawAmount, uint256 returnAmount);
-
-    /// @notice Emitted when a sender makes a stream non-cancelable.
-    /// @param streamId The id of the stream.
-    event Renounce(uint256 indexed streamId);
-
-    /// @notice Emitted when tokens are withdrawn from a stream.
-    /// @param streamId The id of the stream.
-    /// @param recipient The address of the recipient.
-    /// @param amount The amount of tokens withdrawn, in units of the token's decimals.
-    event Withdraw(uint256 indexed streamId, address indexed recipient, uint256 amount);
 
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS

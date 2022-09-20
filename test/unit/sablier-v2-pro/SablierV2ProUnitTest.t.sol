@@ -14,25 +14,6 @@ import { SablierV2UnitTest } from "../SablierV2UnitTest.t.sol";
 /// @dev Strictly for test purposes.
 abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
     /*//////////////////////////////////////////////////////////////////////////
-                                       EVENTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    event CreateStream(
-        uint256 streamId,
-        address indexed funder,
-        address indexed sender,
-        address indexed recipient,
-        uint256 depositAmount,
-        IERC20 token,
-        uint64 startTime,
-        uint64 stopTime,
-        uint256[] segmentAmounts,
-        SD59x18[] segmentExponents,
-        uint64[] segmentMilestones,
-        bool cancelable
-    );
-
-    /*//////////////////////////////////////////////////////////////////////////
                                       CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
