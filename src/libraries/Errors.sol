@@ -3,13 +3,9 @@ pragma solidity >=0.8.13;
 
 import { SD59x18 } from "@prb/math/SD59x18.sol";
 
-/*//////////////////////////////////////////////////////////////////////////
-                                    CUSTOM ERRORS
-//////////////////////////////////////////////////////////////////////////*/
-
 library Errors {
     /*//////////////////////////////////////////////////////////////////////////
-                                  SABLIER-V2 ERRORS
+                              SABLIER-V2 CUSTOM ERRORS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when attempting to create a stream with a zero deposit amount.
@@ -55,7 +51,7 @@ library Errors {
     error SablierV2__WithdrawZeroAddress();
 
     /*//////////////////////////////////////////////////////////////////////////
-                              SABLIER-V2-LINEAR ERRORS
+                           SABLIER-V2-LINEAR CUSTOM ERRORS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when attempting to create a stream with a start time greater than cliff time;
@@ -65,7 +61,7 @@ library Errors {
     error SablierV2Linear__CliffTimeGreaterThanStopTime(uint64 cliffTime, uint64 stopTime);
 
     /*//////////////////////////////////////////////////////////////////////////
-                                SABLIER-V2-PRO ERRORS
+                            SABLIER-V2-PRO CUSTOM ERRORS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when attempting to create a stream with a deposit amount that does not qual the segment
