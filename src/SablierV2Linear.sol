@@ -6,8 +6,9 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { UD60x18, toUD60x18 } from "@prb/math/UD60x18.sol";
 
-import { Errors } from "./libraries/Errors.sol";
 import { Events } from "./libraries/Events.sol";
+import { Validations } from "./libraries/Validations.sol";
+
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Linear } from "./interfaces/ISablierV2Linear.sol";
 import { SablierV2 } from "./SablierV2.sol";
@@ -229,18 +230,8 @@ contract SablierV2Linear is
         uint64 stopTime,
         bool cancelable
     ) internal returns (uint256 streamId) {
-        // Checks: the common requirements for the `create` function arguments.
-        _checkCreateArguments(sender, recipient, depositAmount, startTime, stopTime);
-
-        // Checks: the cliff time is greater than or equal to the start time.
-        if (startTime > cliffTime) {
-            revert Errors.SablierV2Linear__StartTimeGreaterThanCliffTime(startTime, cliffTime);
-        }
-
-        // Checks: the stop time is greater than or equal to the cliff time.
-        if (cliffTime > stopTime) {
-            revert Errors.SablierV2Linear__CliffTimeGreaterThanStopTime(cliffTime, stopTime);
-        }
+        // Validate the requirements for the `create` function.
+        Validations.linearCreate(sender, recipient, depositAmount, startTime, cliffTime, stopTime);
 
         // Effects: create and store the stream.
         streamId = nextStreamId;
@@ -297,8 +288,8 @@ contract SablierV2Linear is
         address to,
         uint256 amount
     ) internal override {
-        // Checks: the common requirements for the `amount` function argument.
-        _checkWithdrawAmount(streamId, amount, getWithdrawableAmount(streamId));
+        // Validate the requirements for the `amount` argument.
+        Validations.withdrawAmount(streamId, amount, getWithdrawableAmount(streamId));
 
         // Effects: update the withdrawn amount.
         unchecked {

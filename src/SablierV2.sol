@@ -218,56 +218,6 @@ abstract contract SablierV2 is ISablierV2 {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                             INTERNAL CONSTANT FUNCTIONS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @dev Checks the basic requiremenets for the `_create` function.
-    function _checkCreateArguments(
-        address sender,
-        address recipient,
-        uint256 depositAmount,
-        uint64 startTime,
-        uint64 stopTime
-    ) internal pure {
-        // Checks: the sender is not the zero address.
-        if (sender == address(0)) {
-            revert Errors.SablierV2__SenderZeroAddress();
-        }
-
-        // Checks: the recipient is not the zero address.
-        if (recipient == address(0)) {
-            revert Errors.SablierV2__RecipientZeroAddress();
-        }
-
-        // Checks: the deposit amount is not zero.
-        if (depositAmount == 0) {
-            revert Errors.SablierV2__DepositAmountZero();
-        }
-
-        // Checks: the start time is not greater than the stop time.
-        if (startTime > stopTime) {
-            revert Errors.SablierV2__StartTimeGreaterThanStopTime(startTime, stopTime);
-        }
-    }
-
-    /// @dev Checks the basic requiremenets for the `_withdraw` function.
-    function _checkWithdrawAmount(
-        uint256 streamId,
-        uint256 amount,
-        uint256 withdrawableAmount
-    ) internal pure {
-        // Checks: the amount must not be zero.
-        if (amount == 0) {
-            revert Errors.SablierV2__WithdrawAmountZero(streamId);
-        }
-
-        // Checks: the amount must not be greater than what can be withdrawn.
-        if (amount > withdrawableAmount) {
-            revert Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(streamId, amount, withdrawableAmount);
-        }
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
                            INTERNAL NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
