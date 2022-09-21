@@ -332,7 +332,7 @@ contract SablierV2Pro is
         uint64[] memory segmentMilestones,
         bool cancelable
     ) internal returns (uint256 streamId) {
-        // Validate the requirements for the `create` function.
+        // Validates the requirements for the `create` function.
         uint64 stopTime = Validations.proCreate(
             sender,
             recipient,
@@ -403,7 +403,7 @@ contract SablierV2Pro is
         address to,
         uint256 amount
     ) internal override {
-        // Validate the requirements for the `amount` argument.
+        // Validates the requirements for the `amount` argument.
         Validations.withdrawAmount(streamId, amount, getWithdrawableAmount(streamId));
 
         // Effects: update the withdrawn amount.

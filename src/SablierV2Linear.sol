@@ -230,7 +230,7 @@ contract SablierV2Linear is
         uint64 stopTime,
         bool cancelable
     ) internal returns (uint256 streamId) {
-        // Validate the requirements for the `create` function.
+        // Validates the requirements for the `create` function.
         Validations.linearCreate(sender, recipient, depositAmount, startTime, cliffTime, stopTime);
 
         // Effects: create and store the stream.
@@ -288,7 +288,7 @@ contract SablierV2Linear is
         address to,
         uint256 amount
     ) internal override {
-        // Validate the requirements for the `amount` argument.
+        // Validates the requirements for the `amount` argument.
         Validations.withdrawAmount(streamId, amount, getWithdrawableAmount(streamId));
 
         // Effects: update the withdrawn amount.

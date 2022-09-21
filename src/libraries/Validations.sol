@@ -71,7 +71,7 @@ library Validations {
         );
     }
 
-    /// @dev Validate the requiremenets for the `amount` argument in the `withdraw` function.
+    /// @dev Validates the requiremenets for the `amount` argument in the `withdraw` function.
     function withdrawAmount(
         uint256 streamId,
         uint256 amount,
