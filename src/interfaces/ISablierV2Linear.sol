@@ -44,7 +44,7 @@ interface ISablierV2Linear is ISablierV2 {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Creates a new stream funded by `msg.sender`.
+    /// @notice Creates a new stream funded by `msg.sender` wrapped in a NFT.
     ///
     /// @dev Emits a {CreateLinearStream} event.
     ///
