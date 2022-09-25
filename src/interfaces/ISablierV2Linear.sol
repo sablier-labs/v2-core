@@ -46,7 +46,7 @@ interface ISablierV2Linear is ISablierV2 {
 
     /// @notice Creates a new stream funded by `msg.sender`.
     ///
-    /// @dev Emits a {CreateStream} event.
+    /// @dev Emits a {CreateLinearStream} event.
     ///
     /// Requirements:
     /// - `sender` must not be the zero address.
@@ -81,7 +81,7 @@ interface ISablierV2Linear is ISablierV2 {
     /// @notice Creates a stream funded by `msg.sender` and sets the start time to `block.timestamp` and the stop
     /// time to `block.timestamp + duration`.
     ///
-    /// @dev Emits a {CreateStream} event.
+    /// @dev Emits a {CreateLinearStream} event.
     ///
     /// Requirements:
     /// - All from `create`.

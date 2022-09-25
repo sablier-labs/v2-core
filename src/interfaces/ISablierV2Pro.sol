@@ -64,7 +64,7 @@ interface ISablierV2Pro is ISablierV2 {
     /// @notice Creates a new stream funded by `msg.sender`. The `stopTime` is implied by the last element in the
     /// `segmentMilestones` array.
     ///
-    /// @dev Emits a {CreateStream} event.
+    /// @dev Emits a {CreateProStream} event.
     ///
     /// Requirements:
     /// - `sender` must not be the zero address.
@@ -105,7 +105,7 @@ interface ISablierV2Pro is ISablierV2 {
     /// @notice Creates a stream funded by `msg.sender` and sets the start time to `block.timestamp` and the stop
     /// time to `block.timestamp + sum(segmentDeltas)`.
     ///
-    /// @dev Emits a {CreateStream} event.
+    /// @dev Emits a {CreateProStream} event.
     ///
     /// Requirements:
     /// - All from `create`.
