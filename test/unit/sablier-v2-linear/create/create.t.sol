@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { Events } from "@sablier/v2-core/libraries/Events.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20__CallToNonContract } from "@prb/contracts/token/erc20/SafeERC20.sol";
-import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 import { SablierV2Linear } from "@sablier/v2-core/SablierV2Linear.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
@@ -89,7 +89,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
         assertEq(actualRecipient, users.recipient);
 
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, daiStream.depositAmount);
         assertEq(actualStream.token, daiStream.token);
@@ -150,7 +150,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
         assertEq(actualRecipient, users.recipient);
 
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, daiStream.depositAmount);
         assertEq(actualStream.token, daiStream.token);
@@ -213,7 +213,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
         assertEq(actualRecipient, users.recipient);
 
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, daiStream.depositAmount);
         assertEq(actualStream.token, daiStream.token);
@@ -281,7 +281,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
         assertEq(actualRecipient, users.recipient);
 
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, daiStream.depositAmount);
         assertEq(address(actualStream.token), address(nonCompliantToken));
@@ -308,8 +308,8 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         TokenCompliant
     {
         uint256 usdcStreamId = createDefaultUsdcStream();
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(usdcStreamId);
-        ISablierV2Linear.Stream memory expectedStream = usdcStream;
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(usdcStreamId);
+        DataTypes.LinearStream memory expectedStream = usdcStream;
         assertEq(actualStream, expectedStream);
     }
 
@@ -376,8 +376,8 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         uint256 daiStreamId = createDefaultDaiStream();
 
         // Run the test.
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
-        ISablierV2Linear.Stream memory expectedStream = daiStream;
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory expectedStream = daiStream;
         assertEq(actualStream, expectedStream);
     }
 
@@ -449,7 +449,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         TokenCompliant
     {
         uint256 daiStreamId = createDefaultDaiStream();
-        ISablierV2Linear.Stream memory createdStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory createdStream = sablierV2Linear.getStream(daiStreamId);
         assertEq(daiStream, createdStream);
     }
 

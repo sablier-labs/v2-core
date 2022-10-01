@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "../libraries/DataTypes.sol";
+
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { ISablierV2 } from "./ISablierV2.sol";
 
@@ -9,23 +11,6 @@ import { ISablierV2 } from "./ISablierV2.sol";
 /// @notice Creates streams whose streaming function is $f(x) = x$ after a cliff period, where x is the
 /// elapsed time divided by the total duration of the stream.
 interface ISablierV2Linear is ISablierV2 {
-    /*//////////////////////////////////////////////////////////////////////////
-                                       STRUCTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Linear stream struct.
-    /// @dev The members are arranged like this to save gas via tight variable packing.
-    struct Stream {
-        uint256 depositAmount;
-        uint256 withdrawnAmount;
-        address sender;
-        uint64 cliffTime;
-        IERC20 token;
-        uint64 startTime;
-        uint64 stopTime;
-        bool cancelable;
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -38,7 +23,7 @@ interface ISablierV2Linear is ISablierV2 {
     /// @notice Reads the stream struct.
     /// @param streamId The id of the stream to make the query for.
     /// @return stream The stream struct.
-    function getStream(uint256 streamId) external view returns (Stream memory stream);
+    function getStream(uint256 streamId) external view returns (DataTypes.LinearStream memory stream);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS

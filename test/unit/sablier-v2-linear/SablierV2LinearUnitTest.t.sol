@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 import { SablierV2Linear } from "@sablier/v2-core/SablierV2Linear.sol";
 
 import { SablierV2UnitTest } from "../SablierV2UnitTest.t.sol";
@@ -25,8 +25,8 @@ abstract contract SablierV2LinearUnitTest is SablierV2UnitTest {
     //////////////////////////////////////////////////////////////////////////*/
 
     SablierV2Linear internal sablierV2Linear = new SablierV2Linear();
-    ISablierV2Linear.Stream internal daiStream;
-    ISablierV2Linear.Stream internal usdcStream;
+    DataTypes.LinearStream internal daiStream;
+    DataTypes.LinearStream internal usdcStream;
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION
@@ -35,7 +35,7 @@ abstract contract SablierV2LinearUnitTest is SablierV2UnitTest {
     /// @dev A setup function invoked before each test case.
     function setUp() public virtual {
         // Create the default streams to be used across the tests.
-        daiStream = ISablierV2Linear.Stream({
+        daiStream = DataTypes.LinearStream({
             cancelable: true,
             cliffTime: CLIFF_TIME,
             depositAmount: DEPOSIT_AMOUNT_DAI,
@@ -45,7 +45,7 @@ abstract contract SablierV2LinearUnitTest is SablierV2UnitTest {
             token: dai,
             withdrawnAmount: 0
         });
-        usdcStream = ISablierV2Linear.Stream({
+        usdcStream = DataTypes.LinearStream({
             cancelable: true,
             cliffTime: CLIFF_TIME,
             depositAmount: DEPOSIT_AMOUNT_USDC,
@@ -89,7 +89,7 @@ abstract contract SablierV2LinearUnitTest is SablierV2UnitTest {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Helper function to compare two `Stream` structs.
-    function assertEq(ISablierV2Linear.Stream memory a, ISablierV2Linear.Stream memory b) internal {
+    function assertEq(DataTypes.LinearStream memory a, DataTypes.LinearStream memory b) internal {
         assertEq(a.cancelable, b.cancelable);
         assertEq(a.depositAmount, b.depositAmount);
         assertEq(a.sender, b.sender);

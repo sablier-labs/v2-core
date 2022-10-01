@@ -6,6 +6,7 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { UD60x18, toUD60x18 } from "@prb/math/UD60x18.sol";
 
+import { DataTypes } from "./libraries/DataTypes.sol";
 import { Events } from "./libraries/Events.sol";
 import { Validations } from "./libraries/Validations.sol";
 
@@ -27,7 +28,7 @@ contract SablierV2Linear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Sablier V2 linear streams mapped by unsigned integers.
-    mapping(uint256 => Stream) internal _streams;
+    mapping(uint256 => DataTypes.LinearStream) internal _streams;
 
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
@@ -80,7 +81,7 @@ contract SablierV2Linear is
     }
 
     /// @inheritdoc ISablierV2Linear
-    function getStream(uint256 streamId) external view override returns (Stream memory stream) {
+    function getStream(uint256 streamId) external view override returns (DataTypes.LinearStream memory stream) {
         stream = _streams[streamId];
     }
 
@@ -191,7 +192,7 @@ contract SablierV2Linear is
 
     /// @dev See the documentation for the public functions that call this internal function.
     function _cancel(uint256 streamId) internal override isAuthorizedForStream(streamId) {
-        Stream memory stream = _streams[streamId];
+        DataTypes.LinearStream memory stream = _streams[streamId];
 
         // Calculate the withdraw and the return amounts.
         uint256 withdrawAmount = getWithdrawableAmount(streamId);
@@ -235,7 +236,7 @@ contract SablierV2Linear is
 
         // Effects: create and store the stream.
         streamId = nextStreamId;
-        _streams[streamId] = Stream({
+        _streams[streamId] = DataTypes.LinearStream({
             cancelable: cancelable,
             cliffTime: cliffTime,
             depositAmount: depositAmount,
@@ -297,7 +298,7 @@ contract SablierV2Linear is
         }
 
         // Load the stream in memory, we will need it below.
-        Stream memory stream = _streams[streamId];
+        DataTypes.LinearStream memory stream = _streams[streamId];
 
         // Effects: if this stream is done, save gas by deleting it from storage.
         if (stream.depositAmount == stream.withdrawnAmount) {

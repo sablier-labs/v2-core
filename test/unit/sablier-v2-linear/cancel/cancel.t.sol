@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { Events } from "@sablier/v2-core/libraries/Events.sol";
-import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
 
@@ -69,8 +69,8 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
 
         // Run the test.
         sablierV2Linear.cancel(daiStreamId);
-        ISablierV2Linear.Stream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
     }
 
@@ -84,8 +84,8 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
 
         // Run the test.
         sablierV2Linear.cancel(daiStreamId);
-        ISablierV2Linear.Stream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
     }
 
@@ -127,8 +127,8 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
 
         // Run the test.
         sablierV2Linear.cancel(daiStreamId);
-        ISablierV2Linear.Stream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
     }
 
@@ -165,8 +165,8 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
 
         // Run the test.
         sablierV2Linear.cancel(daiStreamId);
-        ISablierV2Linear.Stream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
     }
 

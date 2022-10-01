@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { Events } from "@sablier/v2-core/libraries/Events.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-import { ISablierV2Pro } from "@sablier/v2-core/interfaces/ISablierV2Pro.sol";
 import { SafeERC20__CallToNonContract } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 import { stdError } from "forge-std/Test.sol";
@@ -233,7 +233,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         address actualRecipient = sablierV2Pro.getRecipient(daiStreamId);
         assertEq(actualRecipient, users.recipient);
 
-        ISablierV2Pro.Stream memory actualStream = sablierV2Pro.getStream(daiStreamId);
+        DataTypes.ProStream memory actualStream = sablierV2Pro.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, depositAmount);
         assertEq(actualStream.token, daiStream.token);
@@ -452,7 +452,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         address actualRecipient = sablierV2Pro.getRecipient(daiStreamId);
         assertEq(actualRecipient, users.recipient);
 
-        ISablierV2Pro.Stream memory actualStream = sablierV2Pro.getStream(daiStreamId);
+        DataTypes.ProStream memory actualStream = sablierV2Pro.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, daiStream.depositAmount);
         assertEq(address(actualStream.token), address(nonCompliantToken));
@@ -483,8 +483,8 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         TokenCompliant
     {
         uint256 usdcStreamId = createDefaultUsdcStream();
-        ISablierV2Pro.Stream memory actualStream = sablierV2Pro.getStream(usdcStreamId);
-        ISablierV2Pro.Stream memory expectedStream = usdcStream;
+        DataTypes.ProStream memory actualStream = sablierV2Pro.getStream(usdcStreamId);
+        DataTypes.ProStream memory expectedStream = usdcStream;
         assertEq(actualStream, expectedStream);
     }
 
@@ -568,8 +568,8 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         uint256 daiStreamId = createDefaultDaiStream();
 
         // Run the test.
-        ISablierV2Pro.Stream memory actualStream = sablierV2Pro.getStream(daiStreamId);
-        ISablierV2Pro.Stream memory expectedStream = daiStream;
+        DataTypes.ProStream memory actualStream = sablierV2Pro.getStream(daiStreamId);
+        DataTypes.ProStream memory expectedStream = daiStream;
         assertEq(actualStream, expectedStream);
     }
 
@@ -644,8 +644,8 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         TokenCompliant
     {
         uint256 daiStreamId = createDefaultDaiStream();
-        ISablierV2Pro.Stream memory actualStream = sablierV2Pro.getStream(daiStreamId);
-        ISablierV2Pro.Stream memory expectedStream = daiStream;
+        DataTypes.ProStream memory actualStream = sablierV2Pro.getStream(daiStreamId);
+        DataTypes.ProStream memory expectedStream = daiStream;
         assertEq(actualStream, expectedStream);
     }
 

@@ -4,7 +4,7 @@ pragma solidity >=0.8.13;
 
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { Events } from "@sablier/v2-core/libraries/Events.sol";
-import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
 
@@ -35,8 +35,8 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256 nonStreamId = 1729;
         uint256[] memory streamIds = createDynamicArray(defaultStreamIds[0], nonStreamId);
         sablierV2Linear.cancelAll(streamIds);
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(defaultStreamIds[0]);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(defaultStreamIds[0]);
+        DataTypes.LinearStream memory expectedStream;
         assertEq(actualStream, expectedStream);
     }
 
@@ -62,8 +62,8 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         // Run the test.
         uint256[] memory streamIds = createDynamicArray(defaultStreamIds[0], nonCancelableDaiStreamId);
         sablierV2Linear.cancelAll(streamIds);
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(defaultStreamIds[0]);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(defaultStreamIds[0]);
+        DataTypes.LinearStream memory expectedStream;
         assertEq(actualStream, expectedStream);
     }
 
@@ -125,9 +125,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         // Run the test.
         sablierV2Linear.cancelAll(defaultStreamIds);
 
-        ISablierV2Linear.Stream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
-        ISablierV2Linear.Stream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
+        DataTypes.LinearStream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
+        DataTypes.LinearStream memory expectedStream;
 
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
@@ -149,9 +149,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         // Run the test.
         sablierV2Linear.cancelAll(defaultStreamIds);
 
-        ISablierV2Linear.Stream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
-        ISablierV2Linear.Stream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
+        DataTypes.LinearStream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
+        DataTypes.LinearStream memory expectedStream;
 
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
@@ -217,9 +217,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         // Run the test.
         sablierV2Linear.cancelAll(defaultStreamIds);
 
-        ISablierV2Linear.Stream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
-        ISablierV2Linear.Stream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
+        DataTypes.LinearStream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
+        DataTypes.LinearStream memory expectedStream;
 
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
@@ -264,9 +264,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         // Run the test.
         sablierV2Linear.cancelAll(defaultStreamIds);
 
-        ISablierV2Linear.Stream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
-        ISablierV2Linear.Stream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
+        DataTypes.LinearStream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
+        DataTypes.LinearStream memory expectedStream;
 
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
@@ -327,9 +327,9 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         uint256[] memory streamIds = createDynamicArray(ongoingStreamId, endedDaiStreamId);
         sablierV2Linear.cancelAll(streamIds);
 
-        ISablierV2Linear.Stream memory deletedOngoingStream = sablierV2Linear.getStream(ongoingStreamId);
-        ISablierV2Linear.Stream memory deletedEndedStream = sablierV2Linear.getStream(endedDaiStreamId);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory deletedOngoingStream = sablierV2Linear.getStream(ongoingStreamId);
+        DataTypes.LinearStream memory deletedEndedStream = sablierV2Linear.getStream(endedDaiStreamId);
+        DataTypes.LinearStream memory expectedStream;
 
         assertEq(deletedOngoingStream, expectedStream);
         assertEq(deletedEndedStream, expectedStream);

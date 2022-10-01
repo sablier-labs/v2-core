@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-import { ISablierV2Pro } from "@sablier/v2-core/interfaces/ISablierV2Pro.sol";
 import { SablierV2Pro } from "@sablier/v2-core/SablierV2Pro.sol";
 import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 
@@ -30,8 +30,8 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
     //////////////////////////////////////////////////////////////////////////*/
 
     SablierV2Pro internal sablierV2Pro = new SablierV2Pro(MAX_SEGMENT_COUNT);
-    ISablierV2Pro.Stream internal daiStream;
-    ISablierV2Pro.Stream internal usdcStream;
+    DataTypes.ProStream internal daiStream;
+    DataTypes.ProStream internal usdcStream;
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION
@@ -40,7 +40,7 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
     /// @dev A setup function invoked before each test case.
     function setUp() public virtual {
         // Create the default streams to be used across the tests.
-        daiStream = ISablierV2Pro.Stream({
+        daiStream = DataTypes.ProStream({
             cancelable: true,
             depositAmount: DEPOSIT_AMOUNT_DAI,
             segmentAmounts: SEGMENT_AMOUNTS_DAI,
@@ -52,7 +52,7 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
             token: dai,
             withdrawnAmount: 0
         });
-        usdcStream = ISablierV2Pro.Stream({
+        usdcStream = DataTypes.ProStream({
             cancelable: true,
             depositAmount: DEPOSIT_AMOUNT_USDC,
             segmentAmounts: SEGMENT_AMOUNTS_USDC,
@@ -98,7 +98,7 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Helper function to compare two `Stream` structs.
-    function assertEq(ISablierV2Pro.Stream memory a, ISablierV2Pro.Stream memory b) internal {
+    function assertEq(DataTypes.ProStream memory a, DataTypes.ProStream memory b) internal {
         assertEq(a.cancelable, b.cancelable);
         assertEq(a.depositAmount, b.depositAmount);
         assertEq(a.sender, b.sender);

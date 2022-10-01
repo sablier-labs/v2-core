@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
-import { ISablierV2Pro } from "@sablier/v2-core/interfaces/ISablierV2Pro.sol";
-
 import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 
 import { SablierV2ProUnitTest } from "../SablierV2ProUnitTest.t.sol";
@@ -190,8 +189,8 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
             SEGMENT_DELTAS,
             daiStream.cancelable
         );
-        ISablierV2Pro.Stream memory actualStream = sablierV2Pro.getStream(daiStreamId);
-        ISablierV2Pro.Stream memory expectedStream = daiStream;
+        DataTypes.ProStream memory actualStream = sablierV2Pro.getStream(daiStreamId);
+        DataTypes.ProStream memory expectedStream = daiStream;
         assertEq(actualStream, expectedStream);
     }
 }

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
-import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
 
@@ -100,7 +100,7 @@ contract SablierV2Linear__CreateWithDuration is SablierV2LinearUnitTest {
         address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
         assertEq(actualRecipient, users.recipient);
 
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, daiStream.depositAmount);
         assertEq(actualStream.token, daiStream.token);

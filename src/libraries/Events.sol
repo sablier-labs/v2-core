@@ -2,13 +2,13 @@
 pragma solidity >=0.8.13;
 
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-
 import { SD59x18 } from "@prb/math/SD59x18.sol";
 
 library Events {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
+
     /// @notice Emitted when a stream is canceled.
     /// @param streamId The id of the stream.
     /// @param recipient The address of the recipient.

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { Events } from "@sablier/v2-core/libraries/Events.sol";
-import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
 
@@ -58,7 +58,7 @@ contract SablierV2Linear__Renounce is SablierV2LinearUnitTest {
     /// @dev it should make the stream non-cancelable.
     function testRenounce() external StreamExistent CallerSender {
         sablierV2Linear.renounce(daiStreamId);
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         assertEq(actualStream.cancelable, false);
     }
 

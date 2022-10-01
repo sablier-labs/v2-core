@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "../libraries/DataTypes.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { ISablierV2 } from "./ISablierV2.sol";
 import { SD59x18 } from "@prb/math/SD59x18.sol";
@@ -9,30 +10,6 @@ import { SD59x18 } from "@prb/math/SD59x18.sol";
 /// @author Sablier Labs Ltd
 /// @notice Creates streams with custom emission curves.
 interface ISablierV2Pro is ISablierV2 {
-    /*//////////////////////////////////////////////////////////////////////////
-                                       STRUCTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Pro stream struct.
-    /// @dev Based on the streaming function $f(x) = x^{exponent}$, where x is the elapsed time divided by
-    /// the total time.
-    /// @member segmentAmounts The amounts of tokens to be streamed in each segment.
-    /// @member segmentExponents The exponents in the streaming function.
-    /// @member segmentMilestones The unix timestamps in seconds for when each segment ends.
-    /// @dev The members are arranged like this to save gas via tight variable packing.
-    struct Stream {
-        uint256[] segmentAmounts;
-        SD59x18[] segmentExponents;
-        uint64[] segmentMilestones;
-        uint256 depositAmount;
-        uint256 withdrawnAmount;
-        address sender;
-        uint64 startTime;
-        IERC20 token;
-        uint64 stopTime;
-        bool cancelable;
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -55,7 +32,7 @@ interface ISablierV2Pro is ISablierV2 {
     /// @notice Reads the stream struct.
     /// @param streamId The id of the stream to make the query for.
     /// @return stream The stream struct.
-    function getStream(uint256 streamId) external view returns (Stream memory stream);
+    function getStream(uint256 streamId) external view returns (DataTypes.ProStream memory stream);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS

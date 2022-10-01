@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
+import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { Events } from "@sablier/v2-core/libraries/Events.sol";
-import { ISablierV2Linear } from "@sablier/v2-core/interfaces/ISablierV2Linear.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
 
@@ -59,7 +59,7 @@ contract SablierV2Linear__Withdraw is SablierV2LinearUnitTest {
 
         // Run the test.
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         uint256 actualWithdrawnAmount = actualStream.withdrawnAmount;
         uint256 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
@@ -78,7 +78,7 @@ contract SablierV2Linear__Withdraw is SablierV2LinearUnitTest {
 
         // Run the test.
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         uint256 actualWithdrawnAmount = actualStream.withdrawnAmount;
         uint256 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
@@ -163,8 +163,8 @@ contract SablierV2Linear__Withdraw is SablierV2LinearUnitTest {
 
         // Run the test.
         sablierV2Linear.withdraw(daiStreamId, daiStream.depositAmount);
-        ISablierV2Linear.Stream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
-        ISablierV2Linear.Stream memory expectedStream;
+        DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
     }
 
@@ -202,7 +202,7 @@ contract SablierV2Linear__Withdraw is SablierV2LinearUnitTest {
 
         // Run the test.
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(daiStreamId);
+        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
         uint256 actualWithdrawnAmount = actualStream.withdrawnAmount;
         uint256 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);

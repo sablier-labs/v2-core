@@ -6,6 +6,7 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { SCALE, SD59x18, toSD59x18, ZERO } from "@prb/math/SD59x18.sol";
 
+import { DataTypes } from "./libraries/DataTypes.sol";
 import { Events } from "./libraries/Events.sol";
 import { Validations } from "./libraries/Validations.sol";
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
@@ -36,7 +37,7 @@ contract SablierV2Pro is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Sablier V2 pro streams mapped by unsigned integers.
-    mapping(uint256 => Stream) internal _streams;
+    mapping(uint256 => DataTypes.ProStream) internal _streams;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR
@@ -107,7 +108,7 @@ contract SablierV2Pro is
     }
 
     /// @inheritdoc ISablierV2Pro
-    function getStream(uint256 streamId) external view returns (Stream memory stream) {
+    function getStream(uint256 streamId) external view returns (DataTypes.ProStream memory stream) {
         return _streams[streamId];
     }
 
@@ -292,7 +293,7 @@ contract SablierV2Pro is
 
     /// @dev See the documentation for the public functions that call this internal function.
     function _cancel(uint256 streamId) internal override isAuthorizedForStream(streamId) {
-        Stream memory stream = _streams[streamId];
+        DataTypes.ProStream memory stream = _streams[streamId];
 
         // Calculate the withdraw and the return amounts.
         uint256 withdrawAmount = getWithdrawableAmount(streamId);
@@ -347,7 +348,7 @@ contract SablierV2Pro is
 
         // Effects: create and store the stream.
         streamId = nextStreamId;
-        _streams[streamId] = Stream({
+        _streams[streamId] = DataTypes.ProStream({
             cancelable: cancelable,
             depositAmount: depositAmount,
             segmentAmounts: segmentAmounts,
@@ -412,7 +413,7 @@ contract SablierV2Pro is
         }
 
         // Load the stream in memory, we will need it below.
-        Stream memory stream = _streams[streamId];
+        DataTypes.ProStream memory stream = _streams[streamId];
 
         // Effects: if this stream is done, save gas by deleting it from storage.
         if (stream.depositAmount == stream.withdrawnAmount) {
