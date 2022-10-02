@@ -6,13 +6,13 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SablierV2Pro } from "@sablier/v2-core/SablierV2Pro.sol";
 import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 
-import { SablierV2UnitTest } from "../SablierV2UnitTest.t.sol";
+import { SablierV2BaseTest } from "../SablierV2BaseTest.t.sol";
 
-/// @title SablierV2ProUnitTest
+/// @title SablierV2ProBaseTest
 /// @author Sablier Labs Ltd.
 /// @notice Common contract members needed across Sablier V2 test contracts.
 /// @dev Strictly for test purposes.
-abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
+abstract contract SablierV2ProBaseTest is SablierV2BaseTest {
     /*//////////////////////////////////////////////////////////////////////////
                                       CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/

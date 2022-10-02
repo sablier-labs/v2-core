@@ -9,11 +9,11 @@ import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { Test } from "forge-std/Test.sol";
 
-/// @title SablierV2UnitTest
+/// @title SablierV2BaseTest
 /// @author Sablier Labs Ltd.
 /// @notice Common contract members needed across Sablier V2 test contracts.
 /// @dev Strictly for test purposes.
-abstract contract SablierV2UnitTest is Test {
+abstract contract SablierV2BaseTest is Test {
     /*//////////////////////////////////////////////////////////////////////////
                                       CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
