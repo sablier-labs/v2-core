@@ -5,6 +5,9 @@ import { Errors } from "./Errors.sol";
 
 import { SD59x18 } from "@prb/math/SD59x18.sol";
 
+/// @title Validations
+/// @author Sablier Labs Ltd.
+/// @notice Library with logic that checks the functions requirements.
 library Validations {
     /*//////////////////////////////////////////////////////////////////////////
                              INTERNAL CONSTANT FUNCTIONS

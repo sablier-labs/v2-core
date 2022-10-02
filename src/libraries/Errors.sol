@@ -3,6 +3,9 @@ pragma solidity >=0.8.13;
 
 import { SD59x18 } from "@prb/math/SD59x18.sol";
 
+/// @title Errors
+/// @author Sablier Labs Ltd.
+/// @notice Library with custom erros used across the core.
 library Errors {
     /*//////////////////////////////////////////////////////////////////////////
                               SABLIER-V2 CUSTOM ERRORS
