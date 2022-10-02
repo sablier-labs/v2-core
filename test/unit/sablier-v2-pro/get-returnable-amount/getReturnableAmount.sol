@@ -29,7 +29,7 @@ contract SablierV2Pro__GetReturnableAmount is SablierV2ProUnitTest {
     /// @dev it should return the deposit amount.
     function testGetReturnableAmount__WithdrawableAmountZero__NoWithdrawals() external StreamExistent {
         uint256 actualReturnableAmount = sablierV2Pro.getReturnableAmount(daiStreamId);
-        uint256 expectedReturnableAmount = daiStream.depositAmount;
+        uint256 expectedReturnableAmount = DEPOSIT_AMOUNT_DAI;
         assertEq(actualReturnableAmount, expectedReturnableAmount);
     }
 
@@ -38,7 +38,7 @@ contract SablierV2Pro__GetReturnableAmount is SablierV2ProUnitTest {
         vm.warp(daiStream.startTime + TIME_OFFSET);
         sablierV2Pro.withdraw(daiStreamId, SEGMENT_AMOUNTS_DAI[0]);
         uint256 actualReturnableAmount = sablierV2Pro.getReturnableAmount(daiStreamId);
-        uint256 expectedReturnableAmount = daiStream.depositAmount - SEGMENT_AMOUNTS_DAI[0];
+        uint256 expectedReturnableAmount = DEPOSIT_AMOUNT_DAI - SEGMENT_AMOUNTS_DAI[0];
         assertEq(actualReturnableAmount, expectedReturnableAmount);
     }
 
@@ -46,7 +46,7 @@ contract SablierV2Pro__GetReturnableAmount is SablierV2ProUnitTest {
     function testGetReturnableAmount__WithdrawableAmountNotZero__NoWithdrawals() external StreamExistent {
         vm.warp(daiStream.startTime + TIME_OFFSET);
         uint256 actualReturnableAmount = sablierV2Pro.getReturnableAmount(daiStreamId);
-        uint256 expectedReturnableAmount = daiStream.depositAmount - SEGMENT_AMOUNTS_DAI[0];
+        uint256 expectedReturnableAmount = DEPOSIT_AMOUNT_DAI - SEGMENT_AMOUNTS_DAI[0];
         assertEq(actualReturnableAmount, expectedReturnableAmount);
     }
 
@@ -56,7 +56,7 @@ contract SablierV2Pro__GetReturnableAmount is SablierV2ProUnitTest {
         sablierV2Pro.withdraw(daiStreamId, SEGMENT_AMOUNTS_DAI[0]);
         uint256 actualReturnableAmount = sablierV2Pro.getReturnableAmount(daiStreamId);
         // TIME_OFFSET + 1 seconds is 0.0125% of the way in the second segment => ~8,000*0.000125^{0.5}
-        uint256 expectedReturnableAmount = daiStream.depositAmount - SEGMENT_AMOUNTS_DAI[0] - 89.442719099991584e18;
+        uint256 expectedReturnableAmount = DEPOSIT_AMOUNT_DAI - SEGMENT_AMOUNTS_DAI[0] - 89.442719099991584e18;
         assertEq(actualReturnableAmount, expectedReturnableAmount);
     }
 }

@@ -15,7 +15,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         sablierV2Pro.createWithDuration(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.segmentAmounts,
             daiStream.segmentExponents,
@@ -52,7 +52,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         sablierV2Pro.createWithDuration(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.segmentAmounts,
             daiStream.segmentExponents,
@@ -89,7 +89,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         sablierV2Pro.createWithDuration(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.segmentAmounts,
             daiStream.segmentExponents,
@@ -122,7 +122,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         sablierV2Pro.createWithDuration(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.segmentAmounts,
             daiStream.segmentExponents,
@@ -159,7 +159,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         sablierV2Pro.createWithDuration(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             segmentAmounts,
             segmentExponents,
@@ -182,7 +182,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         uint256 daiStreamId = sablierV2Pro.createWithDuration(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.segmentAmounts,
             daiStream.segmentExponents,

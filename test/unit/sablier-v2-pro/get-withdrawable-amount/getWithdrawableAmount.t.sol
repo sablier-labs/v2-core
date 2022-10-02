@@ -49,7 +49,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
         uint256 withdrawAmount = bn(2_500, 18);
         sablierV2Pro.withdraw(daiStreamId, withdrawAmount);
         uint256 actualWithdrawableAmount = sablierV2Pro.getWithdrawableAmount(daiStreamId);
-        uint256 expectedWithdrawableAmount = daiStream.depositAmount - withdrawAmount;
+        uint256 expectedWithdrawableAmount = DEPOSIT_AMOUNT_DAI - withdrawAmount;
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount);
     }
 
@@ -57,7 +57,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
     function testGetWithdrawableAmount__CurrentTimeGreaterThanStopTime__NoWithdrawals() external StreamExistent {
         vm.warp(daiStream.stopTime + 1 seconds);
         uint256 actualWithdrawableAmount = sablierV2Pro.getWithdrawableAmount(daiStreamId);
-        uint256 expectedWithdrawableAmount = daiStream.depositAmount;
+        uint256 expectedWithdrawableAmount = DEPOSIT_AMOUNT_DAI;
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount);
     }
 
@@ -67,7 +67,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
         uint256 withdrawAmount = bn(2_500, 18);
         sablierV2Pro.withdraw(daiStreamId, withdrawAmount);
         uint256 actualWithdrawableAmount = sablierV2Pro.getWithdrawableAmount(daiStreamId);
-        uint256 expectedWithdrawableAmount = daiStream.depositAmount - withdrawAmount;
+        uint256 expectedWithdrawableAmount = DEPOSIT_AMOUNT_DAI - withdrawAmount;
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount);
     }
 
@@ -75,7 +75,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
     function testGetWithdrawableAmount__CurrentTimeEqualToStopTime__NoWithdrawals() external StreamExistent {
         vm.warp(daiStream.stopTime);
         uint256 actualWithdrawableAmount = sablierV2Pro.getWithdrawableAmount(daiStreamId);
-        uint256 expectedWithdrawableAmount = daiStream.depositAmount;
+        uint256 expectedWithdrawableAmount = DEPOSIT_AMOUNT_DAI;
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount);
     }
 
@@ -227,7 +227,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
 
         unchecked {
             // Generate 200 segments that each have the same amount, same exponent and are evenly spread apart.
-            uint256 segmentAmount = usdcStream.depositAmount / count;
+            uint256 segmentAmount = DEPOSIT_AMOUNT_USDC / count;
             SD59x18 segmentExponent = E;
             uint64 totalDuration = usdcStream.stopTime - usdcStream.startTime;
             uint64 segmentDuration = totalDuration / uint64(count);
@@ -242,7 +242,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
             uint256 usdcStreamId = sablierV2Pro.create(
                 usdcStream.sender,
                 users.recipient,
-                usdcStream.depositAmount,
+                DEPOSIT_AMOUNT_USDC,
                 usdcStream.token,
                 usdcStream.startTime,
                 segmentAmounts,
@@ -273,7 +273,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
 
         unchecked {
             // Generate 200 segments that each have the same amount, same exponent and are evenly spread apart.
-            uint256 segmentAmount = daiStream.depositAmount / count;
+            uint256 segmentAmount = DEPOSIT_AMOUNT_DAI / count;
             SD59x18 segmentExponent = E;
             uint64 totalDuration = daiStream.stopTime - daiStream.startTime;
             uint64 segmentDuration = totalDuration / uint64(count);
@@ -288,7 +288,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
             daiStreamId = sablierV2Pro.create(
                 daiStream.sender,
                 users.recipient,
-                daiStream.depositAmount,
+                DEPOSIT_AMOUNT_DAI,
                 daiStream.token,
                 daiStream.startTime,
                 segmentAmounts,

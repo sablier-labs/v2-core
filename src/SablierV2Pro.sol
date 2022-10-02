@@ -52,8 +52,14 @@ contract SablierV2Pro is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2
-    function getDepositAmount(uint256 streamId) external view override returns (uint256 depositAmount) {
-        depositAmount = _streams[streamId].depositAmount;
+    function getDepositAmount(uint256 streamId) public view override returns (uint256 depositAmount) {
+        uint256[] memory segmentAmounts = _streams[streamId].segmentAmounts;
+        for (uint256 i = 0; i < segmentAmounts.length; ) {
+            depositAmount += segmentAmounts[i];
+            unchecked {
+                i += 1;
+            }
+        }
     }
 
     /// @inheritdoc ISablierV2
@@ -70,10 +76,7 @@ contract SablierV2Pro is
 
         unchecked {
             uint256 withdrawableAmount = getWithdrawableAmount(streamId);
-            returnableAmount =
-                _streams[streamId].depositAmount -
-                _streams[streamId].withdrawnAmount -
-                withdrawableAmount;
+            returnableAmount = getDepositAmount(streamId) - _streams[streamId].withdrawnAmount - withdrawableAmount;
         }
     }
 
@@ -130,7 +133,7 @@ contract SablierV2Pro is
             // If the current time is greater than or equal to the stop time, return the deposit minus
             // the withdrawn amount.
             if (currentTime >= uint256(_streams[streamId].stopTime)) {
-                return _streams[streamId].depositAmount - _streams[streamId].withdrawnAmount;
+                return getDepositAmount(streamId) - _streams[streamId].withdrawnAmount;
             }
 
             // Define the common variables used in the calculations below.
@@ -299,7 +302,7 @@ contract SablierV2Pro is
         uint256 withdrawAmount = getWithdrawableAmount(streamId);
         uint256 returnAmount;
         unchecked {
-            returnAmount = stream.depositAmount - stream.withdrawnAmount - withdrawAmount;
+            returnAmount = getDepositAmount(streamId) - stream.withdrawnAmount - withdrawAmount;
         }
 
         address recipient = getRecipient(streamId);
@@ -350,7 +353,6 @@ contract SablierV2Pro is
         streamId = nextStreamId;
         _streams[streamId] = DataTypes.ProStream({
             cancelable: cancelable,
-            depositAmount: depositAmount,
             segmentAmounts: segmentAmounts,
             segmentExponents: segmentExponents,
             segmentMilestones: segmentMilestones,
@@ -416,7 +418,7 @@ contract SablierV2Pro is
         DataTypes.ProStream memory stream = _streams[streamId];
 
         // Effects: if this stream is done, save gas by deleting it from storage.
-        if (stream.depositAmount == stream.withdrawnAmount) {
+        if (getDepositAmount(streamId) == stream.withdrawnAmount) {
             delete _streams[streamId];
         }
 

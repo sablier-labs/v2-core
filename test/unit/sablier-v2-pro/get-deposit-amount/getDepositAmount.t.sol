@@ -20,7 +20,7 @@ contract SablierV2Pro__GetDepositAmount is SablierV2ProUnitTest {
     function testGetDepositAmount() external StreamExistent {
         uint256 daiStreamId = createDefaultDaiStream();
         uint256 actualDepositAmount = sablierV2Pro.getDepositAmount(daiStreamId);
-        uint256 expectedDepositAmount = daiStream.depositAmount;
+        uint256 expectedDepositAmount = DEPOSIT_AMOUNT_DAI;
         assertEq(actualDepositAmount, expectedDepositAmount);
     }
 }

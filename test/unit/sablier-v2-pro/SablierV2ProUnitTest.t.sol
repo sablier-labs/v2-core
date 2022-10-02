@@ -42,7 +42,6 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
         // Create the default streams to be used across the tests.
         daiStream = DataTypes.ProStream({
             cancelable: true,
-            depositAmount: DEPOSIT_AMOUNT_DAI,
             segmentAmounts: SEGMENT_AMOUNTS_DAI,
             segmentExponents: SEGMENT_EXPONENTS,
             segmentMilestones: SEGMENT_MILESTONES,
@@ -54,7 +53,6 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
         });
         usdcStream = DataTypes.ProStream({
             cancelable: true,
-            depositAmount: DEPOSIT_AMOUNT_USDC,
             segmentAmounts: SEGMENT_AMOUNTS_USDC,
             segmentExponents: SEGMENT_EXPONENTS,
             segmentMilestones: SEGMENT_MILESTONES,
@@ -100,7 +98,6 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
     /// @dev Helper function to compare two `Stream` structs.
     function assertEq(DataTypes.ProStream memory a, DataTypes.ProStream memory b) internal {
         assertEq(a.cancelable, b.cancelable);
-        assertEq(a.depositAmount, b.depositAmount);
         assertEq(a.sender, b.sender);
         assertUint64Eq(a.startTime, b.startTime);
         assertUint64Eq(a.stopTime, b.stopTime);
@@ -127,7 +124,7 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
         daiStreamId = sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.segmentAmounts,
@@ -142,7 +139,7 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
         usdcStreamId = sablierV2Pro.create(
             usdcStream.sender,
             users.recipient,
-            usdcStream.depositAmount,
+            DEPOSIT_AMOUNT_USDC,
             usdcStream.token,
             usdcStream.startTime,
             usdcStream.segmentAmounts,
@@ -158,7 +155,7 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
         nonCancelableDaiStreamId = sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.segmentAmounts,

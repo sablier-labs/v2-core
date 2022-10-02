@@ -19,7 +19,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.segmentAmounts,
@@ -63,7 +63,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             segmentAmounts,
@@ -96,7 +96,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             segmentAmounts,
@@ -130,7 +130,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.segmentAmounts,
@@ -160,7 +160,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.segmentAmounts,
@@ -194,7 +194,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             startTime,
             daiStream.segmentAmounts,
@@ -235,7 +235,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
 
         DataTypes.ProStream memory actualStream = sablierV2Pro.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
-        assertEq(actualStream.depositAmount, depositAmount);
+        assertEq(sablierV2Pro.getDepositAmount(daiStreamId), depositAmount);
         assertEq(actualStream.token, daiStream.token);
         assertEq(actualStream.startTime, daiStream.startTime);
         assertEq(actualStream.segmentAmounts, segmentAmounts);
@@ -264,7 +264,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             segmentAmounts,
@@ -301,7 +301,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.segmentAmounts,
@@ -335,7 +335,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.segmentAmounts,
@@ -362,12 +362,12 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         SegmentMilestonesOrdered
         SegmentExponentsWithinBounds
     {
-        uint256 depositAmount = daiStream.depositAmount + 1;
+        uint256 depositAmount = DEPOSIT_AMOUNT_DAI + 1;
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2Pro__DepositAmountNotEqualToSegmentAmountsSum.selector,
                 depositAmount,
-                daiStream.depositAmount
+                DEPOSIT_AMOUNT_DAI
             )
         );
         sablierV2Pro.create(
@@ -406,7 +406,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             token,
             daiStream.startTime,
             daiStream.segmentAmounts,
@@ -440,7 +440,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         uint256 daiStreamId = sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             token,
             daiStream.startTime,
             daiStream.segmentAmounts,
@@ -454,7 +454,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
 
         DataTypes.ProStream memory actualStream = sablierV2Pro.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
-        assertEq(actualStream.depositAmount, daiStream.depositAmount);
+        assertEq(sablierV2Pro.getDepositAmount(daiStreamId), DEPOSIT_AMOUNT_DAI);
         assertEq(address(actualStream.token), address(nonCompliantToken));
         assertEq(actualStream.startTime, daiStream.startTime);
         assertEq(actualStream.stopTime, daiStream.stopTime);
@@ -535,7 +535,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
             funder,
             usdcStream.sender,
             users.recipient,
-            usdcStream.depositAmount,
+            DEPOSIT_AMOUNT_USDC,
             usdcStream.token,
             usdcStream.startTime,
             usdcStream.stopTime,
@@ -615,7 +615,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
             funder,
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.stopTime,
@@ -696,7 +696,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
             funder,
             daiStream.sender,
             users.recipient,
-            daiStream.depositAmount,
+            DEPOSIT_AMOUNT_DAI,
             daiStream.token,
             daiStream.startTime,
             daiStream.stopTime,
