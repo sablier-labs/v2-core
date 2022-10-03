@@ -9,6 +9,7 @@ import { SCALE, SD59x18, toSD59x18, ZERO } from "@prb/math/SD59x18.sol";
 import { DataTypes } from "./libraries/DataTypes.sol";
 import { Events } from "./libraries/Events.sol";
 import { Validations } from "./libraries/Validations.sol";
+
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Pro } from "./interfaces/ISablierV2Pro.sol";
 import { SablierV2 } from "./SablierV2.sol";

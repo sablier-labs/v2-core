@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
-import { Errors } from "./Errors.sol";
-
 import { SD59x18 } from "@prb/math/SD59x18.sol";
+
+import { Errors } from "./Errors.sol";
 
 /// @title Validations
 /// @author Sablier Labs Ltd.
@@ -26,14 +26,10 @@ library Validations {
         _checkBasicCreateArguments(sender, recipient, depositAmount, startTime, stopTime);
 
         // Checks: the cliff time is greater than or equal to the start time.
-        if (startTime > cliffTime) {
-            revert Errors.SablierV2Linear__StartTimeGreaterThanCliffTime(startTime, cliffTime);
-        }
+        if (startTime > cliffTime) revert Errors.SablierV2Linear__StartTimeGreaterThanCliffTime(startTime, cliffTime);
 
         // Checks: the stop time is greater than or equal to the cliff time.
-        if (cliffTime > stopTime) {
-            revert Errors.SablierV2Linear__CliffTimeGreaterThanStopTime(cliffTime, stopTime);
-        }
+        if (cliffTime > stopTime) revert Errors.SablierV2Linear__CliffTimeGreaterThanStopTime(cliffTime, stopTime);
     }
 
     /// @dev Validates the requirements for the `create` function in the {SablierV2Pro} contract.
@@ -81,14 +77,11 @@ library Validations {
         uint256 withdrawableAmount
     ) internal pure {
         // Checks: the amount must not be zero.
-        if (amount == 0) {
-            revert Errors.SablierV2__WithdrawAmountZero(streamId);
-        }
+        if (amount == 0) revert Errors.SablierV2__WithdrawAmountZero(streamId);
 
         // Checks: the amount must not be greater than what can be withdrawn.
-        if (amount > withdrawableAmount) {
+        if (amount > withdrawableAmount)
             revert Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(streamId, amount, withdrawableAmount);
-        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -104,24 +97,16 @@ library Validations {
         uint64 stopTime
     ) private pure {
         // Checks: the sender is not the zero address.
-        if (sender == address(0)) {
-            revert Errors.SablierV2__SenderZeroAddress();
-        }
+        if (sender == address(0)) revert Errors.SablierV2__SenderZeroAddress();
 
         // Checks: the recipient is not the zero address.
-        if (recipient == address(0)) {
-            revert Errors.SablierV2__RecipientZeroAddress();
-        }
+        if (recipient == address(0)) revert Errors.SablierV2__RecipientZeroAddress();
 
         // Checks: the deposit amount is not zero.
-        if (depositAmount == 0) {
-            revert Errors.SablierV2__DepositAmountZero();
-        }
+        if (depositAmount == 0) revert Errors.SablierV2__DepositAmountZero();
 
         // Checks: the start time is not greater than the stop time.
-        if (startTime > stopTime) {
-            revert Errors.SablierV2__StartTimeGreaterThanStopTime(startTime, stopTime);
-        }
+        if (startTime > stopTime) revert Errors.SablierV2__StartTimeGreaterThanStopTime(startTime, stopTime);
     }
 
     /// @dev Checks that the counts of segments match. The counts must be equal and less than or equal to
@@ -134,24 +119,18 @@ library Validations {
         uint256 milestoneCount
     ) private pure returns (uint256 segmentCount) {
         // Check that the amount count is not zero.
-        if (amountCount == 0) {
-            revert Errors.SablierV2Pro__SegmentCountZero();
-        }
+        if (amountCount == 0) revert Errors.SablierV2Pro__SegmentCountZero();
 
         // Check that the amount count is not greater than the maximum segment count permitted in Sablier.
-        if (amountCount > maxSegmentCount) {
-            revert Errors.SablierV2Pro__SegmentCountOutOfBounds(amountCount);
-        }
+        if (amountCount > maxSegmentCount) revert Errors.SablierV2Pro__SegmentCountOutOfBounds(amountCount);
 
         // Compare the amount count to the exponent count.
-        if (amountCount != exponentCount) {
+        if (amountCount != exponentCount)
             revert Errors.SablierV2Pro__SegmentCountsNotEqual(amountCount, exponentCount, milestoneCount);
-        }
 
         // Compare the amount count to the milestone count.
-        if (amountCount != milestoneCount) {
+        if (amountCount != milestoneCount)
             revert Errors.SablierV2Pro__SegmentCountsNotEqual(amountCount, exponentCount, milestoneCount);
-        }
 
         // We can pass any count because they are all equal to each other.
         segmentCount = amountCount;
@@ -172,9 +151,8 @@ library Validations {
         SD59x18 maxExponent
     ) private pure {
         // Check that The first milestone is greater than or equal to the start time.
-        if (startTime > segmentMilestones[0]) {
+        if (startTime > segmentMilestones[0])
             revert Errors.SablierV2Pro__StartTimeGreaterThanFirstMilestone(startTime, segmentMilestones[0]);
-        }
 
         // Define the variables needed in the for loop below.
         uint256 currentMilestone;
@@ -190,15 +168,12 @@ library Validations {
 
             // Check that the previous milestone is less than the current milestone.
             currentMilestone = segmentMilestones[index];
-            if (previousMilestone >= currentMilestone) {
+            if (previousMilestone >= currentMilestone)
                 revert Errors.SablierV2Pro__SegmentMilestonesNotOrdered(index, previousMilestone, currentMilestone);
-            }
 
             // Check that the exponent is not out of bounds.
             exponent = segmentExponents[index];
-            if (exponent.gt(maxExponent)) {
-                revert Errors.SablierV2Pro__SegmentExponentOutOfBounds(exponent);
-            }
+            if (exponent.gt(maxExponent)) revert Errors.SablierV2Pro__SegmentExponentOutOfBounds(exponent);
 
             // Make the current milestone the previous milestone of the next iteration.
             previousMilestone = currentMilestone;
@@ -210,8 +185,7 @@ library Validations {
         }
 
         // Check that the deposit amount is equal to the segment amounts sum.
-        if (depositAmount != segmentAmountsSum) {
+        if (depositAmount != segmentAmountsSum)
             revert Errors.SablierV2Pro__DepositAmountNotEqualToSegmentAmountsSum(depositAmount, segmentAmountsSum);
-        }
     }
 }
