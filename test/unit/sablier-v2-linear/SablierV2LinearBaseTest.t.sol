@@ -88,7 +88,7 @@ abstract contract SablierV2LinearBaseTest is SablierV2BaseTest {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Helper function to compare two `Stream` structs.
+    /// @dev Helper function to compare two `LinearStream` structs.
     function assertEq(DataTypes.LinearStream memory a, DataTypes.LinearStream memory b) internal {
         assertEq(a.cancelable, b.cancelable);
         assertEq(a.depositAmount, b.depositAmount);
