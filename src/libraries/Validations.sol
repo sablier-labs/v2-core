@@ -23,7 +23,7 @@ library Validations {
         uint64 stopTime
     ) internal pure {
         // Checks: the common requirements for the `create` function arguments.
-        _checkBasicCreateArguments(sender, recipient, depositAmount, startTime, stopTime);
+        _checkCommonCreateArguments(sender, recipient, depositAmount);
 
         // Checks: the cliff time is greater than or equal to the start time.
         if (startTime > cliffTime) revert Errors.SablierV2Linear__StartTimeGreaterThanCliffTime(startTime, cliffTime);
@@ -56,7 +56,7 @@ library Validations {
         stopTime = segmentMilestones[segmentCount - 1];
 
         // Checks: the common requirements for the `create` function arguments.
-        _checkBasicCreateArguments(sender, recipient, depositAmount, startTime, stopTime);
+        _checkCommonCreateArguments(sender, recipient, depositAmount);
 
         // Checks: requirements of segments variables.
         _checkSegments(
@@ -88,13 +88,11 @@ library Validations {
                              PRIVATE CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Checks the basic requiremenets for the `create` function.
-    function _checkBasicCreateArguments(
+    /// @dev Checks the common requiremenets for the `create` function.
+    function _checkCommonCreateArguments(
         address sender,
         address recipient,
-        uint256 depositAmount,
-        uint64 startTime,
-        uint64 stopTime
+        uint256 depositAmount
     ) private pure {
         // Checks: the sender is not the zero address.
         if (sender == address(0)) revert Errors.SablierV2__SenderZeroAddress();
@@ -104,9 +102,6 @@ library Validations {
 
         // Checks: the deposit amount is not zero.
         if (depositAmount == 0) revert Errors.SablierV2__DepositAmountZero();
-
-        // Checks: the start time is not greater than the stop time.
-        if (startTime > stopTime) revert Errors.SablierV2__StartTimeGreaterThanStopTime(startTime, stopTime);
     }
 
     /// @dev Checks that the counts of segments match. The counts must be equal and less than or equal to
@@ -155,9 +150,9 @@ library Validations {
             revert Errors.SablierV2Pro__StartTimeGreaterThanFirstMilestone(startTime, segmentMilestones[0]);
 
         // Define the variables needed in the for loop below.
-        uint256 currentMilestone;
         SD59x18 exponent;
-        uint256 previousMilestone;
+        uint64 currentMilestone;
+        uint64 previousMilestone;
         uint256 segmentAmountsSum;
 
         // Iterate over the amounts, the exponents and the milestones.

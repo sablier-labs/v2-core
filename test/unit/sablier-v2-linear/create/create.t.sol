@@ -55,7 +55,11 @@ contract Create__Tests is SablierV2LinearBaseTest {
         uint64 startTime = daiStream.stopTime;
         uint64 stopTime = daiStream.startTime;
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2__StartTimeGreaterThanStopTime.selector, startTime, stopTime)
+            abi.encodeWithSelector(
+                Errors.SablierV2Linear__StartTimeGreaterThanCliffTime.selector,
+                startTime,
+                daiStream.cliffTime
+            )
         );
         sablierV2Linear.create(
             daiStream.sender,

@@ -78,14 +78,22 @@ contract CreateWithDuration__Tests is SablierV2ProBaseTest {
     {
         uint64 startTime = uint64(block.timestamp);
         uint64[] memory segmentDeltas = createDynamicArrayUint64(1, UINT64_MAX - startTime);
-        uint64 stopTime = 0;
+
+        uint64 previousMilestone;
+        uint64 milestone;
+        unchecked {
+            previousMilestone = startTime + segmentDeltas[0];
+            milestone = previousMilestone + segmentDeltas[1];
+        }
         vm.expectRevert(
             abi.encodeWithSelector(
-                Errors.SablierV2__StartTimeGreaterThanStopTime.selector,
-                daiStream.startTime,
-                stopTime
+                Errors.SablierV2Pro__SegmentMilestonesNotOrdered.selector,
+                1,
+                previousMilestone,
+                milestone
             )
         );
+
         sablierV2Pro.createWithDuration(
             daiStream.sender,
             users.recipient,

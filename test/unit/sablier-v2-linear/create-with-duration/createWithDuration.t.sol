@@ -19,7 +19,7 @@ contract CreateWithDuration__Tests is SablierV2LinearBaseTest {
         }
         vm.expectRevert(
             abi.encodeWithSelector(
-                Errors.SablierV2__StartTimeGreaterThanStopTime.selector,
+                Errors.SablierV2Linear__StartTimeGreaterThanCliffTime.selector,
                 uint64(block.timestamp),
                 stopTime
             )
@@ -44,18 +44,18 @@ contract CreateWithDuration__Tests is SablierV2LinearBaseTest {
         external
         CliffDurationCalculationDoesNotOverflow
     {
-        vm.assume(cliffDuration <= UINT64_MAX - uint64(block.timestamp));
-        vm.assume(totalDuration > UINT64_MAX - uint64(block.timestamp));
+        uint64 startTime = uint64(block.timestamp);
+
+        vm.assume(cliffDuration <= UINT64_MAX - startTime);
+        vm.assume(totalDuration > UINT64_MAX - startTime);
+        uint64 cliffTime;
         uint64 stopTime;
         unchecked {
-            stopTime = uint64(block.timestamp) + totalDuration;
+            cliffTime = startTime + cliffDuration;
+            stopTime = startTime + totalDuration;
         }
         vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.SablierV2__StartTimeGreaterThanStopTime.selector,
-                uint64(block.timestamp),
-                stopTime
-            )
+            abi.encodeWithSelector(Errors.SablierV2Linear__CliffTimeGreaterThanStopTime.selector, cliffTime, stopTime)
         );
         sablierV2Linear.createWithDuration(
             daiStream.sender,

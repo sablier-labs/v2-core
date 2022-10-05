@@ -23,9 +23,6 @@ library Errors {
     /// @notice Emitted when attempting to create a stream with the sender as the zero address.
     error SablierV2__SenderZeroAddress();
 
-    /// @notice Emitted when attempting to create a stream with the start time greater than the stop time.
-    error SablierV2__StartTimeGreaterThanStopTime(uint64 startTime, uint64 stopTime);
-
     /// @notice Emitted when attempting to cancel a stream that is already non-cancelable.
     error SablierV2__StreamNonCancelable(uint256 streamId);
 
@@ -84,7 +81,7 @@ library Errors {
     error SablierV2Pro__SegmentExponentOutOfBounds(SD59x18 exponent);
 
     /// @notice Emitted when attempting to create a stream with segment milestones which are not ordered.
-    error SablierV2Pro__SegmentMilestonesNotOrdered(uint256 index, uint256 previousMilestonene, uint256 milestone);
+    error SablierV2Pro__SegmentMilestonesNotOrdered(uint256 index, uint64 previousMilestonene, uint64 milestone);
 
     /// @notice Emitted when attempting to create a stream with the start time greater than the first segment milestone.
     error SablierV2Pro__StartTimeGreaterThanFirstMilestone(uint64 startTime, uint256 segmentMilestone);
