@@ -21,7 +21,7 @@ abstract contract SablierV2 is ISablierV2 {
                                       MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Checks that `msg.sender` is either the sender or the recipient of the stream either approved.
+    /// @notice Checks that `msg.sender` is the sender or the recipient of the stream either approved.
     modifier isAuthorizedForStream(uint256 streamId) {
         if (msg.sender != getSender(streamId) && !isApprovedOrOwner(streamId))
             revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
@@ -134,7 +134,7 @@ abstract contract SablierV2 is ISablierV2 {
             recipient = getRecipient(streamId);
             sender = getSender(streamId);
             if (sender != address(0)) {
-                // Checks: the `msg.sender` is either the sender or the recipient of the stream either approved.
+                // Checks: the `msg.sender` is the sender or the recipient of the stream either approved.
                 if (msg.sender != sender && !isApprovedOrOwner_)
                     revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
 
@@ -171,7 +171,7 @@ abstract contract SablierV2 is ISablierV2 {
 
             // If the `streamId` points to a stream that does not exist, skip it.
             if (getSender(streamId) != address(0)) {
-                // Checks: the `msg.sender` is either the recipient of the stream or approved.
+                // Checks: the `msg.sender` is the recipient of the stream either approved.
                 if (!isApprovedOrOwner(streamId)) revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
 
                 // Effects and Interactions: withdraw from the stream.
@@ -194,7 +194,7 @@ abstract contract SablierV2 is ISablierV2 {
         // Checks: the provided address to withdraw to is not zero.
         if (to == address(0)) revert Errors.SablierV2__WithdrawZeroAddress();
 
-        // Checks: the `msg.sender` is either the recipient of the stream or is approved.
+        // Checks: the `msg.sender` is the recipient of the stream either approved.
         if (!isApprovedOrOwner(streamId)) revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
 
         _withdraw(streamId, to, amount);

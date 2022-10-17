@@ -70,7 +70,7 @@ interface ISablierV2 {
     ///
     /// Requiremenets:
     /// - `streamId` must point to an existent stream.
-    /// - `msg.sender` must be either the sender or recipient.
+    /// - `msg.sender` must be the sender or the recipient of the stream either approved.
     /// - The stream must be cancelable.
     ///
     /// @param streamId The id of the stream to cancel.
@@ -82,7 +82,7 @@ interface ISablierV2 {
     ///
     /// Requiremenets:
     /// - Each stream id in `streamIds` must point to an existent stream.
-    /// - `msg.sender` must be either the sender or recipient of every stream.
+    /// - `msg.sender` must be the sender or the recipient of every stream either approved.
     /// - Each stream must be cancelable.
     ///
     /// @param streamIds The ids of the streams to cancel.
@@ -110,7 +110,7 @@ interface ISablierV2 {
     ///
     /// Requirements:
     /// - `streamId` must point to an existent stream.
-    /// - `msg.sender` must be either the sender or recipient.
+    /// - `msg.sender` must be the sender or the recipient of the stream either approved.
     /// - `amount` must not be zero and must not exceed the withdrawable amount.
     ///
     /// @param streamId The id of the stream to withdraw.
@@ -123,7 +123,7 @@ interface ISablierV2 {
     ///
     /// Requirements:
     /// - The count of `streamIds` must match the count of `amounts`.
-    /// - `msg.sender` must be either the sender or recipient of every stream.
+    /// - `msg.sender` must be the sender or the recipient of every stream either approved.
     /// - Each stream id in `streamIds` must point to an existent stream.
     /// - Each amount in `amounts` must not be zero and must not exceed the withdrawable amount.
     ///
@@ -139,7 +139,7 @@ interface ISablierV2 {
     /// - `to` must not be the zero address.
     /// - The count of `streamIds` must match the count of `amounts`.
     /// - Each stream id in `streamIds` must point to an existent stream.
-    /// - `msg.sender` must be the recipient of every stream.
+    /// - `msg.sender` must be the recipient of every stream either approved.
     /// - Each amount in `amounts` must not be zero and must not exceed the withdrawable amount.
     ///
     /// @param streamIds The ids of the streams to withdraw.
@@ -158,7 +158,7 @@ interface ISablierV2 {
     /// Requirements:
     /// - `streamId` must point to an existent stream.
     /// - `to` must not be the zero address.
-    /// - `msg.sender` must be the recipient.
+    /// - `msg.sender` must be the recipient either approved.
     /// - `amount` must not be zero and must not exceed the withdrawable amount.
     ///
     /// @param streamId The id of the stream to withdraw.
