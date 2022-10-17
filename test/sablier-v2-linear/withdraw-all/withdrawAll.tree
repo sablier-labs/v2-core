@@ -7,9 +7,9 @@ withdrawAll.t.sol
    ├── when the stream ids array points to some non existent streams
    │  └── it should make the withdrawals for the existent streams
    └── when the stream ids array points only to existent streams
-     ├── when the caller is neither the sender nor authorized of any stream
+     ├── when the caller is neither the sender nor the recipient of any stream neither approved
      │  └── it should revert
-     ├── when the caller is neither the sender nor authorized of some of the streams
+     ├── when the caller is neither the sender nor the recipient of some of the streams neither approved
      │  └── it should revert
      ├── when the caller is the sender of all streams
      │  └── it should make the withdrawals and update the withdrawn amounts

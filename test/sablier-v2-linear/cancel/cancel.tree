@@ -5,7 +5,7 @@ cancel.t.sol
    ├── when the stream is non-cancelable
    │  └── it should revert
    └── when the stream is cancelable
-      ├── when the caller is neither the sender nor authorized
+      ├── when the caller is neither the sender nor the recipient nor approved
       │  └── it should revert
       ├── when the caller is the sender
       │  └── it should cancel and delete the stream
