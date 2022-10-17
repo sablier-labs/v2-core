@@ -76,10 +76,10 @@ library Validations {
         uint256 amount,
         uint256 withdrawableAmount
     ) internal pure {
-        // Checks: the amount must not be zero.
+        // Checks: the amount is not zero.
         if (amount == 0) revert Errors.SablierV2__WithdrawAmountZero(streamId);
 
-        // Checks: the amount must not be greater than what can be withdrawn.
+        // Checks: the amount is not greater than what can be withdrawn.
         if (amount > withdrawableAmount)
             revert Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(streamId, amount, withdrawableAmount);
     }

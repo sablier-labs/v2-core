@@ -365,7 +365,7 @@ contract SablierV2Pro is
         });
 
         // Effects: mint the NFT to the recipient's address.
-        _mint(recipient, streamId);
+        _safeMint(recipient, streamId);
 
         // Effects: bump the next stream id. This cannot realistically overflow, ever.
         unchecked {
