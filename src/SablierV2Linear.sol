@@ -191,7 +191,7 @@ contract SablierV2Linear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the public functions that call this internal function.
-    function _cancel(uint256 streamId) internal override isAuthorizedForStream(streamId) {
+    function _cancel(uint256 streamId) internal override authorizedForStream(streamId) {
         DataTypes.LinearStream memory stream = _streams[streamId];
 
         // Calculate the withdraw and the return amounts.

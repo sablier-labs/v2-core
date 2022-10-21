@@ -22,7 +22,7 @@ abstract contract SablierV2 is ISablierV2 {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Checks that `msg.sender` is the sender or the recipient of the stream either approved.
-    modifier isAuthorizedForStream(uint256 streamId) {
+    modifier authorizedForStream(uint256 streamId) {
         if (msg.sender != getSender(streamId) && !isApprovedOrOwner(streamId))
             revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
 
@@ -104,11 +104,7 @@ abstract contract SablierV2 is ISablierV2 {
     }
 
     /// @inheritdoc ISablierV2
-    function withdraw(uint256 streamId, uint256 amount)
-        external
-        streamExists(streamId)
-        isAuthorizedForStream(streamId)
-    {
+    function withdraw(uint256 streamId, uint256 amount) external streamExists(streamId) authorizedForStream(streamId) {
         address to = getRecipient(streamId);
         _withdraw(streamId, to, amount);
     }

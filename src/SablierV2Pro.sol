@@ -296,7 +296,7 @@ contract SablierV2Pro is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the public functions that call this internal function.
-    function _cancel(uint256 streamId) internal override isAuthorizedForStream(streamId) {
+    function _cancel(uint256 streamId) internal override authorizedForStream(streamId) {
         DataTypes.ProStream memory stream = _streams[streamId];
 
         // Calculate the withdraw and the return amounts.
