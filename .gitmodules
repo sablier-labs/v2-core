@@ -2,7 +2,7 @@
 	path = "lib/forge-std"
 	url = "https://github.com/foundry-rs/forge-std"
 [submodule "lib/openzeppelin-contracts"]
-  branch = "release-v4.7"
+  branch = "release-v4.8"
 	path = "lib/openzeppelin-contracts"
 	url = "https://github.com/OpenZeppelin/openzeppelin-contracts"
 [submodule "lib/prb-math"]

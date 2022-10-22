@@ -42,7 +42,7 @@ contract SablierV2Linear is
 
     /// @inheritdoc ISablierV2
     function getRecipient(uint256 streamId) public view override(ISablierV2, SablierV2) returns (address recipient) {
-        recipient = ownerOf(streamId);
+        recipient = _ownerOf(streamId);
     }
 
     /// @inheritdoc ISablierV2
