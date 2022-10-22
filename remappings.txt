@@ -1,5 +1,5 @@
+@openzeppelin/contracts=lib/openzeppelin-contracts/contracts/
 @prb/contracts/=lib/prb-contracts/src/
-@prb/math/=lib/prb-math/contracts/
+@prb/math/=lib/prb-math/src/
 @sablier/v2-core/=src/
-@solmate/tokens/=lib/solmate/src/tokens/
 forge-std/=lib/forge-std/src/

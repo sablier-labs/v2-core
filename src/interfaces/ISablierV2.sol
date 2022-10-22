@@ -2,11 +2,12 @@
 pragma solidity >=0.8.13;
 
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 /// @title ISablierV2
 /// @notice The common interface between all Sablier V2 streaming contracts.
 /// @author Sablier Labs Ltd.
-interface ISablierV2 {
+interface ISablierV2 is IERC721 {
     /*//////////////////////////////////////////////////////////////////////////
                                     CUSTOM ERRORS
     //////////////////////////////////////////////////////////////////////////*/
@@ -14,7 +15,7 @@ interface ISablierV2 {
     /// @notice Emitted when attempting to create a stream with a zero deposit amount.
     error SablierV2__DepositAmountZero();
 
-    /// @notice Emitted when attempting to create a stream with recipient as the zero address.
+    /// @notice Emitted when attempting to create a stream with the recipient as the zero address.
     error SablierV2__RecipientZeroAddress();
 
     /// @notice Emitted when attempting to renounce an already non-cancelable stream.
@@ -120,7 +121,7 @@ interface ISablierV2 {
     /// @return withdrawnAmount The amount withdrawn from the stream, in units of the ERC-20 token's decimals.
     function getWithdrawnAmount(uint256 streamId) external view returns (uint256 withdrawnAmount);
 
-    /// @notice Returns whether the `msg.sender` is authorized to manage `streamId` or not.
+    /// @notice Checks whether the caller is authorized to interact with the stream.
     /// @param streamId The id of the stream to make the query for.
     function isApprovedOrOwner(uint256 streamId) external view returns (bool);
 

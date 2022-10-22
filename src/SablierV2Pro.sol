@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
-import { ERC721 } from "@solmate/tokens/ERC721.sol";
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { SCALE, SD59x18, toSD59x18, ZERO } from "@prb/math/SD59x18.sol";
@@ -13,7 +13,7 @@ import { SablierV2 } from "./SablierV2.sol";
 /// @title SablierV2Pro
 /// @author Sablier Labs Ltd.
 contract SablierV2Pro is
-    ERC721("Sablier V2 Pro", "SAB-V2-PRO"), // one dependency
+    ERC721("Sablier V2 Pro NFT", "SAB-V2-PRO"), // one dependency
     ISablierV2Pro, // one dependency
     SablierV2 // two dependencies
 {
@@ -55,7 +55,7 @@ contract SablierV2Pro is
 
     /// @inheritdoc ISablierV2
     function getRecipient(uint256 streamId) public view override(ISablierV2, SablierV2) returns (address recipient) {
-        recipient = _ownerOf[streamId];
+        recipient = ownerOf(streamId);
     }
 
     /// @inheritdoc ISablierV2
@@ -200,9 +200,13 @@ contract SablierV2Pro is
     }
 
     /// @inheritdoc ISablierV2
-    function isApprovedOrOwner(uint256 streamId) public view override(ISablierV2, SablierV2) returns (bool) {
-        address owner = _ownerOf[streamId];
-        return (msg.sender == owner || isApprovedForAll[owner][msg.sender] || getApproved[streamId] == msg.sender);
+    function isApprovedOrOwner(uint256 streamId)
+        public
+        view
+        override(ISablierV2, SablierV2)
+        returns (bool approvedOrOwner)
+    {
+        approvedOrOwner = _isApprovedOrOwner(msg.sender, streamId);
     }
 
     /// @inheritdoc ISablierV2
@@ -211,8 +215,8 @@ contract SablierV2Pro is
     }
 
     /// @inheritdoc ERC721
-    function tokenURI(uint256 streamId) public view override streamExists(streamId) returns (string memory) {
-        return "";
+    function tokenURI(uint256 streamId) public view override streamExists(streamId) returns (string memory uri) {
+        uri = "";
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -439,7 +443,7 @@ contract SablierV2Pro is
         // Checks: requirements of segments variables.
         _checkSegments(depositAmount, startTime, segmentAmounts, segmentExponents, segmentMilestones, segmentCount);
 
-        // Effects: create and store the stream.
+        // Effects: create the stream.
         streamId = nextStreamId;
         _streams[streamId] = Stream({
             cancelable: cancelable,
@@ -454,7 +458,7 @@ contract SablierV2Pro is
             withdrawnAmount: 0
         });
 
-        // Effects: mint the NFT to the recipient's address.
+        // Effects: mint the NFT for the recipient.
         _mint(recipient, streamId);
 
         // Effects: bump the next stream id. This cannot realistically overflow, ever.

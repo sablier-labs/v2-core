@@ -20,7 +20,8 @@ abstract contract SablierV2 is ISablierV2 {
                                       MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Checks that `msg.sender` is either the sender or the recipient of the stream either approved.
+    /// @notice Checks that `msg.sender` is the sender of the stream, an approved operator, or the owner of the
+    /// NFT (also known as the recipient of the stream).
     modifier isAuthorizedForStream(uint256 streamId) {
         if (msg.sender != getSender(streamId) && !isApprovedOrOwner(streamId)) {
             revert SablierV2__Unauthorized(streamId, msg.sender);
@@ -115,8 +116,8 @@ abstract contract SablierV2 is ISablierV2 {
         streamExists(streamId)
         isAuthorizedForStream(streamId)
     {
-        address to = getRecipient(streamId);
-        _withdraw(streamId, to, amount);
+        address recipient = getRecipient(streamId);
+        _withdraw(streamId, recipient, amount);
     }
 
     /// @inheritdoc ISablierV2
@@ -131,18 +132,17 @@ abstract contract SablierV2 is ISablierV2 {
         // Iterate over the provided array of stream ids and withdraw from each stream.
         address recipient;
         address sender;
-        bool isApprovedOrOwner_;
         uint256 streamId;
         for (uint256 i = 0; i < streamIdsCount; ) {
             streamId = streamIds[i];
 
             // If the `streamId` points to a stream that does not exist, skip it.
-            isApprovedOrOwner_ = isApprovedOrOwner(streamId);
             recipient = getRecipient(streamId);
             sender = getSender(streamId);
             if (sender != address(0)) {
-                // Checks: the `msg.sender` is either the sender or the recipient of the stream either approved.
-                if (msg.sender != sender && !isApprovedOrOwner_) {
+                // Checks: the `msg.sender` is the sender or the stream, an approved operator, or the owner of the NFT
+                // (a.k.a. the recipient of the stream).
+                if (msg.sender != sender && !isApprovedOrOwner(streamId)) {
                     revert SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
@@ -182,7 +182,8 @@ abstract contract SablierV2 is ISablierV2 {
 
             // If the `streamId` points to a stream that does not exist, skip it.
             if (getSender(streamId) != address(0)) {
-                // Checks: the `msg.sender` is either the recipient of the stream or approved.
+                // Checks: the `msg.sender` is either an approved operator or the owner of the NFT (a.k.a. the recipient
+                // of the stream).
                 if (!isApprovedOrOwner(streamId)) {
                     revert SablierV2__Unauthorized(streamId, msg.sender);
                 }
@@ -209,7 +210,8 @@ abstract contract SablierV2 is ISablierV2 {
             revert SablierV2__WithdrawZeroAddress();
         }
 
-        // Checks: the `msg.sender` is either the recipient of the stream or is approved.
+        // Checks: the `msg.sender` is either an approved operator or the owner of the NFT (a.k.a. the recipient
+        // of the stream).
         if (!isApprovedOrOwner(streamId)) {
             revert SablierV2__Unauthorized(streamId, msg.sender);
         }
