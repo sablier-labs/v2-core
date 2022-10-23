@@ -9,20 +9,20 @@ cancelAll.t.sol
    ├── when some of the streams are non-cancelable
    │  └── it should cancel and delete the cancelable streams
    └── when all streams are cancelable
-      ├── when the caller is neither the sender nor authorized of any stream
+      ├── when the caller is not authorized for any stream
       │  └── it should revert
-      ├── when the caller is neither the sender nor authorized of some of the streams
+      ├── when the caller is not authorized for some streams
       │  └── it should revert
       ├── when the caller is the sender of all streams
       │  └── it should cancel and delete the streams
-      ├── when the caller is an approved third-party for all the streams
+      ├── when the caller is an approved operator for all streams
       │  └── it should cancel and delete the streams
       └── when the caller is the recipient of all streams
-         ├── when the recipient transferred all the streams and does not own any
+         ├── when the original recipient transferred ownership of all streams
          │  └── it should revert
-         ├── when the recipient transferred some of the streams and does not own all of them
+         ├── when the original recipient transferred ownership of some of the streams
          │  └── it should revert
-         └── when the recipient owns all the streams
+         └── when the original recipient did not transfer ownership of any stream
            ├── when all streams are ended
            │  ├── it should cancel and delete the streams
            │  └── it should emit multiple Cancel events

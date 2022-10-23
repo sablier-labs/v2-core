@@ -74,7 +74,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
     }
 
     /// @dev it should cancel and delete the stream.
-    function testCancel__CallerApprovedThirdParty() external StreamExistent StreamCancelable CallerAuthorized {
+    function testCancel__CallerApprovedOperator() external StreamExistent StreamCancelable CallerAuthorized {
         // Approve Alice for the stream.
         sablierV2Linear.approve(users.alice, daiStreamId);
 
@@ -93,15 +93,15 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotCancel__RecipientNotOwner()
+    function testCannotCancel__OriginalRecipientTransferredOwnership()
         external
         StreamExistent
         StreamCancelable
         CallerAuthorized
         CallerRecipient
     {
-        // Transfer the stream to eve.
-        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, daiStreamId);
+        // Transfer the stream to Alice.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, daiStreamId);
 
         // Run the test.
         vm.expectRevert(
@@ -110,7 +110,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
         sablierV2Linear.cancel(daiStreamId);
     }
 
-    modifier RecipientOwner() {
+    modifier OriginalRecipient() {
         _;
     }
 
@@ -121,7 +121,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
         StreamCancelable
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
     {
         // Warp to the end of the stream.
         vm.warp(daiStream.stopTime);
@@ -140,7 +140,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
         StreamCancelable
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
     {
         // Warp to the end of the stream.
         vm.warp(daiStream.stopTime);
@@ -159,7 +159,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
         StreamCancelable
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
@@ -178,7 +178,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
         StreamCancelable
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);

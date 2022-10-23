@@ -231,9 +231,6 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
             daiStream.cancelable
         );
 
-        address actualRecipient = sablierV2Pro.getRecipient(daiStreamId);
-        assertEq(actualRecipient, users.recipient);
-
         ISablierV2Pro.Stream memory actualStream = sablierV2Pro.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, depositAmount);
@@ -244,6 +241,9 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         assertEq(actualStream.segmentMilestones, segmentMilestones);
         assertEq(actualStream.cancelable, daiStream.cancelable);
         assertEq(actualStream.withdrawnAmount, daiStream.withdrawnAmount);
+
+        address actualRecipient = sablierV2Pro.getRecipient(daiStreamId);
+        assertEq(actualRecipient, users.recipient);
     }
 
     modifier StartTimeLessThanStopTime() {
@@ -450,9 +450,6 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
             daiStream.cancelable
         );
 
-        address actualRecipient = sablierV2Pro.getRecipient(daiStreamId);
-        assertEq(actualRecipient, users.recipient);
-
         ISablierV2Pro.Stream memory actualStream = sablierV2Pro.getStream(daiStreamId);
         assertEq(actualStream.sender, daiStream.sender);
         assertEq(actualStream.depositAmount, daiStream.depositAmount);
@@ -461,6 +458,9 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         assertEq(actualStream.stopTime, daiStream.stopTime);
         assertEq(actualStream.cancelable, daiStream.cancelable);
         assertEq(actualStream.withdrawnAmount, daiStream.withdrawnAmount);
+
+        address actualRecipient = sablierV2Pro.getRecipient(daiStreamId);
+        assertEq(actualRecipient, users.recipient);
     }
 
     modifier TokenCompliant() {

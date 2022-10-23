@@ -29,8 +29,8 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
     function testCannotWithdrawTo__StreamNonExistent() external {
         uint256 nonStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__StreamNonExistent.selector, nonStreamId));
-        uint256 withdrawAmountZero = 0;
-        sablierV2Linear.withdrawTo(nonStreamId, toAlice, withdrawAmountZero);
+        uint256 withdrawAmount = 0;
+        sablierV2Linear.withdrawTo(nonStreamId, toAlice, withdrawAmount);
     }
 
     modifier StreamExistent() {
@@ -41,8 +41,8 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
     function testCannotWithdrawTo__ToZeroAddress() external StreamExistent {
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawZeroAddress.selector));
         address toZero = address(0);
-        uint256 withdrawAmountZero = 0;
-        sablierV2Linear.withdrawTo(daiStreamId, toZero, withdrawAmountZero);
+        uint256 withdrawAmount = 0;
+        sablierV2Linear.withdrawTo(daiStreamId, toZero, withdrawAmount);
     }
 
     modifier ToNonZeroAddress() {
@@ -56,8 +56,8 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, daiStreamId, users.sender));
-        uint256 withdrawAmountZero = 0;
-        sablierV2Linear.withdrawTo(daiStreamId, toAlice, withdrawAmountZero);
+        uint256 withdrawAmount = 0;
+        sablierV2Linear.withdrawTo(daiStreamId, toAlice, withdrawAmount);
     }
 
     /// @dev it should revert.
@@ -67,8 +67,8 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__Unauthorized.selector, daiStreamId, users.eve));
-        uint256 withdrawAmountZero = 0;
-        sablierV2Linear.withdrawTo(daiStreamId, toAlice, withdrawAmountZero);
+        uint256 withdrawAmount = 0;
+        sablierV2Linear.withdrawTo(daiStreamId, toAlice, withdrawAmount);
     }
 
     modifier CallerAuthorized() {
@@ -76,12 +76,12 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
     }
 
     /// @dev it should make the withdrawal.
-    function testWithdrawTo__CallerApprovedThirdParty() external StreamExistent ToNonZeroAddress CallerAuthorized {
-        // Approve Alice for the stream.
-        sablierV2Linear.approve(users.alice, daiStreamId);
+    function testWithdrawTo__CallerApprovedOperator() external StreamExistent ToNonZeroAddress CallerAuthorized {
+        // Approve the operator to handle the stream.
+        sablierV2Linear.approve(users.operator, daiStreamId);
 
-        // Make Alice the `msg.sender` in this test case.
-        changePrank(users.alice);
+        // Make the operator the `msg.sender` in this test case.
+        changePrank(users.operator);
 
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
@@ -99,18 +99,15 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdraw__RecipientNotOwner()
+    function testCannotWithdraw__OriginalRecipientTransferredOwnership()
         external
         StreamExistent
         ToNonZeroAddress
         CallerAuthorized
         CallerRecipient
     {
-        // Transfer the stream to eve.
-        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, daiStreamId);
-
-        // Warp to the end of the stream.
-        vm.warp(daiStream.stopTime);
+        // Transfer the stream to Alice.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, daiStreamId);
 
         // Run the test.
         vm.expectRevert(
@@ -119,7 +116,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawTo(daiStreamId, toAlice, daiStream.depositAmount);
     }
 
-    modifier RecipientOwner() {
+    modifier OriginalRecipient() {
         _;
     }
 
@@ -130,7 +127,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         ToNonZeroAddress
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
     {
         vm.expectRevert(abi.encodeWithSelector(ISablierV2.SablierV2__WithdrawAmountZero.selector, daiStreamId));
         uint256 withdrawAmountZero = 0;
@@ -148,7 +145,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         ToNonZeroAddress
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
         WithdrawAmountNotZero
     {
         uint256 withdrawAmountMaxUint256 = UINT256_MAX;
@@ -175,7 +172,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         ToNonZeroAddress
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
     {
@@ -201,7 +198,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         ToNonZeroAddress
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
         ToThirdParty
@@ -223,7 +220,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         ToNonZeroAddress
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
         ToThirdParty
@@ -244,7 +241,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         ToNonZeroAddress
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
         ToThirdParty
@@ -267,7 +264,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         ToNonZeroAddress
         CallerAuthorized
         CallerRecipient
-        RecipientOwner
+        OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
         ToThirdParty

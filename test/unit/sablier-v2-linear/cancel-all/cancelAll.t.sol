@@ -133,17 +133,17 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should cancel and delete the streams.
-    function testCancelAll__CallerApprovedThirdPartyAllStreams()
+    function testCancelAll__CallerApprovedOperatorAllStreams()
         external
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
     {
-        // Approve Alice for all the streams.
-        sablierV2Linear.setApprovalForAll(users.alice, true);
+        // Approve the operator for all streams.
+        sablierV2Linear.setApprovalForAll(users.operator, true);
 
-        // Make Alice the `msg.sender` in this test case.
-        changePrank(users.alice);
+        // Make the operator the `msg.sender` in this test case.
+        changePrank(users.operator);
 
         // Run the test.
         sablierV2Linear.cancelAll(defaultStreamIds);
@@ -161,16 +161,16 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotCancelAll__RecipientNotOwnerAllStreams()
+    function testCannotCancelAll__OriginalRecipientTransferredOwnershipAllStreams()
         external
         OnlyExistentStreams
         AllStreamsCancelable
         CallerAuthorizedAllStreams
         CallerRecipientAllStreams
     {
-        // Transfer the streams to eve.
-        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[0]);
-        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[1]);
+        // Transfer the streams to Alice.
+        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, defaultStreamIds[0]);
+        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, defaultStreamIds[1]);
 
         // Run the test.
         vm.expectRevert(
@@ -180,7 +180,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
     }
 
     /// @dev it should revert.
-    function testCannotCancelAll__RecipientNotOwnerSomeStreams()
+    function testCannotCancelAll__OriginalRecipientTransferredOnwershipSomeStreams()
         external
         OnlyExistentStreams
         AllStreamsCancelable
@@ -188,7 +188,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         CallerRecipientAllStreams
     {
         // Transfer one of the streams to eve.
-        sablierV2Linear.safeTransferFrom(users.recipient, users.eve, defaultStreamIds[0]);
+        sablierV2Linear.safeTransferFrom(users.recipient, users.alice, defaultStreamIds[0]);
 
         // Run the test.
         vm.expectRevert(
@@ -197,7 +197,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
 
-    modifier RecipientOwnerAllStreams() {
+    modifier OriginalRecipientAllStreams() {
         _;
     }
 
@@ -208,7 +208,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         AllStreamsCancelable
         CallerAuthorizedAllStreams
         CallerRecipientAllStreams
-        RecipientOwnerAllStreams
+        OriginalRecipientAllStreams
     {
         // Warp to the end of the stream.
         vm.warp(daiStream.stopTime);
@@ -231,7 +231,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         AllStreamsCancelable
         CallerAuthorizedAllStreams
         CallerRecipientAllStreams
-        RecipientOwnerAllStreams
+        OriginalRecipientAllStreams
     {
         // Warp to the end of the stream.
         vm.warp(daiStream.stopTime);
@@ -255,7 +255,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         AllStreamsCancelable
         CallerAuthorizedAllStreams
         CallerRecipientAllStreams
-        RecipientOwnerAllStreams
+        OriginalRecipientAllStreams
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
@@ -278,7 +278,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         AllStreamsCancelable
         CallerAuthorizedAllStreams
         CallerRecipientAllStreams
-        RecipientOwnerAllStreams
+        OriginalRecipientAllStreams
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp(daiStream.startTime + TIME_OFFSET);
@@ -301,7 +301,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         AllStreamsCancelable
         CallerAuthorizedAllStreams
         CallerRecipientAllStreams
-        RecipientOwnerAllStreams
+        OriginalRecipientAllStreams
     {
         // Use the first default stream as the ongoing daiStream.
         uint256 ongoingStreamId = defaultStreamIds[0];
@@ -341,7 +341,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         AllStreamsCancelable
         CallerAuthorizedAllStreams
         CallerRecipientAllStreams
-        RecipientOwnerAllStreams
+        OriginalRecipientAllStreams
     {
         // Use the first default stream as the ongoing daiStream.
         uint256 ongoingStreamId = defaultStreamIds[0];
