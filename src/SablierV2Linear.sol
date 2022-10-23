@@ -13,9 +13,9 @@ import { SablierV2 } from "./SablierV2.sol";
 /// @title SablierV2Linear
 /// @author Sablier Labs Ltd.
 contract SablierV2Linear is
-    ERC721("Sablier V2 Linear NFT", "SAB-V2-LIN"), // one dependency
     ISablierV2Linear, // one dependency
-    SablierV2 // two dependencies
+    SablierV2, // two dependencies
+    ERC721("Sablier V2 Linear NFT", "SAB-V2-LIN") // six dependencies
 {
     using SafeERC20 for IERC20;
 
@@ -27,7 +27,7 @@ contract SablierV2Linear is
     mapping(uint256 => Stream) internal _streams;
 
     /*//////////////////////////////////////////////////////////////////////////
-                                 CONSTANT FUNCTIONS
+                            PUBLIC CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Linear
@@ -120,16 +120,6 @@ contract SablierV2Linear is
     }
 
     /// @inheritdoc ISablierV2
-    function isApprovedOrOwner(uint256 streamId)
-        public
-        view
-        override(ISablierV2, SablierV2)
-        returns (bool approvedOrOwner)
-    {
-        approvedOrOwner = _isApprovedOrOwner(msg.sender, streamId);
-    }
-
-    /// @inheritdoc ISablierV2
     function isCancelable(uint256 streamId) public view override(ISablierV2, SablierV2) returns (bool cancelable) {
         cancelable = _streams[streamId].cancelable;
     }
@@ -140,7 +130,7 @@ contract SablierV2Linear is
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                               NON-CONSTANT FUNCTIONS
+                            PUBLIC NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Linear
@@ -181,6 +171,20 @@ contract SablierV2Linear is
 
         // Checks, Effects and Interactions: create the stream.
         streamId = _create(sender, recipient, depositAmount, token, startTime, cliffTime, stopTime, cancelable);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                           INTERNAL CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc SablierV2
+    function _isApprovedOrOwner(address spender, uint256 streamId)
+        internal
+        view
+        override(ERC721, SablierV2)
+        returns (bool approvedOrOwner)
+    {
+        approvedOrOwner = ERC721._isApprovedOrOwner(spender, streamId);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -13,9 +13,9 @@ import { SablierV2 } from "./SablierV2.sol";
 /// @title SablierV2Pro
 /// @author Sablier Labs Ltd.
 contract SablierV2Pro is
-    ERC721("Sablier V2 Pro NFT", "SAB-V2-PRO"), // one dependency
     ISablierV2Pro, // one dependency
-    SablierV2 // two dependencies
+    SablierV2, // two dependencies
+    ERC721("Sablier V2 Pro NFT", "SAB-V2-PRO") // six dependencies
 {
     using SafeERC20 for IERC20;
 
@@ -200,16 +200,6 @@ contract SablierV2Pro is
     }
 
     /// @inheritdoc ISablierV2
-    function isApprovedOrOwner(uint256 streamId)
-        public
-        view
-        override(ISablierV2, SablierV2)
-        returns (bool approvedOrOwner)
-    {
-        approvedOrOwner = _isApprovedOrOwner(msg.sender, streamId);
-    }
-
-    /// @inheritdoc ISablierV2
     function isCancelable(uint256 streamId) public view override(ISablierV2, SablierV2) returns (bool cancelable) {
         cancelable = _streams[streamId].cancelable;
     }
@@ -383,6 +373,20 @@ contract SablierV2Pro is
         if (depositAmount != segmentAmountsSum) {
             revert SablierV2Pro__DepositAmountNotEqualToSegmentAmountsSum(depositAmount, segmentAmountsSum);
         }
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                           INTERNAL CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc SablierV2
+    function _isApprovedOrOwner(address spender, uint256 streamId)
+        internal
+        view
+        override(ERC721, SablierV2)
+        returns (bool approvedOrOwner)
+    {
+        approvedOrOwner = ERC721._isApprovedOrOwner(spender, streamId);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

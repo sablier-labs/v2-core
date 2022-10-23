@@ -2,6 +2,7 @@
 pragma solidity >=0.8.13;
 
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 
@@ -23,7 +24,7 @@ abstract contract SablierV2 is ISablierV2 {
     /// @notice Checks that `msg.sender` is the sender of the stream, an approved operator, or the owner of the
     /// NFT (also known as the recipient of the stream).
     modifier isAuthorizedForStream(uint256 streamId) {
-        if (msg.sender != getSender(streamId) && !isApprovedOrOwner(streamId)) {
+        if (msg.sender != getSender(streamId) && !_isApprovedOrOwner(msg.sender, streamId)) {
             revert SablierV2__Unauthorized(streamId, msg.sender);
         }
         _;
@@ -46,7 +47,7 @@ abstract contract SablierV2 is ISablierV2 {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                 CONSTANT FUNCTIONS
+                              PUBLIC CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2
@@ -56,13 +57,10 @@ abstract contract SablierV2 is ISablierV2 {
     function getSender(uint256 streamId) public view virtual override returns (address sender);
 
     /// @inheritdoc ISablierV2
-    function isApprovedOrOwner(uint256 streamId) public view virtual override returns (bool);
-
-    /// @inheritdoc ISablierV2
     function isCancelable(uint256 streamId) public view virtual override returns (bool cancelable);
 
     /*//////////////////////////////////////////////////////////////////////////
-                               NON-CONSTANT FUNCTIONS
+                            PUBLIC NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2
@@ -142,7 +140,7 @@ abstract contract SablierV2 is ISablierV2 {
             if (sender != address(0)) {
                 // Checks: the `msg.sender` is the sender or the stream, an approved operator, or the owner of the NFT
                 // (a.k.a. the recipient of the stream).
-                if (msg.sender != sender && !isApprovedOrOwner(streamId)) {
+                if (msg.sender != sender && !_isApprovedOrOwner(msg.sender, streamId)) {
                     revert SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
@@ -184,7 +182,7 @@ abstract contract SablierV2 is ISablierV2 {
             if (getSender(streamId) != address(0)) {
                 // Checks: the `msg.sender` is either an approved operator or the owner of the NFT (a.k.a. the recipient
                 // of the stream).
-                if (!isApprovedOrOwner(streamId)) {
+                if (!_isApprovedOrOwner(msg.sender, streamId)) {
                     revert SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
@@ -212,7 +210,7 @@ abstract contract SablierV2 is ISablierV2 {
 
         // Checks: the `msg.sender` is either an approved operator or the owner of the NFT (a.k.a. the recipient
         // of the stream).
-        if (!isApprovedOrOwner(streamId)) {
+        if (!_isApprovedOrOwner(msg.sender, streamId)) {
             revert SablierV2__Unauthorized(streamId, msg.sender);
         }
         _withdraw(streamId, to, amount);
@@ -222,7 +220,7 @@ abstract contract SablierV2 is ISablierV2 {
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Checks the basic requiremenets for the `create` function.
+    /// @dev Checks the basic requirements for the `create` function.
     function _checkCreateArguments(
         address sender,
         address recipient,
@@ -250,6 +248,11 @@ abstract contract SablierV2 is ISablierV2 {
             revert SablierV2__StartTimeGreaterThanStopTime(startTime, stopTime);
         }
     }
+
+    /// @dev Checks whether the spender is authorized to interact with the stream.
+    /// @param spender The spender to make the query for.
+    /// @param streamId The id of the stream to make the query for.
+    function _isApprovedOrOwner(address spender, uint256 streamId) internal view virtual returns (bool approvedOrOwner);
 
     /*//////////////////////////////////////////////////////////////////////////
                            INTERNAL NON-CONSTANT FUNCTIONS
