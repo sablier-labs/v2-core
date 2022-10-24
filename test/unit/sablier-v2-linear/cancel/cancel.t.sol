@@ -63,7 +63,7 @@ contract SablierV2Linear__Cancel is SablierV2LinearUnitTest {
 
     /// @dev it should cancel and delete the stream and burn the NFT.
     function testCancel__CallerSender() external StreamExistent StreamCancelable CallerAuthorized {
-        // Make the recipient the `msg.sender` in this test case.
+        // Make the sender the `msg.sender` in this test case.
         changePrank(users.sender);
 
         // Run the test.
