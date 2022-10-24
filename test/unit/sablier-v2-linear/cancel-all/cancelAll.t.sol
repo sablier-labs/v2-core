@@ -29,7 +29,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(streamIds);
     }
 
-    /// @dev it should cancel and delete the non existent streams.
+    /// @dev it should cancel and delete the existent streams and burn the NFTs.
     function testCannotCancelAll__SomeNonExistentStreams() external {
         uint256 nonStreamId = 1729;
         uint256[] memory streamIds = createDynamicArray(defaultStreamIds[0], nonStreamId);
@@ -37,6 +37,10 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(defaultStreamIds[0]);
         ISablierV2Linear.Stream memory expectedStream;
         assertEq(actualStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address expectedRecipient = address(0);
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier OnlyExistentStreams() {
@@ -53,7 +57,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(nonCancelableStreamIds);
     }
 
-    /// @dev it should cancel and delete the cancelable streams.
+    /// @dev it should cancel and delete the cancelable streams and burn the NFTs.
     function testCannotCancelAll__SomeStreamsNonCancelable() external OnlyExistentStreams {
         // Create the non-cancelable stream.
         uint256 nonCancelableDaiStreamId = createNonCancelableDaiStream();
@@ -64,6 +68,10 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         ISablierV2Linear.Stream memory actualStream = sablierV2Linear.getStream(defaultStreamIds[0]);
         ISablierV2Linear.Stream memory expectedStream;
         assertEq(actualStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address expectedRecipient = address(0);
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier AllStreamsCancelable() {
@@ -111,7 +119,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         _;
     }
 
-    /// @dev it should cancel and delete the streams.
+    /// @dev it should cancel and delete the streams and burn the NFTs.
     function testCancelAll__CallerSenderAllStreams()
         external
         OnlyExistentStreams
@@ -127,12 +135,17 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         ISablierV2Linear.Stream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
         ISablierV2Linear.Stream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
         ISablierV2Linear.Stream memory expectedStream;
-
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
+        address expectedRecipient = address(0);
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
-    /// @dev it should cancel and delete the streams.
+    /// @dev it should cancel and delete the streams and burn the NFTs.
     function testCancelAll__CallerApprovedOperatorAllStreams()
         external
         OnlyExistentStreams
@@ -151,9 +164,14 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         ISablierV2Linear.Stream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
         ISablierV2Linear.Stream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
         ISablierV2Linear.Stream memory expectedStream;
-
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
+        address expectedRecipient = address(0);
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     modifier CallerRecipientAllStreams() {
@@ -201,7 +219,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         _;
     }
 
-    /// @dev it should cancel and delete the streams.
+    /// @dev it should cancel and delete the streams and burn the NFTs.
     function testCancelAll__AllStreamsEnded()
         external
         OnlyExistentStreams
@@ -219,9 +237,14 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         ISablierV2Linear.Stream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
         ISablierV2Linear.Stream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
         ISablierV2Linear.Stream memory expectedStream;
-
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
+        address expectedRecipient = address(0);
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     /// @dev it should emit multiple Cancel events.
@@ -248,7 +271,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(streamIds);
     }
 
-    /// @dev it should cancel and delete the streams.
+    /// @dev it should cancel and delete the streams and burn the NFTs.
     function testCancelAll__AllStreamsOngoing()
         external
         OnlyExistentStreams
@@ -266,9 +289,14 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         ISablierV2Linear.Stream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
         ISablierV2Linear.Stream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
         ISablierV2Linear.Stream memory expectedStream;
-
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
+        address expectedRecipient = address(0);
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     /// @dev it should emit multiple Cancel events.
@@ -294,7 +322,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         sablierV2Linear.cancelAll(defaultStreamIds);
     }
 
-    /// @dev it should cancel and delete the streams.
+    /// @dev it should cancel and delete the streams and burn the NFTs.
     function testCancelAll__SomeStreamsEndedSomeStreamsOngoing()
         external
         OnlyExistentStreams
@@ -303,7 +331,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
     {
-        // Use the first default stream as the ongoing daiStream.
+        // Use the first default stream as the ongoing DAI stream.
         uint256 ongoingStreamId = defaultStreamIds[0];
 
         // Create the ended dai stream.
@@ -329,9 +357,14 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         ISablierV2Linear.Stream memory deletedOngoingStream = sablierV2Linear.getStream(ongoingStreamId);
         ISablierV2Linear.Stream memory deletedEndedStream = sablierV2Linear.getStream(endedDaiStreamId);
         ISablierV2Linear.Stream memory expectedStream;
-
         assertEq(deletedOngoingStream, expectedStream);
         assertEq(deletedEndedStream, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(ongoingStreamId);
+        address actualRecipient1 = sablierV2Linear.getRecipient(endedDaiStreamId);
+        address expectedRecipient = address(0);
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     /// @dev it should emit multiple Cancel events.
@@ -343,7 +376,7 @@ contract SablierV2Linear__CancelAll is SablierV2LinearUnitTest {
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
     {
-        // Use the first default stream as the ongoing daiStream.
+        // Use the first default stream as the ongoing DAI stream.
         uint256 ongoingStreamId = defaultStreamIds[0];
 
         // Create the ended dai stream.

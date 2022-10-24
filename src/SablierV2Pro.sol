@@ -409,6 +409,9 @@ contract SablierV2Pro is
         // Effects: delete the stream from storage.
         delete _streams[streamId];
 
+        // Effects: burn the NFT.
+        _burn(streamId);
+
         // Interactions: withdraw the tokens to the recipient, if any.
         if (withdrawAmount > 0) {
             stream.token.safeTransfer(recipient, withdrawAmount);
@@ -524,9 +527,10 @@ contract SablierV2Pro is
         // Load the stream in memory, we will need it below.
         Stream memory stream = _streams[streamId];
 
-        // Effects: if this stream is done, save gas by deleting it from storage.
+        // Effects: if this stream is done, delete it from storage and burn the NFT.
         if (stream.depositAmount == stream.withdrawnAmount) {
             delete _streams[streamId];
+            _burn(streamId);
         }
 
         // Interactions: perform the ERC-20 transfer.

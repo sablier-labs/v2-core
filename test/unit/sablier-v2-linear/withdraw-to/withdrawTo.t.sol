@@ -191,7 +191,7 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         _;
     }
 
-    /// @dev it should make the withdrawal and delete the stream.
+    /// @dev it should make the withdrawal and delete the stream and burn the NFT.
     function testWithdrawTo__StreamEnded()
         external
         StreamExistent
@@ -211,6 +211,10 @@ contract SablierV2Linear__WithdrawTo is SablierV2LinearUnitTest {
         ISablierV2Linear.Stream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         ISablierV2Linear.Stream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = address(0);
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     /// @dev it should emit a Withdraw event.
