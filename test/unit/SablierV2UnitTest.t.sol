@@ -20,6 +20,8 @@ abstract contract SablierV2UnitTest is PRBTest, StdCheats, StdUtils {
 
     event Cancel(uint256 indexed streamId, address indexed recipient, uint256 withdrawAmount, uint256 returnAmount);
 
+    event LogNamedArray(string key, uint64[] value);
+
     event Renounce(uint256 indexed streamId);
 
     event Withdraw(uint256 indexed streamId, address indexed recipient, uint256 amount);
@@ -130,24 +132,14 @@ abstract contract SablierV2UnitTest is PRBTest, StdCheats, StdUtils {
         assertEq(address(a), address(b));
     }
 
-    /// @dev Helper function to compare two `uint64` types.
-    function assertUint64Eq(uint64 a, uint64 b) internal {
-        assertEq(uint256(a), uint256(b));
-    }
-
     /// @dev Helper function to compare two `uint64` arrays.
-    function assertUint64ArrayEq(uint64[] memory a, uint64[] memory b) internal {
-        assertEq(a.length, b.length);
-
-        for (uint256 i = 0; i < a.length; i++) {
-            assertUint64Eq(a[i], b[i]);
+    function assertEqUint64Array(uint64[] memory a, uint64[] memory b) internal {
+        if (keccak256(abi.encode(a)) != keccak256(abi.encode(b))) {
+            emit Log("Error: a == b not satisfied [uint64[]]");
+            emit LogNamedArray("  Expected", b);
+            emit LogNamedArray("    Actual", a);
+            fail();
         }
-    }
-
-    /// @dev Helper function to create a dynamical `uint64` array with 1 element.
-    function createDynamicArrayUint64(uint64 element0) internal pure returns (uint64[] memory dynamicalArray) {
-        dynamicalArray = new uint64[](1);
-        dynamicalArray[0] = element0;
     }
 
     /// @dev Helper function to create a dynamical `uint256` array with 1 element.
@@ -162,28 +154,6 @@ abstract contract SablierV2UnitTest is PRBTest, StdCheats, StdUtils {
         dynamicalArray[0] = element0;
     }
 
-    /// @dev Helper function to create a dynamical `SD59x18` array with 2 elements.
-    function createDynamicArray(SD59x18 element0, SD59x18 element1)
-        internal
-        pure
-        returns (SD59x18[] memory dynamicalArray)
-    {
-        dynamicalArray = new SD59x18[](2);
-        dynamicalArray[0] = element0;
-        dynamicalArray[1] = element1;
-    }
-
-    /// @dev Helper function to create a dynamical `uint64` array with 2 elements.
-    function createDynamicArrayUint64(uint64 element0, uint64 element1)
-        internal
-        pure
-        returns (uint64[] memory dynamicalArray)
-    {
-        dynamicalArray = new uint64[](2);
-        dynamicalArray[0] = element0;
-        dynamicalArray[1] = element1;
-    }
-
     /// @dev Helper function to create a dynamical `uint256` array with 2 elements.
     function createDynamicArray(uint256 element0, uint256 element1)
         internal
@@ -195,16 +165,15 @@ abstract contract SablierV2UnitTest is PRBTest, StdCheats, StdUtils {
         dynamicalArray[1] = element1;
     }
 
-    /// @dev Helper function to create a dynamical `uint64` array with 3 elements.
-    function createDynamicArrayUint64(
-        uint64 element0,
-        uint64 element1,
-        uint64 element2
-    ) internal pure returns (uint64[] memory dynamicalArray) {
-        dynamicalArray = new uint64[](3);
+    /// @dev Helper function to create a dynamical `SD59x18` array with 2 elements.
+    function createDynamicArray(SD59x18 element0, SD59x18 element1)
+        internal
+        pure
+        returns (SD59x18[] memory dynamicalArray)
+    {
+        dynamicalArray = new SD59x18[](2);
         dynamicalArray[0] = element0;
         dynamicalArray[1] = element1;
-        dynamicalArray[2] = element2;
     }
 
     /// @dev Helper function to create a dynamical `uint256` array with 3 elements.
@@ -226,6 +195,35 @@ abstract contract SablierV2UnitTest is PRBTest, StdCheats, StdUtils {
         SD59x18 element2
     ) internal pure returns (SD59x18[] memory dynamicalArray) {
         dynamicalArray = new SD59x18[](3);
+        dynamicalArray[0] = element0;
+        dynamicalArray[1] = element1;
+        dynamicalArray[2] = element2;
+    }
+
+    /// @dev Helper function to create a dynamical `uint64` array with 1 element.
+    function createDynamicUint64Array(uint64 element0) internal pure returns (uint64[] memory dynamicalArray) {
+        dynamicalArray = new uint64[](1);
+        dynamicalArray[0] = element0;
+    }
+
+    /// @dev Helper function to create a dynamical `uint64` array with 2 elements.
+    function createDynamicUint64Array(uint64 element0, uint64 element1)
+        internal
+        pure
+        returns (uint64[] memory dynamicalArray)
+    {
+        dynamicalArray = new uint64[](2);
+        dynamicalArray[0] = element0;
+        dynamicalArray[1] = element1;
+    }
+
+    /// @dev Helper function to create a dynamical `uint64` array with 3 elements.
+    function createDynamicUint64Array(
+        uint64 element0,
+        uint64 element1,
+        uint64 element2
+    ) internal pure returns (uint64[] memory dynamicalArray) {
+        dynamicalArray = new uint64[](3);
         dynamicalArray[0] = element0;
         dynamicalArray[1] = element1;
         dynamicalArray[2] = element2;

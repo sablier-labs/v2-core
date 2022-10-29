@@ -110,9 +110,9 @@ abstract contract SablierV2LinearUnitTest is SablierV2UnitTest {
         assertEq(a.cancelable, b.cancelable);
         assertEq(a.depositAmount, b.depositAmount);
         assertEq(a.sender, b.sender);
-        assertUint64Eq(a.startTime, b.startTime);
-        assertUint64Eq(a.cliffTime, b.cliffTime);
-        assertUint64Eq(a.stopTime, b.stopTime);
+        assertEq(a.startTime, b.startTime);
+        assertEq(uint256(a.cliffTime), uint256(b.cliffTime));
+        assertEq(uint256(a.stopTime), uint256(b.stopTime));
         assertEq(a.token, b.token);
         assertEq(a.withdrawnAmount, b.withdrawnAmount);
     }

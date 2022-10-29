@@ -93,12 +93,11 @@ contract SablierV2Linear is
         // the block timestamp.
         uint256 currentTime = block.timestamp;
         uint256 cliffTime = uint256(_streams[streamId].cliffTime);
-        uint256 startTime = uint256(_streams[streamId].startTime);
-        uint256 stopTime = uint256(_streams[streamId].stopTime);
         if (cliffTime > currentTime) {
             return 0;
         }
 
+        uint256 stopTime = uint256(_streams[streamId].stopTime);
         unchecked {
             // If the current time is greater than or equal to the stop time, return the deposit minus
             // the withdrawn amount.
@@ -107,6 +106,7 @@ contract SablierV2Linear is
             }
 
             // In all other cases, calculate how much the recipient can withdraw.
+            uint256 startTime = uint256(_streams[streamId].startTime);
             UD60x18 elapsedTime = toUD60x18(currentTime - startTime);
             UD60x18 totalTime = toUD60x18(stopTime - startTime);
             UD60x18 elapsedTimePercentage = elapsedTime.div(totalTime);

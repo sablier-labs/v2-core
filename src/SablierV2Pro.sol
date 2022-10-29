@@ -117,16 +117,16 @@ contract SablierV2Pro is
         }
 
         // If the start time is greater than or equal to the block timestamp, return zero.
-        uint256 currentTime = block.timestamp;
+        uint64 currentTime = uint64(block.timestamp);
 
-        if (uint256(_streams[streamId].startTime) >= currentTime) {
+        if (_streams[streamId].startTime >= currentTime) {
             return 0;
         }
 
         unchecked {
             // If the current time is greater than or equal to the stop time, return the deposit minus
             // the withdrawn amount.
-            if (currentTime >= uint256(_streams[streamId].stopTime)) {
+            if (currentTime >= _streams[streamId].stopTime) {
                 return _streams[streamId].depositAmount - _streams[streamId].withdrawnAmount;
             }
 
@@ -142,11 +142,11 @@ contract SablierV2Pro is
             if (segmentCount > 1) {
                 // Sum up the amounts found in all preceding segments. Set the sum to the negation of the first segment
                 // amount such that we avoid adding an if statement in the while loop.
-                uint256 currentSegmentMilestone = uint256(_streams[streamId].segmentMilestones[0]);
+                uint64 currentSegmentMilestone = _streams[streamId].segmentMilestones[0];
                 uint256 index = 1;
                 while (currentSegmentMilestone < currentTime) {
                     previousSegmentAmounts += _streams[streamId].segmentAmounts[index - 1];
-                    currentSegmentMilestone = uint256(_streams[streamId].segmentMilestones[index]);
+                    currentSegmentMilestone = _streams[streamId].segmentMilestones[index];
                     index += 1;
                 }
 
@@ -154,23 +154,23 @@ contract SablierV2Pro is
                 // is found at `index - 2`.
                 currentSegmentAmount = SD59x18.wrap(int256(_streams[streamId].segmentAmounts[index - 1]));
                 currentSegmentExponent = _streams[streamId].segmentExponents[index - 1];
-                currentSegmentMilestone = uint256(_streams[streamId].segmentMilestones[index - 1]);
+                currentSegmentMilestone = _streams[streamId].segmentMilestones[index - 1];
 
                 // If the current segment is at an index that is >= 2, take the difference between the current segment
                 // milestone and the previous segment milestone.
                 if (index > 1) {
-                    uint256 previousSegmentMilestone = uint256(_streams[streamId].segmentMilestones[index - 2]);
-                    elapsedSegmentTime = toSD59x18(int256(currentTime - previousSegmentMilestone));
+                    uint64 previousSegmentMilestone = _streams[streamId].segmentMilestones[index - 2];
+                    elapsedSegmentTime = toSD59x18(int256(uint256(currentTime - previousSegmentMilestone)));
 
                     // Calculate the time between the current segment milestone and the previous segment milestone.
-                    totalSegmentTime = toSD59x18(int256(currentSegmentMilestone - previousSegmentMilestone));
+                    totalSegmentTime = toSD59x18(int256(uint256(currentSegmentMilestone - previousSegmentMilestone)));
                 }
                 // If the current segment is at index 1, take the difference between the current segment milestone and
                 // the start time of the stream.
                 else {
-                    elapsedSegmentTime = toSD59x18(int256(currentTime - uint256(_streams[streamId].startTime)));
+                    elapsedSegmentTime = toSD59x18(int256(uint256(currentTime - _streams[streamId].startTime)));
                     totalSegmentTime = toSD59x18(
-                        int256(currentSegmentMilestone - uint256(_streams[streamId].startTime))
+                        int256(uint256(currentSegmentMilestone - _streams[streamId].startTime))
                     );
                 }
             }
@@ -178,9 +178,9 @@ contract SablierV2Pro is
             else {
                 currentSegmentAmount = SD59x18.wrap(int256(_streams[streamId].segmentAmounts[0]));
                 currentSegmentExponent = _streams[streamId].segmentExponents[0];
-                elapsedSegmentTime = toSD59x18(int256(currentTime - uint256(_streams[streamId].startTime)));
+                elapsedSegmentTime = toSD59x18(int256(uint256(currentTime - _streams[streamId].startTime)));
                 totalSegmentTime = toSD59x18(
-                    int256(uint256(_streams[streamId].stopTime) - uint256(_streams[streamId].startTime))
+                    int256(uint256(_streams[streamId].stopTime) - _streams[streamId].startTime)
                 );
             }
 
@@ -337,8 +337,8 @@ contract SablierV2Pro is
         }
 
         // Define the variables needed in the for loop below.
-        SD59x18 exponent;
         uint64 currentMilestone;
+        SD59x18 exponent;
         uint64 previousMilestone;
         uint256 segmentAmountsSum;
 

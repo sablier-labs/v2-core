@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 import { ISablierV2 } from "@sablier/v2-core/interfaces/ISablierV2.sol";
 import { ISablierV2Pro } from "@sablier/v2-core/interfaces/ISablierV2Pro.sol";
+import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 
 import { SablierV2ProUnitTest } from "../SablierV2ProUnitTest.t.sol";
 
@@ -43,8 +43,8 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
             )
         );
         uint64[] memory segmentDeltas = new uint64[](deltaCount);
-        for (uint256 i = 0; i < deltaCount; ) {
-            segmentDeltas[i] = uint64(i);
+        for (uint64 i = 0; i < deltaCount; ) {
+            segmentDeltas[i] = i;
             unchecked {
                 i += 1;
             }
@@ -77,7 +77,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         MilestonesCalculationOverflows
     {
         uint64 startTime = uint64(block.timestamp);
-        uint64[] memory segmentDeltas = createDynamicArrayUint64(1, UINT64_MAX - startTime);
+        uint64[] memory segmentDeltas = createDynamicUint64Array(uint64(1), UINT64_MAX - startTime);
         uint64 stopTime = 0;
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -106,7 +106,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         MilestonesCalculationOverflows
     {
         uint64 startTime = uint64(block.timestamp);
-        uint64[] memory segmentDeltas = createDynamicArrayUint64(UINT64_MAX, 1);
+        uint64[] memory segmentDeltas = createDynamicUint64Array(UINT64_MAX, 1);
         uint64[] memory segmentMilestones = new uint64[](2);
         unchecked {
             segmentMilestones[0] = startTime + segmentDeltas[0];
@@ -141,7 +141,7 @@ contract SablierV2Pro__CreateWithDuration is SablierV2ProUnitTest {
         uint64 startTime = uint64(block.timestamp);
         uint256[] memory segmentAmounts = createDynamicArray(0, SEGMENT_AMOUNTS_DAI[0], SEGMENT_AMOUNTS_DAI[1]);
         SD59x18[] memory segmentExponents = createDynamicArray(SCALE, SEGMENT_EXPONENTS[0], SEGMENT_EXPONENTS[1]);
-        uint64[] memory segmentDeltas = createDynamicArrayUint64(1, UINT64_MAX, 1);
+        uint64[] memory segmentDeltas = createDynamicUint64Array(uint64(1), UINT64_MAX, 1);
         uint64[] memory segmentMilestones = new uint64[](3);
         unchecked {
             segmentMilestones[0] = startTime + segmentDeltas[0];

@@ -107,7 +107,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
         uint256 usdcDepositAmount = SEGMENT_AMOUNTS_USDC[0] + SEGMENT_AMOUNTS_USDC[1];
         uint256[] memory segmentAmounts = createDynamicArray(usdcDepositAmount);
         SD59x18[] memory segmentExponents = createDynamicArray(SEGMENT_EXPONENTS[1]);
-        uint64[] memory segmentMilestones = createDynamicArrayUint64(SEGMENT_MILESTONES[1]);
+        uint64[] memory segmentMilestones = createDynamicUint64Array(SEGMENT_MILESTONES[1]);
 
         daiStreamId = sablierV2Pro.create(
             usdcStream.sender,
@@ -137,7 +137,7 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
         uint256 daiDepositAmount = SEGMENT_AMOUNTS_DAI[0] + SEGMENT_AMOUNTS_DAI[1];
         uint256[] memory segmentAmounts = createDynamicArray(daiDepositAmount);
         SD59x18[] memory segmentExponents = createDynamicArray(SEGMENT_EXPONENTS[1]);
-        uint64[] memory segmentMilestones = createDynamicArrayUint64(SEGMENT_MILESTONES[1]);
+        uint64[] memory segmentMilestones = createDynamicUint64Array(SEGMENT_MILESTONES[1]);
 
         daiStreamId = sablierV2Pro.create(
             daiStream.sender,
@@ -277,10 +277,10 @@ contract SablierV2Pro__GetWithdrawableAmount is SablierV2ProUnitTest {
             SD59x18 segmentExponent = E;
             uint64 totalDuration = daiStream.stopTime - daiStream.startTime;
             uint64 segmentDuration = totalDuration / uint64(count);
-            for (uint256 i = 0; i < count; ) {
+            for (uint64 i = 0; i < count; ) {
                 segmentAmounts[i] = segmentAmount;
                 segmentExponents[i] = segmentExponent;
-                segmentMilestones[i] = daiStream.startTime + segmentDuration * (uint64(i) + 1);
+                segmentMilestones[i] = daiStream.startTime + segmentDuration * (i + 1);
                 i += 1;
             }
 

@@ -85,11 +85,11 @@ interface ISablierV2Pro is ISablierV2 {
         uint64[] segmentMilestones;
         uint256 depositAmount;
         uint256 withdrawnAmount;
-        address sender;
-        uint64 startTime;
-        IERC20 token;
-        uint64 stopTime;
-        bool cancelable;
+        address sender; // ───┐
+        uint64 startTime; // ─┘
+        IERC20 token; // ────┐
+        uint64 stopTime; //  │
+        bool cancelable; // ─┘
     }
 
     /*//////////////////////////////////////////////////////////////////////////

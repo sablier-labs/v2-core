@@ -121,11 +121,11 @@ abstract contract SablierV2ProUnitTest is SablierV2UnitTest {
         assertEq(a.cancelable, b.cancelable);
         assertEq(a.depositAmount, b.depositAmount);
         assertEq(a.sender, b.sender);
-        assertUint64Eq(a.startTime, b.startTime);
-        assertUint64Eq(a.stopTime, b.stopTime);
+        assertEq(uint256(a.startTime), uint256(b.startTime));
+        assertEq(uint256(a.stopTime), uint256(b.stopTime));
         assertEq(a.segmentAmounts, b.segmentAmounts);
         assertEq(a.segmentExponents, b.segmentExponents);
-        assertUint64ArrayEq(a.segmentMilestones, b.segmentMilestones);
+        assertEqUint64Array(a.segmentMilestones, b.segmentMilestones);
         assertEq(a.token, b.token);
         assertEq(a.withdrawnAmount, b.withdrawnAmount);
     }

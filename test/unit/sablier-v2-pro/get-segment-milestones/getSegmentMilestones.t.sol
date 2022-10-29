@@ -9,7 +9,7 @@ contract SablierV2Pro__GetSegmentMilestones is SablierV2ProUnitTest {
         uint256 nonStreamId = 1729;
         uint64[] memory actualSegmentMilestones = sablierV2Pro.getSegmentMilestones(nonStreamId);
         uint64[] memory expectedSegmentMilestones;
-        assertUint64ArrayEq(actualSegmentMilestones, expectedSegmentMilestones);
+        assertEqUint64Array(actualSegmentMilestones, expectedSegmentMilestones);
     }
 
     modifier StreamExistent() {
@@ -21,6 +21,6 @@ contract SablierV2Pro__GetSegmentMilestones is SablierV2ProUnitTest {
         uint256 daiStreamId = createDefaultDaiStream();
         uint64[] memory actualSegmentMilestones = sablierV2Pro.getSegmentMilestones(daiStreamId);
         uint64[] memory expectedSegmentMilestones = daiStream.segmentMilestones;
-        assertUint64ArrayEq(actualSegmentMilestones, expectedSegmentMilestones);
+        assertEqUint64Array(actualSegmentMilestones, expectedSegmentMilestones);
     }
 }

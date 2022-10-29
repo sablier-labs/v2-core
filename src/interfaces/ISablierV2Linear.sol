@@ -57,12 +57,12 @@ interface ISablierV2Linear is ISablierV2 {
     struct Stream {
         uint256 depositAmount;
         uint256 withdrawnAmount;
-        address sender;
-        uint64 cliffTime;
-        IERC20 token;
-        uint64 startTime;
-        uint64 stopTime;
-        bool cancelable;
+        address sender; // ───┐
+        uint64 startTime; // ─┘
+        IERC20 token; // ─────┐
+        uint64 cliffTime; // ─┘
+        uint64 stopTime; // ─┐
+        bool cancelable; // ─┘
     }
 
     /*//////////////////////////////////////////////////////////////////////////
