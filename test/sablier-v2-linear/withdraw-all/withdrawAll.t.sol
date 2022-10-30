@@ -1,4 +1,3 @@
-// solhint-disable max-line-length
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
@@ -378,7 +377,8 @@ contract SablierV2Linear__WithdrawAll is SablierV2LinearUnitTest {
         sablierV2Linear.withdrawAll(defaultStreamIds, defaultAmounts);
     }
 
-    /// @dev it should make the withdrawals, delete the ended streams and burn the NFTs, and update the withdrawn amounts.
+    /// @dev it should make the withdrawals, delete the ended streams and burn the NFTs,
+    // and update the withdrawn amounts.
     function testWithdrawAll__SomeStreamsEndedSomeStreamsOngoing()
         external
         ArraysEqual
