@@ -5,7 +5,6 @@ import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { Events } from "@sablier/v2-core/libraries/Events.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-import { SablierV2Linear } from "@sablier/v2-core/SablierV2Linear.sol";
 import { SafeERC20__CallToNonContract } from "@prb/contracts/token/erc20/SafeERC20.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";

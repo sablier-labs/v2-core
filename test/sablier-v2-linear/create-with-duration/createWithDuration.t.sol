@@ -3,7 +3,6 @@ pragma solidity >=0.8.13;
 
 import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
-import { Events } from "@sablier/v2-core/libraries/Events.sol";
 
 import { SablierV2LinearUnitTest } from "../SablierV2LinearUnitTest.t.sol";
 
