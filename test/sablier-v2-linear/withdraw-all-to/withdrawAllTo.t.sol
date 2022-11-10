@@ -533,7 +533,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
 
-    /// @dev it should emit Events.Withdraw events.
+    /// @dev it should emit Withdraw events.
     function testWithdrawAllTo__SomeStreamsEndedSomeStreamsOngoing__Events()
         external
         ToNonZeroAddress
