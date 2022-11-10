@@ -329,7 +329,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         assertEq(actualNextStreamId, expectedNextStreamId);
     }
 
-    /// @dev it should emit a CreateStream event.
+    /// @dev it should emit a CreateLinearStream event.
     function testCreate__Token6Decimals__Event()
         external
         RecipientNonZeroAddress
@@ -343,7 +343,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         uint256 usdcStreamId = sablierV2Linear.nextStreamId();
         vm.expectEmit(true, true, true, true);
         address funder = usdcStream.sender;
-        emit Events.CreateStream(
+        emit Events.CreateLinearStream(
             usdcStreamId,
             funder,
             usdcStream.sender,
@@ -402,7 +402,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         assertEq(actualNextStreamId, expectedNextStreamId);
     }
 
-    /// @dev  it should emit a CreateStream event.
+    /// @dev  it should emit a CreateLinearStream event.
     function testCreate__Token18Decimals__CallerNotSender__Event()
         external
         RecipientNonZeroAddress
@@ -420,7 +420,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         uint256 daiStreamId = sablierV2Linear.nextStreamId();
         vm.expectEmit(true, true, true, true);
         address funder = users.alice;
-        emit Events.CreateStream(
+        emit Events.CreateLinearStream(
             daiStreamId,
             funder,
             daiStream.sender,
@@ -469,7 +469,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         assertEq(actualNextStreamId, expectedNextStreamId);
     }
 
-    /// @dev it should emit a CreateStream event.
+    /// @dev it should emit a CreateLinearStream event.
     function testCreate__Token18Decimals__CallerSender__Event()
         external
         RecipientNonZeroAddress
@@ -483,7 +483,7 @@ contract SablierV2Linear__Create is SablierV2LinearUnitTest {
         uint256 daiStreamId = sablierV2Linear.nextStreamId();
         vm.expectEmit(true, true, true, true);
         address funder = daiStream.sender;
-        emit Events.CreateStream(
+        emit Events.CreateLinearStream(
             daiStreamId,
             funder,
             daiStream.sender,

@@ -511,7 +511,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         assertEq(actualNextStreamId, expectedNextStreamId);
     }
 
-    /// @dev it should emit a CreateStream event.
+    /// @dev it should emit a CreateProStream event.
     function testCreate__Token6Decimals__Event()
         external
         RecipientNonZeroAddress
@@ -530,7 +530,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         uint256 usdcStreamId = sablierV2Pro.nextStreamId();
         vm.expectEmit(true, true, true, true);
         address funder = usdcStream.sender;
-        emit Events.CreateStream(
+        emit Events.CreateProStream(
             usdcStreamId,
             funder,
             usdcStream.sender,
@@ -601,7 +601,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         assertEq(actualNextStreamId, expectedNextStreamId);
     }
 
-    /// @dev it should emit a CreateStream event.
+    /// @dev it should emit a CreateProStream event.
     function testCreate__Token18Decimals__CallerNotSender__Event() external {
         // Make Alice the funder of the stream.
         changePrank(users.alice);
@@ -610,7 +610,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         uint256 daiStreamId = sablierV2Pro.nextStreamId();
         vm.expectEmit(true, true, true, true);
         address funder = users.alice;
-        emit Events.CreateStream(
+        emit Events.CreateProStream(
             daiStreamId,
             funder,
             daiStream.sender,
@@ -672,7 +672,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         assertEq(actualNextStreamId, expectedNextStreamId);
     }
 
-    /// @dev it should emit a CreateStream event.
+    /// @dev it should emit a CreateProStream event.
     function testCreate__Token18Decimals__CallerSender__Event()
         external
         RecipientNonZeroAddress
@@ -691,7 +691,7 @@ contract SablierV2Pro__Create is SablierV2ProUnitTest {
         uint256 daiStreamId = sablierV2Pro.nextStreamId();
         vm.expectEmit(true, true, true, true);
         address funder = daiStream.sender;
-        emit Events.CreateStream(
+        emit Events.CreateProStream(
             daiStreamId,
             funder,
             daiStream.sender,

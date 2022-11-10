@@ -477,7 +477,7 @@ contract SablierV2Pro is
         token.safeTransferFrom(msg.sender, address(this), depositAmount);
 
         // Emit an event.
-        emit Events.CreateStream(
+        emit Events.CreateProStream(
             streamId,
             msg.sender,
             sender,

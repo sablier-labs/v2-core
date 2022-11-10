@@ -30,7 +30,7 @@ library Events {
     /// @param cliffTime The unix timestamp in seconds for when the cliff period will end.
     /// @param stopTime The unix timestamp in seconds for when the stream will stop.
     /// @param cancelable Whether the stream will be cancelable or not.
-    event CreateStream(
+    event CreateLinearStream(
         uint256 streamId,
         address indexed funder,
         address indexed sender,
@@ -56,7 +56,7 @@ library Events {
     /// @param segmentExponents The array of exponents used to compose the custom emission curve.
     /// @param segmentMilestones The array of milestones used to compose the custom emission curve.
     /// @param cancelable Whether the stream will be cancelable or not.
-    event CreateStream(
+    event CreateProStream(
         uint256 streamId,
         address indexed funder,
         address indexed sender,

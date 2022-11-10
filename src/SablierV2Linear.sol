@@ -281,7 +281,7 @@ contract SablierV2Linear is
         token.safeTransferFrom(msg.sender, address(this), depositAmount);
 
         // Emit an event.
-        emit Events.CreateStream(
+        emit Events.CreateLinearStream(
             streamId,
             msg.sender,
             sender,
