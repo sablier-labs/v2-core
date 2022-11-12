@@ -114,7 +114,7 @@ contract SablierV2Linear__Withdraw is SablierV2LinearUnitTest {
         CallerRecipient
         OriginalRecipient
     {
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__WithdrawAmountZero.selector, daiStreamId));
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__WithdrawAmountZero.selector));
         uint256 withdrawAmountZero = 0;
         sablierV2Linear.withdraw(daiStreamId, withdrawAmountZero);
     }
@@ -137,7 +137,6 @@ contract SablierV2Linear__Withdraw is SablierV2LinearUnitTest {
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
-                daiStreamId,
                 withdrawAmountMaxUint256,
                 withdrawableAmount
             )

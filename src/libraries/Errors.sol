@@ -39,15 +39,11 @@ library Errors {
     error SablierV2__WithdrawAllArraysNotEqual(uint256 streamIdsLength, uint256 amountsLength);
 
     /// @notice Emitted when attempting to withdraw more than can be withdrawn.
-    error SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(
-        uint256 streamId,
-        uint256 withdrawAmount,
-        uint256 withdrawableAmount
-    );
+    error SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(uint256 withdrawAmount, uint256 withdrawableAmount);
 
     /// @notice Emitted when attempting to withdraw zero tokens from a stream.
     /// @notice The id of the stream.
-    error SablierV2__WithdrawAmountZero(uint256 streamId);
+    error SablierV2__WithdrawAmountZero();
 
     /// @notice Emitted when attempting to withdraw to a zero address.
     error SablierV2__WithdrawZeroAddress();
