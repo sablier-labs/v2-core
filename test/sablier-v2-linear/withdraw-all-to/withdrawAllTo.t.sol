@@ -287,7 +287,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
 
         // Run the test.
         uint256[] memory amounts = createDynamicArray(WITHDRAW_AMOUNT_DAI, 0);
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__WithdrawAmountZero.selector));
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__WithdrawAmountZero.selector, defaultStreamIds[1]));
         sablierV2Linear.withdrawAllTo(defaultStreamIds, toAlice, amounts);
     }
 
@@ -316,6 +316,7 @@ contract SablierV2Linear__WithdrawAllTo is SablierV2LinearUnitTest {
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
+                defaultStreamIds[1],
                 withdrawAmountMaxUint256,
                 withdrawableAmount
             )

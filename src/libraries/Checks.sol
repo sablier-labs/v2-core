@@ -5,16 +5,15 @@ import { SD59x18 } from "@prb/math/SD59x18.sol";
 
 import { Errors } from "./Errors.sol";
 
-/// @title Validations
-/// @author Sablier Labs Ltd.
-/// @notice Library with logic that checks the functions requirements.
-library Validations {
+/// @title Checks
+/// @notice Library with logic that checks the Sablier V2 functions' requirements.
+library Checks {
     /*//////////////////////////////////////////////////////////////////////////
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Validates the requirements for the `create` function in the {SablierV2Linear} contract.
-    function createLinear(
+    /// @dev Checks the arguments of the `create` function in the {SablierV2Linear} contract.
+    function checkCreateLinearArgs(
         address sender,
         address recipient,
         uint256 depositAmount,
@@ -36,8 +35,8 @@ library Validations {
         }
     }
 
-    /// @dev Validates the requirements for the `create` function in the {SablierV2Pro} contract.
-    function createPro(
+    /// @dev Checks the arguments of the `create` function in the {SablierV2Pro} contract.
+    function checkCreateProArgs(
         address sender,
         address recipient,
         uint256 depositAmount,
@@ -47,17 +46,23 @@ library Validations {
         uint64[] memory segmentMilestones,
         SD59x18 maxExponent,
         uint256 maxSegmentCount
-    ) internal pure returns (uint64 stopTime) {
+    ) internal pure {
         // Checks: segment counts match.
-        uint256 segmentCount = _checkSegmentCounts({
+        _checkSegmentCounts({
             amountCount: segmentAmounts.length,
             exponentCount: segmentExponents.length,
             milestoneCount: segmentMilestones.length,
             maxSegmentCount: maxSegmentCount
         });
 
+        // We can use any count because they are all equal to each other.
+        uint256 segmentCount = segmentAmounts.length;
+
         // Imply the stop time from the last segment milestone.
-        stopTime = segmentMilestones[segmentCount - 1];
+        uint64 stopTime;
+        unchecked {
+            stopTime = segmentMilestones[segmentCount - 1];
+        }
 
         // Checks: the common requirements for the `create` function arguments.
         _checkCreateArguments(sender, recipient, depositAmount, startTime, stopTime);
@@ -72,19 +77,6 @@ library Validations {
             maxExponent,
             segmentCount
         );
-    }
-
-    /// @dev Validates the requiremenets for the `amount` argument in the `withdraw` function.
-    function withdrawAmount(uint256 amount, uint256 withdrawableAmount) internal pure {
-        // Checks: the amount is not zero.
-        if (amount == 0) {
-            revert Errors.SablierV2__WithdrawAmountZero();
-        }
-
-        // Checks: the amount is not greater than what can be withdrawn.
-        if (amount > withdrawableAmount) {
-            revert Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(amount, withdrawableAmount);
-        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -180,13 +172,12 @@ library Validations {
 
     /// @dev Checks that the counts of segments match. The counts must be equal and less than or equal to
     /// the maximum segment count permitted in Sablier.
-    /// @return segmentCount The count of the segments.
     function _checkSegmentCounts(
         uint256 amountCount,
         uint256 exponentCount,
         uint256 milestoneCount,
         uint256 maxSegmentCount
-    ) private pure returns (uint256 segmentCount) {
+    ) private pure {
         // Check that the amount count is not zero.
         if (amountCount == 0) {
             revert Errors.SablierV2Pro__SegmentCountZero();
@@ -206,8 +197,5 @@ library Validations {
         if (amountCount != milestoneCount) {
             revert Errors.SablierV2Pro__SegmentCountsNotEqual(amountCount, exponentCount, milestoneCount);
         }
-
-        // We can pass any count because they are all equal to each other.
-        segmentCount = amountCount;
     }
 }

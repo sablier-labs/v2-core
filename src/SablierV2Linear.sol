@@ -6,9 +6,10 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { UD60x18, toUD60x18 } from "@prb/math/UD60x18.sol";
 
+import { Checks } from "./libraries/Checks.sol";
 import { DataTypes } from "./libraries/DataTypes.sol";
+import { Errors } from "./libraries/Errors.sol";
 import { Events } from "./libraries/Events.sol";
-import { Validations } from "./libraries/Validations.sol";
 
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Linear } from "./interfaces/ISablierV2Linear.sol";
@@ -242,8 +243,8 @@ contract SablierV2Linear is
         uint64 stopTime,
         bool cancelable
     ) internal returns (uint256 streamId) {
-        // Checks: the requirements of the function.
-        Validations.createLinear(sender, recipient, depositAmount, startTime, cliffTime, stopTime);
+        // Checks: the arguments of the function.
+        Checks.checkCreateLinearArgs(sender, recipient, depositAmount, startTime, cliffTime, stopTime);
 
         // Effects: create the stream.
         streamId = nextStreamId;
@@ -300,8 +301,16 @@ contract SablierV2Linear is
         address to,
         uint256 amount
     ) internal override {
-        // Checks: the requirements of the `amount` argument.
-        Validations.withdrawAmount(amount, getWithdrawableAmount(streamId));
+        // Checks: the amount is not zero.
+        if (amount == 0) {
+            revert Errors.SablierV2__WithdrawAmountZero(streamId);
+        }
+
+        // Checks: the amount is not greater than what can be withdrawn.
+        uint256 withdrawableAmount = getWithdrawableAmount(streamId);
+        if (amount > withdrawableAmount) {
+            revert Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(streamId, amount, withdrawableAmount);
+        }
 
         // Effects: update the withdrawn amount.
         unchecked {

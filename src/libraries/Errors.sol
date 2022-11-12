@@ -39,11 +39,15 @@ library Errors {
     error SablierV2__WithdrawAllArraysNotEqual(uint256 streamIdsLength, uint256 amountsLength);
 
     /// @notice Emitted when attempting to withdraw more than can be withdrawn.
-    error SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(uint256 withdrawAmount, uint256 withdrawableAmount);
+    error SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(
+        uint256 streamId,
+        uint256 withdrawAmount,
+        uint256 withdrawableAmount
+    );
 
     /// @notice Emitted when attempting to withdraw zero tokens from a stream.
     /// @notice The id of the stream.
-    error SablierV2__WithdrawAmountZero();
+    error SablierV2__WithdrawAmountZero(uint256 streamId);
 
     /// @notice Emitted when attempting to withdraw to a zero address.
     error SablierV2__WithdrawZeroAddress();
@@ -79,7 +83,7 @@ library Errors {
     error SablierV2Pro__SegmentExponentOutOfBounds(SD59x18 exponent);
 
     /// @notice Emitted when attempting to create a stream with segment milestones which are not ordered.
-    error SablierV2Pro__SegmentMilestonesNotOrdered(uint256 index, uint64 previousMilestonene, uint64 milestone);
+    error SablierV2Pro__SegmentMilestonesNotOrdered(uint256 index, uint64 previousMilestone, uint64 milestone);
 
     /// @notice Emitted when attempting to create a stream with the start time greater than the first segment milestone.
     error SablierV2Pro__StartTimeGreaterThanFirstMilestone(uint64 startTime, uint64 segmentMilestone);

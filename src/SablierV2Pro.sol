@@ -6,9 +6,10 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { SCALE, SD59x18, toSD59x18, ZERO } from "@prb/math/SD59x18.sol";
 
+import { Checks } from "./libraries/Checks.sol";
 import { DataTypes } from "./libraries/DataTypes.sol";
+import { Errors } from "./libraries/Errors.sol";
 import { Events } from "./libraries/Events.sol";
-import { Validations } from "./libraries/Validations.sol";
 
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Pro } from "./interfaces/ISablierV2Pro.sol";
@@ -345,8 +346,8 @@ contract SablierV2Pro is
         uint64[] memory segmentMilestones,
         bool cancelable
     ) internal returns (uint256 streamId) {
-        // Checks: the requirements of the function.
-        uint64 stopTime = Validations.createPro(
+        // Checks: the arguments of the function.
+        Checks.checkCreateProArgs(
             sender,
             recipient,
             depositAmount,
@@ -358,7 +359,14 @@ contract SablierV2Pro is
             MAX_SEGMENT_COUNT
         );
 
-        streamId = nextStreamId; // Effects: create the stream.
+        // We can use any count because they are all equal to each other.
+        uint256 segmentCount = segmentAmounts.length;
+        uint64 stopTime;
+        unchecked {
+            stopTime = segmentMilestones[segmentCount - 1];
+        }
+
+        // Effects: create the stream.
         _streams[streamId] = DataTypes.ProStream({
             cancelable: cancelable,
             depositAmount: depositAmount,
@@ -415,8 +423,16 @@ contract SablierV2Pro is
         address to,
         uint256 amount
     ) internal override {
-        // Checks: the requirements of the `amount` argument.
-        Validations.withdrawAmount(amount, getWithdrawableAmount(streamId));
+        // Checks: the amount is not zero.
+        if (amount == 0) {
+            revert Errors.SablierV2__WithdrawAmountZero(streamId);
+        }
+
+        // Checks: the amount is not greater than what can be withdrawn.
+        uint256 withdrawableAmount = getWithdrawableAmount(streamId);
+        if (amount > withdrawableAmount) {
+            revert Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(streamId, amount, withdrawableAmount);
+        }
 
         // Effects: update the withdrawn amount.
         unchecked {
