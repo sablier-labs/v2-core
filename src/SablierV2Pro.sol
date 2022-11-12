@@ -6,10 +6,10 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
 import { SCALE, SD59x18, toSD59x18, ZERO } from "@prb/math/SD59x18.sol";
 
-import { Checks } from "./libraries/Checks.sol";
 import { DataTypes } from "./libraries/DataTypes.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { Events } from "./libraries/Events.sol";
+import { Validations } from "./libraries/Validations.sol";
 
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Pro } from "./interfaces/ISablierV2Pro.sol";
@@ -347,7 +347,7 @@ contract SablierV2Pro is
         bool cancelable
     ) internal returns (uint256 streamId) {
         // Checks: the arguments of the function.
-        Checks.checkCreateProArgs(
+        Validations.checkCreateProArgs(
             sender,
             recipient,
             depositAmount,

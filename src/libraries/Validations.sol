@@ -5,9 +5,9 @@ import { SD59x18 } from "@prb/math/SD59x18.sol";
 
 import { Errors } from "./Errors.sol";
 
-/// @title Checks
+/// @title Validations
 /// @notice Library with logic that checks the Sablier V2 functions' requirements.
-library Checks {
+library Validations {
     /*//////////////////////////////////////////////////////////////////////////
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
