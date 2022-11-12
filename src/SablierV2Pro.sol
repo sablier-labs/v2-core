@@ -367,6 +367,7 @@ contract SablierV2Pro is
         }
 
         // Effects: create the stream.
+        streamId = nextStreamId;
         _streams[streamId] = DataTypes.ProStream({
             cancelable: cancelable,
             depositAmount: depositAmount,
