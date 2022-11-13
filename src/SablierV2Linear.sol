@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
+import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
@@ -13,6 +14,7 @@ import { Validations } from "./libraries/Validations.sol";
 
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Linear } from "./interfaces/ISablierV2Linear.sol";
+import { ISablierV2Recipient } from "./interfaces/ISablierV2Recipient.sol";
 import { SablierV2 } from "./SablierV2.sol";
 
 /// @title SablierV2Linear
@@ -22,6 +24,7 @@ contract SablierV2Linear is
     SablierV2, // two dependencies
     ERC721("Sablier V2 Linear NFT", "SAB-V2-LIN") // six dependencies
 {
+    using Address for address;
     using SafeERC20 for IERC20;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -231,6 +234,13 @@ contract SablierV2Linear is
 
         // Emit an event.
         emit Events.Cancel(streamId, sender, recipient, withdrawAmount, returnAmount);
+
+        // Interactions: if the recipient is a contract, try to invoke the cancel hook on it, but ignore reverts.
+        if (recipient.isContract()) {
+            try
+                ISablierV2Recipient(recipient).onStreamCanceled(streamId, msg.sender, withdrawAmount, returnAmount)
+            {} catch {}
+        }
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
@@ -269,7 +279,7 @@ contract SablierV2Linear is
             nextStreamId = streamId + 1;
         }
 
-        // Interactions: perform the ERC-20 transfer.
+        // Interactions: safely perform the ERC-20 transfer.
         IERC20(token).safeTransferFrom({ from: msg.sender, to: address(this), amount: depositAmount });
 
         // Emit an event.
@@ -322,8 +332,9 @@ contract SablierV2Linear is
             _streams[streamId].withdrawnAmount += amount;
         }
 
-        // Load the stream in memory, we will need it below.
+        // Load the stream and the recipient in memory, we will need it below.
         DataTypes.LinearStream memory stream = _streams[streamId];
+        address recipient = getRecipient(streamId);
 
         // Effects: if this stream is done, delete it from storage and burn the NFT.
         if (stream.depositAmount == stream.withdrawnAmount) {
@@ -336,5 +347,10 @@ contract SablierV2Linear is
 
         // Emit an event.
         emit Events.Withdraw({ streamId: streamId, recipient: to, amount: amount });
+
+        // Interactions: if the recipient is a contract, try to invoke the withdraw hook on it, but ignore reverts.
+        if (recipient.isContract()) {
+            try ISablierV2Recipient(recipient).onStreamWithdrawn(streamId, msg.sender, amount) {} catch {}
+        }
     }
 }
