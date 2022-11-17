@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
-import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
+import { DataTypes } from "~/libraries/DataTypes.sol";
+import { Errors } from "~/libraries/Errors.sol";
 import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 
 import { SablierV2ProBaseTest } from "../SablierV2ProBaseTest.t.sol";
