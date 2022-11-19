@@ -80,7 +80,7 @@ abstract contract SablierV2ProBaseTest is SablierV2BaseTest {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Helper function to compare two `Stream` structs.
+    /// @dev Helper function to compare two `ProStream` structs.
     function assertEq(DataTypes.ProStream memory a, DataTypes.ProStream memory b) internal {
         assertEq(a.cancelable, b.cancelable);
         assertEq(a.depositAmount, b.depositAmount);
