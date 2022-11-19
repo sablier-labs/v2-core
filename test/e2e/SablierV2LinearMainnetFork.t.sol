@@ -27,20 +27,23 @@ abstract contract SablierV2LinearMainnetFork is Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function testCreate(
+        address sender,
+        address recipient,
         uint256 depositAmount,
         uint64 startTime,
         uint64 cliffTime,
         uint64 stopTime,
         bool cancelable
     ) public virtual {
+        vm.assume(sender != address(0) && recipient != address(0));
         vm.assume(depositAmount > 0 && depositAmount <= balance());
         vm.assume(cliffTime >= startTime && cliffTime <= stopTime);
 
         uint256 nextStreamId = sablierV2Linear.nextStreamId();
 
         uint256 streamId = sablierV2Linear.create(
-            holder(),
-            holder(),
+            sender,
+            recipient,
             depositAmount,
             IERC20(token()),
             startTime,
@@ -53,7 +56,7 @@ abstract contract SablierV2LinearMainnetFork is Test {
             cancelable: cancelable,
             cliffTime: cliffTime,
             depositAmount: depositAmount,
-            sender: holder(),
+            sender: sender,
             startTime: startTime,
             stopTime: stopTime,
             token: IERC20(token()),
