@@ -71,18 +71,6 @@ abstract contract SablierV2LinearBaseTest is SablierV2BaseTest {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Helper function to compare two `LinearStream` structs.
-    function assertEq(DataTypes.LinearStream memory a, DataTypes.LinearStream memory b) internal {
-        assertEq(a.cancelable, b.cancelable);
-        assertEq(a.depositAmount, b.depositAmount);
-        assertEq(a.sender, b.sender);
-        assertEq(uint256(a.startTime), uint256(b.startTime));
-        assertEq(uint256(a.cliffTime), uint256(b.cliffTime));
-        assertEq(uint256(a.stopTime), uint256(b.stopTime));
-        assertEq(a.token, b.token);
-        assertEq(a.withdrawnAmount, b.withdrawnAmount);
-    }
-
     /// @dev Helper function to create a default stream with $DAI used as streaming currency.
     function createDefaultDaiStream() internal returns (uint256 daiStreamId) {
         daiStreamId = sablierV2Linear.create(

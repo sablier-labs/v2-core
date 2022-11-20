@@ -80,31 +80,6 @@ abstract contract SablierV2ProBaseTest is SablierV2BaseTest {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Helper function to compare two `ProStream` structs.
-    function assertEq(DataTypes.ProStream memory a, DataTypes.ProStream memory b) internal {
-        assertEq(a.cancelable, b.cancelable);
-        assertEq(a.depositAmount, b.depositAmount);
-        assertEq(a.sender, b.sender);
-        assertEq(uint256(a.startTime), uint256(b.startTime));
-        assertEq(uint256(a.stopTime), uint256(b.stopTime));
-        assertEq(a.segmentAmounts, b.segmentAmounts);
-        assertEq(a.segmentExponents, b.segmentExponents);
-        assertEqUint64Array(a.segmentMilestones, b.segmentMilestones);
-        assertEq(a.token, b.token);
-        assertEq(a.withdrawnAmount, b.withdrawnAmount);
-    }
-
-    /// @dev Helper function to compare two SD59x18 arrays.
-    function assertEq(SD59x18[] memory a, SD59x18[] memory b) internal {
-        int256[] memory castedA;
-        int256[] memory castedB;
-        assembly {
-            castedA := a
-            castedB := b
-        }
-        assertEq(castedA, castedB);
-    }
-
     /// @dev Helper function to create a default stream with $DAI used as streaming currency.
     function createDefaultDaiStream() internal returns (uint256 daiStreamId) {
         daiStreamId = sablierV2Pro.create(

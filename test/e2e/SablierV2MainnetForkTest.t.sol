@@ -1,27 +1,23 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
-import { Test } from "forge-std/Test.sol";
-
 import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SablierV2Linear } from "@sablier/v2-core/SablierV2Linear.sol";
 import { SablierV2Pro } from "@sablier/v2-core/SablierV2Pro.sol";
 import { SD59x18 } from "@prb/math/SD59x18.sol";
 
-import { MainnetForkBaseTest } from "./MainnetForkBaseTest.t.sol";
-import { OMG } from "./MainnetForkBaseTest.t.sol";
+import { TestPlus } from "../TestPlus.t.sol";
 
 /// @title SablierV2MainnetForkTest
 /// @dev Strictly for test purposes.
-abstract contract SablierV2MainnetForkTest is MainnetForkBaseTest {
+abstract contract SablierV2MainnetForkTest is TestPlus {
     /*//////////////////////////////////////////////////////////////////////////
                                        STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
     SablierV2Linear internal sablierV2Linear;
     SablierV2Pro internal sablierV2Pro;
-    SD59x18[] internal SEGMENT_EXPONENTS = [sd59x18(3.14e18)];
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION
@@ -54,6 +50,7 @@ abstract contract SablierV2MainnetForkTest is MainnetForkBaseTest {
 
         uint256 nextStreamId = sablierV2Linear.nextStreamId();
 
+        // Call the function with `address(this)` as the `msg.sender`.
         uint256 streamId = sablierV2Linear.create(
             sender,
             recipient,
@@ -94,11 +91,13 @@ abstract contract SablierV2MainnetForkTest is MainnetForkBaseTest {
         vm.assume(depositAmount > 0 && depositAmount <= balance());
         vm.assume(startTime > 0 && startTime <= stopTime);
 
-        uint256 nextStreamId = sablierV2Pro.nextStreamId();
-
         uint256[] memory segmentAmounts = createDynamicArray(depositAmount);
+        SD59x18[] memory segmentExponents = createDynamicArray(sd59x18(3.14e18));
         uint64[] memory segmentMilestones = createDynamicUint64Array(stopTime);
 
+        uint256 nextStreamId = sablierV2Pro.nextStreamId();
+
+        // Call the function with `address(this)` as the `msg.sender`.
         uint256 streamId = sablierV2Pro.create(
             sender,
             recipient,
@@ -106,7 +105,7 @@ abstract contract SablierV2MainnetForkTest is MainnetForkBaseTest {
             IERC20(token()),
             startTime,
             segmentAmounts,
-            SEGMENT_EXPONENTS,
+            segmentExponents,
             segmentMilestones,
             cancelable
         );
@@ -115,7 +114,7 @@ abstract contract SablierV2MainnetForkTest is MainnetForkBaseTest {
             cancelable: cancelable,
             depositAmount: depositAmount,
             segmentAmounts: segmentAmounts,
-            segmentExponents: SEGMENT_EXPONENTS,
+            segmentExponents: segmentExponents,
             segmentMilestones: segmentMilestones,
             sender: sender,
             startTime: startTime,
@@ -158,4 +157,18 @@ abstract contract SablierV2MainnetForkTest is MainnetForkBaseTest {
 
     /// @dev Helper function to return the token address.
     function token() internal pure virtual returns (address);
+}
+
+/// @dev An interface for the Omise Go token which doesn't return a bool value on
+/// `approve` and `transferFrom` functions.
+interface OMG {
+    function approve(address spender, uint256 value) external;
+
+    function balanceOf(address who) external view returns (uint256);
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 value
+    ) external;
 }
