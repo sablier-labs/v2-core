@@ -63,11 +63,11 @@ abstract contract SablierV2BaseTest is TestPlus {
 
         // Create 5 users for testing. Order matters.
         users = Users({
-            sender: mkaddrFunded("Sender"),
-            recipient: mkaddrFunded("Recipient"),
-            operator: mkaddrFunded("Operator"),
-            eve: mkaddrFunded("Eve"),
-            alice: mkaddrFunded("Alice")
+            sender: createUser("Sender"),
+            recipient: createUser("Recipient"),
+            operator: createUser("Operator"),
+            eve: createUser("Eve"),
+            alice: createUser("Alice")
         });
     }
 
@@ -85,7 +85,7 @@ abstract contract SablierV2BaseTest is TestPlus {
 
     /// @dev Generates an address by hashing the name, labels the address and
     /// funds it with 100 ETH, 1M DAI, 1M USDC and 1M non-standard tokens.
-    function mkaddrFunded(string memory name) internal returns (address payable addr) {
+    function createUser(string memory name) internal returns (address payable addr) {
         addr = payable(address(uint160(uint256(keccak256(abi.encodePacked(name))))));
         vm.label(addr, name);
         vm.deal(addr, 100 ether);
