@@ -16,7 +16,7 @@ contract SHIBA_Test is SablierV2MainnetForkTest {
         return 0x73AF3bcf944a6559933396c1577B257e2054D935; // random SHIBA holder
     }
 
-    function token() internal pure override returns (address) {
-        return 0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE;
+    function token() internal pure override returns (IERC20) {
+        return IERC20(0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE);
     }
 }

@@ -30,7 +30,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
         sablierV2Linear = new SablierV2Linear();
         sablierV2Pro = new SablierV2Pro(200);
 
-        // Make the holder the `msg.sender` in this test suite.
+        // Make the tokens holder the `msg.sender` in this test suite.
         vm.startPrank(holder());
     }
 
@@ -42,15 +42,15 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
     function testCreateLinear(
         address sender,
         address recipient,
+        uint256 depositAmount,
         uint64 startTime,
         uint64 cliffTime,
         uint64 stopTime,
         bool cancelable
     ) external {
+        vm.assume(depositAmount > 0 && depositAmount <= token().balanceOf(holder()));
         vm.assume(sender != address(0) && recipient != address(0));
         vm.assume(cliffTime >= startTime && cliffTime <= stopTime);
-
-        uint256 depositAmount = IERC20(token()).balanceOf(holder());
 
         uint256 nextStreamId = sablierV2Linear.nextStreamId();
 
@@ -59,7 +59,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             sender,
             recipient,
             depositAmount,
-            IERC20(token()),
+            token(),
             startTime,
             cliffTime,
             stopTime,
@@ -74,7 +74,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             sender: sender,
             startTime: startTime,
             stopTime: stopTime,
-            token: IERC20(token()),
+            token: token(),
             withdrawnAmount: 0
         });
 
@@ -88,14 +88,15 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
     function testCreatePro(
         address sender,
         address recipient,
+        uint256 depositAmount,
         uint64 startTime,
         uint64 stopTime,
         bool cancelable
     ) external {
+        vm.assume(depositAmount > 0 && depositAmount <= token().balanceOf(holder()));
         vm.assume(sender != address(0) && recipient != address(0));
         vm.assume(startTime > 0 && startTime <= stopTime);
 
-        uint256 depositAmount = IERC20(token()).balanceOf(holder());
         uint256[] memory segmentAmounts = createDynamicArray(depositAmount);
         uint64[] memory segmentMilestones = createDynamicUint64Array(stopTime);
 
@@ -106,7 +107,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             sender,
             recipient,
             depositAmount,
-            IERC20(token()),
+            token(),
             startTime,
             segmentAmounts,
             segmentExponents,
@@ -124,7 +125,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             sender: sender,
             startTime: startTime,
             stopTime: stopTime,
-            token: IERC20(token()),
+            token: token(),
             withdrawnAmount: 0
         });
 
@@ -140,13 +141,13 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
 
     /// @dev Helper function to approve `sablierV2Linear` and `sablierV2Pro` contracts to spend tokens.
     function approveSablier() internal {
-        IERC20(token()).approve(address(sablierV2Linear), UINT256_MAX);
-        IERC20(token()).approve(address(sablierV2Pro), UINT256_MAX);
+        token().approve(address(sablierV2Linear), UINT256_MAX);
+        token().approve(address(sablierV2Pro), UINT256_MAX);
     }
 
     /// @dev Helper function to return the tokens holder address.
     function holder() internal pure virtual returns (address);
 
     /// @dev Helper function to return the token address.
-    function token() internal pure virtual returns (address);
+    function token() internal pure virtual returns (IERC20);
 }

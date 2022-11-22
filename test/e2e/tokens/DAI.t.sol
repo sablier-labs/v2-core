@@ -16,7 +16,7 @@ contract DAI_Test is SablierV2MainnetForkTest {
         return 0x66F62574ab04989737228D18C3624f7FC1edAe14; // random DAI holder
     }
 
-    function token() internal pure override returns (address) {
-        return 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+    function token() internal pure override returns (IERC20) {
+        return IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
     }
 }
