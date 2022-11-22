@@ -18,6 +18,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
 
     SablierV2Linear internal sablierV2Linear;
     SablierV2Pro internal sablierV2Pro;
+    SD59x18[] internal segmentExponents = createDynamicArray(sd59x18(3.14e18));
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION
@@ -28,6 +29,8 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
 
         sablierV2Linear = new SablierV2Linear();
         sablierV2Pro = new SablierV2Pro(200);
+
+        vm.startPrank(holder());
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -38,19 +41,18 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
     function testCreateLinear(
         address sender,
         address recipient,
-        uint256 depositAmount,
         uint64 startTime,
         uint64 cliffTime,
         uint64 stopTime,
         bool cancelable
     ) external {
         vm.assume(sender != address(0) && recipient != address(0));
-        vm.assume(depositAmount > 0 && depositAmount <= balance());
         vm.assume(cliffTime >= startTime && cliffTime <= stopTime);
+
+        uint256 depositAmount = IERC20(token()).balanceOf(holder());
 
         uint256 nextStreamId = sablierV2Linear.nextStreamId();
 
-        // Call the function with `address(this)` as the `msg.sender`.
         uint256 streamId = sablierV2Linear.create(
             sender,
             recipient,
@@ -82,17 +84,15 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
     function testCreatePro(
         address sender,
         address recipient,
-        uint256 depositAmount,
         uint64 startTime,
         uint64 stopTime,
         bool cancelable
     ) external {
         vm.assume(sender != address(0) && recipient != address(0));
-        vm.assume(depositAmount > 0 && depositAmount <= balance());
         vm.assume(startTime > 0 && startTime <= stopTime);
 
+        uint256 depositAmount = IERC20(token()).balanceOf(holder());
         uint256[] memory segmentAmounts = createDynamicArray(depositAmount);
-        SD59x18[] memory segmentExponents = createDynamicArray(sd59x18(3.14e18));
         uint64[] memory segmentMilestones = createDynamicUint64Array(stopTime);
 
         uint256 nextStreamId = sablierV2Pro.nextStreamId();
@@ -134,41 +134,13 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
 
     /// @dev Helper function to transfer the `amount` of tokens to this contract with `caller` as the `msg.sender`,
     /// and approve `sablierV2Linear` and `sablierV2Pro` contracts to spend tokens.
-    function approveAndTransfer(address caller, uint256 amount) internal {
-        vm.prank(caller);
-        IERC20(token()).approve(address(this), amount);
-        IERC20(token()).transferFrom(caller, address(this), amount);
-        IERC20(token()).approve(address(sablierV2Linear), amount);
-        IERC20(token()).approve(address(sablierV2Pro), amount);
+    function approveSablier() internal {
+        IERC20(token()).approve(address(sablierV2Linear), UINT256_MAX);
+        IERC20(token()).approve(address(sablierV2Pro), UINT256_MAX);
     }
 
-    /// @dev Helper function to transfer the `amount` of OMG tokens to this contract with `caller` as the `msg.sender`,
-    /// and approve `sablierV2Linear` and `sablierV2Pro` contracts to spend tokens.
-    function approveAndTransferOmg(address caller, uint256 amount) internal {
-        vm.prank(caller);
-        OMG(token()).approve(address(this), amount);
-        OMG(token()).transferFrom(caller, address(this), amount);
-        OMG(token()).approve(address(sablierV2Linear), amount);
-        OMG(token()).approve(address(sablierV2Pro), amount);
-    }
-
-    /// @dev Helper function to return the available balance of this contract.
-    function balance() internal view virtual returns (uint256);
+    function holder() internal virtual returns (address);
 
     /// @dev Helper function to return the token address.
     function token() internal pure virtual returns (address);
-}
-
-/// @dev An interface for the Omise Go token which doesn't return a bool value on
-/// `approve` and `transferFrom` functions.
-interface OMG {
-    function approve(address spender, uint256 value) external;
-
-    function balanceOf(address who) external view returns (uint256);
-
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external;
 }

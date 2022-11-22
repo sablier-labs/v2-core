@@ -6,16 +6,14 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SablierV2MainnetForkTest } from "../SablierV2MainnetForkTest.t.sol";
 
 contract USDC_Test is SablierV2MainnetForkTest {
-    address internal holder = 0x09528d637deb5857dc059dddE6316D465a8b3b69; // random USDC holder
-
     function setUp() public override {
         super.setUp();
 
-        approveAndTransfer(holder, IERC20(token()).balanceOf(holder));
+        approveSablier();
     }
 
-    function balance() internal view override returns (uint256) {
-        return IERC20(token()).balanceOf(address(this));
+    function holder() internal pure override returns (address) {
+        return 0x09528d637deb5857dc059dddE6316D465a8b3b69; // random USDC holder
     }
 
     function token() internal pure override returns (address) {
