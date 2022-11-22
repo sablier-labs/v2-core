@@ -139,7 +139,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
         IERC20(token()).approve(address(sablierV2Pro), UINT256_MAX);
     }
 
-    function holder() internal virtual returns (address);
+    function holder() internal pure virtual returns (address);
 
     /// @dev Helper function to return the token address.
     function token() internal pure virtual returns (address);
