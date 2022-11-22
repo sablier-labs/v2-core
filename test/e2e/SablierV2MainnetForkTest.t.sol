@@ -30,6 +30,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
         sablierV2Linear = new SablierV2Linear();
         sablierV2Pro = new SablierV2Pro(200);
 
+        // Make the holder the `msg.sender` in this test suite.
         vm.startPrank(holder());
     }
 
@@ -53,6 +54,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
 
         uint256 nextStreamId = sablierV2Linear.nextStreamId();
 
+        // Create the stream.
         uint256 streamId = sablierV2Linear.create(
             sender,
             recipient,
@@ -64,6 +66,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             cancelable
         );
 
+        // Declare the stream struct.
         DataTypes.LinearStream memory stream = DataTypes.LinearStream({
             cancelable: cancelable,
             cliffTime: cliffTime,
@@ -75,6 +78,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             withdrawnAmount: 0
         });
 
+        // Run the tests.
         assertEq(streamId, nextStreamId);
         assertEq(sablierV2Linear.nextStreamId(), nextStreamId + 1);
         assertEq(sablierV2Linear.getStream(streamId), stream);
@@ -97,7 +101,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
 
         uint256 nextStreamId = sablierV2Pro.nextStreamId();
 
-        // Call the function with `address(this)` as the `msg.sender`.
+        // Create the stream.
         uint256 streamId = sablierV2Pro.create(
             sender,
             recipient,
@@ -110,6 +114,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             cancelable
         );
 
+        // Declare the stream struct.
         DataTypes.ProStream memory stream = DataTypes.ProStream({
             cancelable: cancelable,
             depositAmount: depositAmount,
@@ -123,6 +128,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             withdrawnAmount: 0
         });
 
+        // Run the tests.
         assertEq(streamId, nextStreamId);
         assertEq(sablierV2Pro.nextStreamId(), nextStreamId + 1);
         assertEq(sablierV2Pro.getStream(streamId), stream);
@@ -132,13 +138,13 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
                            INTERNAL NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Helper function to transfer the `amount` of tokens to this contract with `caller` as the `msg.sender`,
-    /// and approve `sablierV2Linear` and `sablierV2Pro` contracts to spend tokens.
+    /// @dev Helper function to approve `sablierV2Linear` and `sablierV2Pro` contracts to spend tokens.
     function approveSablier() internal {
         IERC20(token()).approve(address(sablierV2Linear), UINT256_MAX);
         IERC20(token()).approve(address(sablierV2Pro), UINT256_MAX);
     }
 
+    /// @dev Helper function to return the tokens holder address.
     function holder() internal pure virtual returns (address);
 
     /// @dev Helper function to return the token address.
