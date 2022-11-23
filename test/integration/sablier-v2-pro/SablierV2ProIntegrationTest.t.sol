@@ -6,17 +6,16 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 import { SablierV2Pro } from "@sablier/v2-core/SablierV2Pro.sol";
 
-import { SablierV2BaseTest } from "../SablierV2BaseTest.t.sol";
+import { IntegrationTest } from "../IntegrationTest.t.sol";
 
-/// @title SablierV2ProBaseTest
-/// @notice Common contract members needed across Sablier V2 test contracts.
+/// @title SablierV2ProIntegrationTest
+/// @notice Common contract members needed across SablierV2Pro integration test contracts.
 /// @dev Strictly for test purposes.
-abstract contract SablierV2ProBaseTest is SablierV2BaseTest {
+abstract contract SablierV2ProIntegrationTest is IntegrationTest {
     /*//////////////////////////////////////////////////////////////////////////
                                       CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    uint256 internal constant MAX_SEGMENT_COUNT = 200;
     uint256[] internal SEGMENT_AMOUNTS_DAI = [2_000e18, 8_000e18];
     uint256[] internal SEGMENT_AMOUNTS_USDC = [2_000e6, 8_000e6];
     uint64[] internal SEGMENT_DELTAS = [2_000 seconds, 8_000 seconds];

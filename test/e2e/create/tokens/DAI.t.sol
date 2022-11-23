@@ -3,17 +3,18 @@ pragma solidity >=0.8.13;
 
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 
-import { SablierV2MainnetForkTest } from "../SablierV2MainnetForkTest.t.sol";
+import { CreateTest } from "../CreateTest.t.sol";
 
-contract DAI_Test is SablierV2MainnetForkTest {
+contract DAI__Test is CreateTest {
     function setUp() public override {
         super.setUp();
 
-        approveSablier();
+        approveSablierV2();
     }
 
+    /// @dev random DAI holder
     function holder() internal pure override returns (address) {
-        return 0x66F62574ab04989737228D18C3624f7FC1edAe14; // random DAI holder
+        return 0x66F62574ab04989737228D18C3624f7FC1edAe14;
     }
 
     function token() internal pure override returns (IERC20) {

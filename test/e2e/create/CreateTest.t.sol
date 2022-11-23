@@ -3,34 +3,25 @@ pragma solidity >=0.8.13;
 
 import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-import { SablierV2Linear } from "@sablier/v2-core/SablierV2Linear.sol";
-import { SablierV2Pro } from "@sablier/v2-core/SablierV2Pro.sol";
 import { SD59x18 } from "@prb/math/SD59x18.sol";
 
-import { TestPlus } from "../TestPlus.t.sol";
+import { E2eTest } from "../E2eTest.t.sol";
 
-/// @title SablierV2MainnetForkTest
-/// @dev Strictly for test purposes.
-abstract contract SablierV2MainnetForkTest is TestPlus {
+abstract contract CreateTest is E2eTest {
     /*//////////////////////////////////////////////////////////////////////////
                                        STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
-    SablierV2Linear internal sablierV2Linear;
-    SablierV2Pro internal sablierV2Pro;
     SD59x18[] internal segmentExponents = createDynamicArray(sd59x18(3.14e18));
 
     /*//////////////////////////////////////////////////////////////////////////
                                    SETUP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
 
-    function setUp() public virtual {
-        vm.createSelectFork(vm.envString("ETH_RPC_URL"));
+    function setUp() public virtual override {
+        super.setUp();
 
-        sablierV2Linear = new SablierV2Linear();
-        sablierV2Pro = new SablierV2Pro(200);
-
-        // Make the tokens holder the `msg.sender` in this test suite.
+        // Make the token holder the `msg.sender` in this test suite.
         vm.startPrank(holder());
     }
 
@@ -48,14 +39,17 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
         uint64 stopTime,
         bool cancelable
     ) external {
-        vm.assume(depositAmount > 0 && depositAmount <= token().balanceOf(holder()));
-        vm.assume(sender != address(0) && recipient != address(0));
-        vm.assume(cliffTime >= startTime && cliffTime <= stopTime);
+        vm.assume(sender != address(0));
+        vm.assume(recipient != address(0));
+        vm.assume(depositAmount > 0);
+        vm.assume(depositAmount <= token().balanceOf(holder()));
+        vm.assume(startTime <= cliffTime && cliffTime <= stopTime);
 
-        uint256 nextStreamId = sablierV2Linear.nextStreamId();
+        // Pull the next stream id.
+        uint256 expectedStreamId = sablierV2Linear.nextStreamId();
 
         // Create the stream.
-        uint256 streamId = sablierV2Linear.create(
+        uint256 actualStreamId = sablierV2Linear.create(
             sender,
             recipient,
             depositAmount,
@@ -66,7 +60,7 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             cancelable
         );
 
-        // Declare the stream struct.
+        // Declare the expected stream struct.
         DataTypes.LinearStream memory stream = DataTypes.LinearStream({
             cancelable: cancelable,
             cliffTime: cliffTime,
@@ -79,9 +73,10 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
         });
 
         // Run the tests.
-        assertEq(streamId, nextStreamId);
-        assertEq(sablierV2Linear.nextStreamId(), nextStreamId + 1);
-        assertEq(sablierV2Linear.getStream(streamId), stream);
+        assertEq(actualStreamId, expectedStreamId);
+        assertEq(sablierV2Linear.nextStreamId(), expectedStreamId + 1);
+        assertEq(sablierV2Linear.getStream(actualStreamId), stream);
+        assertEq(sablierV2Linear.getRecipient(actualStreamId), recipient);
     }
 
     /// @dev it should create the pro stream.
@@ -93,17 +88,21 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
         uint64 stopTime,
         bool cancelable
     ) external {
-        vm.assume(depositAmount > 0 && depositAmount <= token().balanceOf(holder()));
-        vm.assume(sender != address(0) && recipient != address(0));
-        vm.assume(startTime > 0 && startTime <= stopTime);
+        vm.assume(sender != address(0));
+        vm.assume(recipient != address(0));
+        vm.assume(depositAmount > 0);
+        vm.assume(depositAmount <= token().balanceOf(holder()));
+        vm.assume(startTime > 0); // needed for the segments to be ordered
+        vm.assume(startTime <= stopTime);
 
         uint256[] memory segmentAmounts = createDynamicArray(depositAmount);
         uint64[] memory segmentMilestones = createDynamicUint64Array(stopTime);
 
-        uint256 nextStreamId = sablierV2Pro.nextStreamId();
+        // Pull the next stream id.
+        uint256 expectedStreamId = sablierV2Pro.nextStreamId();
 
         // Create the stream.
-        uint256 streamId = sablierV2Pro.create(
+        uint256 actualStreamId = sablierV2Pro.create(
             sender,
             recipient,
             depositAmount,
@@ -115,8 +114,8 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
             cancelable
         );
 
-        // Declare the stream struct.
-        DataTypes.ProStream memory stream = DataTypes.ProStream({
+        // Declare the expected stream struct.
+        DataTypes.ProStream memory expectedStream = DataTypes.ProStream({
             cancelable: cancelable,
             depositAmount: depositAmount,
             segmentAmounts: segmentAmounts,
@@ -130,22 +129,22 @@ abstract contract SablierV2MainnetForkTest is TestPlus {
         });
 
         // Run the tests.
-        assertEq(streamId, nextStreamId);
-        assertEq(sablierV2Pro.nextStreamId(), nextStreamId + 1);
-        assertEq(sablierV2Pro.getStream(streamId), stream);
+        assertEq(actualStreamId, expectedStreamId);
+        assertEq(sablierV2Pro.nextStreamId(), expectedStreamId + 1);
+        assertEq(sablierV2Pro.getStream(actualStreamId), expectedStream);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                            INTERNAL NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Helper function to approve `sablierV2Linear` and `sablierV2Pro` contracts to spend tokens.
-    function approveSablier() internal {
+    /// @dev Helper function to approve the Sablier V2 contracts to spend tokens.
+    function approveSablierV2() internal {
         token().approve(address(sablierV2Linear), UINT256_MAX);
         token().approve(address(sablierV2Pro), UINT256_MAX);
     }
 
-    /// @dev Helper function to return the tokens holder address.
+    /// @dev Helper function to return the token holder's address.
     function holder() internal pure virtual returns (address);
 
     /// @dev Helper function to return the token address.

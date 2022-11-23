@@ -4,12 +4,12 @@ pragma solidity >=0.8.13;
 import { ERC20GodMode } from "@prb/contracts/token/erc20/ERC20GodMode.sol";
 import { NonCompliantERC20 } from "@prb/contracts/token/erc20/NonCompliantERC20.sol";
 
-import { TestPlus } from "../TestPlus.t.sol";
+import { BaseTest } from "../BaseTest.t.sol";
 
-/// @title SablierV2BaseTest
-/// @notice Common contract members needed across Sablier V2 test contracts.
+/// @title IntegrationTest
+/// @notice Common contract members needed across Sablier V2 integration test contracts.
 /// @dev Strictly for test purposes.
-abstract contract SablierV2BaseTest is TestPlus {
+abstract contract IntegrationTest is BaseTest {
     /*//////////////////////////////////////////////////////////////////////////
                                       CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
@@ -18,9 +18,9 @@ abstract contract SablierV2BaseTest is TestPlus {
     uint64 internal constant CLIFF_DURATION = 2_500 seconds;
     uint64 internal constant TOTAL_DURATION = 10_000 seconds;
 
+    uint64 internal immutable CLIFF_TIME;
     uint256 internal immutable DEPOSIT_AMOUNT_DAI;
     uint256 internal immutable DEPOSIT_AMOUNT_USDC;
-    uint64 internal immutable CLIFF_TIME;
     uint64 internal immutable START_TIME;
     uint64 internal immutable STOP_TIME;
 

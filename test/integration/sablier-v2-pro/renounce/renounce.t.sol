@@ -5,9 +5,9 @@ import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { Events } from "@sablier/v2-core/libraries/Events.sol";
 
-import { SablierV2ProBaseTest } from "../SablierV2ProBaseTest.t.sol";
+import { SablierV2ProIntegrationTest } from "../SablierV2ProIntegrationTest.t.sol";
 
-contract Renounce__Tests is SablierV2ProBaseTest {
+contract Renounce__Test is SablierV2ProIntegrationTest {
     uint256 internal daiStreamId;
 
     /// @dev A setup function invoked before each test case.

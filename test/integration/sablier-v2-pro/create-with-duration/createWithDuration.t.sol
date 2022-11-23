@@ -5,9 +5,9 @@ import { DataTypes } from "@sablier/v2-core/libraries/DataTypes.sol";
 import { Errors } from "@sablier/v2-core/libraries/Errors.sol";
 import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
 
-import { SablierV2ProBaseTest } from "../SablierV2ProBaseTest.t.sol";
+import { SablierV2ProIntegrationTest } from "../SablierV2ProIntegrationTest.t.sol";
 
-contract CreateWithDuration__Tests is SablierV2ProBaseTest {
+contract CreateWithDuration__Test is SablierV2ProIntegrationTest {
     /// @dev it should revert.
     function testCannotCreateWithDuration__LoopCalculationOverflowsBlockGasLimit() external {
         uint64[] memory segmentDeltas = new uint64[](1_000_000);

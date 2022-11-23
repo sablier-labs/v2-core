@@ -8,7 +8,7 @@ import { SD59x18 } from "@prb/math/SD59x18.sol";
 import { StdCheats, StdUtils } from "forge-std/Components.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
-abstract contract TestPlus is PRBTest, StdCheats, StdUtils {
+abstract contract BaseTest is PRBTest, StdCheats, StdUtils {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
@@ -19,6 +19,7 @@ abstract contract TestPlus is PRBTest, StdCheats, StdUtils {
                                       CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
+    uint256 internal constant MAX_SEGMENT_COUNT = 200;
     uint64 internal constant UINT64_MAX = type(uint64).max;
     uint256 internal constant UINT256_MAX = type(uint256).max;
 
