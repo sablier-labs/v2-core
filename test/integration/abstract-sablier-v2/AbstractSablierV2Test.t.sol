@@ -8,10 +8,10 @@ import { SablierV2 } from "@sablier/v2-core/SablierV2.sol";
 import { AbstractSablierV2 } from "./AbstractSablierV2.t.sol";
 import { IntegrationTest } from "../IntegrationTest.t.sol";
 
-/// @title AbstractSablierV2IntegrationTest
+/// @title AbstractSablierV2Test
 /// @notice Common contract members needed across Sablier V2 test contracts.
 /// @dev Strictly for test purposes.
-abstract contract AbstractSablierV2IntegrationTest is IntegrationTest {
+abstract contract AbstractSablierV2Test is IntegrationTest {
     AbstractSablierV2 internal abstractSablierV2 = new AbstractSablierV2();
 
     /// @dev A setup function invoked before each test case.

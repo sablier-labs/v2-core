@@ -5,6 +5,7 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 
 import { CreateTest } from "../CreateTest.t.sol";
 
+/// @dev A token with a large total supply.
 contract SHIBA__Test is CreateTest {
     function setUp() public override {
         super.setUp();

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { SablierV2ProIntegrationTest } from "../SablierV2ProIntegrationTest.t.sol";
+import { SablierV2ProTest } from "../SablierV2ProTest.t.sol";
 
-contract GetDepositAmount__Test is SablierV2ProIntegrationTest {
+contract GetDepositAmount__Test is SablierV2ProTest {
     /// @dev it should return zero.
     function testGetDepositAmount__StreamNonExistent() external {
         uint256 nonStreamId = 1729;

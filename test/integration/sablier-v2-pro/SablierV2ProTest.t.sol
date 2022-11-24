@@ -8,10 +8,10 @@ import { SablierV2Pro } from "@sablier/v2-core/SablierV2Pro.sol";
 
 import { IntegrationTest } from "../IntegrationTest.t.sol";
 
-/// @title SablierV2ProIntegrationTest
+/// @title SablierV2ProTest
 /// @notice Common contract members needed across SablierV2Pro integration test contracts.
 /// @dev Strictly for test purposes.
-abstract contract SablierV2ProIntegrationTest is IntegrationTest {
+abstract contract SablierV2ProTest is IntegrationTest {
     /*//////////////////////////////////////////////////////////////////////////
                                       CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/

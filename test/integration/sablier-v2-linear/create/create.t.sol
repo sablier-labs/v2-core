@@ -7,9 +7,9 @@ import { Events } from "@sablier/v2-core/libraries/Events.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20__CallToNonContract } from "@prb/contracts/token/erc20/SafeERC20.sol";
 
-import { SablierV2LinearIntegrationTest } from "../SablierV2LinearIntegrationTest.t.sol";
+import { SablierV2LinearTest } from "../SablierV2LinearTest.t.sol";
 
-contract Create__Test is SablierV2LinearIntegrationTest {
+contract Create__Test is SablierV2LinearTest {
     /// @dev it should revert.
     function testCannotCreate__RecipientZeroAddress() external {
         vm.expectRevert(Errors.SablierV2__RecipientZeroAddress.selector);

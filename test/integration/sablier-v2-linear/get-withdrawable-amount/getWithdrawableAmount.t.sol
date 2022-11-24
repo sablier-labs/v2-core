@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { SablierV2LinearIntegrationTest } from "../SablierV2LinearIntegrationTest.t.sol";
+import { SablierV2LinearTest } from "../SablierV2LinearTest.t.sol";
 
-contract GetWithdrawableAmount__Test is SablierV2LinearIntegrationTest {
+contract GetWithdrawableAmount__Test is SablierV2LinearTest {
     uint256 internal daiStreamId;
 
     /// @dev A setup function invoked before each test case.

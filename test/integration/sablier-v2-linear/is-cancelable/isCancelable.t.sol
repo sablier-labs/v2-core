@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { SablierV2LinearIntegrationTest } from "../SablierV2LinearIntegrationTest.t.sol";
+import { SablierV2LinearTest } from "../SablierV2LinearTest.t.sol";
 
-contract IsCancelable__Test is SablierV2LinearIntegrationTest {
+contract IsCancelable__Test is SablierV2LinearTest {
     /// @dev it should return false.
     function testIsCancelable__StreamNonExistent() external {
         uint256 nonStreamId = 1729;
