@@ -25,7 +25,7 @@ forge install --no-commit sablierhq/v2-core
 Then, add the following line to your `remappings.txt` file:
 
 ```text
-src/=lib/v2-core/src/
+@sablier/v2-core/=lib/v2-core/src/
 ```
 
 ### Hardhat
