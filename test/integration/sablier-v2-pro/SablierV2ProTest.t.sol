@@ -2,7 +2,7 @@
 pragma solidity >=0.8.13;
 
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-import { SCALE, SD59x18 } from "@prb/math/SD59x18.sol";
+import { SD59x18, UNIT } from "@prb/math/SD59x18.sol";
 
 import { DataTypes } from "src/libraries/DataTypes.sol";
 import { SablierV2Pro } from "src/SablierV2Pro.sol";
