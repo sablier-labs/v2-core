@@ -16,7 +16,7 @@ library Validations {
     function checkCreateLinearArgs(
         address sender,
         address recipient,
-        uint256 depositAmount,
+        uint128 depositAmount,
         uint40 startTime,
         uint40 cliffTime,
         uint40 stopTime
@@ -39,9 +39,9 @@ library Validations {
     function checkCreateProArgs(
         address sender,
         address recipient,
-        uint256 depositAmount,
+        uint128 depositAmount,
         uint40 startTime,
-        uint256[] memory segmentAmounts,
+        uint128[] memory segmentAmounts,
         SD59x18[] memory segmentExponents,
         uint40[] memory segmentMilestones,
         SD59x18 maxExponent,
@@ -87,7 +87,7 @@ library Validations {
     function _checkCreateArguments(
         address sender,
         address recipient,
-        uint256 depositAmount
+        uint128 depositAmount
     ) private pure {
         // Checks: the sender is not the zero address.
         if (sender == address(0)) {
@@ -111,9 +111,9 @@ library Validations {
     /// 3. The exponents are within the bounds permitted in Sablier.
     /// 4. The deposit amount is equal to the segment amounts summed up.
     function _checkSegments(
-        uint256 depositAmount,
+        uint128 depositAmount,
         uint40 startTime,
-        uint256[] memory segmentAmounts,
+        uint128[] memory segmentAmounts,
         SD59x18[] memory segmentExponents,
         uint40[] memory segmentMilestones,
         SD59x18 maxExponent,
@@ -128,7 +128,7 @@ library Validations {
         uint40 currentMilestone;
         SD59x18 exponent;
         uint40 previousMilestone;
-        uint256 segmentAmountsSum;
+        uint128 segmentAmountsSum;
 
         // Iterate over the amounts, the exponents and the milestones.
         uint256 index;

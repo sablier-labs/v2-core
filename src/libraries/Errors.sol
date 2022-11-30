@@ -37,8 +37,8 @@ library Errors {
     /// @notice Emitted when attempting to withdraw more than can be withdrawn.
     error SablierV2__WithdrawAmountGreaterThanWithdrawableAmount(
         uint256 streamId,
-        uint256 withdrawAmount,
-        uint256 withdrawableAmount
+        uint128 withdrawAmount,
+        uint128 withdrawableAmount
     );
 
     /// @notice Emitted when attempting to withdraw zero tokens from a stream.
@@ -64,7 +64,7 @@ library Errors {
 
     /// @notice Emitted when attempting to create a stream with a deposit amount that does not qual the segment
     /// amounts sum.
-    error SablierV2Pro__DepositAmountNotEqualToSegmentAmountsSum(uint256 depositAmount, uint256 segmentAmountsSum);
+    error SablierV2Pro__DepositAmountNotEqualToSegmentAmountsSum(uint128 depositAmount, uint128 segmentAmountsSum);
 
     /// @notice Emitted when attempting to create a stream with segment counts that are not equal.
     error SablierV2Pro__SegmentCountsNotEqual(uint256 amountLength, uint256 exponentLength, uint256 milestoneLength);

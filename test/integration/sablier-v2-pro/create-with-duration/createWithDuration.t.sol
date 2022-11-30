@@ -111,7 +111,7 @@ contract CreateWithDuration__Test is SablierV2ProTest {
         MilestonesCalculationOverflows
     {
         uint40 startTime = uint40(block.timestamp);
-        uint256[] memory segmentAmounts = createDynamicArray(0, SEGMENT_AMOUNTS_DAI[0], SEGMENT_AMOUNTS_DAI[1]);
+        uint128[] memory segmentAmounts = createDynamicUint128Array(0, SEGMENT_AMOUNTS_DAI[0], SEGMENT_AMOUNTS_DAI[1]);
         SD59x18[] memory segmentExponents = createDynamicArray(sd(1e18), SEGMENT_EXPONENTS[0], SEGMENT_EXPONENTS[1]);
         uint40[] memory segmentDeltas = createDynamicUint40Array(uint40(1), UINT40_MAX, 1);
         uint40[] memory segmentMilestones = new uint40[](3);

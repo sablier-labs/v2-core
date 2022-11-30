@@ -33,7 +33,7 @@ contract Create__Test is SablierV2LinearTest {
     /// @dev it should revert.
     function testCannotCreate__DepositAmountZero() external RecipientNonZeroAddress {
         vm.expectRevert(Errors.SablierV2__DepositAmountZero.selector);
-        uint256 depositAmount = 0;
+        uint128 depositAmount = 0;
         sablierV2Linear.create(
             daiStream.sender,
             users.recipient,

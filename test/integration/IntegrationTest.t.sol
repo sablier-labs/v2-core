@@ -19,8 +19,8 @@ abstract contract IntegrationTest is BaseTest {
     uint40 internal constant TOTAL_DURATION = 10_000 seconds;
 
     uint40 internal immutable CLIFF_TIME;
-    uint256 internal immutable DEPOSIT_AMOUNT_DAI;
-    uint256 internal immutable DEPOSIT_AMOUNT_USDC;
+    uint128 internal immutable DEPOSIT_AMOUNT_DAI;
+    uint128 internal immutable DEPOSIT_AMOUNT_USDC;
     uint40 internal immutable START_TIME;
     uint40 internal immutable STOP_TIME;
 
@@ -75,12 +75,12 @@ abstract contract IntegrationTest is BaseTest {
                            INTERNAL NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Helper function to approve `spender` the `UINT256_MAX` amount with `caller` as the `msg.sender`.
+    /// @dev Helper function to approve `spender` the `UINT128_MAX` amount with `caller` as the `msg.sender`.
     function approveMax(address caller, address spender) internal {
         changePrank(caller);
-        dai.approve(spender, UINT256_MAX);
-        usdc.approve(spender, UINT256_MAX);
-        nonCompliantToken.approve(spender, UINT256_MAX);
+        dai.approve(spender, UINT128_MAX);
+        usdc.approve(spender, UINT128_MAX);
+        nonCompliantToken.approve(spender, UINT128_MAX);
     }
 
     /// @dev Generates an address by hashing the name, labels the address and

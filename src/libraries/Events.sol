@@ -16,7 +16,7 @@ library Events {
     /// @param recipient The address of the recipient.
     /// @param withdrawAmount The amount of tokens withdrawn to the recipient, in units of the token's decimals.
     /// @param returnAmount The amount of tokens returned to the sender, in units of the token's decimals.
-    event Cancel(uint256 indexed streamId, address indexed recipient, uint256 withdrawAmount, uint256 returnAmount);
+    event Cancel(uint256 indexed streamId, address indexed recipient, uint128 withdrawAmount, uint128 returnAmount);
 
     /// @notice Emitted when a linear stream is created.
     /// @param streamId The id of the newly created stream.
@@ -34,7 +34,7 @@ library Events {
         address indexed funder,
         address indexed sender,
         address indexed recipient,
-        uint256 depositAmount,
+        uint128 depositAmount,
         address token,
         uint40 startTime,
         uint40 cliffTime,
@@ -60,11 +60,11 @@ library Events {
         address indexed funder,
         address indexed sender,
         address indexed recipient,
-        uint256 depositAmount,
+        uint128 depositAmount,
         address token,
         uint40 startTime,
         uint40 stopTime,
-        uint256[] segmentAmounts,
+        uint128[] segmentAmounts,
         SD59x18[] segmentExponents,
         uint40[] segmentMilestones,
         bool cancelable
@@ -78,5 +78,5 @@ library Events {
     /// @param streamId The id of the stream.
     /// @param recipient The address of the recipient.
     /// @param amount The amount of tokens withdrawn, in units of the token's decimals.
-    event Withdraw(uint256 indexed streamId, address indexed recipient, uint256 amount);
+    event Withdraw(uint256 indexed streamId, address indexed recipient, uint128 amount);
 }

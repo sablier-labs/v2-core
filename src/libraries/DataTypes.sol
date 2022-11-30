@@ -14,14 +14,14 @@ library DataTypes {
     /// @notice Linear stream struct.
     /// @dev The members are arranged like this to save gas via tight variable packing.
     struct LinearStream {
-        uint256 depositAmount;
-        uint256 withdrawnAmount;
+        uint128 depositAmount; // ───┐
+        uint128 withdrawnAmount; // ─┘
         address sender; // ───┐
         uint40 startTime; // ─┘
         address token; // ────┐
-        uint40 cliffTime; // ─┘
-        uint40 stopTime; // ─┐
-        bool cancelable; // ─┘
+        uint40 cliffTime; //  │
+        uint40 stopTime; //   │
+        bool cancelable; // ──┘
     }
 
     /// @notice Pro stream struct.
@@ -32,11 +32,11 @@ library DataTypes {
     /// @member segmentMilestones The unix timestamps in seconds for when each segment ends.
     /// @dev The members are arranged like this to save gas via tight variable packing.
     struct ProStream {
-        uint256[] segmentAmounts;
+        uint128[] segmentAmounts;
         SD59x18[] segmentExponents;
         uint40[] segmentMilestones;
-        uint256 depositAmount;
-        uint256 withdrawnAmount;
+        uint128 depositAmount; // ───┐
+        uint128 withdrawnAmount; // ─┘
         address sender; // ───┐
         uint40 startTime; // ─┘
         address token; // ────┐

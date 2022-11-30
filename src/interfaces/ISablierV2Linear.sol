@@ -55,7 +55,7 @@ interface ISablierV2Linear is ISablierV2 {
     function create(
         address sender,
         address recipient,
-        uint256 depositAmount,
+        uint128 depositAmount,
         address token,
         uint40 startTime,
         uint40 cliffTime,
@@ -83,7 +83,7 @@ interface ISablierV2Linear is ISablierV2 {
     function createWithDuration(
         address sender,
         address recipient,
-        uint256 depositAmount,
+        uint128 depositAmount,
         address token,
         uint40 cliffDuration,
         uint40 totalDuration,

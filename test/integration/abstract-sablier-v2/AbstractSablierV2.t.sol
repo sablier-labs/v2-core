@@ -22,7 +22,7 @@ contract AbstractSablierV2 is SablierV2 {
         return address(0);
     }
 
-    function getDepositAmount(uint256 streamId) external pure override returns (uint256) {
+    function getDepositAmount(uint256 streamId) external pure override returns (uint128) {
         streamId;
         return 0;
     }
@@ -32,7 +32,7 @@ contract AbstractSablierV2 is SablierV2 {
         return address(0);
     }
 
-    function getReturnableAmount(uint256 streamId) external pure override returns (uint256) {
+    function getReturnableAmount(uint256 streamId) external pure override returns (uint128) {
         streamId;
         return 0;
     }
@@ -52,12 +52,12 @@ contract AbstractSablierV2 is SablierV2 {
         return 0;
     }
 
-    function getWithdrawableAmount(uint256 streamId) external pure override returns (uint256) {
+    function getWithdrawableAmount(uint256 streamId) external pure override returns (uint128) {
         streamId;
         return 0;
     }
 
-    function getWithdrawnAmount(uint256 streamId) external pure override returns (uint256) {
+    function getWithdrawnAmount(uint256 streamId) external pure override returns (uint128) {
         streamId;
         return 0;
     }
@@ -150,7 +150,7 @@ contract AbstractSablierV2 is SablierV2 {
     function _withdraw(
         uint256 streamId,
         address to,
-        uint256 amount
+        uint128 amount
     ) internal pure override {
         streamId;
         to;

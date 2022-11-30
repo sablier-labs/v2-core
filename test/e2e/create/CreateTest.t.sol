@@ -34,7 +34,7 @@ abstract contract CreateTest is E2eTest {
     function testCreateLinear(
         address sender,
         address recipient,
-        uint256 depositAmount,
+        uint128 depositAmount,
         uint40 startTime,
         uint40 cliffTime,
         uint40 stopTime,
@@ -84,7 +84,7 @@ abstract contract CreateTest is E2eTest {
     function testCreatePro(
         address sender,
         address recipient,
-        uint256 depositAmount,
+        uint128 depositAmount,
         uint40 startTime,
         uint40 stopTime,
         bool cancelable
@@ -96,7 +96,7 @@ abstract contract CreateTest is E2eTest {
         vm.assume(startTime > 0); // needed for the segments to be ordered
         vm.assume(startTime <= stopTime);
 
-        uint256[] memory segmentAmounts = createDynamicArray(depositAmount);
+        uint128[] memory segmentAmounts = createDynamicUint128Array(depositAmount);
         uint40[] memory segmentMilestones = createDynamicUint40Array(stopTime);
 
         // Pull the next stream id.
@@ -142,8 +142,8 @@ abstract contract CreateTest is E2eTest {
 
     /// @dev Helper function to approve the Sablier V2 contracts to spend tokens.
     function approveSablierV2() internal {
-        IERC20(token()).approve(address(sablierV2Linear), UINT256_MAX);
-        IERC20(token()).approve(address(sablierV2Pro), UINT256_MAX);
+        IERC20(token()).approve(address(sablierV2Linear), UINT128_MAX);
+        IERC20(token()).approve(address(sablierV2Pro), UINT128_MAX);
     }
 
     /// @dev Helper function to return the token holder's address.
