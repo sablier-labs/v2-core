@@ -18,7 +18,7 @@ library DataTypes {
         uint256 withdrawnAmount;
         address sender; // ───┐
         uint64 startTime; // ─┘
-        address token; // ─────┐
+        address token; // ────┐
         uint64 cliffTime; // ─┘
         uint64 stopTime; // ─┐
         bool cancelable; // ─┘
@@ -40,7 +40,7 @@ library DataTypes {
         address sender; // ───┐
         uint64 startTime; // ─┘
         address token; // ────┐
-        uint64 stopTime; //  │
-        bool cancelable; // ─┘
+        uint64 stopTime; //   │
+        bool cancelable; // ──┘
     }
 }
