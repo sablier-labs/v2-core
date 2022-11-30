@@ -17,10 +17,10 @@ library DataTypes {
         uint256 depositAmount;
         uint256 withdrawnAmount;
         address sender; // ───┐
-        uint64 startTime; // ─┘
+        uint40 startTime; // ─┘
         address token; // ────┐
-        uint64 cliffTime; // ─┘
-        uint64 stopTime; // ─┐
+        uint40 cliffTime; // ─┘
+        uint40 stopTime; // ─┐
         bool cancelable; // ─┘
     }
 
@@ -34,13 +34,13 @@ library DataTypes {
     struct ProStream {
         uint256[] segmentAmounts;
         SD59x18[] segmentExponents;
-        uint64[] segmentMilestones;
+        uint40[] segmentMilestones;
         uint256 depositAmount;
         uint256 withdrawnAmount;
         address sender; // ───┐
-        uint64 startTime; // ─┘
+        uint40 startTime; // ─┘
         address token; // ────┐
-        uint64 stopTime; //   │
+        uint40 stopTime; //   │
         bool cancelable; // ──┘
     }
 }

@@ -493,7 +493,7 @@ contract WithdrawAllTo__Test is SablierV2LinearTest {
     {
         // Create the ended dai stream.
         changePrank(daiStream.sender);
-        uint64 earlyStopTime = daiStream.startTime + TIME_OFFSET;
+        uint40 earlyStopTime = daiStream.startTime + TIME_OFFSET;
         uint256 endedDaiStreamId = sablierV2Linear.create(
             daiStream.sender,
             users.recipient,
@@ -548,7 +548,7 @@ contract WithdrawAllTo__Test is SablierV2LinearTest {
     {
         // Create the ended dai stream.
         changePrank(daiStream.sender);
-        uint64 earlyStopTime = daiStream.startTime + TIME_OFFSET;
+        uint40 earlyStopTime = daiStream.startTime + TIME_OFFSET;
         uint256 endedDaiStreamId = sablierV2Linear.create(
             daiStream.sender,
             users.recipient,

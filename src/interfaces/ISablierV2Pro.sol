@@ -28,7 +28,7 @@ interface ISablierV2Pro is ISablierV2 {
     /// @notice Reads the segment milestones used to compose the custom emission curve.
     /// @param streamId The id of the stream to make the query for.
     /// @return segmentMilestones The segment milestones used to composde the custom emission curve.
-    function getSegmentMilestones(uint256 streamId) external view returns (uint64[] memory segmentMilestones);
+    function getSegmentMilestones(uint256 streamId) external view returns (uint40[] memory segmentMilestones);
 
     /// @notice Reads the stream struct.
     /// @param streamId The id of the stream to make the query for.
@@ -73,10 +73,10 @@ interface ISablierV2Pro is ISablierV2 {
         address recipient,
         uint256 depositAmount,
         address token,
-        uint64 startTime,
+        uint40 startTime,
         uint256[] memory segmentAmounts,
         SD59x18[] memory segmentExponents,
-        uint64[] memory segmentMilestones,
+        uint40[] memory segmentMilestones,
         bool cancelable
     ) external returns (uint256 streamId);
 
@@ -105,7 +105,7 @@ interface ISablierV2Pro is ISablierV2 {
         address token,
         uint256[] memory segmentAmounts,
         SD59x18[] memory segmentExponents,
-        uint64[] memory segmentDeltas,
+        uint40[] memory segmentDeltas,
         bool cancelable
     ) external returns (uint256 streamId);
 }

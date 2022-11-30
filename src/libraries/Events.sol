@@ -36,9 +36,9 @@ library Events {
         address indexed recipient,
         uint256 depositAmount,
         address token,
-        uint64 startTime,
-        uint64 cliffTime,
-        uint64 stopTime,
+        uint40 startTime,
+        uint40 cliffTime,
+        uint40 stopTime,
         bool cancelable
     );
 
@@ -62,11 +62,11 @@ library Events {
         address indexed recipient,
         uint256 depositAmount,
         address token,
-        uint64 startTime,
-        uint64 stopTime,
+        uint40 startTime,
+        uint40 stopTime,
         uint256[] segmentAmounts,
         SD59x18[] segmentExponents,
-        uint64[] segmentMilestones,
+        uint40[] segmentMilestones,
         bool cancelable
     );
 

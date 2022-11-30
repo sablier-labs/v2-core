@@ -53,10 +53,10 @@ library Errors {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when attempting to create a stream with a start time greater than cliff time;
-    error SablierV2Linear__StartTimeGreaterThanCliffTime(uint64 startTime, uint64 cliffTime);
+    error SablierV2Linear__StartTimeGreaterThanCliffTime(uint40 startTime, uint40 cliffTime);
 
     /// @notice Emitted when attempting to create a stream with a cliff time greater than stop time;
-    error SablierV2Linear__CliffTimeGreaterThanStopTime(uint64 cliffTime, uint64 stopTime);
+    error SablierV2Linear__CliffTimeGreaterThanStopTime(uint40 cliffTime, uint40 stopTime);
 
     /*//////////////////////////////////////////////////////////////////////////
                             SABLIER-V2-PRO CUSTOM ERRORS
@@ -79,8 +79,8 @@ library Errors {
     error SablierV2Pro__SegmentExponentOutOfBounds(SD59x18 exponent);
 
     /// @notice Emitted when attempting to create a stream with segment milestones which are not ordered.
-    error SablierV2Pro__SegmentMilestonesNotOrdered(uint256 index, uint64 previousMilestone, uint64 milestone);
+    error SablierV2Pro__SegmentMilestonesNotOrdered(uint256 index, uint40 previousMilestone, uint40 milestone);
 
     /// @notice Emitted when attempting to create a stream with the start time greater than the first segment milestone.
-    error SablierV2Pro__StartTimeGreaterThanFirstMilestone(uint64 startTime, uint64 segmentMilestone);
+    error SablierV2Pro__StartTimeGreaterThanFirstMilestone(uint40 startTime, uint40 segmentMilestone);
 }

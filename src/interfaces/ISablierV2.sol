@@ -34,12 +34,12 @@ interface ISablierV2 is IERC721 {
     /// @notice Reads the start time of the stream.
     /// @param streamId The id of the stream to make the query for.
     /// @return startTime The start time of the stream.
-    function getStartTime(uint256 streamId) external view returns (uint64 startTime);
+    function getStartTime(uint256 streamId) external view returns (uint40 startTime);
 
     /// @notice Reads the stop time of the stream.
     /// @param streamId The id of the stream to make the query for.
     /// @return stopTime The stop time of the stream.
-    function getStopTime(uint256 streamId) external view returns (uint64 stopTime);
+    function getStopTime(uint256 streamId) external view returns (uint40 stopTime);
 
     /// @notice Calculates the amount that the recipient can withdraw from the stream.
     /// @param streamId The id of the stream to make the query for.

@@ -36,7 +36,7 @@ contract SablierV2Linear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Linear
-    function getCliffTime(uint256 streamId) external view override returns (uint64 cliffTime) {
+    function getCliffTime(uint256 streamId) external view override returns (uint40 cliffTime) {
         cliffTime = _streams[streamId].cliffTime;
     }
 
@@ -72,12 +72,12 @@ contract SablierV2Linear is
     }
 
     /// @inheritdoc ISablierV2
-    function getStartTime(uint256 streamId) external view override returns (uint64 startTime) {
+    function getStartTime(uint256 streamId) external view override returns (uint40 startTime) {
         startTime = _streams[streamId].startTime;
     }
 
     /// @inheritdoc ISablierV2
-    function getStopTime(uint256 streamId) external view override returns (uint64 stopTime) {
+    function getStopTime(uint256 streamId) external view override returns (uint40 stopTime) {
         stopTime = _streams[streamId].stopTime;
     }
 
@@ -147,9 +147,9 @@ contract SablierV2Linear is
         address recipient,
         uint256 depositAmount,
         address token,
-        uint64 startTime,
-        uint64 cliffTime,
-        uint64 stopTime,
+        uint40 startTime,
+        uint40 cliffTime,
+        uint40 stopTime,
         bool cancelable
     ) external returns (uint256 streamId) {
         // Checks, Effects and Interactions: create the stream.
@@ -162,16 +162,16 @@ contract SablierV2Linear is
         address recipient,
         uint256 depositAmount,
         address token,
-        uint64 cliffDuration,
-        uint64 totalDuration,
+        uint40 cliffDuration,
+        uint40 totalDuration,
         bool cancelable
     ) external returns (uint256 streamId) {
         // Calculate the cliff time and the stop time. It is fine to use unchecked arithmetic because the
         // `_create` function will nonetheless check that the stop time is greater than or equal to the
         // cliff time, and that the cliff time is greater than or equal to the start time.
-        uint64 startTime = uint64(block.timestamp);
-        uint64 cliffTime;
-        uint64 stopTime;
+        uint40 startTime = uint40(block.timestamp);
+        uint40 cliffTime;
+        uint40 stopTime;
         unchecked {
             cliffTime = startTime + cliffDuration;
             stopTime = startTime + totalDuration;
@@ -238,9 +238,9 @@ contract SablierV2Linear is
         address recipient,
         uint256 depositAmount,
         address token,
-        uint64 startTime,
-        uint64 cliffTime,
-        uint64 stopTime,
+        uint40 startTime,
+        uint40 cliffTime,
+        uint40 stopTime,
         bool cancelable
     ) internal returns (uint256 streamId) {
         // Checks: the arguments of the function.

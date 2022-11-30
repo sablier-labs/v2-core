@@ -59,7 +59,7 @@ contract Create__Test is SablierV2ProTest {
         vm.expectRevert(Errors.SablierV2Pro__SegmentCountZero.selector);
         uint256[] memory segmentAmounts;
         SD59x18[] memory segmentExponents;
-        uint64[] memory segmentMilestones;
+        uint40[] memory segmentMilestones;
         sablierV2Pro.create(
             daiStream.sender,
             users.recipient,
@@ -148,7 +148,7 @@ contract Create__Test is SablierV2ProTest {
         SegmentCountNotZero
         SegmentCountWithinBounds
     {
-        uint64[] memory segmentMilestones = createDynamicUint64Array(SEGMENT_MILESTONES[0]);
+        uint40[] memory segmentMilestones = createDynamicUint40Array(SEGMENT_MILESTONES[0]);
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2Pro__SegmentCountsNotEqual.selector,
@@ -212,7 +212,7 @@ contract Create__Test is SablierV2ProTest {
         SegmentCountsEqual
         SegmentAmountsSumDoesNotOverflow
     {
-        uint64[] memory segmentMilestones = createDynamicUint64Array(SEGMENT_MILESTONES[1], SEGMENT_MILESTONES[0]);
+        uint40[] memory segmentMilestones = createDynamicUint40Array(SEGMENT_MILESTONES[1], SEGMENT_MILESTONES[0]);
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2Pro__SegmentMilestonesNotOrdered.selector,

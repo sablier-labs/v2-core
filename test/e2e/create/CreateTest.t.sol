@@ -35,9 +35,9 @@ abstract contract CreateTest is E2eTest {
         address sender,
         address recipient,
         uint256 depositAmount,
-        uint64 startTime,
-        uint64 cliffTime,
-        uint64 stopTime,
+        uint40 startTime,
+        uint40 cliffTime,
+        uint40 stopTime,
         bool cancelable
     ) external {
         vm.assume(sender != address(0));
@@ -85,8 +85,8 @@ abstract contract CreateTest is E2eTest {
         address sender,
         address recipient,
         uint256 depositAmount,
-        uint64 startTime,
-        uint64 stopTime,
+        uint40 startTime,
+        uint40 stopTime,
         bool cancelable
     ) external {
         vm.assume(sender != address(0));
@@ -97,7 +97,7 @@ abstract contract CreateTest is E2eTest {
         vm.assume(startTime <= stopTime);
 
         uint256[] memory segmentAmounts = createDynamicArray(depositAmount);
-        uint64[] memory segmentMilestones = createDynamicUint64Array(stopTime);
+        uint40[] memory segmentMilestones = createDynamicUint40Array(stopTime);
 
         // Pull the next stream id.
         uint256 expectedStreamId = sablierV2Pro.nextStreamId();

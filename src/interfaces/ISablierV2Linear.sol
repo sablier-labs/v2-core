@@ -18,7 +18,7 @@ interface ISablierV2Linear is ISablierV2 {
     /// @notice Reads the cliff time of the stream.
     /// @param streamId The id of the stream to make the query for.
     /// @return cliffTime The cliff time of the stream.
-    function getCliffTime(uint256 streamId) external view returns (uint64 cliffTime);
+    function getCliffTime(uint256 streamId) external view returns (uint40 cliffTime);
 
     /// @notice Reads the stream struct.
     /// @param streamId The id of the stream to make the query for.
@@ -57,9 +57,9 @@ interface ISablierV2Linear is ISablierV2 {
         address recipient,
         uint256 depositAmount,
         address token,
-        uint64 startTime,
-        uint64 cliffTime,
-        uint64 stopTime,
+        uint40 startTime,
+        uint40 cliffTime,
+        uint40 stopTime,
         bool cancelable
     ) external returns (uint256 streamId);
 
@@ -85,8 +85,8 @@ interface ISablierV2Linear is ISablierV2 {
         address recipient,
         uint256 depositAmount,
         address token,
-        uint64 cliffDuration,
-        uint64 totalDuration,
+        uint40 cliffDuration,
+        uint40 totalDuration,
         bool cancelable
     ) external returns (uint256 streamId);
 }
