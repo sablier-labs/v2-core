@@ -24,6 +24,7 @@ abstract contract BaseTest is PRBTest, StdCheats, StdUtils {
     uint256 internal constant MAX_SEGMENT_COUNT = 200;
     uint40 internal constant UINT40_MAX = type(uint40).max;
     uint128 internal constant UINT128_MAX = type(uint128).max;
+    uint256 internal constant UINT256_MAX = type(uint256).max;
 
     /*//////////////////////////////////////////////////////////////////////////
                            INTERNAL NON-CONSTANT FUNCTIONS

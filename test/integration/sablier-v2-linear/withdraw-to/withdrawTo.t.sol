@@ -146,17 +146,17 @@ contract WithdrawTo__Test is SablierV2LinearTest {
         OriginalRecipient
         WithdrawAmountNotZero
     {
-        uint128 withdrawAmountMaxUint256 = UINT128_MAX;
+        uint128 withdrawAmountMaxUint128 = UINT128_MAX;
         uint128 withdrawableAmount = 0;
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2__WithdrawAmountGreaterThanWithdrawableAmount.selector,
                 daiStreamId,
-                withdrawAmountMaxUint256,
+                withdrawAmountMaxUint128,
                 withdrawableAmount
             )
         );
-        sablierV2Linear.withdrawTo(daiStreamId, toAlice, withdrawAmountMaxUint256);
+        sablierV2Linear.withdrawTo(daiStreamId, toAlice, withdrawAmountMaxUint128);
     }
 
     modifier WithdrawAmountLessThanOrEqualToWithdrawableAmount() {

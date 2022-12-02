@@ -16,12 +16,12 @@ library DataTypes {
     struct LinearStream {
         uint128 depositAmount; // ───┐
         uint128 withdrawnAmount; // ─┘
-        address sender; // ───┐
-        uint40 startTime; // ─┘
+        address sender; // ──┐
+        uint40 startTime; // │
+        uint40 cliffTime; // │
+        bool cancelable; // ─┘
         address token; // ────┐
-        uint40 cliffTime; //  │
-        uint40 stopTime; //   │
-        bool cancelable; // ──┘
+        uint40 stopTime; // ──┘
     }
 
     /// @notice Pro stream struct.
@@ -38,9 +38,9 @@ library DataTypes {
         uint128 depositAmount; // ───┐
         uint128 withdrawnAmount; // ─┘
         address sender; // ───┐
-        uint40 startTime; // ─┘
-        address token; // ────┐
+        uint40 startTime; //  │
         uint40 stopTime; //   │
         bool cancelable; // ──┘
+        address token;
     }
 }

@@ -142,8 +142,8 @@ abstract contract CreateTest is E2eTest {
 
     /// @dev Helper function to approve the Sablier V2 contracts to spend tokens.
     function approveSablierV2() internal {
-        IERC20(token()).approve(address(sablierV2Linear), UINT128_MAX);
-        IERC20(token()).approve(address(sablierV2Pro), UINT128_MAX);
+        IERC20(token()).approve(address(sablierV2Linear), UINT256_MAX);
+        IERC20(token()).approve(address(sablierV2Pro), UINT256_MAX);
     }
 
     /// @dev Helper function to return the token holder's address.
