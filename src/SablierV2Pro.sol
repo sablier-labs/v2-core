@@ -311,6 +311,8 @@ contract SablierV2Pro is
             returnAmount = stream.depositAmount - stream.withdrawnAmount - withdrawAmount;
         }
 
+        // Load the sender and the recipient in memory, we will need them below.
+        address sender = getSender(streamId);
         address recipient = getRecipient(streamId);
 
         // Effects: delete the stream from storage.
@@ -330,7 +332,7 @@ contract SablierV2Pro is
         }
 
         // Emit an event.
-        emit Events.Cancel(streamId, recipient, withdrawAmount, returnAmount);
+        emit Events.Cancel(streamId, sender, recipient, withdrawAmount, returnAmount);
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
