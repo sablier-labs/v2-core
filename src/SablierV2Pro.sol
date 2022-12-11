@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
-import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
@@ -15,6 +14,7 @@ import { Validations } from "./libraries/Validations.sol";
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Pro } from "./interfaces/ISablierV2Pro.sol";
 import { ISablierV2Recipient } from "./interfaces/ISablierV2Recipient.sol";
+import { ISablierV2Sender } from "./interfaces/ISablierV2Sender.sol";
 import { SablierV2 } from "./SablierV2.sol";
 
 /// @title SablierV2Pro
@@ -24,7 +24,6 @@ contract SablierV2Pro is
     SablierV2, // two dependencies
     ERC721("Sablier V2 Pro NFT", "SAB-V2-PRO") // six dependencies
 {
-    using Address for address;
     using SafeERC20 for IERC20;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -337,10 +336,31 @@ contract SablierV2Pro is
         // Emit an event.
         emit Events.Cancel(streamId, sender, recipient, withdrawAmount, returnAmount);
 
-        // Interactions: if the recipient is a contract, try to invoke the cancel hook on it, but ignore reverts.
-        if (recipient.isContract()) {
+        // Interactions: if the caller is not the recipient and the recipient is a contract, try to invoke the
+        // cancel hook on it without reverting if the hook is not implemented, and also without bubbling up
+        // any potential revert.
+        if (msg.sender != recipient && recipient.code.length > 0) {
             try
-                ISablierV2Recipient(recipient).onStreamCanceled(streamId, msg.sender, withdrawAmount, returnAmount)
+                ISablierV2Recipient(recipient).onStreamCanceled({
+                    streamId: streamId,
+                    caller: msg.sender,
+                    withdrawAmount: withdrawAmount,
+                    returnAmount: returnAmount
+                })
+            {} catch {}
+        }
+
+        // Interactions: if the caller is not the sender and the sender is a contract, try to invoke the
+        // cancel hook on it without reverting if the hook is not implemented, and without bubbling up
+        // any potential revert.
+        if (msg.sender != sender && sender.code.length > 0) {
+            try
+                ISablierV2Sender(recipient).onStreamCanceled({
+                    streamId: streamId,
+                    caller: msg.sender,
+                    withdrawAmount: withdrawAmount,
+                    returnAmount: returnAmount
+                })
             {} catch {}
         }
     }
@@ -467,9 +487,17 @@ contract SablierV2Pro is
         // Emit an event.
         emit Events.Withdraw(streamId, to, amount);
 
-        // Interactions: if the recipient is a contract, try to invoke the withdraw hook on it, but ignore reverts.
-        if (recipient.isContract()) {
-            try ISablierV2Recipient(recipient).onStreamWithdrawn(streamId, msg.sender, amount) {} catch {}
+        // Interactions: if the caller is not the recipient and the recipient is a contract, try to invoke the
+        // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
+        // any potential revert.
+        if (msg.sender != recipient && recipient.code.length > 0) {
+            try
+                ISablierV2Recipient(recipient).onStreamWithdrawn({
+                    streamId: streamId,
+                    caller: msg.sender,
+                    withdrawAmount: amount
+                })
+            {} catch {}
         }
     }
 }
