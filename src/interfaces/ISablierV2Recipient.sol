@@ -17,8 +17,8 @@ interface ISablierV2Recipient {
     function onStreamCanceled(
         uint256 streamId,
         address caller,
-        uint256 withdrawAmount,
-        uint256 returnAmount
+        uint128 withdrawAmount,
+        uint128 returnAmount
     ) external;
 
     /// @notice Reacts to a withdrawal from a stream.
@@ -31,6 +31,6 @@ interface ISablierV2Recipient {
     function onStreamWithdrawn(
         uint256 streamId,
         address caller,
-        uint256 withdrawAmount
+        uint128 withdrawAmount
     ) external;
 }

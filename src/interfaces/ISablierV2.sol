@@ -65,6 +65,9 @@ interface ISablierV2 is IERC721 {
     ///
     /// @dev Emits a {Cancel} event.
     ///
+    /// This function will attempt to call a hook on either the sender or the recipient, depending upon who is
+    /// the caller, and if the sender and the recipient are contracts.
+    ///
     /// Requirements:
     /// - `streamId` must point to an existent stream.
     /// - `msg.sender` must be either the sender of the stream or the owner of the NFT (also known as the
@@ -107,6 +110,8 @@ interface ISablierV2 is IERC721 {
     ///
     /// @dev Emits a {Withdraw} event.
     ///
+    /// This function will attempt to call a hook on the recipient of the stream, if the recipient is a contract.
+    ///
     /// Requirements:
     /// - `streamId` must point to an existent stream.
     /// - `msg.sender` must be the sender of the stream, an approved operator, or the owner of the
@@ -120,6 +125,8 @@ interface ISablierV2 is IERC721 {
     /// @notice Withdraws tokens from multiple streams to the recipient's account.
     ///
     /// @dev Emits multiple {Withdraw} event.
+    ///
+    /// This function will attempt to call a hook on the recipient of each stream, if the recipient is a contract.
     ///
     /// Requirements:
     /// - The count of `streamIds` must match the count of `amounts`.
@@ -135,6 +142,8 @@ interface ISablierV2 is IERC721 {
     /// @notice Withdraws tokens from multiple streams to the provided address `to`.
     ///
     /// @dev Emits multiple {Withdraw} event.
+    ///
+    /// This function will attempt to call a hook on the recipient of each stream, if the recipient is a contract.
     ///
     /// Requirements:
     /// - `to` must not be the zero address.
@@ -156,6 +165,8 @@ interface ISablierV2 is IERC721 {
     /// @notice Withdraws tokens from the stream to the provided address `to`.
     ///
     /// @dev Emits a {Withdraw} event.
+    ///
+    /// This function will attempt to call a hook on the recipient of the stream, if the recipient is a contract.
     ///
     /// Requirements:
     /// - `streamId` must point to an existent stream.

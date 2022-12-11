@@ -17,7 +17,7 @@ interface ISablierV2Sender {
     function onStreamCanceled(
         uint256 streamId,
         address caller,
-        uint256 withdrawAmount,
-        uint256 returnAmount
+        uint128 withdrawAmount,
+        uint128 returnAmount
     ) external;
 }

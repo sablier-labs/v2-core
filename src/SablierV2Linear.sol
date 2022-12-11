@@ -231,9 +231,6 @@ contract SablierV2Linear is
             IERC20(stream.token).safeTransfer({ to: sender, amount: returnAmount });
         }
 
-        // Emit an event.
-        emit Events.Cancel(streamId, sender, recipient, withdrawAmount, returnAmount);
-
         // Interactions: if the caller is the sender and the recipient is a contract, try to invoke the cancel
         // hook on the recipient without reverting if the hook is not implemented, and without bubbling up any
         // potential revert.
@@ -264,6 +261,9 @@ contract SablierV2Linear is
                 {} catch {}
             }
         }
+
+        // Emit an event.
+        emit Events.Cancel(streamId, sender, recipient, withdrawAmount, returnAmount);
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
@@ -368,9 +368,6 @@ contract SablierV2Linear is
         // Interactions: perform the ERC-20 transfer.
         IERC20(stream.token).safeTransfer({ to: to, amount: amount });
 
-        // Emit an event.
-        emit Events.Withdraw({ streamId: streamId, recipient: to, amount: amount });
-
         // Interactions: if the caller is not the recipient and the recipient is a contract, try to invoke the
         // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
         // any potential revert.
@@ -383,5 +380,8 @@ contract SablierV2Linear is
                 })
             {} catch {}
         }
+
+        // Emit an event.
+        emit Events.Withdraw({ streamId: streamId, recipient: to, amount: amount });
     }
 }
