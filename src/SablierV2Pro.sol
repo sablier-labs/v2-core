@@ -336,32 +336,35 @@ contract SablierV2Pro is
         // Emit an event.
         emit Events.Cancel(streamId, sender, recipient, withdrawAmount, returnAmount);
 
-        // Interactions: if the caller is not the recipient and the recipient is a contract, try to invoke the
-        // cancel hook on it without reverting if the hook is not implemented, and also without bubbling up
-        // any potential revert.
-        if (msg.sender != recipient && recipient.code.length > 0) {
-            try
-                ISablierV2Recipient(recipient).onStreamCanceled({
-                    streamId: streamId,
-                    caller: msg.sender,
-                    withdrawAmount: withdrawAmount,
-                    returnAmount: returnAmount
-                })
-            {} catch {}
+        // Interactions: if the caller is the sender and the recipient is a contract, try to invoke the cancel
+        // hook on the recipient without reverting if the hook is not implemented, and without bubbling up any
+        // potential revert.
+        if (msg.sender == sender) {
+            if (recipient.code.length > 0) {
+                try
+                    ISablierV2Recipient(recipient).onStreamCanceled({
+                        streamId: streamId,
+                        caller: msg.sender,
+                        withdrawAmount: withdrawAmount,
+                        returnAmount: returnAmount
+                    })
+                {} catch {}
+            }
         }
-
-        // Interactions: if the caller is not the sender and the sender is a contract, try to invoke the
-        // cancel hook on it without reverting if the hook is not implemented, and without bubbling up
-        // any potential revert.
-        if (msg.sender != sender && sender.code.length > 0) {
-            try
-                ISablierV2Sender(recipient).onStreamCanceled({
-                    streamId: streamId,
-                    caller: msg.sender,
-                    withdrawAmount: withdrawAmount,
-                    returnAmount: returnAmount
-                })
-            {} catch {}
+        // Interactions: if the caller is the recipient and the sender is a contract, try to invoke the cancel
+        // hook on the sender without reverting if the hook is not implemented, and also without bubbling up any
+        // potential revert.
+        else {
+            if (sender.code.length > 0) {
+                try
+                    ISablierV2Sender(sender).onStreamCanceled({
+                        streamId: streamId,
+                        caller: msg.sender,
+                        withdrawAmount: withdrawAmount,
+                        returnAmount: returnAmount
+                    })
+                {} catch {}
+            }
         }
     }
 
