@@ -6,12 +6,13 @@ cancel.t.sol
    │  └── it should revert
    └── when the stream is cancelable
       ├── when the caller is not authorized
-      │  └── it should revert
+      │  ├── when the caller is a malicious third-party
+      │  │  └── it should revert
+      │  └── when the caller is an approved operator
+      │     └── it should revert
       └── when the caller is authorized
          ├── when the caller is the sender
          │  └── it should cancel and delete the stream and burn the NFT
-         ├── when the caller is an approved operator
-         │  └── it should cancel and delete the stream
          └── when the caller is the recipient
             ├── when the original recipient transferred ownership of the stream
             │  └── it should revert

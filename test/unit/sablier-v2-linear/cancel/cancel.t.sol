@@ -49,12 +49,25 @@ contract Cancel__Test is SablierV2LinearTest {
     }
 
     /// @dev it should revert.
-    function testCannotCancel__CallerUnauthorized() external StreamExistent StreamCancelable {
+    function testCannotCancel__CallerMaliciousThirdParty() external StreamExistent StreamCancelable {
         // Make Eve the `msg.sender` in this test case.
         changePrank(users.eve);
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, daiStreamId, users.eve));
+        sablierV2Linear.cancel(daiStreamId);
+    }
+
+    /// @dev it should revert.
+    function testCannotCancel__CallerApprovedOperator() external StreamExistent StreamCancelable {
+        // Approve Alice for the stream.
+        sablierV2Linear.approve({ to: users.operator, tokenId: daiStreamId });
+
+        // Make Alice the `msg.sender` in this test case.
+        changePrank(users.operator);
+
+        // Run the test.
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, daiStreamId, users.operator));
         sablierV2Linear.cancel(daiStreamId);
     }
 
@@ -66,25 +79,6 @@ contract Cancel__Test is SablierV2LinearTest {
     function testCancel__CallerSender() external StreamExistent StreamCancelable CallerAuthorized {
         // Make the sender the `msg.sender` in this test case.
         changePrank(users.sender);
-
-        // Run the test.
-        sablierV2Linear.cancel(daiStreamId);
-        DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
-        DataTypes.LinearStream memory expectedStream;
-        assertEq(deletedStream, expectedStream);
-
-        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
-        address expectedRecipient = address(0);
-        assertEq(actualRecipient, expectedRecipient);
-    }
-
-    /// @dev it should cancel and delete the stream and burn the NFT.
-    function testCancel__CallerApprovedOperator() external StreamExistent StreamCancelable CallerAuthorized {
-        // Approve Alice for the stream.
-        sablierV2Linear.approve({ to: users.alice, tokenId: daiStreamId });
-
-        // Make Alice the `msg.sender` in this test case.
-        changePrank(users.alice);
 
         // Run the test.
         sablierV2Linear.cancel(daiStreamId);

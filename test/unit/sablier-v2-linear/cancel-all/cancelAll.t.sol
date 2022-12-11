@@ -159,19 +159,10 @@ contract CancelAll__Test is SablierV2LinearTest {
         changePrank(users.operator);
 
         // Run the test.
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.operator)
+        );
         sablierV2Linear.cancelAll(defaultStreamIds);
-
-        DataTypes.LinearStream memory actualStream0 = sablierV2Linear.getStream(defaultStreamIds[0]);
-        DataTypes.LinearStream memory actualStream1 = sablierV2Linear.getStream(defaultStreamIds[1]);
-        DataTypes.LinearStream memory expectedStream;
-        assertEq(actualStream0, expectedStream);
-        assertEq(actualStream1, expectedStream);
-
-        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
-        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
-        address expectedRecipient = address(0);
-        assertEq(actualRecipient0, expectedRecipient);
-        assertEq(actualRecipient1, expectedRecipient);
     }
 
     modifier CallerRecipientAllStreams() {
