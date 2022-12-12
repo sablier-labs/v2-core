@@ -97,7 +97,7 @@ contract GetWithdrawableAmount__Test is SablierV2ProTest {
         _;
     }
 
-    /// @dev it should retfurn the correct withdrawable amount.
+    /// @dev it should return the correct withdrawable amount.
     function testGetWithdrawableAmount__OneSegment__Token6Decimals()
         external
         StreamExistent
