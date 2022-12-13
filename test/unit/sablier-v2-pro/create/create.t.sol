@@ -339,6 +339,7 @@ contract Create__Test is SablierV2ProTest {
         assertEq(actualStream.startTime, daiStream.startTime);
         assertEq(actualStream.stopTime, daiStream.stopTime);
         assertEq(actualStream.cancelable, daiStream.cancelable);
+        assertEq(actualStream.isEntity, daiStream.isEntity);
         assertEq(actualStream.withdrawnAmount, daiStream.withdrawnAmount);
 
         address actualRecipient = sablierV2Pro.getRecipient(daiStreamId);

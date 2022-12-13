@@ -91,6 +91,7 @@ contract Create__Test is SablierV2LinearTest {
         assertEq(actualStream.cliffTime, cliffTime);
         assertEq(actualStream.stopTime, daiStream.stopTime);
         assertEq(actualStream.cancelable, daiStream.cancelable);
+        assertEq(actualStream.isEntity, daiStream.isEntity);
         assertEq(actualStream.withdrawnAmount, daiStream.withdrawnAmount);
 
         address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
@@ -152,6 +153,7 @@ contract Create__Test is SablierV2LinearTest {
         assertEq(actualStream.cliffTime, cliffTime);
         assertEq(actualStream.stopTime, daiStream.stopTime);
         assertEq(actualStream.cancelable, daiStream.cancelable);
+        assertEq(actualStream.isEntity, daiStream.isEntity);
         assertEq(actualStream.withdrawnAmount, daiStream.withdrawnAmount);
 
         address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
@@ -218,6 +220,7 @@ contract Create__Test is SablierV2LinearTest {
         assertEq(actualStream.cliffTime, daiStream.cliffTime);
         assertEq(actualStream.stopTime, daiStream.stopTime);
         assertEq(actualStream.cancelable, daiStream.cancelable);
+        assertEq(actualStream.isEntity, daiStream.isEntity);
         assertEq(actualStream.withdrawnAmount, daiStream.withdrawnAmount);
 
         address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
