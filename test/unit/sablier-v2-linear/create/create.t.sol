@@ -12,7 +12,7 @@ import { SablierV2LinearTest } from "../SablierV2LinearTest.t.sol";
 contract Create__Test is SablierV2LinearTest {
     /// @dev it should revert.
     function testCannotCreate__RecipientZeroAddress() external {
-        vm.expectRevert(Errors.SablierV2__RecipientZeroAddress.selector);
+        vm.expectRevert("ERC721: mint to the zero address");
         address recipient = address(0);
         sablierV2Linear.create(
             daiStream.sender,
