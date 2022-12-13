@@ -57,8 +57,7 @@ contract Withdraw__Test is SablierV2LinearTest {
 
         // Run the test.
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
-        uint128 actualWithdrawnAmount = actualStream.withdrawnAmount;
+        uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
@@ -76,8 +75,7 @@ contract Withdraw__Test is SablierV2LinearTest {
 
         // Run the test.
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
-        uint128 actualWithdrawnAmount = actualStream.withdrawnAmount;
+        uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
@@ -188,8 +186,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         StreamOngoing
     {
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
-        uint128 actualWithdrawnAmount = actualStream.withdrawnAmount;
+        uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
@@ -214,8 +211,7 @@ contract Withdraw__Test is SablierV2LinearTest {
     {
         daiStreamId = createDefaultDaiStreamWithRecipient(address(empty));
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
-        uint128 actualWithdrawnAmount = actualStream.withdrawnAmount;
+        uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
@@ -239,8 +235,7 @@ contract Withdraw__Test is SablierV2LinearTest {
     {
         daiStreamId = createDefaultDaiStreamWithRecipient(address(revertingRecipient));
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
-        uint128 actualWithdrawnAmount = actualStream.withdrawnAmount;
+        uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
@@ -266,8 +261,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         daiStreamId = createDefaultDaiStreamWithRecipient(address(reentrantRecipient));
         uint128 withdrawAmount = WITHDRAW_AMOUNT_DAI / 2;
         sablierV2Linear.withdraw(daiStreamId, withdrawAmount);
-        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
-        uint128 actualWithdrawnAmount = actualStream.withdrawnAmount;
+        uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
@@ -293,8 +287,7 @@ contract Withdraw__Test is SablierV2LinearTest {
     {
         daiStreamId = createDefaultDaiStreamWithRecipient(address(nonRevertingRecipient));
         sablierV2Linear.withdraw(daiStreamId, WITHDRAW_AMOUNT_DAI);
-        DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(daiStreamId);
-        uint128 actualWithdrawnAmount = actualStream.withdrawnAmount;
+        uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }

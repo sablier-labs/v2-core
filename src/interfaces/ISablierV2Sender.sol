@@ -7,8 +7,7 @@ pragma solidity >=0.8.13;
 /// the function execution will not revert.
 interface ISablierV2Sender {
     /// @notice Reacts to the cancellation of a stream.
-    /// @dev Sablier V2 invokes this function on the sender after a cancellation triggered by the recipient or
-    /// an approved operator.
+    /// @dev Sablier V2 invokes this function on the sender after a cancellation triggered by the recipient.
     /// This function may revert, but Sablier V2 will always ignore the revert.
     /// @param streamId The id of the stream that was canceled.
     /// @param caller The address of the account that triggered the cancellation.

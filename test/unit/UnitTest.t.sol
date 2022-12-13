@@ -46,8 +46,9 @@ abstract contract UnitTest is BaseTest {
                                  STORAGE
     //////////////////////////////////////////////////////////////*/
 
-    ERC20GodMode internal dai = new ERC20GodMode("Dai Stablecoin", "DAI", 18);
     Empty internal empty = new Empty();
+    ERC20GodMode internal dai = new ERC20GodMode("Dai Stablecoin", "DAI", 18);
+    ERC20GodMode internal usdc = new ERC20GodMode("USD Coin", "USDC", 6);
     NonCompliantERC20 internal nonCompliantToken = new NonCompliantERC20("Stablecoin", "USD", 18);
     NonRevertingRecipient internal nonRevertingRecipient = new NonRevertingRecipient();
     NonRevertingSender internal nonRevertingSender = new NonRevertingSender();
@@ -55,7 +56,6 @@ abstract contract UnitTest is BaseTest {
     ReentrantSender internal reentrantSender = new ReentrantSender();
     RevertingRecipient internal revertingRecipient = new RevertingRecipient();
     RevertingSender internal revertingSender = new RevertingSender();
-    ERC20GodMode internal usdc = new ERC20GodMode("USD Coin", "USDC", 6);
     Users internal users;
 
     /*//////////////////////////////////////////////////////////////////////////
