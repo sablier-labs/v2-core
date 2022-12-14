@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: LGPL-3.0
 pragma solidity >=0.8.13;
 
-import { SD1x18 } from "@prb/math/SD1x18.sol";
-
 import { Errors } from "./libraries/Errors.sol";
 
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
