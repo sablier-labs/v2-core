@@ -65,9 +65,9 @@ contract Withdraw__Test is SablierV2LinearTest {
     /// @dev it should make the withdrawal and update the withdrawn amount.
     function testWithdraw__CallerApprovedOperator() external StreamExistent CallerAuthorized {
         // Approve the operator to handle the stream.
-        sablierV2Linear.approve(users.operator, daiStreamId);
+        sablierV2Linear.approve({ to: users.operator, tokenId: daiStreamId });
 
-        // Make the operator the caller in this test.
+        // Make the approved operator the caller in this test.
         changePrank(users.operator);
 
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
@@ -144,7 +144,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should make the withdrawal and delete the stream and burn the NFT.
+    /// @dev it should make the withdrawal and delete the stream.
     function testWithdraw__StreamEnded()
         external
         StreamExistent
@@ -162,10 +162,6 @@ contract Withdraw__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
-
-        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
-        address expectedRecipient = address(0);
-        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier StreamOngoing() {
@@ -197,7 +193,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should make the withdrawal and delete the stream and burn the NFT.
+    /// @dev it should make the withdrawal and update the withdrawn amount.
     function testWithdraw__RecipientDoesNotImplementHook()
         external
         StreamExistent
@@ -220,7 +216,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should ignore the revert and make the withdrawal and delete the stream.
+    /// @dev it should make the withdrawal and update the withdrawn amount.
     function testWithdraw__RecipientReverts()
         external
         StreamExistent
@@ -244,7 +240,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should make the withdrawal and delete the stream.
+    /// @dev it should make the withdrawal and update the withdrawn amount.
     function testWithdraw__Reentrancy()
         external
         StreamExistent
@@ -270,7 +266,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should make the withdrawal and delete the stream.
+    /// @dev it should make the withdrawal and update the withdrawn amount.
     function testWithdraw()
         external
         StreamExistent
@@ -292,7 +288,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
 
-    /// @dev it should make the withdrawal and delete the stream.
+    /// @dev it should emit a Withdraw event.
     function testWithdraw__Event()
         external
         StreamExistent
