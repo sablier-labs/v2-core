@@ -37,6 +37,10 @@ contract CancelAll__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(defaultStreamIds[0]);
         DataTypes.LinearStream memory expectedStream;
         assertEq(actualStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier OnlyExistentStreams() {
@@ -64,6 +68,10 @@ contract CancelAll__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory actualStream = sablierV2Linear.getStream(defaultStreamIds[0]);
         DataTypes.LinearStream memory expectedStream;
         assertEq(actualStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier AllStreamsCancelable() {
@@ -171,6 +179,12 @@ contract CancelAll__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory expectedStream;
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     modifier CallerRecipientAllStreams() {
@@ -238,6 +252,12 @@ contract CancelAll__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory expectedStream;
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     /// @dev it should emit multiple Cancel events.
@@ -296,6 +316,12 @@ contract CancelAll__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory expectedStream;
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     /// @dev it should emit multiple Cancel events.
@@ -370,6 +396,12 @@ contract CancelAll__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedOngoingStream, expectedStream);
         assertEq(deletedEndedStream, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(ongoingStreamId);
+        address actualRecipient1 = sablierV2Linear.getRecipient(endedDaiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     /// @dev it should emit multiple Cancel events.

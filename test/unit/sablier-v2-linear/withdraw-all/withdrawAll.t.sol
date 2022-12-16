@@ -295,6 +295,12 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory expectedStream;
         assertEq(actualStream0, expectedStream);
         assertEq(actualStream1, expectedStream);
+
+        address actualRecipient0 = sablierV2Linear.getRecipient(defaultStreamIds[0]);
+        address actualRecipient1 = sablierV2Linear.getRecipient(defaultStreamIds[1]);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient0, expectedRecipient);
+        assertEq(actualRecipient1, expectedRecipient);
     }
 
     /// @dev it should emit multiple Withdraw events.
@@ -428,6 +434,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory actualEndedStream = sablierV2Linear.getStream(endedDaiStreamId);
         DataTypes.LinearStream memory expectedEndedStream;
         assertEq(actualEndedStream, expectedEndedStream);
+
+        address actualEndedRecipient = sablierV2Linear.getRecipient(endedDaiStreamId);
+        address expectedEndedRecipient = users.recipient;
+        assertEq(actualEndedRecipient, expectedEndedRecipient);
 
         DataTypes.LinearStream memory queriedStream = sablierV2Linear.getStream(ongoingStreamId);
         uint128 actualWithdrawnAmount = queriedStream.withdrawnAmount;

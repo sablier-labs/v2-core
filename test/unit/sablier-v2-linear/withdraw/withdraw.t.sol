@@ -162,6 +162,10 @@ contract Withdraw__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier StreamOngoing() {

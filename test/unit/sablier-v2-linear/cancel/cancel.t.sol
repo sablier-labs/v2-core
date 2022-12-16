@@ -87,6 +87,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier RecipientContract() {
@@ -107,6 +111,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = address(empty);
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     /// @dev it should cancel and delete the stream.
@@ -123,6 +131,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = address(nonRevertingRecipient);
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier CallerRecipient() {
@@ -166,6 +178,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier StreamOngoing() {
@@ -188,6 +204,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier SenderContract() {
@@ -210,6 +230,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier SenderImplementsHook() {
@@ -233,6 +257,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier SenderDoesNotRevert() {
@@ -257,6 +285,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     modifier NoReentrancy() {
@@ -282,6 +314,10 @@ contract Cancel__Test is SablierV2LinearTest {
         DataTypes.LinearStream memory deletedStream = sablierV2Linear.getStream(daiStreamId);
         DataTypes.LinearStream memory expectedStream;
         assertEq(deletedStream, expectedStream);
+
+        address actualRecipient = sablierV2Linear.getRecipient(daiStreamId);
+        address expectedRecipient = users.recipient;
+        assertEq(actualRecipient, expectedRecipient);
     }
 
     /// @dev it should emit a Cancel event.
