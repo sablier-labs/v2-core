@@ -52,6 +52,11 @@ interface ISablierV2 is IERC721 {
     /// @return withdrawnAmount The amount withdrawn from the stream, in units of the ERC-20 token's decimals.
     function getWithdrawnAmount(uint256 streamId) external view returns (uint128 withdrawnAmount);
 
+    /// @notice Checks whether the `msg.sender` is the stream sender or not.
+    /// @param streamId The id of the stream to make the query for.
+    /// @return result Whether the `msg.sender` is the stream sender or not.
+    function isCallerStreamSender(uint256 streamId) external view returns (bool result);
+
     /// @notice Checks whether the stream is cancelable or not.
     /// @param streamId The id of the stream to make the query for.
     /// @return result Whether the stream is cancelable or not.
@@ -127,7 +132,10 @@ interface ISablierV2 is IERC721 {
     /// @param streamId The id of the stream to renounce.
     function renounce(uint256 streamId) external;
 
-    /// @notice Withdraws tokens from the stream to the recipient's account.
+    /// @notice Withdraws tokens from the stream to the provided address `to`, if the `msg.sender` is
+    /// an approved operator, or the owner of the NFT (also known as the recipient of the stream), otherwise
+    /// withdraws tokens from the stream to the recipient's address if the `msg.sender` is the sender
+    /// of the stream, the `to` address will be ignored.
     ///
     /// @dev Emits a {Withdraw} and a {Transfer} event.
     ///
@@ -140,10 +148,18 @@ interface ISablierV2 is IERC721 {
     /// - `amount` must not be zero and must not exceed the withdrawable amount.
     ///
     /// @param streamId The id of the stream to withdraw.
+    /// @param to The address that will receive the withdrawn tokens, if the caller is not the stream sender.
     /// @param amount The amount to withdraw, in units of the ERC-20 token's decimals.
-    function withdraw(uint256 streamId, uint128 amount) external;
+    function withdraw(
+        uint256 streamId,
+        address to,
+        uint128 amount
+    ) external;
 
-    /// @notice Withdraws tokens from multiple streams to the recipient's account.
+    /// @notice Withdraws tokens from multiple streams to the provided address `to`, if the `msg.sender` is
+    /// an approved operator, or the owner of the NFT (also known as the recipient of the stream), otherwise
+    /// withdraws tokens from multiple streams to the recipient's address if the `msg.sender` is the sender
+    /// of the stream, the `to` address will be ignored.
     ///
     /// @dev Emits multiple {Withdraw} and {Transfer} events.
     ///
@@ -157,51 +173,11 @@ interface ISablierV2 is IERC721 {
     /// - Each amount in `amounts` must not be zero and must not exceed the withdrawable amount.
     ///
     /// @param streamIds The ids of the streams to withdraw.
+    /// @param to The address that will receive the withdrawn tokens, if the caller is not the stream sender.
     /// @param amounts The amounts to withdraw, in units of the ERC-20 token's decimals.
-    function withdrawAll(uint256[] calldata streamIds, uint128[] calldata amounts) external;
-
-    /// @notice Withdraws tokens from multiple streams to the provided address `to`.
-    ///
-    /// @dev Emits multiple {Withdraw} and {Transfer} events.
-    ///
-    /// This function will attempt to call a hook on the recipient of each stream, if the recipient is a contract.
-    ///
-    /// Requirements:
-    /// - `to` must not be the zero address.
-    /// - The count of `streamIds` must match the count of `amounts`.
-    /// - Each stream id in `streamIds` must point to an existent stream.
-    /// - `msg.sender` must be an approved operator, or the owner of the NFT (also known
-    /// as the recipient of the stream) of every stream.
-    /// - Each amount in `amounts` must not be zero and must not exceed the withdrawable amount.
-    ///
-    /// @param streamIds The ids of the streams to withdraw.
-    /// @param to The address that will receive the withdrawn tokens.
-    /// @param amounts The amounts to withdraw, in units of the ERC-20 token's decimals.
-    function withdrawAllTo(
+    function withdrawAll(
         uint256[] calldata streamIds,
         address to,
         uint128[] calldata amounts
-    ) external;
-
-    /// @notice Withdraws tokens from the stream to the provided address `to`.
-    ///
-    /// @dev Emits a {Withdraw} and a {Transfer} event.
-    ///
-    /// This function will attempt to call a hook on the recipient of the stream, if the recipient is a contract.
-    ///
-    /// Requirements:
-    /// - `streamId` must point to an existent stream.
-    /// - `to` must not be the zero address.
-    /// - `msg.sender` must be an approved operator, or the owner of the NFT (also known
-    /// as the recipient of the stream).
-    /// - `amount` must not be zero and must not exceed the withdrawable amount.
-    ///
-    /// @param streamId The id of the stream to withdraw.
-    /// @param to The address that will receive the withdrawn tokens.
-    /// @param amount The amount to withdraw, in units of the ERC-20 token's decimals.
-    function withdrawTo(
-        uint256 streamId,
-        address to,
-        uint128 amount
     ) external;
 }

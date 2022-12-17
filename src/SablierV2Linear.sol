@@ -69,7 +69,7 @@ contract SablierV2Linear is
     }
 
     /// @inheritdoc ISablierV2
-    function getSender(uint256 streamId) public view override(ISablierV2, SablierV2) returns (address sender) {
+    function getSender(uint256 streamId) external view override returns (address sender) {
         sender = _streams[streamId].sender;
     }
 
@@ -126,6 +126,11 @@ contract SablierV2Linear is
     /// @inheritdoc ISablierV2
     function getWithdrawnAmount(uint256 streamId) external view override returns (uint128 withdrawnAmount) {
         withdrawnAmount = _streams[streamId].withdrawnAmount;
+    }
+
+    /// @inheritdoc ISablierV2
+    function isCallerStreamSender(uint256 streamId) public view override(ISablierV2, SablierV2) returns (bool result) {
+        result = msg.sender == _streams[streamId].sender;
     }
 
     /// @inheritdoc ISablierV2
@@ -223,7 +228,7 @@ contract SablierV2Linear is
         }
 
         // Load the sender and the recipient in memory, we will need them below.
-        address sender = getSender(streamId);
+        address sender = _streams[streamId].sender;
         address recipient = getRecipient(streamId);
 
         // Effects: delete the stream from storage.
@@ -390,6 +395,6 @@ contract SablierV2Linear is
         }
 
         // Emit an event.
-        emit Events.Withdraw({ streamId: streamId, recipient: to, amount: amount });
+        emit Events.Withdraw(streamId, to, amount);
     }
 }

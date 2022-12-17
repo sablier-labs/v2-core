@@ -40,9 +40,6 @@ library Errors {
     /// @notice The id of the stream.
     error SablierV2__WithdrawAmountZero(uint256 streamId);
 
-    /// @notice Emitted when attempting to withdraw to a zero address.
-    error SablierV2__WithdrawZeroAddress();
-
     /*//////////////////////////////////////////////////////////////////////////
                            SABLIER-V2-LINEAR CUSTOM ERRORS
     //////////////////////////////////////////////////////////////////////////*/

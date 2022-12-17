@@ -22,7 +22,7 @@ abstract contract SablierV2 is ISablierV2 {
     /// @notice Checks that `msg.sender` is the sender of the stream, an approved operator, or the owner of the
     /// NFT (also known as the recipient of the stream).
     modifier isAuthorizedForStream(uint256 streamId) {
-        if (msg.sender != getSender(streamId) && !_isApprovedOrOwner(streamId, msg.sender)) {
+        if (!isCallerStreamSender(streamId) && !_isApprovedOrOwner(streamId, msg.sender)) {
             revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
         }
         _;
@@ -31,7 +31,7 @@ abstract contract SablierV2 is ISablierV2 {
     /// @notice Checks that `msg.sender` is either the sender of the stream or the owner of the NFT (also known as
     /// the recipient of the stream).
     modifier onlySenderOrRecipient(uint256 streamId) {
-        if (msg.sender != getSender(streamId) && msg.sender != getRecipient(streamId)) {
+        if (!isCallerStreamSender(streamId) && msg.sender != getRecipient(streamId)) {
             revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
         }
         _;
@@ -61,7 +61,7 @@ abstract contract SablierV2 is ISablierV2 {
     function getRecipient(uint256 streamId) public view virtual override returns (address recipient);
 
     /// @inheritdoc ISablierV2
-    function getSender(uint256 streamId) public view virtual override returns (address sender);
+    function isCallerStreamSender(uint256 streamId) public view virtual override returns (bool result);
 
     /// @inheritdoc ISablierV2
     function isCancelable(uint256 streamId) public view virtual override returns (bool result);
@@ -124,7 +124,7 @@ abstract contract SablierV2 is ISablierV2 {
     /// @inheritdoc ISablierV2
     function renounce(uint256 streamId) external override streamExists(streamId) {
         // Checks: the caller is the sender of the stream.
-        if (msg.sender != getSender(streamId)) {
+        if (!isCallerStreamSender(streamId)) {
             revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
         }
 
@@ -137,18 +137,24 @@ abstract contract SablierV2 is ISablierV2 {
     }
 
     /// @inheritdoc ISablierV2
-    function withdraw(uint256 streamId, uint128 amount)
-        external
-        override
-        streamExists(streamId)
-        isAuthorizedForStream(streamId)
-    {
-        address recipient = getRecipient(streamId);
-        _withdraw(streamId, recipient, amount);
+    function withdraw(
+        uint256 streamId,
+        address to,
+        uint128 amount
+    ) external override streamExists(streamId) isAuthorizedForStream(streamId) {
+        if (isCallerStreamSender(streamId)) {
+            _withdraw({ streamId: streamId, to: getRecipient(streamId), amount: amount });
+        } else {
+            _withdraw(streamId, to, amount);
+        }
     }
 
     /// @inheritdoc ISablierV2
-    function withdrawAll(uint256[] calldata streamIds, uint128[] calldata amounts) external override {
+    function withdrawAll(
+        uint256[] calldata streamIds,
+        address to,
+        uint128[] calldata amounts
+    ) external {
         // Checks: count of `streamIds` matches count of `amounts`.
         uint256 streamIdsCount = streamIds.length;
         uint256 amountsCount = amounts.length;
@@ -157,8 +163,6 @@ abstract contract SablierV2 is ISablierV2 {
         }
 
         // Iterate over the provided array of stream ids and withdraw from each stream.
-        address recipient;
-        address sender;
         uint256 streamId;
         for (uint256 i = 0; i < streamIdsCount; ) {
             streamId = streamIds[i];
@@ -167,14 +171,15 @@ abstract contract SablierV2 is ISablierV2 {
             if (isEntity(streamId)) {
                 // Checks: the `msg.sender` is the sender or the stream, an approved operator, or the owner of the NFT
                 // (a.k.a. the recipient of the stream).
-                sender = getSender(streamId);
-                if (msg.sender != sender && !_isApprovedOrOwner(streamId, msg.sender)) {
+                if (!isCallerStreamSender(streamId) && !_isApprovedOrOwner(streamId, msg.sender)) {
                     revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
-                // Effects and Interactions: withdraw from the stream.
-                recipient = getRecipient(streamId);
-                _withdraw(streamId, recipient, amounts[i]);
+                if (isCallerStreamSender(streamId)) {
+                    _withdraw({ streamId: streamId, to: getRecipient(streamId), amount: amounts[i] });
+                } else {
+                    _withdraw(streamId, to, amounts[i]);
+                }
             }
 
             // Increment the for loop iterator.
@@ -182,67 +187,6 @@ abstract contract SablierV2 is ISablierV2 {
                 i += 1;
             }
         }
-    }
-
-    /// @inheritdoc ISablierV2
-    function withdrawAllTo(
-        uint256[] calldata streamIds,
-        address to,
-        uint128[] calldata amounts
-    ) external override {
-        // Checks: the provided address to withdraw to is not zero.
-        if (to == address(0)) {
-            revert Errors.SablierV2__WithdrawZeroAddress();
-        }
-
-        // Checks: count of `streamIds` matches `amounts`.
-        uint256 streamIdsCount = streamIds.length;
-        uint256 amountsCount = amounts.length;
-        if (streamIdsCount != amountsCount) {
-            revert Errors.SablierV2__WithdrawAllArraysNotEqual(streamIdsCount, amountsCount);
-        }
-
-        // Iterate over the provided array of stream ids and withdraw from each stream.
-        uint256 streamId;
-        for (uint256 i = 0; i < streamIdsCount; ) {
-            streamId = streamIds[i];
-
-            // If the `streamId` points to a stream that does not exist, we simply skip it.
-            if (isEntity(streamId)) {
-                // Checks: the `msg.sender` is either an approved operator or the owner of the NFT (a.k.a. the recipient
-                // of the stream).
-                if (!_isApprovedOrOwner(streamId, msg.sender)) {
-                    revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
-                }
-
-                // Effects and Interactions: withdraw from the stream.
-                _withdraw(streamId, to, amounts[i]);
-            }
-
-            // Increment the for loop iterator.
-            unchecked {
-                i += 1;
-            }
-        }
-    }
-
-    /// @inheritdoc ISablierV2
-    function withdrawTo(
-        uint256 streamId,
-        address to,
-        uint128 amount
-    ) external override streamExists(streamId) {
-        // Checks: the provided address to withdraw to is not zero.
-        if (to == address(0)) {
-            revert Errors.SablierV2__WithdrawZeroAddress();
-        }
-
-        // Checks: the `msg.sender` is either an approved operator or the owner of the NFT (a.k.a. the recipient
-        // of the stream).
-        if (!_isApprovedOrOwner(streamId, msg.sender)) {
-            revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
-        }
-        _withdraw(streamId, to, amount);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

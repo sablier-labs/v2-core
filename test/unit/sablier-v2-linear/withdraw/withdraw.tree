@@ -6,9 +6,9 @@ withdraw.t.sol
    │  └── it should revert
    └── when the caller is authorized
       ├── when the caller is the sender
-      │  └── it should make the withdrawal and update the withdrawn amount
+      │  └── it should make the withdrawal to the recipient's address and update the withdrawn amount
       ├── when the caller is an approved operator
-      │  └── it should make the withdrawal and update the withdrawn amount
+      │  └── it should make the withdrawal to the provided address and update the withdrawn amount
       └── when the caller is the recipient
          ├── when the original recipient transferred ownership of the stream
          │  └── it should revert
@@ -19,20 +19,26 @@ withdraw.t.sol
                ├── when the amount is greater than the withdrawable amount
                │  └── it should revert
                └── when the amount is less than or equal to the withdrawable amount
-                  ├── when the stream ended
-                  │  └── it should make the withdrawal and delete the stream
-                  └── when the stream did not end
-                     ├── when the recipient is not a contract
-                     │  └── it should make the withdrawal and update the withdrawn amount
-                     └── when the recipient is a contract
-                        ├── when the recipient does not implement the hook
-                        │  └── it should make the withdrawal and update the withdrawn amount
-                        └── when the recipient implements the hook
-                           ├── when the recipient reverts
-                           │  └── it should ignore the revert and make the withdrawal and update the withdrawn amount
-                           └── when the recipient does not revert
-                              ├── when there is reentrancy
-                              │  └── it should make the multiple withdrawals and update the withdrawn amounts
-                              └── when there is no reentrancy
-                                 ├── it should make the withdrawal and update the withdrawn amount
-                                 └── it should emit a Withdraw event
+                  ├── when the to address is zero
+                  │  └── it should revert
+                  └── when the to address is not zero
+                     ├── when the to address is the recipient
+                     │  └── it should make the withdrawal to the recipient's address and update the withdrawn amount
+                     └── when the to address is a third-party
+                        ├── when the stream ended
+                        │  └── it should make the withdrawal to the provided address and delete the stream
+                        └── when the stream did not end
+                           ├── when the recipient is not a contract
+                           │  └── it should make the withdrawal to the provided address and update the withdrawn amount
+                           └── when the recipient is a contract
+                              ├── when the recipient does not implement the hook
+                              │  └── it should make the withdrawal to the provided address and update the withdrawn amount
+                              └── when the recipient implements the hook
+                                 ├── when the recipient reverts
+                                 │  └── it should ignore the revert and make the withdrawal to the provided address and update the withdrawn amount
+                                 └── when the recipient does not revert
+                                    ├── when there is reentrancy
+                                    │  └── it should make the multiple withdrawals to the provided address and update the withdrawn amounts
+                                    └── when there is no reentrancy
+                                       ├── it should make the withdrawal to the provided address and update the withdrawn amount
+                                       └── it should emit a Withdraw event
