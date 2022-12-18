@@ -127,9 +127,7 @@ interface ISablierV2 is IERC721 {
     /// @param streamId The id of the stream to renounce.
     function renounce(uint256 streamId) external;
 
-    /// @notice Withdraws tokens from the stream to the provided address `to` if the `msg.sender` is an approved
-    /// operator or the owner of the NFT (also known as the recipient of the stream). Conversely, if the `msg.sender`
-    /// is the sender of the stream, it always withdraws to the recipient of the stream.
+    /// @notice Withdraws tokens from the stream to the provided address `to`.
     ///
     /// @dev Emits a {Withdraw} and a {Transfer} event.
     ///
@@ -139,6 +137,7 @@ interface ISablierV2 is IERC721 {
     /// - `streamId` must point to an existent stream.
     /// - `msg.sender` must be the sender of the stream, an approved operator, or the owner of the
     /// NFT (also known as the recipient of the stream).
+    /// - `to` must be the recipient if `msg.sender` is the sender of the stream.
     /// - `amount` must not be zero and must not exceed the withdrawable amount.
     ///
     /// @param streamId The id of the stream to withdraw.
@@ -150,9 +149,7 @@ interface ISablierV2 is IERC721 {
         uint128 amount
     ) external;
 
-    /// @notice Withdraws tokens from multiple streams to the provided address `to` if the `msg.sender` is an approved
-    /// operator or the owner of the NFT (also known as the recipient of the stream). Conversely, if the `msg.sender`
-    /// is the sender of the stream, it always withdraws to the recipient of the stream.
+    /// @notice Withdraws tokens from multiple streams to the provided address `to`.
     ///
     /// @dev Emits multiple {Withdraw} and {Transfer} events.
     ///
@@ -161,8 +158,8 @@ interface ISablierV2 is IERC721 {
     ///
     /// Requirements:
     /// - The count of `streamIds` must match the count of `amounts`.
-    /// - `msg.sender` must be the sender of the stream, an approved operator, or the owner of the
-    /// NFT (also known as the recipient of the stream) of every stream.
+    /// - `msg.sender` must be either an approved operator or the owner of the NFT (also known as the recipient of the
+    /// stream) of every stream.
     /// - Each amount in `amounts` must not be zero and must not exceed the withdrawable amount.
     ///
     /// @param streamIds The ids of the streams to withdraw.

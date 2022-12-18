@@ -40,6 +40,9 @@ library Errors {
     /// @notice The id of the stream.
     error SablierV2__WithdrawAmountZero(uint256 streamId);
 
+    /// @notice Emitted when the sender of the stream attempts to withdraw to some address other than the recipient.
+    error SablierV2__WithdrawSenderUnauthorized(uint256 streamId, address sender, address to);
+
     /// @notice Emitted when attempting to withdraw to a zero address.
     error SablierV2__WithdrawToZeroAddress();
 

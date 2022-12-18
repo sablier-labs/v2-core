@@ -33,13 +33,30 @@ contract Withdraw__Test is SablierV2LinearTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdraw__CallerUnauthorized() external StreamExistent {
+    function testCannotWithdraw__CallerUnauthorized__MaliciousThirdParty() external StreamExistent {
         // Make Eve the caller in this test.
         changePrank(users.eve);
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, daiStreamId, users.eve));
         sablierV2Linear.withdraw(daiStreamId, users.recipient, WITHDRAW_AMOUNT_DAI);
+    }
+
+    /// @dev it should revert.
+    function testCannotWithdraw__CallerUnauthorized__Sender() external StreamExistent {
+        // Make the sender the caller in this test.
+        changePrank(users.sender);
+
+        // Run the test.
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierV2__WithdrawSenderUnauthorized.selector,
+                daiStreamId,
+                users.sender,
+                users.sender
+            )
+        );
+        sablierV2Linear.withdraw(daiStreamId, users.sender, WITHDRAW_AMOUNT_DAI);
     }
 
     modifier CallerAuthorized() {
@@ -226,14 +243,14 @@ contract Withdraw__Test is SablierV2LinearTest {
         ToThirdParty
         StreamOngoing
     {
-        sablierV2Linear.withdraw(daiStreamId, users.alice, WITHDRAW_AMOUNT_DAI);
+        sablierV2Linear.withdraw(daiStreamId, users.recipient, WITHDRAW_AMOUNT_DAI);
         uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
     }
 
     modifier RecipientContract() {
-        // Make the sender the caller in this test.
+        // Make the sender the caller in this test, because the recipient is a contract.
         changePrank(users.sender);
         _;
     }
@@ -253,7 +270,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         RecipientContract
     {
         daiStreamId = createDefaultDaiStreamWithRecipient(address(empty));
-        sablierV2Linear.withdraw(daiStreamId, users.alice, WITHDRAW_AMOUNT_DAI);
+        sablierV2Linear.withdraw(daiStreamId, address(empty), WITHDRAW_AMOUNT_DAI);
         uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
@@ -279,7 +296,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         RecipientImplementsHook
     {
         daiStreamId = createDefaultDaiStreamWithRecipient(address(revertingRecipient));
-        sablierV2Linear.withdraw(daiStreamId, users.alice, WITHDRAW_AMOUNT_DAI);
+        sablierV2Linear.withdraw(daiStreamId, address(revertingRecipient), WITHDRAW_AMOUNT_DAI);
         uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
@@ -307,7 +324,7 @@ contract Withdraw__Test is SablierV2LinearTest {
     {
         daiStreamId = createDefaultDaiStreamWithRecipient(address(reentrantRecipient));
         uint128 withdrawAmount = WITHDRAW_AMOUNT_DAI / 2;
-        sablierV2Linear.withdraw(daiStreamId, users.alice, withdrawAmount);
+        sablierV2Linear.withdraw(daiStreamId, address(reentrantRecipient), withdrawAmount);
         uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
@@ -335,7 +352,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         NoReentrancy
     {
         daiStreamId = createDefaultDaiStreamWithRecipient(address(nonRevertingRecipient));
-        sablierV2Linear.withdraw(daiStreamId, users.alice, WITHDRAW_AMOUNT_DAI);
+        sablierV2Linear.withdraw(daiStreamId, address(nonRevertingRecipient), WITHDRAW_AMOUNT_DAI);
         uint128 actualWithdrawnAmount = sablierV2Linear.getWithdrawnAmount(daiStreamId);
         uint128 expectedWithdrawnAmount = WITHDRAW_AMOUNT_DAI;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
@@ -365,6 +382,6 @@ contract Withdraw__Test is SablierV2LinearTest {
             to: address(nonRevertingRecipient),
             amount: WITHDRAW_AMOUNT_DAI
         });
-        sablierV2Linear.withdraw(daiStreamId, users.alice, WITHDRAW_AMOUNT_DAI);
+        sablierV2Linear.withdraw(daiStreamId, address(nonRevertingRecipient), WITHDRAW_AMOUNT_DAI);
     }
 }

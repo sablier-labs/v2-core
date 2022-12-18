@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-
 import { DataTypes } from "src/libraries/DataTypes.sol";
 import { Errors } from "src/libraries/Errors.sol";
 import { Events } from "src/libraries/Events.sol";
@@ -75,7 +73,11 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAll__CallerUnauthorizedAllStreams() external ArraysEqual OnlyExistentStreams {
+    function testCannotWithdrawAll__CallerUnauthorizedAllStreams__MaliciousThirdParty()
+        external
+        ArraysEqual
+        OnlyExistentStreams
+    {
         // Make Eve the caller in this test.
         changePrank(users.eve);
 
@@ -87,14 +89,26 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     }
 
     /// @dev it should revert.
+    function testCannotWithdrawAll__CallerUnauthorizedAllStreams__Sender() external ArraysEqual OnlyExistentStreams {
+        // Make the sender the caller in this test.
+        changePrank(users.sender);
+
+        // Run the test.
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierV2__Unauthorized.selector, defaultStreamIds[0], users.sender)
+        );
+        sablierV2Linear.withdrawAll(defaultStreamIds, users.sender, defaultAmounts);
+    }
+
+    /// @dev it should revert.
     function testCannotWithdrawAll__CallerUnauthorizedSomeStreams() external ArraysEqual OnlyExistentStreams {
         // Make Eve the caller in this test.
         changePrank(users.eve);
 
-        // Create a stream with Eve as the sender.
+        // Create a stream with Eve as the recipient.
         uint256 eveStreamId = sablierV2Linear.create(
+            users.sender,
             users.eve,
-            users.recipient,
             daiStream.depositAmount,
             daiStream.token,
             daiStream.startTime,
@@ -135,30 +149,6 @@ contract WithdrawAll__Test is SablierV2LinearTest {
 
     modifier ToNonZeroAddress() {
         _;
-    }
-
-    /// @dev it should make the withdrawals to the recipient's and update the withdrawn amounts.
-    function testWithdrawAll__CallerSenderAllStreams()
-        external
-        ArraysEqual
-        OnlyExistentStreams
-        CallerAuthorizedAllStreams
-        ToNonZeroAddress
-    {
-        // Make the sender the caller in this test.
-        changePrank(users.sender);
-
-        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
-        vm.warp({ timestamp: daiStream.startTime + TIME_OFFSET });
-
-        // Run the test.
-        sablierV2Linear.withdrawAll(defaultStreamIds, users.recipient, defaultAmounts);
-        uint128 actualWithdrawnAmount0 = sablierV2Linear.getWithdrawnAmount(defaultStreamIds[0]);
-        uint128 actualWithdrawnAmount1 = sablierV2Linear.getWithdrawnAmount(defaultStreamIds[1]);
-        uint128 expectedWithdrawnAmount0 = WITHDRAW_AMOUNT_DAI;
-        uint128 expectedWithdrawnAmount1 = WITHDRAW_AMOUNT_DAI;
-        assertEq(actualWithdrawnAmount0, expectedWithdrawnAmount0);
-        assertEq(actualWithdrawnAmount1, expectedWithdrawnAmount1);
     }
 
     /// @dev it should make the withdrawals to the provided address and update the withdrawn amounts.

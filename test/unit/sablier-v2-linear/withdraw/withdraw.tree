@@ -3,7 +3,10 @@ withdraw.t.sol
 │  └── it should revert
 └── when the stream exists
    ├── when the caller is not authorized
-   │  └── it should revert
+   │  ├── when the caller is a malicious third-party
+   │  │  └── it should revert
+   │  └── when the caller is the sender
+   │     └── it should revert
    └── when the caller is authorized
       ├── when the provided address is zero
       │  └── it should revert

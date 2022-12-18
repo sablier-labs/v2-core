@@ -139,18 +139,18 @@ abstract contract SablierV2 is ISablierV2 {
         address to,
         uint128 amount
     ) external override streamExists(streamId) isAuthorizedForStream(streamId) {
+        // Checks: the provided address is the recipient if `msg.sender` is the sender of the stream.
+        if (_isCallerStreamSender(streamId) && to != getRecipient(streamId)) {
+            revert Errors.SablierV2__WithdrawSenderUnauthorized(streamId, msg.sender, to);
+        }
+
         // Checks: the provided address to withdraw to is not zero.
         if (to == address(0)) {
             revert Errors.SablierV2__WithdrawToZeroAddress();
         }
 
-        // When the caller is the sender of the stream, we ignore the `to` argument and always withdraw to the
-        // recipient.
-        if (!_isCallerStreamSender(streamId)) {
-            _withdraw(streamId, to, amount);
-        } else {
-            _withdraw({ streamId: streamId, to: getRecipient(streamId), amount: amount });
-        }
+        // Checks, Effects and Interactions: make the withdrawal.
+        _withdraw(streamId, to, amount);
     }
 
     /// @inheritdoc ISablierV2
@@ -178,19 +178,14 @@ abstract contract SablierV2 is ISablierV2 {
 
             // If the `streamId` points to a stream that does not exist, we simply skip it.
             if (isEntity(streamId)) {
-                // Checks: the `msg.sender` is the sender or the stream, an approved operator, or the owner of the NFT
-                // (also known as the recipient of the stream).
-                if (!_isCallerStreamSender(streamId) && !_isApprovedOrOwner(streamId, msg.sender)) {
+                // Checks: the `msg.sender` is an approved operator or the owner of the NFT (also known as the recipient
+                // of the stream).
+                if (!_isApprovedOrOwner(streamId, msg.sender)) {
                     revert Errors.SablierV2__Unauthorized(streamId, msg.sender);
                 }
 
-                // When the caller is the sender of the stream, we ignore the `to` argument and always withdraw to the
-                // recipient.
-                if (!_isCallerStreamSender(streamId)) {
-                    _withdraw(streamId, to, amounts[i]);
-                } else {
-                    _withdraw({ streamId: streamId, to: getRecipient(streamId), amount: amounts[i] });
-                }
+                // Checks, Effects and Interactions: make the withdrawal.
+                _withdraw(streamId, to, amounts[i]);
             }
 
             // Increment the for loop iterator.
