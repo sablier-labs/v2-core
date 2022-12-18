@@ -118,12 +118,32 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         _;
     }
 
+    /// @dev it should revert.
+    function testCannotWithdrawAll__ToZeroAddress()
+        external
+        ArraysEqual
+        OnlyExistentStreams
+        CallerAuthorizedAllStreams
+        CallerRecipientAllStreams
+        OriginalRecipientAllStreams
+        AllAmountsNotZero
+        AllAmountsLessThanOrEqualToWithdrawableAmounts
+    {
+        vm.expectRevert(Errors.SablierV2__WithdrawToZeroAddress.selector);
+        sablierV2Linear.withdrawAll(defaultStreamIds, address(0), defaultAmounts);
+    }
+
+    modifier ToNonZeroAddress() {
+        _;
+    }
+
     /// @dev it should make the withdrawals to the recipient's and update the withdrawn amounts.
     function testWithdrawAll__CallerSenderAllStreams()
         external
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
     {
         // Make the sender the caller in this test.
         changePrank(users.sender);
@@ -147,6 +167,7 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
     {
         // Approve the operator for all streams.
         sablierV2Linear.setApprovalForAll(users.operator, true);
@@ -177,6 +198,7 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
     {
         // Transfer the streams to Alice.
@@ -196,6 +218,7 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
     {
         // Transfer one of the streams to eve.
@@ -218,6 +241,7 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
     {
@@ -240,6 +264,7 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
@@ -265,38 +290,17 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should revert.
-    function testCannotWithdrawAll__ToZeroAddress()
-        external
-        ArraysEqual
-        OnlyExistentStreams
-        CallerAuthorizedAllStreams
-        CallerRecipientAllStreams
-        OriginalRecipientAllStreams
-        AllAmountsNotZero
-        AllAmountsLessThanOrEqualToWithdrawableAmounts
-    {
-        // Warp to the end of the stream.
-        vm.warp({ timestamp: daiStream.stopTime });
-        vm.expectRevert(abi.encodeWithSelector(IERC20.ERC20__TransferToZeroAddress.selector));
-        sablierV2Linear.withdrawAll(defaultStreamIds, address(0), defaultAmounts);
-    }
-
-    modifier ToNonZeroAddress() {
-        _;
-    }
-
     /// @dev it should make the withdrawals to the recipient's and update the withdrawn amounts.
     function testWithdrawAll__ToRecipient()
         external
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
-        ToNonZeroAddress
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp({ timestamp: daiStream.startTime + TIME_OFFSET });
@@ -321,11 +325,11 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
-        ToNonZeroAddress
         ToThirdParty
     {
         // Warp to the end of the stream.
@@ -354,11 +358,11 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
-        ToNonZeroAddress
         ToThirdParty
     {
         // Warp to the end of the stream.
@@ -379,11 +383,11 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
-        ToNonZeroAddress
         ToThirdParty
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
@@ -406,11 +410,11 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
-        ToNonZeroAddress
         ToThirdParty
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
@@ -431,11 +435,11 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
-        ToNonZeroAddress
         ToThirdParty
     {
         // Create the ended dai stream.
@@ -485,11 +489,11 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
+        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
         AllAmountsLessThanOrEqualToWithdrawableAmounts
-        ToNonZeroAddress
         ToThirdParty
     {
         // Create the ended dai stream.

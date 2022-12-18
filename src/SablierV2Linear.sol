@@ -129,11 +129,6 @@ contract SablierV2Linear is
     }
 
     /// @inheritdoc ISablierV2
-    function isCallerStreamSender(uint256 streamId) public view override(ISablierV2, SablierV2) returns (bool result) {
-        result = msg.sender == _streams[streamId].sender;
-    }
-
-    /// @inheritdoc ISablierV2
     function isCancelable(uint256 streamId) public view override(ISablierV2, SablierV2) returns (bool result) {
         result = _streams[streamId].cancelable;
     }
@@ -207,6 +202,11 @@ contract SablierV2Linear is
         isApprovedOrOwner = (spender == owner || isApprovedForAll(owner, spender) || getApproved(streamId) == spender);
     }
 
+    /// @inheritdoc SablierV2
+    function _isCallerStreamSender(uint256 streamId) internal view override returns (bool result) {
+        result = msg.sender == _streams[streamId].sender;
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                            INTERNAL NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -244,7 +244,7 @@ contract SablierV2Linear is
             IERC20(stream.token).safeTransfer({ to: sender, amount: returnAmount });
         }
 
-        // Interactions: if the caller is the sender and the recipient is a contract, try to invoke the cancel
+        // Interactions: if the `msg.sender` is the sender and the recipient is a contract, try to invoke the cancel
         // hook on the recipient without reverting if the hook is not implemented, and without bubbling up any
         // potential revert.
         if (msg.sender == sender) {
@@ -259,7 +259,7 @@ contract SablierV2Linear is
                 {} catch {}
             }
         }
-        // Interactions: if the caller is the recipient and the sender is a contract, try to invoke the cancel
+        // Interactions: if the `msg.sender` is the recipient and the sender is a contract, try to invoke the cancel
         // hook on the sender without reverting if the hook is not implemented, and also without bubbling up any
         // potential revert.
         else {
@@ -381,7 +381,7 @@ contract SablierV2Linear is
         // Interactions: perform the ERC-20 transfer.
         IERC20(stream.token).safeTransfer({ to: to, amount: amount });
 
-        // Interactions: if the caller is not the recipient and the recipient is a contract, try to invoke the
+        // Interactions: if the `msg.sender` is not the recipient and the recipient is a contract, try to invoke the
         // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
         // any potential revert.
         if (msg.sender != recipient && recipient.code.length > 0) {

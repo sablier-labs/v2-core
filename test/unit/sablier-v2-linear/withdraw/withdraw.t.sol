@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13;
 
-import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-
 import { DataTypes } from "src/libraries/DataTypes.sol";
 import { Errors } from "src/libraries/Errors.sol";
 import { Events } from "src/libraries/Events.sol";
@@ -48,8 +46,18 @@ contract Withdraw__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should make the withdrawal to the recipient's address and update the withdrawn amount.
-    function testWithdraw__CallerSender() external StreamExistent CallerAuthorized {
+    /// @dev it should revert.
+    function testCannotWithdraw__ToZeroAddress() external StreamExistent CallerAuthorized {
+        vm.expectRevert(Errors.SablierV2__WithdrawToZeroAddress.selector);
+        sablierV2Linear.withdraw(daiStreamId, address(0), daiStream.depositAmount);
+    }
+
+    modifier ToNonZeroAddress() {
+        _;
+    }
+
+    /// @dev it should make the withdrawal to the recipient and update the withdrawn amount.
+    function testWithdraw__CallerSender() external StreamExistent CallerAuthorized ToNonZeroAddress {
         // Make the sender the caller in this test.
         changePrank(users.sender);
 
@@ -64,7 +72,7 @@ contract Withdraw__Test is SablierV2LinearTest {
     }
 
     /// @dev it should make the withdrawal to the provided address and update the withdrawn amount.
-    function testWithdraw__CallerApprovedOperator() external StreamExistent CallerAuthorized {
+    function testWithdraw__CallerApprovedOperator() external StreamExistent CallerAuthorized ToNonZeroAddress {
         // Approve the operator to handle the stream.
         sablierV2Linear.approve(users.operator, daiStreamId);
 
@@ -90,6 +98,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
     {
         // Transfer the stream to Alice.
@@ -109,6 +118,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
     {
@@ -125,6 +135,7 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
@@ -145,36 +156,16 @@ contract Withdraw__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should revert.
-    function testCannotWithdraw__ToZeroAddress()
-        external
-        StreamExistent
-        CallerAuthorized
-        CallerRecipient
-        OriginalRecipient
-        WithdrawAmountNotZero
-        WithdrawAmountLessThanOrEqualToWithdrawableAmount
-    {
-        // Warp to the end of the stream.
-        vm.warp({ timestamp: daiStream.stopTime });
-        vm.expectRevert(abi.encodeWithSelector(IERC20.ERC20__TransferToZeroAddress.selector));
-        sablierV2Linear.withdraw(daiStreamId, address(0), daiStream.depositAmount);
-    }
-
-    modifier ToNonZeroAddress() {
-        _;
-    }
-
-    /// @dev it should make the withdrawal to the recipient's address and update the withdrawn amount.
+    /// @dev it should make the withdrawal to the recipient and update the withdrawn amount.
     function testWithdraw__ToRecipient()
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
-        ToNonZeroAddress
     {
         // Warp to 2,600 seconds after the start time (26% of the default stream duration).
         vm.warp({ timestamp: daiStream.startTime + TIME_OFFSET });
@@ -195,11 +186,11 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
-        ToNonZeroAddress
         ToThirdParty
     {
         // Warp to the end of the stream.
@@ -227,11 +218,11 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
-        ToNonZeroAddress
         ToThirdParty
         StreamOngoing
     {
@@ -252,11 +243,11 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
-        ToNonZeroAddress
         ToThirdParty
         StreamOngoing
         RecipientContract
@@ -277,11 +268,11 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
-        ToNonZeroAddress
         ToThirdParty
         StreamOngoing
         RecipientContract
@@ -303,11 +294,11 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
-        ToNonZeroAddress
         ToThirdParty
         StreamOngoing
         RecipientContract
@@ -331,11 +322,11 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
-        ToNonZeroAddress
         ToThirdParty
         StreamOngoing
         RecipientContract
@@ -355,11 +346,11 @@ contract Withdraw__Test is SablierV2LinearTest {
         external
         StreamExistent
         CallerAuthorized
+        ToNonZeroAddress
         CallerRecipient
         OriginalRecipient
         WithdrawAmountNotZero
         WithdrawAmountLessThanOrEqualToWithdrawableAmount
-        ToNonZeroAddress
         ToThirdParty
         StreamOngoing
         RecipientContract
