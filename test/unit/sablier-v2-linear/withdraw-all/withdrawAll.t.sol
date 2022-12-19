@@ -28,7 +28,17 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAll__ArraysNotEqual() external {
+    function testCannotWithdrawAll__ToZeroAddress() external {
+        vm.expectRevert(Errors.SablierV2__WithdrawToZeroAddress.selector);
+        sablierV2Linear.withdrawAll(defaultStreamIds, address(0), defaultAmounts);
+    }
+
+    modifier ToNonZeroAddress() {
+        _;
+    }
+
+    /// @dev it should revert.
+    function testCannotWithdrawAll__ArraysNotEqual() external ToNonZeroAddress {
         uint256[] memory streamIds = new uint256[](2);
         uint128[] memory amounts = new uint128[](1);
         vm.expectRevert(
@@ -46,7 +56,7 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     }
 
     /// @dev it should do nothing.
-    function testCannotWithdrawAll__OnlyNonExistentStreams() external ArraysEqual {
+    function testCannotWithdrawAll__OnlyNonExistentStreams() external ToNonZeroAddress ArraysEqual {
         uint256 nonStreamId = 1729;
         uint256[] memory nonStreamIds = createDynamicArray(nonStreamId);
         uint128[] memory amounts = createDynamicUint128Array(WITHDRAW_AMOUNT_DAI);
@@ -54,7 +64,7 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     }
 
     /// @dev it should make the withdrawals for the existent streams.
-    function testCannotWithdrawAll__SomeNonExistentStreams() external ArraysEqual {
+    function testCannotWithdrawAll__SomeNonExistentStreams() external ToNonZeroAddress ArraysEqual {
         uint256 nonStreamId = 1729;
         uint256[] memory streamIds = createDynamicArray(nonStreamId, defaultStreamIds[0]);
 
@@ -75,6 +85,7 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should revert.
     function testCannotWithdrawAll__CallerUnauthorizedAllStreams__MaliciousThirdParty()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
     {
@@ -89,7 +100,12 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAll__CallerUnauthorizedAllStreams__Sender() external ArraysEqual OnlyExistentStreams {
+    function testCannotWithdrawAll__CallerUnauthorizedAllStreams__Sender()
+        external
+        ToNonZeroAddress
+        ArraysEqual
+        OnlyExistentStreams
+    {
         // Make the sender the caller in this test.
         changePrank(users.sender);
 
@@ -101,7 +117,12 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     }
 
     /// @dev it should revert.
-    function testCannotWithdrawAll__CallerUnauthorizedSomeStreams() external ArraysEqual OnlyExistentStreams {
+    function testCannotWithdrawAll__CallerUnauthorizedSomeStreams()
+        external
+        ToNonZeroAddress
+        ArraysEqual
+        OnlyExistentStreams
+    {
         // Make Eve the caller in this test.
         changePrank(users.eve);
 
@@ -132,32 +153,13 @@ contract WithdrawAll__Test is SablierV2LinearTest {
         _;
     }
 
-    /// @dev it should revert.
-    function testCannotWithdrawAll__ToZeroAddress()
-        external
-        ArraysEqual
-        OnlyExistentStreams
-        CallerAuthorizedAllStreams
-        CallerRecipientAllStreams
-        OriginalRecipientAllStreams
-        AllAmountsNotZero
-        AllAmountsLessThanOrEqualToWithdrawableAmounts
-    {
-        vm.expectRevert(Errors.SablierV2__WithdrawToZeroAddress.selector);
-        sablierV2Linear.withdrawAll(defaultStreamIds, address(0), defaultAmounts);
-    }
-
-    modifier ToNonZeroAddress() {
-        _;
-    }
-
     /// @dev it should make the withdrawals to the provided address and update the withdrawn amounts.
     function testWithdrawAll__CallerApprovedOperatorAllStreams()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
     {
         // Approve the operator for all streams.
         sablierV2Linear.setApprovalForAll(users.operator, true);
@@ -185,10 +187,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should revert.
     function testCannotWithdrawAllTo__OriginalRecipientTransferredOwnershipAllStreams()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
     {
         // Transfer the streams to Alice.
@@ -205,10 +207,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should revert.
     function testCannotWithdrawAll__OriginalRecipientTransferredOwnershipSomeStreams()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
     {
         // Transfer one of the streams to eve.
@@ -228,10 +230,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should revert.
     function testCannotWithdrawAll__SomeAmountsZero()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
     {
@@ -251,10 +253,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should revert.
     function testCannotWithdrawAll__SomeAmountsGreaterThanWithdrawableAmount()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
@@ -283,10 +285,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should make the withdrawals to the recipient's and update the withdrawn amounts.
     function testWithdrawAll__ToRecipient()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
@@ -312,10 +314,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should make the withdrawals to the provided address, delete the streams.
     function testWithdrawAll__AllStreamsEnded()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
@@ -345,10 +347,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should emit multiple Withdraw events.
     function testWithdrawAll__AllStreamsEnded__Events()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
@@ -370,10 +372,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should make the withdrawals to the provided address and update the withdrawn amounts.
     function testWithdrawAll__AllStreamsOngoing()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
@@ -397,10 +399,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should emit multiple Withdraw events.
     function testWithdrawAll__AllStreamsOngoing__Events()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
@@ -422,10 +424,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// and update the withdrawn amounts.
     function testWithdrawAll__SomeStreamsEndedSomeStreamsOngoing()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
@@ -476,10 +478,10 @@ contract WithdrawAll__Test is SablierV2LinearTest {
     /// @dev it should emit multiple Withdraw events.
     function testWithdrawAll__SomeStreamsEndedSomeStreamsOngoing__Events()
         external
+        ToNonZeroAddress
         ArraysEqual
         OnlyExistentStreams
         CallerAuthorizedAllStreams
-        ToNonZeroAddress
         CallerRecipientAllStreams
         OriginalRecipientAllStreams
         AllAmountsNotZero
