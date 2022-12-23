@@ -1,0 +1,25 @@
+name: Deploy Sablier V2 contracts on Goerli
+
+env:
+  ETH_RPC_URL: "${{ secrets.GOERLI_RPC_URL }}"
+
+on: [workflow_dispatch]
+
+jobs:
+  ci:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: "actions/checkout@v3"
+        with:
+          submodules: "recursive"
+
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+        with:
+          version: "nightly"
+
+      - name: "Deploy the contracts"
+        run:
+          "forge script script/DeployToken.s.sol:DeployToken --sender $SENDER --private-key $PRIVATE_KEY --rpc-url
+          $GOERLI_RPC_URL --broadcast -vvvv"
