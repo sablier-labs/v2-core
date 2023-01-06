@@ -50,7 +50,7 @@ contract SablierV2Pro is
     /// @param initialComptroller The address of the SablierV2Comptroller contract.
     /// @param maxFee The maximum fee that can be charged by either the protocol or a broker, as an UD60x18 number
     /// where 100% = 1e18.
-    /// @param maxSegmentCount The maximum number of segments permitted in any stream.
+    /// @param maxSegmentCount The maximum number of segments permitted in a stream.
     constructor(
         ISablierV2Comptroller initialComptroller,
         UD60x18 maxFee,

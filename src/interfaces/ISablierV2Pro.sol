@@ -27,7 +27,7 @@ interface ISablierV2Pro is ISablierV2 {
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice The maximum number of segments permitted in any stream.
+    /// @notice The maximum number of segments permitted in a stream.
     /// @dev This is initialized at construction time and cannot be changed later.
     function MAX_SEGMENT_COUNT() external view returns (uint256);
 
