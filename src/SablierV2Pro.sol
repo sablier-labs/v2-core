@@ -335,7 +335,6 @@ contract SablierV2Pro is
     }
 
     /// @dev This struct is needed to avoid the "Stack Too Deep" error.
-
     struct CreateWithMilestonesParams {
         CreateAmounts amounts;
         Segment[] segments;
