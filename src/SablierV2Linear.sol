@@ -106,6 +106,11 @@ contract SablierV2Linear is
     }
 
     /// @inheritdoc ISablierV2
+    function getERC20Token(uint256 streamId) external view override returns (IERC20 token) {
+        token = _streams[streamId].token;
+    }
+
+    /// @inheritdoc ISablierV2
     function getWithdrawableAmount(uint256 streamId) public view returns (uint128 withdrawableAmount) {
         // If the stream does not exist, return zero.
         if (!_streams[streamId].isEntity) {
