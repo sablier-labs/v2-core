@@ -378,37 +378,33 @@ contract SablierV2Pro is
             // We're using unchecked arithmetic here because theses calculations cannot realistically overflow, ever.
             nextStreamId = streamId + 1;
             _protocolRevenues[params.token] += params.amounts.protocolFee;
-
-            // Effects: mint the NFT to the recipient.
-            _mint({ to: params.recipient, tokenId: streamId });
-
-            // Interactions: perform the ERC-20 transfer to deposit the gross amount of tokens.
-            params.token.safeTransferFrom({ from: msg.sender, to: address(this), amount: params.amounts.netDeposit });
-
-            // Interactions: perform the ERC-20 transfer to pay the broker fee, if not zero.
-            if (params.amounts.brokerFee > 0) {
-                params.token.safeTransferFrom({
-                    from: msg.sender,
-                    to: params.broker,
-                    amount: params.amounts.brokerFee
-                });
-            }
-
-            // Emit an event.
-            emit Events.CreateProStream({
-                streamId: streamId,
-                funder: msg.sender,
-                sender: params.sender,
-                recipient: params.recipient,
-                amounts: params.amounts,
-                segments: params.segments,
-                token: params.token,
-                cancelable: params.cancelable,
-                startTime: params.startTime,
-                stopTime: stream.stopTime,
-                broker: params.broker
-            });
         }
+
+        // Effects: mint the NFT to the recipient.
+        _mint({ to: params.recipient, tokenId: streamId });
+
+        // Interactions: perform the ERC-20 transfer to deposit the gross amount of tokens.
+        params.token.safeTransferFrom({ from: msg.sender, to: address(this), amount: params.amounts.netDeposit });
+
+        // Interactions: perform the ERC-20 transfer to pay the broker fee, if not zero.
+        if (params.amounts.brokerFee > 0) {
+            params.token.safeTransferFrom({ from: msg.sender, to: params.broker, amount: params.amounts.brokerFee });
+        }
+
+        // Emit an event.
+        emit Events.CreateProStream({
+            streamId: streamId,
+            funder: msg.sender,
+            sender: params.sender,
+            recipient: params.recipient,
+            amounts: params.amounts,
+            segments: params.segments,
+            token: params.token,
+            cancelable: params.cancelable,
+            startTime: params.startTime,
+            stopTime: stream.stopTime,
+            broker: params.broker
+        });
     }
 
     /// @dev Calculates the withdrawable amount for a stream with multiple segments.
