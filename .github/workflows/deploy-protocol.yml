@@ -10,15 +10,20 @@ on:
     inputs:
       chain:
         default: "goerli"
-        description: 'Chain name, defaults to "goerli" if unspecified'
+        description: 'Chain name. Defaults to "goerli" if unspecified'
         required: false
       max-fee:
-        default: "10000000000000000000"
-        description: "The maximum fee that can be charged by either the protocol or a broker, defaults to 10%"
+        default: "100000000000000000"
+        description: |
+          The maximum fee that can be charged by either the protocol or a broker.
+
+          Defaults to 10%.
         required: false
       max-segment-count:
-        default: "1000"
-        description: "The maximum number of segments permitted in a stream, defaults to 1,000"
+        description: |
+          The maximum number of segments permitted in a stream.
+
+          Defaults to 1,000
         required: false
 
 jobs:
@@ -34,6 +39,9 @@ jobs:
         uses: "foundry-rs/foundry-toolchain@v1"
         with:
           version: "nightly"
+
+      - name: "Produce an optimized build with --via-ir"
+        run: "FOUNDRY_PROFILE=optimized forge build"
 
       - name: "Deploy the entire Sablier V2 protocol"
         run: >-

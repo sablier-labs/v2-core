@@ -10,7 +10,7 @@ on:
     inputs:
       chain:
         default: "goerli"
-        description: 'Chain name, defaults to "goerli" if unspecified'
+        description: 'Chain name. Defaults to "goerli" if unspecified'
         required: false
 
 jobs:
@@ -26,6 +26,9 @@ jobs:
         uses: "foundry-rs/foundry-toolchain@v1"
         with:
           version: "nightly"
+
+      - name: "Produce an optimized build with --via-ir"
+        run: "FOUNDRY_PROFILE=optimized forge build"
 
       - name: "Deploy the SablierV2Comptroller contract"
         run: >-
