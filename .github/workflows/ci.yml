@@ -97,9 +97,6 @@ jobs:
             optimized-out/SablierV2Comptroller.sol/SablierV2Comptroller.json
             optimized-out/SablierV2Linear.sol/SablierV2Linear.json
             optimized-out/SablierV2Pro.sol/SablierV2Pro.json
-            optimized-out/SD1x18.sol/SD1x18.json
-            optimized-out/SD59x18.sol/SD59x18.json
-            optimized-out/UD60x18.sol/UD60x18.json
 
       - name: "Add test summary"
         run: |
