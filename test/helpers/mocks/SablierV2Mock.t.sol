@@ -59,11 +59,6 @@ contract SablierV2Mock is SablierV2 {
         return 0;
     }
 
-    function getERC20Token(uint256 streamId) public pure override returns (IERC20) {
-        streamId;
-        return IERC20(address(0));
-    }
-
     function getWithdrawableAmount(uint256 streamId) external pure override returns (uint128) {
         streamId;
         return 0;
