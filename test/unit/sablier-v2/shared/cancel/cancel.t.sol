@@ -201,7 +201,12 @@ abstract contract Cancel_Test is SharedTest {
 
         // Bound the withdraw amount.
         uint128 withdrawableAmount = sablierV2.getWithdrawableAmount(streamId);
-        withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount);
+
+        if (withdrawableAmount == sablierV2.getDepositAmount(streamId)) {
+            withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount - 1);
+        } else {
+            withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount);
+        }
 
         // Make the withdrawal, if not zero.
         if (withdrawAmount > 0) {
@@ -347,7 +352,12 @@ abstract contract Cancel_Test is SharedTest {
 
         // Bound the withdraw amount.
         uint128 withdrawableAmount = sablierV2.getWithdrawableAmount(streamId);
-        withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount);
+
+        if (withdrawableAmount == sablierV2.getDepositAmount(streamId)) {
+            withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount - 1);
+        } else {
+            withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount);
+        }
 
         // Make the withdrawal, if not zero.
         if (withdrawAmount > 0) {
