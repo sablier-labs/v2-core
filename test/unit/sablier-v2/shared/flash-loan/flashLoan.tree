@@ -8,15 +8,18 @@ faslhLoan.t.sol
       ├── when the flash fee is greater than max fee
       │  └── it should revert
       └── when the flash fee is not greater than max fee
-         ├── when the receiver does not implement the borrower interface
+         ├── when the receiver does not implement the borrower callback
          │  └── it should revert
-         └── when the receiver implements the borrower interface
-            ├── when the borrower interface returns false
+         └── when the receiver implements the borrower callback
+            ├── when the borrower callback returns false
             │  └── it should revert
-            └── when the borrower interface returns true
-               ├── when the flash fee is zero
-               │  └── it should make the flash loan and emit a FlashLoan event
-               └── when the flash fee is not zero
-                  ├── it should make the flash loan
-                  ├── it should update the protocol revenues
-                  └── it should emit a FlashLoan event
+            └── when the borrower callback returns true
+               ├── when there is reentrancy
+               │  └── it should revert 
+               └── when there is no reentrancy
+                  ├── when the flash fee is zero
+                  │  └── it should make the flash loan and emit a FlashLoan event
+                  └── when the flash fee is not zero
+                     ├── it should make the flash loan
+                     ├── it should update the protocol revenues
+                     └── it should emit a FlashLoan event

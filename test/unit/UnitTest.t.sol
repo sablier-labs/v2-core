@@ -7,6 +7,7 @@ import { Empty } from "test/helpers/hooks/Empty.t.sol";
 import { GoodFlashLoanReceiver } from "test/helpers/flashLoan/GoodFlashLoanReceiver.t.sol";
 import { GoodRecipient } from "test/helpers/hooks/GoodRecipient.t.sol";
 import { GoodSender } from "test/helpers/hooks/GoodSender.t.sol";
+import { ReentrantFlashLoanReceiver } from "test/helpers/flashLoan/ReentrantFlashLoanReceiver.t.sol";
 import { ReentrantRecipient } from "test/helpers/hooks/ReentrantRecipient.t.sol";
 import { ReentrantSender } from "test/helpers/hooks/ReentrantSender.t.sol";
 import { RevertingRecipient } from "test/helpers/hooks/RevertingRecipient.t.sol";
@@ -23,6 +24,7 @@ abstract contract UnitTest is BaseTest {
     GoodFlashLoanReceiver internal goodFlashLoanReceiver = new GoodFlashLoanReceiver();
     GoodRecipient internal goodRecipient = new GoodRecipient();
     GoodSender internal goodSender = new GoodSender();
+    ReentrantFlashLoanReceiver internal reentrantFlashLoanReceiver = new ReentrantFlashLoanReceiver();
     ReentrantRecipient internal reentrantRecipient = new ReentrantRecipient();
     ReentrantSender internal reentrantSender = new ReentrantSender();
     RevertingRecipient internal revertingRecipient = new RevertingRecipient();

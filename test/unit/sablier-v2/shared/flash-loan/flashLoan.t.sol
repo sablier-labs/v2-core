@@ -98,6 +98,25 @@ abstract contract FlashLoan_Test is SharedTest {
         _;
     }
 
+    /// @dev it should revert.
+    function test_RevertWhen_IsReentrancy()
+        external
+        tokenFlashLoanable
+        sufficientLiquidity
+        flashFeeNotTooHigh
+        borrowerImplementer
+        borrowerNotFail
+    {
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierV2_InsufficientFlashLoanLiquidity.selector, 0, _balance / 2, dai)
+        );
+        sablierV2.flashLoan(address(reentrantFlashLoanReceiver), dai, _balance / 2, _data);
+    }
+
+    modifier noReentrancy() {
+        _;
+    }
+
     /// @dev it should make the flash loan and emit a FlashLoan event.
     function test_FlashFeeZero()
         external
@@ -106,6 +125,7 @@ abstract contract FlashLoan_Test is SharedTest {
         flashFeeNotTooHigh
         borrowerImplementer
         borrowerNotFail
+        noReentrancy
     {
         // Set the flash fee.
         comptroller.setFlashFee(ZERO);
@@ -139,6 +159,7 @@ abstract contract FlashLoan_Test is SharedTest {
         borrowerImplementer
         borrowerNotFail
         flashFeeNotZero
+        noReentrancy
     {
         flashFee = bound(flashFee, DEFAULT_FLASH_FEE, DEFAULT_MAX_FEE);
         amount = boundUint128(amount, 0, _balance);
