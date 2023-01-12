@@ -48,9 +48,7 @@ jobs:
           submodules: "recursive"
 
       - name: "Install Foundry"
-        uses: "foundry-rs/foundry-toolchain@v1"
-        with:
-          version: "nightly"
+        uses: "foundry-rs/foundry-toolchain@master"
 
       # Always load the latest valid cache, and always create a new one with the updated cache.
       # When the fork tests are updated and there are new RPC requests, the RPC cache is updated as well.
@@ -112,9 +110,7 @@ jobs:
           submodules: "recursive"
 
       - name: "Install Foundry"
-        uses: "foundry-rs/foundry-toolchain@v1"
-        with:
-          version: "nightly"
+        uses: "foundry-rs/foundry-toolchain@master"
 
       - name: "Generate the coverage report"
         run: "forge coverage --report lcov"

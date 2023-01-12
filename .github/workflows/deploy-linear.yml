@@ -34,9 +34,7 @@ jobs:
           submodules: "recursive"
 
       - name: "Install Foundry"
-        uses: "foundry-rs/foundry-toolchain@v1"
-        with:
-          version: "nightly"
+        uses: "foundry-rs/foundry-toolchain@master"
 
       - name: "Deploy the SablierV2Linear contract"
         run: >-
