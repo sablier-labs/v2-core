@@ -1,0 +1,9 @@
+setFlashToken.t.sol
+├── when the caller is not the admin
+│  └── it should revert
+└── when the caller is the admin
+   ├── when the token is flash loanable
+   │  └── it should revert
+   └── when the token is not flash loanable
+      ├── it should set the token flash loanable
+      └── it should emit a SetFlashToken event

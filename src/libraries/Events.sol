@@ -87,6 +87,20 @@ library Events {
         address broker
     );
 
+    /// @notice Emitted when a flash loan succeds.
+    /// @param receiver The address of the flash borrower.
+    /// @param initiator The address of the flash loan initiator.
+    /// @param token The address of the token borrowed.
+    /// @param flashAmount The amount of tokens borrowed.
+    /// @param flashFeeAmount The fee amount that goes to the protocol revenue.
+    event FlashLoan(
+        address indexed receiver,
+        address indexed initiator,
+        IERC20 indexed token,
+        uint128 flashAmount,
+        uint128 flashFeeAmount
+    );
+
     /// @notice Emitted when a sender makes a stream non-cancelable.
     /// @param streamId The id of the stream.
     event Renounce(uint256 indexed streamId);
@@ -100,6 +114,17 @@ library Events {
         ISablierV2Comptroller oldComptroller,
         ISablierV2Comptroller newComptroller
     );
+
+    /// @notice Emitted when the admin sets a new flash fee.
+    /// @param admin The address of the current contract admin.
+    /// @param oldFee The old global fee.
+    /// @param newFee The new global fee.
+    event SetFlashFee(address indexed admin, UD60x18 oldFee, UD60x18 newFee);
+
+    /// @notice Emitted when the admin sets a new flash token.
+    /// @param admin The address of the current contract admin.
+    /// @param token The token address.
+    event SetFlashToken(address indexed admin, IERC20 token);
 
     /// @notice Emitted when the contract admin sets a new protocol fee for the provided token.
     /// @param admin The address of the current contract admin.

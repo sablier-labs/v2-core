@@ -78,6 +78,11 @@ interface ISablierV2 is
     /// @param streamId The id of the stream to make the query for.
     function isEntity(uint256 streamId) external view returns (bool result);
 
+    /// @notice Checks the amount of tokens available to be lent.
+    /// @param token The address of the token to make the query for.
+    /// @return balance The amount of tokens that can be borrowed.
+    function maxFlashLoan(IERC20 token) external view returns (uint256 balance);
+
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -138,6 +143,24 @@ interface ISablierV2 is
     ///
     /// @param token The address of the token to claim the protocol revenues for.
     function claimProtocolRevenues(IERC20 token) external;
+
+    /// @notice Allows smartcontracts to access the liquidity of the Sablier contract within one transaction,
+    /// as long as the amount taken plus a flash fee is returned.
+    ///
+    /// @dev Emits a {FlashLoan} event.
+    ///
+    /// Requirements:
+    /// - `receiver` implementation of {ISablierV2FlashBorrower-onFlashLoan} must not revert.
+    /// - `token` must be flash loanable.
+    /// - `amount` must not exceed the `maxFlashLoan`.
+    /// - `flashFee` must not be greater than `MAX_FEE`
+    ///
+    /// @param receiver The address of the contract to receive the funds,
+    /// must implement an ISablierV2FlashBorrower interface.
+    /// @param token The address of the ERC-20 token to use for flash borrowing.
+    /// @param amount The amount of the token to be flash borrowed
+    /// @param data Any data that should be passed to the `receiver` as extra information.
+    function flashLoan(address receiver, IERC20 token, uint128 amount, bytes calldata data) external;
 
     /// @notice Counter for stream ids.
     /// @return The next stream id.

@@ -17,6 +17,15 @@ library Errors {
     /// @notice Emitted when attempting to claim protocol revenues for a token that did not accrue any revenues.
     error SablierV2_ClaimZeroProtocolRevenues(IERC20 token);
 
+    /// @notice Emitted when the flash fee is greater than the maximum fee permitted.
+    error SablierV2_FlashFeeTooHigh(UD60x18 flashFee, UD60x18 maxFee);
+
+    /// @notice Emitted when the flash borrower function execution doens't succed.
+    error SablierV2_FlashBorrowFail();
+
+    /// @notice Emitted when attempting to flash loan more than can be lent.
+    error SablierV2_InsufficientFlashLoanLiquidity(uint256 amountAvailable, uint256 amountRequested, IERC20 token);
+
     /// @notice Emitted when attempting to create a stream with a zero deposit amount.
     error SablierV2_NetDepositAmountZero();
 
@@ -37,6 +46,9 @@ library Errors {
 
     /// @notice Emitted when the stream id points to a nonexistent stream.
     error SablierV2_StreamNonExistent(uint256 streamId);
+
+    /// @notice Emitted when attempting to flash loan with a not permitted token.
+    error SablierV2_TokenNonFlashLoanable(IERC20 token);
 
     /// @notice Emitted when the `msg.sender` is not authorized to perform some action.
     error SablierV2_Unauthorized(uint256 streamId, address caller);
@@ -61,6 +73,13 @@ library Errors {
 
     /// @notice Emitted when attempting to withdraw to a zero address.
     error SablierV2_WithdrawToZeroAddress();
+
+    /*//////////////////////////////////////////////////////////////////////////
+                        SABLIER-V2-COMPTROLLER CUSTOM ERRORS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Emitted when attempting to add a flashloanable token.
+    error SablierV2Comptroller_TokenFlashLoanable(IERC20 token);
 
     /*//////////////////////////////////////////////////////////////////////////
                            SABLIER-V2-LINEAR CUSTOM ERRORS

@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13 <0.9.0;
 
+import { BadFlashLoanReceiver } from "test/helpers/flashLoan/BadFlashLoanReceiver.t.sol";
 import { BaseTest } from "test/BaseTest.t.sol";
 import { Empty } from "test/helpers/hooks/Empty.t.sol";
+import { GoodFlashLoanReceiver } from "test/helpers/flashLoan/GoodFlashLoanReceiver.t.sol";
 import { GoodRecipient } from "test/helpers/hooks/GoodRecipient.t.sol";
 import { GoodSender } from "test/helpers/hooks/GoodSender.t.sol";
 import { ReentrantRecipient } from "test/helpers/hooks/ReentrantRecipient.t.sol";
@@ -16,7 +18,9 @@ abstract contract UnitTest is BaseTest {
                                    TEST CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
+    BadFlashLoanReceiver internal badFlashLoanReceiver = new BadFlashLoanReceiver();
     Empty internal empty = new Empty();
+    GoodFlashLoanReceiver internal goodFlashLoanReceiver = new GoodFlashLoanReceiver();
     GoodRecipient internal goodRecipient = new GoodRecipient();
     GoodSender internal goodSender = new GoodSender();
     ReentrantRecipient internal reentrantRecipient = new ReentrantRecipient();

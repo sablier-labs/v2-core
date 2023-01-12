@@ -4,13 +4,14 @@ pragma solidity >=0.8.13;
 import { Adminable } from "@prb/contracts/access/Adminable.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 import { SafeERC20 } from "@prb/contracts/token/erc20/SafeERC20.sol";
-import { UD60x18 } from "@prb/math/UD60x18.sol";
+import { UD60x18, unwrap, ud } from "@prb/math/UD60x18.sol";
 
 import { Errors } from "./libraries/Errors.sol";
 import { Events } from "./libraries/Events.sol";
 
 import { ISablierV2 } from "./interfaces/ISablierV2.sol";
 import { ISablierV2Comptroller } from "./interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2FlashBorrower } from "./interfaces/ISablierV2FlashBorrower.sol";
 
 /// @title SablierV2
 /// @dev Abstract contract implementing common logic. Implements the ISablierV2 interface.
@@ -105,6 +106,11 @@ abstract contract SablierV2 is
     /// @inheritdoc ISablierV2
     function isEntity(uint256 streamId) public view virtual override returns (bool result);
 
+    /// @inheritdoc ISablierV2
+    function maxFlashLoan(IERC20 token) external view override returns (uint256 balance) {
+        balance = comptroller.isFlashLoanable(token) ? token.balanceOf(address(this)) : 0;
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                             PUBLIC NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -173,6 +179,59 @@ abstract contract SablierV2 is
 
         // Emit an event.
         emit Events.ClaimProtocolRevenues(msg.sender, token, protocolRevenues);
+    }
+
+    /// @inheritdoc ISablierV2
+    function flashLoan(address receiver, IERC20 token, uint128 amount, bytes calldata data) external override {
+        // Checks: the token is flash loanable.
+        if (!comptroller.isFlashLoanable(token)) {
+            revert Errors.SablierV2_TokenNonFlashLoanable(token);
+        }
+
+        // Checks: the amount lent is not greater than what is available.
+        uint256 balanceBefore = token.balanceOf(address(this));
+        if (amount > balanceBefore) {
+            revert Errors.SablierV2_InsufficientFlashLoanLiquidity(balanceBefore, amount, token);
+        }
+
+        // Checks: the flash fee is not greater than `MAX_FEE`.
+        UD60x18 flashFee = comptroller.flashFee();
+        if (flashFee.gt(MAX_FEE)) {
+            revert Errors.SablierV2_FlashFeeTooHigh(flashFee, MAX_FEE);
+        }
+
+        // Calculate the flash fee amount.
+        uint128 flashFeeAmount = uint128(unwrap(ud(amount).mul(flashFee)));
+
+        // Interactions: perform the ERC-20 transfer to the borrower.
+        token.safeTransfer(receiver, amount);
+
+        // Interactions: perform the borrower callback.
+        if (!ISablierV2FlashBorrower(receiver).onFlashLoan(msg.sender, token, amount, flashFeeAmount, data)) {
+            revert Errors.SablierV2_FlashBorrowFail();
+        }
+
+        uint128 returnAmount;
+
+        // We're using unchecked arithmetic here because this calculation cannot realistically overflow, ever.
+        unchecked {
+            // Effects: record flash fee amount.
+            _protocolRevenues[token] += flashFeeAmount;
+
+            // Calculate the amount that the borrower must return.
+            returnAmount = amount + flashFeeAmount;
+        }
+
+        // Interactions: perform the ERC-20 transfer to get the funds back plus a fee.
+        token.safeTransferFrom(receiver, address(this), returnAmount);
+
+        uint256 balanceAfter = token.balanceOf(address(this));
+
+        // Assert that the balance after the flash loan is greater than or equal to the balance before.
+        assert(balanceBefore <= balanceAfter);
+
+        // Emit an event.
+        emit Events.FlashLoan(receiver, msg.sender, token, amount, flashFeeAmount);
     }
 
     /// @inheritdoc ISablierV2

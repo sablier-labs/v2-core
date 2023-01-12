@@ -92,6 +92,9 @@ abstract contract ProTest is SablierV2Test {
         defaultStream.startTime = params.createWithMilestones.startTime;
         defaultStream.token = params.createWithMilestones.token;
 
+        // Set the default flash fee.
+        comptroller.setFlashFee(DEFAULT_FLASH_FEE);
+
         // Set the default protocol fee.
         comptroller.setProtocolFee(dai, DEFAULT_PROTOCOL_FEE);
         comptroller.setProtocolFee(IERC20(address(nonCompliantToken)), DEFAULT_PROTOCOL_FEE);
