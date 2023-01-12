@@ -191,7 +191,7 @@ abstract contract Cancel_Test is SharedTest {
         recipientDoesNotRevert
         noRecipientReentrancy
     {
-        timeWarp = bound(timeWarp, DEFAULT_CLIFF_DURATION + 1, DEFAULT_TOTAL_DURATION * 2);
+        timeWarp = bound(timeWarp, DEFAULT_CLIFF_DURATION, DEFAULT_TOTAL_DURATION * 2);
 
         // Create the stream.
         uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
@@ -201,7 +201,6 @@ abstract contract Cancel_Test is SharedTest {
 
         // Bound the withdraw amount.
         uint128 withdrawableAmount = sablierV2.getWithdrawableAmount(streamId);
-
         withdrawAmount = boundUint128(withdrawAmount, 1, withdrawableAmount - 1);
 
         // Make the withdrawal.
@@ -336,7 +335,7 @@ abstract contract Cancel_Test is SharedTest {
         senderDoesNotRevert
         noSenderReentrancy
     {
-        timeWarp = bound(timeWarp, DEFAULT_CLIFF_DURATION + 1, DEFAULT_TOTAL_DURATION * 2);
+        timeWarp = bound(timeWarp, DEFAULT_CLIFF_DURATION, DEFAULT_TOTAL_DURATION * 2);
 
         // Create the stream.
         uint256 streamId = createDefaultStreamWithSender(address(goodSender));
@@ -346,7 +345,6 @@ abstract contract Cancel_Test is SharedTest {
 
         // Bound the withdraw amount.
         uint128 withdrawableAmount = sablierV2.getWithdrawableAmount(streamId);
-
         withdrawAmount = boundUint128(withdrawAmount, 1, withdrawableAmount - 1);
 
         // Make the withdrawal.
