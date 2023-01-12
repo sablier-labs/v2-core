@@ -191,7 +191,7 @@ abstract contract Cancel_Test is SharedTest {
         recipientDoesNotRevert
         noRecipientReentrancy
     {
-        timeWarp = bound(timeWarp, 0, DEFAULT_TOTAL_DURATION * 2);
+        timeWarp = bound(timeWarp, DEFAULT_CLIFF_DURATION + 1, DEFAULT_TOTAL_DURATION * 2);
 
         // Create the stream.
         uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
@@ -202,16 +202,10 @@ abstract contract Cancel_Test is SharedTest {
         // Bound the withdraw amount.
         uint128 withdrawableAmount = sablierV2.getWithdrawableAmount(streamId);
 
-        if (withdrawableAmount == sablierV2.getDepositAmount(streamId)) {
-            withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount - 1);
-        } else {
-            withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount);
-        }
+        withdrawAmount = boundUint128(withdrawAmount, 1, withdrawableAmount - 1);
 
-        // Make the withdrawal, if not zero.
-        if (withdrawAmount > 0) {
-            sablierV2.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
-        }
+        // Make the withdrawal.
+        sablierV2.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
 
         // Expect the tokens to be withdrawn to the recipient, if not zero.
         uint128 recipientAmount = sablierV2.getWithdrawableAmount(streamId);
@@ -342,7 +336,7 @@ abstract contract Cancel_Test is SharedTest {
         senderDoesNotRevert
         noSenderReentrancy
     {
-        timeWarp = bound(timeWarp, 0, DEFAULT_TOTAL_DURATION * 2);
+        timeWarp = bound(timeWarp, DEFAULT_CLIFF_DURATION + 1, DEFAULT_TOTAL_DURATION * 2);
 
         // Create the stream.
         uint256 streamId = createDefaultStreamWithSender(address(goodSender));
@@ -353,16 +347,10 @@ abstract contract Cancel_Test is SharedTest {
         // Bound the withdraw amount.
         uint128 withdrawableAmount = sablierV2.getWithdrawableAmount(streamId);
 
-        if (withdrawableAmount == sablierV2.getDepositAmount(streamId)) {
-            withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount - 1);
-        } else {
-            withdrawAmount = boundUint128(withdrawAmount, 0, withdrawableAmount);
-        }
+        withdrawAmount = boundUint128(withdrawAmount, 1, withdrawableAmount - 1);
 
-        // Make the withdrawal, if not zero.
-        if (withdrawAmount > 0) {
-            sablierV2.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
-        }
+        // Make the withdrawal.
+        sablierV2.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
 
         // Expect the tokens to be withdrawn to the recipient, if not zero.
         uint128 recipientAmount = sablierV2.getWithdrawableAmount(streamId);
