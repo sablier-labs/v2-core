@@ -24,7 +24,9 @@ jobs:
           submodules: "recursive"
 
       - name: "Install Foundry"
-        uses: "foundry-rs/foundry-toolchain@master"
+        uses: "foundry-rs/foundry-toolchain@v1"
+        with:
+          version: "nightly"
 
       - name: "Deploy a test token contract"
         run: >-
