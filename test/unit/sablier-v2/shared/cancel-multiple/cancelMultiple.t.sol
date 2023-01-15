@@ -6,6 +6,7 @@ import { Solarray } from "solarray/Solarray.sol";
 
 import { Errors } from "src/libraries/Errors.sol";
 import { Events } from "src/libraries/Events.sol";
+import { Status } from "src/types/Enums.sol";
 
 import { SharedTest } from "../SharedTest.t.sol";
 
@@ -24,26 +25,28 @@ abstract contract CancelMultiple_Test is SharedTest {
     }
 
     /// @dev it should do nothing.
-    function test_RevertWhen_OnlyNonExistentStreams() external {
-        uint256 nonStreamId = 1729;
-        uint256[] memory streamIds = Solarray.uint256s(nonStreamId);
+    function test_RevertWhen_OnlyNullStreams() external {
+        uint256 nullStreamId = 1729;
+        uint256[] memory streamIds = Solarray.uint256s(nullStreamId);
         sablierV2.cancelMultiple(streamIds);
     }
 
-    /// @dev it should ignore the non-existent streams and cancel the existent streams.
-    function test_RevertWhen_SomeNonExistentStreams() external {
-        uint256 nonStreamId = 1729;
-        uint256[] memory streamIds = Solarray.uint256s(defaultStreamIds[0], nonStreamId);
+    /// @dev it should ignore the null streams and cancel the non-null ones.
+    function test_RevertWhen_SomeNullStreams() external {
+        uint256 nullStreamId = 1729;
+        uint256[] memory streamIds = Solarray.uint256s(defaultStreamIds[0], nullStreamId);
         sablierV2.cancelMultiple(streamIds);
-        assertDeleted(defaultStreamIds[0]);
+        Status actualStatus = sablierV2.getStatus(defaultStreamIds[0]);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
-    modifier onlyExistentStreams() {
+    modifier onlyNonNullStreams() {
         _;
     }
 
     /// @dev it should do nothing.
-    function test_RevertWhen_AllStreamsNonCancelable() external onlyExistentStreams {
+    function test_RevertWhen_AllStreamsNonCancelable() external onlyNonNullStreams {
         // Create the non-cancelable stream.
         uint256 streamId = createDefaultStreamNonCancelable();
 
@@ -53,7 +56,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     }
 
     /// @dev it should ignore the non-cancelable streams and cancel the cancelable streams.
-    function test_RevertWhen_SomeStreamsNonCancelable() external onlyExistentStreams {
+    function test_RevertWhen_SomeStreamsNonCancelable() external onlyNonNullStreams {
         // Create the non-cancelable stream.
         uint256 streamId = createDefaultStreamNonCancelable();
 
@@ -62,11 +65,13 @@ abstract contract CancelMultiple_Test is SharedTest {
         sablierV2.cancelMultiple(streamIds);
 
         // Assert that the cancelable stream was canceled.
-        assertDeleted(defaultStreamIds[0]);
+        Status actualStatus = sablierV2.getStatus(defaultStreamIds[0]);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
 
         // Assert that the non-cancelable stream was not canceled.
-        bool isEntity = sablierV2.isEntity(defaultStreamIds[1]);
-        assertTrue(isEntity);
+        Status status = sablierV2.getStatus(defaultStreamIds[1]);
+        assertEq(status, Status.ACTIVE);
     }
 
     modifier allStreamsCancelable() {
@@ -76,7 +81,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     /// @dev it should revert.
     function testFuzz_RevertWhen_CallerUnauthorizedAllStreams_MaliciousThirdParty(
         address eve
-    ) external onlyExistentStreams allStreamsCancelable {
+    ) external onlyNonNullStreams allStreamsCancelable {
         vm.assume(eve != address(0) && eve != users.sender && eve != users.recipient);
 
         // Make Eve the caller in this test.
@@ -90,7 +95,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     /// @dev it should revert.
     function testFuzz_RevertWhen_CallerUnauthorizedAllStreams_ApprovedOperator(
         address operator
-    ) external onlyExistentStreams allStreamsCancelable {
+    ) external onlyNonNullStreams allStreamsCancelable {
         vm.assume(operator != address(0) && operator != users.sender && operator != users.recipient);
 
         // Approve the operator for all streams.
@@ -109,7 +114,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     /// @dev it should revert.
     function test_RevertWhen_CallerUnauthorizedAllStreams_FormerRecipient()
         external
-        onlyExistentStreams
+        onlyNonNullStreams
         allStreamsCancelable
     {
         // Transfer the streams to Alice.
@@ -126,7 +131,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     /// @dev it should revert.
     function testFuzz_RevertWhen_CallerUnauthorizedSomeStreams_MaliciousThirdParty(
         address eve
-    ) external onlyExistentStreams allStreamsCancelable {
+    ) external onlyNonNullStreams allStreamsCancelable {
         vm.assume(eve != address(0) && eve != users.sender && eve != users.recipient);
 
         // Make Eve the caller in this test.
@@ -144,7 +149,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     /// @dev it should revert.
     function testFuzz_RevertWhen_CallerUnauthorizedSomeStreams_ApprovedOperator(
         address operator
-    ) external onlyExistentStreams allStreamsCancelable {
+    ) external onlyNonNullStreams allStreamsCancelable {
         vm.assume(operator != address(0) && operator != users.sender && operator != users.recipient);
 
         // Approve the operator to handle the first stream.
@@ -163,7 +168,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     /// @dev it should revert.
     function test_RevertWhen_CallerUnauthorizedSomeStreams_FormerRecipient()
         external
-        onlyExistentStreams
+        onlyNonNullStreams
         allStreamsCancelable
     {
         // Transfer the first stream to Eve.
@@ -190,7 +195,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     function testFuzz_CancelMultiple_Sender(
         uint256 timeWarp,
         uint40 stopTime
-    ) external onlyExistentStreams allStreamsCancelable callerAuthorizedAllStreams {
+    ) external onlyNonNullStreams allStreamsCancelable callerAuthorizedAllStreams {
         timeWarp = bound(timeWarp, 0 seconds, DEFAULT_TOTAL_DURATION * 2);
         stopTime = boundUint40(
             stopTime,
@@ -239,8 +244,12 @@ abstract contract CancelMultiple_Test is SharedTest {
         // Cancel the streams.
         sablierV2.cancelMultiple(streamIds);
 
-        // Assert that the streams were deleted.
-        assertDeleted(Solarray.uint256s(streamIds[0], streamIds[1]));
+        // Assert that the streams were marked as canceled.
+        Status actualStatus0 = sablierV2.getStatus(streamIds[0]);
+        Status actualStatus1 = sablierV2.getStatus(streamIds[1]);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus0, expectedStatus);
+        assertEq(actualStatus1, expectedStatus);
 
         // Assert that the NFTs weren't burned.
         address actualNFTOwner0 = sablierV2.ownerOf({ tokenId: streamIds[0] });
@@ -260,7 +269,7 @@ abstract contract CancelMultiple_Test is SharedTest {
     function testFuzz_CancelMultiple_Recipient(
         uint256 timeWarp,
         uint40 stopTime
-    ) external onlyExistentStreams allStreamsCancelable callerAuthorizedAllStreams {
+    ) external onlyNonNullStreams allStreamsCancelable callerAuthorizedAllStreams {
         timeWarp = bound(timeWarp, 0 seconds, DEFAULT_TOTAL_DURATION * 2);
         stopTime = boundUint40(
             stopTime,
@@ -309,8 +318,12 @@ abstract contract CancelMultiple_Test is SharedTest {
         // Cancel the streams.
         sablierV2.cancelMultiple(streamIds);
 
-        // Assert that the streams were deleted.
-        assertDeleted(Solarray.uint256s(streamIds[0], streamIds[1]));
+        // Assert that the streams were marked as canceled.
+        Status actualStatus0 = sablierV2.getStatus(streamIds[0]);
+        Status actualStatus1 = sablierV2.getStatus(streamIds[1]);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus0, expectedStatus);
+        assertEq(actualStatus1, expectedStatus);
 
         // Assert that the NFTs weren't burned.
         address actualNFTOwner0 = sablierV2.getRecipient(streamIds[0]);

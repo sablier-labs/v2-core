@@ -5,6 +5,7 @@ import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
 
 import { Errors } from "src/libraries/Errors.sol";
 import { Events } from "src/libraries/Events.sol";
+import { Status } from "src/types/Enums.sol";
 
 import { SharedTest } from "../SharedTest.t.sol";
 
@@ -16,23 +17,43 @@ abstract contract Cancel_Test is SharedTest {
 
         // Make the recipient the caller in this test suite.
         changePrank(users.recipient);
-    }
 
-    /// @dev it should revert.
-    function test_RevertWhen_StreamNonExistent() external {
-        uint256 nonStreamId = 1729;
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNonExistent.selector, nonStreamId));
-        sablierV2.cancel(nonStreamId);
-    }
-
-    modifier streamExistent() {
         // Create the default stream.
         defaultStreamId = createDefaultStream();
+    }
+
+    modifier streamNotActive() {
         _;
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamNonCancelable() external streamExistent {
+    function test_RevertWhen_StreamNull() external streamNotActive {
+        uint256 nullStreamId = 1729;
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotActive.selector, nullStreamId));
+        sablierV2.cancel(nullStreamId);
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_StreamCanceled() external streamNotActive {
+        sablierV2.cancel(defaultStreamId);
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotActive.selector, defaultStreamId));
+        sablierV2.cancel(defaultStreamId);
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_StreamFinished() external streamNotActive {
+        vm.warp({ timestamp: DEFAULT_STOP_TIME });
+        sablierV2.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotActive.selector, defaultStreamId));
+        sablierV2.cancel(defaultStreamId);
+    }
+
+    modifier streamActive() {
+        _;
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_StreamNonCancelable() external streamActive {
         // Create the non-cancelable stream.
         uint256 streamId = createDefaultStreamNonCancelable();
 
@@ -48,7 +69,7 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should revert.
     function testFuzz_RevertWhen_CallerUnauthorized_MaliciousThirdParty(
         address eve
-    ) external streamExistent streamCancelable {
+    ) external streamActive streamCancelable {
         vm.assume(eve != address(0) && eve != users.sender && eve != users.recipient);
 
         // Make the unauthorized user the caller in this test.
@@ -62,7 +83,7 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should revert.
     function testFuzz_RevertWhen_CallerUnauthorized_ApprovedOperator(
         address operator
-    ) external streamExistent streamCancelable {
+    ) external streamActive streamCancelable {
         vm.assume(operator != address(0) && operator != users.sender && operator != users.recipient);
 
         // Approve Alice for the stream.
@@ -77,7 +98,7 @@ abstract contract Cancel_Test is SharedTest {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_CallerUnauthorized_FormerRecipient() external streamExistent streamCancelable {
+    function test_RevertWhen_CallerUnauthorized_FormerRecipient() external streamActive streamCancelable {
         // Transfer the stream to Alice.
         sablierV2.transferFrom({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
@@ -101,13 +122,15 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should cancel the stream.
     function test_Cancel_Sender_RecipientNotContract()
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerSender
     {
         sablierV2.cancel(defaultStreamId);
-        assertDeleted(defaultStreamId);
+        Status actualStatus = sablierV2.getStatus(defaultStreamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
     modifier recipientContract() {
@@ -117,7 +140,7 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should cancel the stream.
     function test_Cancel_Sender_RecipientDoesNotImplementHook()
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerSender
@@ -125,7 +148,9 @@ abstract contract Cancel_Test is SharedTest {
     {
         uint256 streamId = createDefaultStreamWithRecipient(address(empty));
         sablierV2.cancel(streamId);
-        assertDeleted(streamId);
+        Status actualStatus = sablierV2.getStatus(streamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
     modifier recipientImplementsHook() {
@@ -135,7 +160,7 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should ignore the revert and cancel the stream.
     function test_Cancel_Sender_RecipientReverts()
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerSender
@@ -144,7 +169,9 @@ abstract contract Cancel_Test is SharedTest {
     {
         uint256 streamId = createDefaultStreamWithRecipient(address(revertingRecipient));
         sablierV2.cancel(streamId);
-        assertDeleted(streamId);
+        Status actualStatus = sablierV2.getStatus(streamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
     modifier recipientDoesNotRevert() {
@@ -154,7 +181,7 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should ignore the revert and cancel the stream.
     function test_Cancel_Sender_RecipientReentrancy()
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerSender
@@ -164,7 +191,9 @@ abstract contract Cancel_Test is SharedTest {
     {
         uint256 streamId = createDefaultStreamWithRecipient(address(reentrantRecipient));
         sablierV2.cancel(streamId);
-        assertDeleted(streamId);
+        Status actualStatus = sablierV2.getStatus(streamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
     modifier noRecipientReentrancy() {
@@ -182,7 +211,7 @@ abstract contract Cancel_Test is SharedTest {
         uint128 withdrawAmount
     )
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerSender
@@ -225,8 +254,10 @@ abstract contract Cancel_Test is SharedTest {
         // Cancel the stream.
         sablierV2.cancel(streamId);
 
-        // Assert that the stream was deleted.
-        assertDeleted(streamId);
+        // Assert that the stream was marked as canceled.
+        Status actualStatus = sablierV2.getStatus(streamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
 
         // Assert that the NFT was not burned.
         address actualNFTOwner = sablierV2.ownerOf({ tokenId: streamId });
@@ -241,13 +272,15 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should cancel the stream.
     function test_Cancel_Recipient_SenderNotContract()
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerRecipient
     {
         sablierV2.cancel(defaultStreamId);
-        assertDeleted(defaultStreamId);
+        Status actualStatus = sablierV2.getStatus(defaultStreamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
     modifier senderContract() {
@@ -257,7 +290,7 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should cancel the stream.
     function test_Cancel_Recipient_SenderDoesNotImplementHook()
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerRecipient
@@ -265,7 +298,9 @@ abstract contract Cancel_Test is SharedTest {
     {
         uint256 streamId = createDefaultStreamWithSender(address(empty));
         sablierV2.cancel(streamId);
-        assertDeleted(streamId);
+        Status actualStatus = sablierV2.getStatus(streamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
     modifier senderImplementsHook() {
@@ -275,7 +310,7 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should cancel the stream.
     function test_Cancel_Recipient_SenderReverts()
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerRecipient
@@ -285,8 +320,10 @@ abstract contract Cancel_Test is SharedTest {
         uint256 streamId = createDefaultStreamWithSender(address(revertingSender));
         sablierV2.cancel(streamId);
 
-        // Assert that the stream was deleted.
-        assertDeleted(streamId);
+        // Assert that the stream was marked as canceled.
+        Status actualStatus = sablierV2.getStatus(streamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
     modifier senderDoesNotRevert() {
@@ -296,7 +333,7 @@ abstract contract Cancel_Test is SharedTest {
     /// @dev it should ignore the revert and make the withdrawal and cancel the stream.
     function test_Cancel_Recipient_SenderReentrancy()
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerRecipient
@@ -307,8 +344,10 @@ abstract contract Cancel_Test is SharedTest {
         uint256 streamId = createDefaultStreamWithSender(address(reentrantSender));
         sablierV2.cancel(streamId);
 
-        // Assert that the stream was deleted.
-        assertDeleted(streamId);
+        // Assert that the stream was marked as canceled.
+        Status actualStatus = sablierV2.getStatus(streamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
     }
 
     modifier noSenderReentrancy() {
@@ -326,7 +365,7 @@ abstract contract Cancel_Test is SharedTest {
         uint128 withdrawAmount
     )
         external
-        streamExistent
+        streamActive
         streamCancelable
         callerAuthorized
         callerRecipient
@@ -369,8 +408,10 @@ abstract contract Cancel_Test is SharedTest {
         // Cancel the stream.
         sablierV2.cancel(streamId);
 
-        // Assert that the stream was deleted.
-        assertDeleted(streamId);
+        // Assert that the stream was marked as canceled.
+        Status actualStatus = sablierV2.getStatus(streamId);
+        Status expectedStatus = Status.CANCELED;
+        assertEq(actualStatus, expectedStatus);
 
         // Assert that the NFT was not burned.
         address actualNFTOwner = sablierV2.ownerOf({ tokenId: streamId });
