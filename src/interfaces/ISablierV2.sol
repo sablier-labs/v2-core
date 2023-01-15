@@ -125,7 +125,8 @@ interface ISablierV2 is
     /// @dev Emits multiple {Cancel} events.
     ///
     /// Notes:
-    /// - It is not an error if one of the stream ids points to a stream that is not active or is active but is not cancelable.
+    /// - It is not an error if one of the stream ids points to a stream that is not active or is active but
+    /// is not cancelable.
     /// - This function will attempt to call a hook on either the sender or the recipient of each stream.
     ///
     /// Requirements:

@@ -358,8 +358,8 @@ abstract contract WithdrawMultiple_Test is SharedTest {
         assertEq(actualWithdrawnAmount1, expectedWithdrawnAmount);
     }
 
-    /// @dev it should make the withdrawals, emit multiple Withdraw events, mark the ended streams as depleted, and update
-    /// the withdrawn amounts.
+    /// @dev it should make the withdrawals, emit multiple Withdraw events, mark the ended streams as depleted,
+    /// and update the withdrawn amounts.
     function testFuzz_WithdrawMultiple_SomeStreamsEndedSomeStreamsOngoing(
         uint256 timeWarp,
         address to,
