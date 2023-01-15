@@ -35,7 +35,7 @@ abstract contract Renounce_Test is SharedTest {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamFinished() external streamNotActive {
+    function test_RevertWhen_StreamDepleted() external streamNotActive {
         vm.warp({ timestamp: DEFAULT_STOP_TIME });
         sablierV2.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotActive.selector, defaultStreamId));

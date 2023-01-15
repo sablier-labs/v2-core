@@ -262,7 +262,7 @@ abstract contract WithdrawMultiple_Test is SharedTest {
         _;
     }
 
-    /// @dev it should make the withdrawals, emit multiple Withdraw events, and mark the streams as finished.
+    /// @dev it should make the withdrawals, emit multiple Withdraw events, and mark the streams as depleted.
     function testFuzz_WithdrawMultiple_AllStreamsEnded(
         uint256 timeWarp,
         address to
@@ -296,10 +296,10 @@ abstract contract WithdrawMultiple_Test is SharedTest {
         uint128[] memory amounts = Solarray.uint128s(DEFAULT_NET_DEPOSIT_AMOUNT, DEFAULT_NET_DEPOSIT_AMOUNT);
         sablierV2.withdrawMultiple({ streamIds: defaultStreamIds, to: to, amounts: amounts });
 
-        // Assert that the streams were marked as finished.
+        // Assert that the streams were marked as depleted.
         Status actualStatus0 = sablierV2.getStatus(defaultStreamIds[0]);
         Status actualStatus1 = sablierV2.getStatus(defaultStreamIds[1]);
-        Status expectedStatus = Status.FINISHED;
+        Status expectedStatus = Status.DEPLETED;
         assertEq(actualStatus0, expectedStatus);
         assertEq(actualStatus1, expectedStatus);
 
@@ -358,7 +358,7 @@ abstract contract WithdrawMultiple_Test is SharedTest {
         assertEq(actualWithdrawnAmount1, expectedWithdrawnAmount);
     }
 
-    /// @dev it should make the withdrawals, emit multiple Withdraw events, mark the ended streams as finished, and update
+    /// @dev it should make the withdrawals, emit multiple Withdraw events, mark the ended streams as depleted, and update
     /// the withdrawn amounts.
     function testFuzz_WithdrawMultiple_SomeStreamsEndedSomeStreamsOngoing(
         uint256 timeWarp,
@@ -403,9 +403,9 @@ abstract contract WithdrawMultiple_Test is SharedTest {
         uint128[] memory amounts = Solarray.uint128s(endedWithdrawAmount, ongoingWithdrawAmount);
         sablierV2.withdrawMultiple({ streamIds: streamIds, to: to, amounts: amounts });
 
-        // Assert that the ended stream was marked as finished.
+        // Assert that the ended stream was marked as depleted.
         Status actualStatus = sablierV2.getStatus(endedStreamId);
-        Status expectedStatus = Status.FINISHED;
+        Status expectedStatus = Status.DEPLETED;
         assertEq(actualStatus, expectedStatus);
 
         // Assert that the ended stream NFT was not burned.

@@ -4,7 +4,7 @@ renounce.t.sol
 │  │  └── it should revert
 │  ├── when the stream is canceled
 │  │  └── it should revert
-│  └── when the stream is finished
+│  └── when the stream is depleted
 │     └── it should revert
 └── when the stream is active
    ├── when the caller is not the sender

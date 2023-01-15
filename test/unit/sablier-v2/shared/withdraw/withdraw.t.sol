@@ -41,7 +41,7 @@ abstract contract Withdraw_Test is SharedTest {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamFinished() external streamNotActive {
+    function test_RevertWhen_StreamDepleted() external streamNotActive {
         vm.warp({ timestamp: DEFAULT_STOP_TIME });
         sablierV2.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotActive.selector, defaultStreamId));
@@ -100,7 +100,7 @@ abstract contract Withdraw_Test is SharedTest {
     /// @dev it should revert.
     function test_RevertWhen_ToZeroAddress() external streamActive callerAuthorized {
         vm.expectRevert(Errors.SablierV2_WithdrawToZeroAddress.selector);
-        sablierV2.withdraw({ streamId: defaultStreamId, to: address(0), amount: DEFAULT_NET_DEPOSIT_AMOUNT });
+        sablierV2.withdraw({ streamId: defaultStreamId, to: address(0), amount: DEFAULT_WITHDRAW_AMOUNT });
     }
 
     modifier toNonZeroAddress() {
@@ -201,7 +201,7 @@ abstract contract Withdraw_Test is SharedTest {
         _;
     }
 
-    /// @dev it should make the withdrawal and mark the stream as finished.
+    /// @dev it should make the withdrawal and mark the stream as depleted.
     function test_Withdraw_CurrentTimeEqualToStopTime()
         external
         streamActive
@@ -217,9 +217,9 @@ abstract contract Withdraw_Test is SharedTest {
         // Make the withdrawal.
         sablierV2.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: DEFAULT_NET_DEPOSIT_AMOUNT });
 
-        // Assert that the stream was marked as finished.
+        // Assert that the stream was marked as depleted.
         Status actualStatus = sablierV2.getStatus(defaultStreamId);
-        Status expectedStatus = Status.FINISHED;
+        Status expectedStatus = Status.DEPLETED;
         assertEq(actualStatus, expectedStatus);
 
         // Assert that the NFT was not burned.

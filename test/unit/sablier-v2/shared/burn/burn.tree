@@ -3,7 +3,7 @@ burn.t.sol
 │  └── it should revert
 ├── when the stream is active
 │  └── it should revert
-└── when the stream is either canceled or finished
+└── when the stream is either canceled or depleted
    ├── when the caller is unauthorized
    │  └── it should revert
    └── when the caller is authorized

@@ -21,18 +21,18 @@ abstract contract Burn_Test is SharedTest {
     /// @dev it should revert.
     function test_RevertWhen_StreamNull() external {
         uint256 nullStreamId = 1729;
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotCanceledOrFinished.selector, nullStreamId));
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotCanceledOrDepleted.selector, nullStreamId));
         sablierV2.burn(nullStreamId);
     }
 
     /// @dev it should revert.
     function test_RevertWhen_StreamActive() external {
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotCanceledOrFinished.selector, streamId));
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2_StreamNotCanceledOrDepleted.selector, streamId));
         sablierV2.burn(streamId);
     }
 
-    /// @dev This modifier runs the test twice, once with a canceled stream, and once with a finished stream.
-    modifier streamCanceledOrFinished() {
+    /// @dev This modifier runs the test twice, once with a canceled stream, and once with a depleted stream.
+    modifier streamCanceledOrDepleted() {
         sablierV2.cancel(streamId);
         _;
         changePrank(users.recipient);
@@ -43,7 +43,7 @@ abstract contract Burn_Test is SharedTest {
     }
 
     /// @dev it should revert.
-    function testFuzz_RevertWhen_CallerUnauthorized(address eve) external streamCanceledOrFinished {
+    function testFuzz_RevertWhen_CallerUnauthorized(address eve) external streamCanceledOrDepleted {
         vm.assume(eve != address(0) && eve != users.recipient);
 
         // Make Eve the caller in the rest of this test.
@@ -59,7 +59,7 @@ abstract contract Burn_Test is SharedTest {
     }
 
     /// @dev it should burn the NFT.
-    function testFuzz_Burn_CallerApprovedOperator(address operator) external streamCanceledOrFinished callerAuthorized {
+    function testFuzz_Burn_CallerApprovedOperator(address operator) external streamCanceledOrDepleted callerAuthorized {
         vm.assume(operator != address(0) && operator != users.recipient);
 
         // Approve the operator to handle the stream.
@@ -78,7 +78,7 @@ abstract contract Burn_Test is SharedTest {
     }
 
     /// @dev it should burn the NFT.
-    function test_Burn_CallerNFTOwner() external streamCanceledOrFinished callerAuthorized {
+    function test_Burn_CallerNFTOwner() external streamCanceledOrDepleted callerAuthorized {
         sablierV2.burn(streamId);
         address actualOwner = sablierV2.getRecipient(streamId);
         address expectedOwner = address(0);

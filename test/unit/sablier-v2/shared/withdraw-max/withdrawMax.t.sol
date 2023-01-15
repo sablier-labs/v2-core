@@ -21,7 +21,7 @@ abstract contract WithdrawMax_Test is SharedTest {
         changePrank(users.recipient);
     }
 
-    /// @dev it should make the withdrawal and mark the stream as finished.
+    /// @dev it should make the withdrawal and mark the stream as depleted.
     function test_WithdrawMax_CurrentTimeEqualToStopTime() external {
         // Warp to the end of the stream.
         vm.warp({ timestamp: DEFAULT_STOP_TIME });
@@ -29,9 +29,9 @@ abstract contract WithdrawMax_Test is SharedTest {
         // Make the withdrawal.
         sablierV2.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
-        // Assert that the stream was marked as finished.
+        // Assert that the stream was marked as depleted.
         Status actualStatus = sablierV2.getStatus(defaultStreamId);
-        Status expectedStatus = Status.FINISHED;
+        Status expectedStatus = Status.DEPLETED;
         assertEq(actualStatus, expectedStatus);
 
         // Assert that the NFT was not burned.

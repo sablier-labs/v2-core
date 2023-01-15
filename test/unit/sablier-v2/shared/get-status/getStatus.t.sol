@@ -40,16 +40,16 @@ abstract contract GetStatus_Test is SharedTest {
         assertEq(actualStatus, expectedStatus);
     }
 
-    modifier streamFinished() {
+    modifier streamDepleted() {
         vm.warp({ timestamp: DEFAULT_STOP_TIME });
         sablierV2.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         _;
     }
 
-    /// @dev it should return the FINISHED status.
-    function test_GetStatus_Finished() external streamCreated streamFinished {
+    /// @dev it should return the DEPLETED status.
+    function test_GetStatus_Depleted() external streamCreated streamDepleted {
         Status actualStatus = sablierV2.getStatus(defaultStreamId);
-        Status expectedStatus = Status.FINISHED;
+        Status expectedStatus = Status.DEPLETED;
         assertEq(actualStatus, expectedStatus);
     }
 }

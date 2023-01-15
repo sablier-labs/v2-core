@@ -116,10 +116,10 @@ abstract contract SablierV2 is
 
     /// @inheritdoc ISablierV2
     function burn(uint256 streamId) external override {
-        // Checks: the stream is either canceled or finished.
+        // Checks: the stream is either canceled or depleted.
         Status status = getStatus(streamId);
-        if (status != Status.CANCELED && status != Status.FINISHED) {
-            revert Errors.SablierV2_StreamNotCanceledOrFinished(streamId);
+        if (status != Status.CANCELED && status != Status.DEPLETED) {
+            revert Errors.SablierV2_StreamNotCanceledOrDepleted(streamId);
         }
 
         // Checks: the `msg.sender` is either the owner of the NFT or an approved operator.

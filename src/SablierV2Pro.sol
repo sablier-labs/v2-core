@@ -541,9 +541,9 @@ contract SablierV2Pro is
         // Assert that the withdrawn amount is greater than or equal to the deposit amount.
         assert(stream.amounts.deposit >= stream.amounts.withdrawn);
 
-        // Effects: if the entire deposit amount is now withdrawn, we mark the stream as finished.
+        // Effects: if the entire deposit amount is now withdrawn, we mark the stream as depleted.
         if (stream.amounts.deposit == stream.amounts.withdrawn) {
-            _streams[streamId].status = Status.FINISHED;
+            _streams[streamId].status = Status.DEPLETED;
         }
 
         // Interactions: perform the ERC-20 transfer.

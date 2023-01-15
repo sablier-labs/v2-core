@@ -96,7 +96,7 @@ interface ISablierV2 is
     /// have to constantly check for the existence of the NFT. They can decide to burn the NFT themselves, or not.
     ///
     /// Requirements:
-    /// - `streamId` must point to a stream that is either canceled or finished.
+    /// - `streamId` must point to a stream that is either canceled or depleted.
     /// - The NFT must exist.
     /// - `msg.sender` must be either an approved operator or the owner of the NFT.
     ///

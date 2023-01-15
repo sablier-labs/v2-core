@@ -32,7 +32,7 @@ abstract contract IsCancelable_Test is SharedTest {
     }
 
     /// @dev it should return false.
-    function test_IsCancelable_StreamFinished() external streamNotActive {
+    function test_IsCancelable_StreamDepleted() external streamNotActive {
         vm.warp({ timestamp: DEFAULT_STOP_TIME });
         sablierV2.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         bool isCancelable = sablierV2.isCancelable(defaultStreamId);

@@ -29,8 +29,8 @@ library Errors {
     /// @notice Emitted when attempting to renounce an already non-cancelable stream.
     error SablierV2_RenounceNonCancelableStream(uint256 streamId);
 
-    /// @notice Emitted when the stream id points to a stream that is not canceled or finished.
-    error SablierV2_StreamNotCanceledOrFinished(uint256 streamId);
+    /// @notice Emitted when the stream id points to a stream that is not canceled or depleted.
+    error SablierV2_StreamNotCanceledOrDepleted(uint256 streamId);
 
     /// @notice Emitted when the stream id points to a stream that is not active.
     error SablierV2_StreamNotActive(uint256 streamId);
