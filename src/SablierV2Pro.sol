@@ -389,6 +389,11 @@ contract SablierV2Pro is
         // Effects: mark the stream as canceled.
         _streams[streamId].status = Status.CANCELED;
 
+        // Effects: add the recipient's amount to the withdrawn amount.
+        unchecked {
+            _streams[streamId].amounts.withdrawn += recipientAmount;
+        }
+
         // Interactions: withdraw the tokens to the recipient, if any.
         if (recipientAmount > 0) {
             stream.token.safeTransfer({ to: recipient, amount: recipientAmount });

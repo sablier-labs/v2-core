@@ -137,7 +137,7 @@ abstract contract Cancel_Test is SharedTest {
         _;
     }
 
-    /// @dev it should cancel the stream.
+    /// @dev it should ignore the revert and cancel the stream.
     function test_Cancel_Sender_RecipientDoesNotImplementHook()
         external
         streamActive
@@ -200,12 +200,13 @@ abstract contract Cancel_Test is SharedTest {
         _;
     }
 
-    /// @dev it should perform the ERC-20 transfers, emit a Cancel event, and cancel the stream.
+    /// @dev it should perform the ERC-20 transfers, emit a Cancel event, cancel the stream, and update
+    /// the withdrawn amount.
     ///
     /// The fuzzing ensures that all of the following scenarios are tested:
     ///
     /// - Stream ongoing and ended.
-    /// - With and without withdrawals
+    /// - With and without withdrawals.
     function testFuzz_Cancel_Sender(
         uint256 timeWarp,
         uint128 withdrawAmount
@@ -222,18 +223,20 @@ abstract contract Cancel_Test is SharedTest {
     {
         timeWarp = bound(timeWarp, DEFAULT_CLIFF_DURATION, DEFAULT_TOTAL_DURATION * 2);
 
-        // Create the stream.
-        uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
-
         // Warp into the future.
         vm.warp({ timestamp: DEFAULT_START_TIME + timeWarp });
 
+        // Create the stream.
+        uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
+
         // Bound the withdraw amount.
         uint128 streamedAmount = sablierV2.getStreamedAmount(streamId);
-        withdrawAmount = boundUint128(withdrawAmount, 1, streamedAmount - 1);
+        withdrawAmount = boundUint128(withdrawAmount, 0, streamedAmount - 1);
 
-        // Make the withdrawal.
-        sablierV2.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
+        // Make the only withdrawal if the amount is greater than zero.
+        if (withdrawAmount > 0) {
+            sablierV2.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
+        }
 
         // Expect the tokens to be withdrawn to the recipient, if not zero.
         uint128 recipientAmount = sablierV2.getWithdrawableAmount(streamId);
@@ -258,6 +261,11 @@ abstract contract Cancel_Test is SharedTest {
         Status actualStatus = sablierV2.getStatus(streamId);
         Status expectedStatus = Status.CANCELED;
         assertEq(actualStatus, expectedStatus);
+
+        // Assert that the withdrawn amount was updated.
+        uint128 actualWithdrawnAmount = sablierV2.getWithdrawnAmount(streamId);
+        uint128 expectedWithdrawnAmount = withdrawAmount + recipientAmount;
+        assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
 
         // Assert that the NFT was not burned.
         address actualNFTOwner = sablierV2.ownerOf({ tokenId: streamId });
@@ -287,7 +295,7 @@ abstract contract Cancel_Test is SharedTest {
         _;
     }
 
-    /// @dev it should cancel the stream.
+    /// @dev it should ignore the revert and cancel the stream.
     function test_Cancel_Recipient_SenderDoesNotImplementHook()
         external
         streamActive
@@ -307,7 +315,7 @@ abstract contract Cancel_Test is SharedTest {
         _;
     }
 
-    /// @dev it should cancel the stream.
+    /// @dev it should ignore the revert and cancel the stream.
     function test_Cancel_Recipient_SenderReverts()
         external
         streamActive
@@ -354,7 +362,8 @@ abstract contract Cancel_Test is SharedTest {
         _;
     }
 
-    /// @dev it should perform the ERC-20 transfers, emit a Cancel event, and cancel the stream.
+    /// @dev it should perform the ERC-20 transfers, emit a Cancel event, cancel the stream, and update
+    /// the withdrawn amount.
     ///
     /// The fuzzing ensures that all of the following scenarios are tested:
     ///
@@ -376,18 +385,20 @@ abstract contract Cancel_Test is SharedTest {
     {
         timeWarp = bound(timeWarp, DEFAULT_CLIFF_DURATION, DEFAULT_TOTAL_DURATION * 2);
 
-        // Create the stream.
-        uint256 streamId = createDefaultStreamWithSender(address(goodSender));
-
         // Warp into the future.
         vm.warp({ timestamp: DEFAULT_START_TIME + timeWarp });
 
+        // Create the stream.
+        uint256 streamId = createDefaultStreamWithSender(address(goodSender));
+
         // Bound the withdraw amount.
         uint128 streamedAmount = sablierV2.getStreamedAmount(streamId);
-        withdrawAmount = boundUint128(withdrawAmount, 1, streamedAmount - 1);
+        withdrawAmount = boundUint128(withdrawAmount, 0, streamedAmount - 1);
 
-        // Make the withdrawal.
-        sablierV2.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
+        // Make the withdrawal only if the amount is greater than zero.
+        if (withdrawAmount > 0) {
+            sablierV2.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
+        }
 
         // Expect the tokens to be withdrawn to the recipient, if not zero.
         uint128 recipientAmount = sablierV2.getWithdrawableAmount(streamId);
@@ -412,6 +423,11 @@ abstract contract Cancel_Test is SharedTest {
         Status actualStatus = sablierV2.getStatus(streamId);
         Status expectedStatus = Status.CANCELED;
         assertEq(actualStatus, expectedStatus);
+
+        // Assert that the withdrawn amount was updated.
+        uint128 actualWithdrawnAmount = sablierV2.getWithdrawnAmount(streamId);
+        uint128 expectedWithdrawnAmount = withdrawAmount + recipientAmount;
+        assertEq(actualWithdrawnAmount, expectedWithdrawnAmount);
 
         // Assert that the NFT was not burned.
         address actualNFTOwner = sablierV2.ownerOf({ tokenId: streamId });
