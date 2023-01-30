@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13 <0.9.0;
 
-import { IAdminable } from "@prb/contracts/access/IAdminable.sol";
-
 import { ISablierV2Comptroller } from "src/interfaces/ISablierV2Comptroller.sol";
+import { Errors } from "src/libraries/Errors.sol";
 import { Events } from "src/libraries/Events.sol";
 import { SablierV2Comptroller } from "src/SablierV2Comptroller.sol";
 
@@ -19,8 +18,10 @@ abstract contract SetComptroller_Unit_Test is Unit_Test, Lockup_Shared_Test {
         changePrank({ who: users.eve });
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(IAdminable.Adminable_CallerNotAdmin.selector, users.admin, users.eve));
-        sablierV2.setComptroller(ISablierV2Comptroller(users.eve));
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierV2Adminable_CallerNotAdmin.selector, users.admin, users.eve)
+        );
+        config.setComptroller(ISablierV2Comptroller(users.eve));
     }
 
     modifier callerAdmin() {
@@ -36,10 +37,10 @@ abstract contract SetComptroller_Unit_Test is Unit_Test, Lockup_Shared_Test {
         emit Events.SetComptroller(users.admin, comptroller, comptroller);
 
         // Re-set the comptroller.
-        sablierV2.setComptroller(comptroller);
+        config.setComptroller(comptroller);
 
         // Assert that the comptroller did not change.
-        address actualComptroller = address(sablierV2.comptroller());
+        address actualComptroller = address(config.comptroller());
         address expectedComptroller = address(comptroller);
         assertEq(actualComptroller, expectedComptroller, "comptroller");
     }
@@ -54,10 +55,10 @@ abstract contract SetComptroller_Unit_Test is Unit_Test, Lockup_Shared_Test {
         emit Events.SetComptroller(users.admin, comptroller, newComptroller);
 
         // Set the new comptroller.
-        sablierV2.setComptroller(newComptroller);
+        config.setComptroller(newComptroller);
 
         // Assert that the new comptroller was set.
-        address actualComptroller = address(sablierV2.comptroller());
+        address actualComptroller = address(config.comptroller());
         address expectedComptroller = address(newComptroller);
         assertEq(actualComptroller, expectedComptroller, "comptroller");
     }

@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13 <0.9.0;
 
-import { IAdminable } from "@prb/contracts/access/IAdminable.sol";
 import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { Errors } from "src/libraries/Errors.sol";
 import { Events } from "src/libraries/Events.sol";
@@ -20,8 +18,10 @@ abstract contract ClaimProtocolRevenues_Unit_Test is Unit_Test, Lockup_Shared_Te
         changePrank({ who: users.eve });
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(IAdminable.Adminable_CallerNotAdmin.selector, users.admin, users.eve));
-        sablierV2.claimProtocolRevenues(DEFAULT_ASSET);
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierV2Adminable_CallerNotAdmin.selector, users.admin, users.eve)
+        );
+        config.claimProtocolRevenues(DEFAULT_ASSET);
     }
 
     modifier callerAdmin() {
@@ -33,7 +33,7 @@ abstract contract ClaimProtocolRevenues_Unit_Test is Unit_Test, Lockup_Shared_Te
     /// @dev it should revert.
     function test_RevertWhen_ProtocolRevenuesZero() external callerAdmin {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_NoProtocolRevenues.selector, DEFAULT_ASSET));
-        sablierV2.claimProtocolRevenues(DEFAULT_ASSET);
+        config.claimProtocolRevenues(DEFAULT_ASSET);
     }
 
     modifier protocolRevenuesNotZero() {
@@ -56,10 +56,10 @@ abstract contract ClaimProtocolRevenues_Unit_Test is Unit_Test, Lockup_Shared_Te
         emit Events.ClaimProtocolRevenues(users.admin, DEFAULT_ASSET, protocolRevenues);
 
         // Claim the protocol revenues.
-        sablierV2.claimProtocolRevenues(DEFAULT_ASSET);
+        config.claimProtocolRevenues(DEFAULT_ASSET);
 
         // Assert that the protocol revenues were set to zero.
-        uint128 actualProtocolRevenues = sablierV2.getProtocolRevenues(DEFAULT_ASSET);
+        uint128 actualProtocolRevenues = config.getProtocolRevenues(DEFAULT_ASSET);
         uint128 expectedProtocolRevenues = 0;
         assertEq(actualProtocolRevenues, expectedProtocolRevenues, "protocolRevenues");
     }
