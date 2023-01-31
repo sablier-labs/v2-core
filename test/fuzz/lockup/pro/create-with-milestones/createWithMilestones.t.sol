@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.13 <0.9.0;
 
-import { IERC20 } from "@prb/contracts/token/erc20/IERC20.sol";
-import { SafeERC20_CallToNonContract } from "@prb/contracts/token/erc20/SafeERC20.sol";
+import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { MAX_UD60x18, UD60x18, ud, ZERO } from "@prb/math/UD60x18.sol";
 import { UD2x18 } from "@prb/math/UD2x18.sol";
 import { stdError } from "forge-std/StdError.sol";
@@ -186,43 +185,6 @@ contract CreateWithMilestones_Pro_Fuzz_Test is Pro_Fuzz_Test {
         _;
     }
 
-    /// @dev it should revert.
-    function testFuzz_RevertWhen_AssetNotContract(
-        IERC20 nonContract
-    )
-        external
-        recipientNonZeroAddress
-        netDepositAmountNotZero
-        segmentCountNotZero
-        segmentCountNotTooHigh
-        segmentAmountsSumDoesNotOverflow
-        segmentMilestonesOrdered
-        netDepositAmountEqualToSegmentAmountsSum
-        protocolFeeNotTooHigh
-        brokerFeeNotTooHigh
-    {
-        vm.assume(address(nonContract).code.length == 0);
-
-        // Set the default protocol fee so that the test does not revert due to the net deposit amount not being
-        // equal to the segment amounts sum.
-        changePrank({ who: users.admin });
-        comptroller.setProtocolFee(nonContract, DEFAULT_PROTOCOL_FEE);
-        changePrank({ who: users.sender });
-
-        // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(SafeERC20_CallToNonContract.selector, address(nonContract)));
-        pro.createWithMilestones(
-            defaultParams.createWithMilestones.sender,
-            defaultParams.createWithMilestones.recipient,
-            defaultParams.createWithMilestones.grossDepositAmount,
-            defaultParams.createWithMilestones.segments,
-            nonContract,
-            defaultParams.createWithMilestones.cancelable,
-            defaultParams.createWithMilestones.startTime,
-            defaultParams.createWithMilestones.broker
-        );
-    }
-
     modifier assetContract() {
         _;
     }
@@ -300,7 +262,7 @@ contract CreateWithMilestones_Pro_Fuzz_Test is Pro_Fuzz_Test {
         deal({ token: address(DEFAULT_ASSET), to: params.funder, give: params.grossDepositAmount });
 
         // Approve the {SablierV2LockupPro} contract to transfer the assets from the funder.
-        DEFAULT_ASSET.approve({ spender: address(pro), value: UINT256_MAX });
+        DEFAULT_ASSET.approve({ spender: address(pro), amount: UINT256_MAX });
 
         // Load the initial protocol revenues.
         Vars memory vars;
