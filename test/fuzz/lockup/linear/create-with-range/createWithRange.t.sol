@@ -40,19 +40,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
                 defaultParams.createWithRange.range.cliff
             )
         );
-        linear.createWithRange(
-            defaultParams.createWithRange.sender,
-            defaultParams.createWithRange.recipient,
-            defaultParams.createWithRange.totalAmount,
-            defaultParams.createWithRange.asset,
-            defaultParams.createWithRange.cancelable,
-            LockupLinear.Range({
-                start: startTime,
-                cliff: defaultParams.createWithRange.range.cliff,
-                end: defaultParams.createWithRange.range.end
-            }),
-            defaultParams.createWithRange.broker
-        );
+        createDefaultStreamWithStartTime(startTime);
     }
 
     modifier startTimeNotGreaterThanCliffTime() {
@@ -74,15 +62,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
                 endTime
             )
         );
-        linear.createWithRange(
-            defaultParams.createWithRange.sender,
-            defaultParams.createWithRange.recipient,
-            defaultParams.createWithRange.totalAmount,
-            defaultParams.createWithRange.asset,
-            defaultParams.createWithRange.cancelable,
-            LockupLinear.Range({ start: defaultParams.createWithRange.range.start, cliff: cliffTime, end: endTime }),
-            defaultParams.createWithRange.broker
-        );
+        createDefaultStreamWithRange(LockupLinear.Range({ start: DEFAULT_START_TIME, cliff: cliffTime, end: endTime }));
     }
 
     modifier cliffTimeLessThanEndTime() {
@@ -112,7 +92,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
 
     /// @dev it should revert.
     function testFuzz_RevertWhen_BrokerFeeTooHigh(
-        UD60x18 brokerFee
+        Broker memory broker
     )
         external
         recipientNonZeroAddress
@@ -121,19 +101,12 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
         cliffTimeLessThanEndTime
         protocolFeeNotTooHigh
     {
-        brokerFee = bound(brokerFee, DEFAULT_MAX_FEE.add(ud(1)), MAX_UD60x18);
+        vm.assume(broker.account != address(0));
+        broker.fee = bound(broker.fee, DEFAULT_MAX_FEE.add(ud(1)), MAX_UD60x18);
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2Lockup_BrokerFeeTooHigh.selector, brokerFee, DEFAULT_MAX_FEE)
+            abi.encodeWithSelector(Errors.SablierV2Lockup_BrokerFeeTooHigh.selector, broker.fee, DEFAULT_MAX_FEE)
         );
-        linear.createWithRange(
-            defaultParams.createWithRange.sender,
-            defaultParams.createWithRange.recipient,
-            defaultParams.createWithRange.totalAmount,
-            defaultParams.createWithRange.asset,
-            defaultParams.createWithRange.cancelable,
-            defaultParams.createWithRange.range,
-            Broker({ account: users.broker, fee: brokerFee })
-        );
+        createDefaultStreamWithBroker(broker);
     }
 
     modifier brokerFeeNotTooHigh() {
@@ -146,17 +119,6 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
 
     modifier assetERC20Compliant() {
         _;
-    }
-
-    struct Params {
-        Broker broker;
-        bool cancelable;
-        address funder;
-        UD60x18 protocolFee;
-        LockupLinear.Range range;
-        address recipient;
-        address sender;
-        uint128 totalAmount;
     }
 
     struct Vars {
@@ -184,7 +146,9 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
     /// - Multiple values for the broker fee, including zero.
     /// - Multiple values for the protocol fee, including zero.
     function testFuzz_CreateWithRange(
-        Params memory params
+        address funder,
+        LockupLinear.CreateWithRange memory params,
+        UD60x18 protocolFee
     )
         external
         depositAmountNotZero
@@ -195,11 +159,11 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
         assetContract
         assetERC20Compliant
     {
-        vm.assume(params.funder != address(0) && params.recipient != address(0) && params.broker.account != address(0));
+        vm.assume(funder != address(0) && params.recipient != address(0) && params.broker.account != address(0));
         vm.assume(params.totalAmount != 0);
         vm.assume(params.range.start <= params.range.cliff && params.range.cliff < params.range.end);
         params.broker.fee = bound(params.broker.fee, 0, DEFAULT_MAX_FEE);
-        params.protocolFee = bound(params.protocolFee, 0, DEFAULT_MAX_FEE);
+        protocolFee = bound(protocolFee, 0, DEFAULT_MAX_FEE);
 
         // Calculate the fee amounts and the deposit amount.
         Vars memory vars;
@@ -209,13 +173,13 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
 
         // Set the fuzzed protocol fee.
         changePrank({ msgSender: users.admin });
-        comptroller.setProtocolFee({ asset: DEFAULT_ASSET, newProtocolFee: params.protocolFee });
+        comptroller.setProtocolFee({ asset: DEFAULT_ASSET, newProtocolFee: protocolFee });
 
         // Make the fuzzed funder the caller in this test.
-        changePrank(params.funder);
+        changePrank(funder);
 
         // Mint enough ERC-20 assets to the funder.
-        deal({ token: address(DEFAULT_ASSET), to: params.funder, give: params.totalAmount });
+        deal({ token: address(DEFAULT_ASSET), to: funder, give: params.totalAmount });
 
         // Approve the {SablierV2LockupLinear} contract to transfer the ERC-20 assets from the fuzzed funder.
         DEFAULT_ASSET.approve({ spender: address(linear), amount: UINT256_MAX });
@@ -240,7 +204,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: true, checkData: true });
         emit Events.CreateLockupLinearStream({
             streamId: streamId,
-            funder: params.funder,
+            funder: funder,
             sender: params.sender,
             recipient: params.recipient,
             amounts: Lockup.CreateAmounts({
@@ -256,13 +220,15 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
 
         // Create the stream.
         linear.createWithRange(
-            params.sender,
-            params.recipient,
-            params.totalAmount,
-            DEFAULT_ASSET,
-            params.cancelable,
-            params.range,
-            params.broker
+            LockupLinear.CreateWithRange({
+                sender: params.sender,
+                recipient: params.recipient,
+                totalAmount: params.totalAmount,
+                asset: DEFAULT_ASSET,
+                cancelable: params.cancelable,
+                range: params.range,
+                broker: params.broker
+            })
         );
 
         // Assert that the stream has been created.

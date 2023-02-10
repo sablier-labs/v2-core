@@ -97,7 +97,7 @@ contract CreateWithDeltas_Pro_Fuzz_Test is Pro_Fuzz_Test {
             sender: defaultParams.createWithDeltas.sender,
             recipient: defaultParams.createWithDeltas.recipient,
             amounts: vars.createAmounts,
-            asset: defaultParams.createWithDeltas.asset,
+            asset: DEFAULT_ASSET,
             cancelable: defaultParams.createWithDeltas.cancelable,
             segments: vars.segmentsWithMilestones,
             range: range,
@@ -105,15 +105,10 @@ contract CreateWithDeltas_Pro_Fuzz_Test is Pro_Fuzz_Test {
         });
 
         // Create the stream.
-        pro.createWithDeltas(
-            defaultParams.createWithDeltas.sender,
-            defaultParams.createWithDeltas.recipient,
-            vars.totalAmount,
-            DEFAULT_ASSET,
-            defaultParams.createWithDeltas.cancelable,
-            segments,
-            defaultParams.createWithDeltas.broker
-        );
+        LockupPro.CreateWithDeltas memory params = defaultParams.createWithDeltas;
+        params.totalAmount = vars.totalAmount;
+        params.segments = segments;
+        pro.createWithDeltas(params);
 
         // Assert that the stream has been created.
         LockupPro.Stream memory actualStream = pro.getStream(streamId);

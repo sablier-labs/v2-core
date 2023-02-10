@@ -55,15 +55,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
                 cliffTime
             )
         );
-        linear.createWithRange(
-            defaultParams.createWithRange.sender,
-            defaultParams.createWithRange.recipient,
-            defaultParams.createWithRange.totalAmount,
-            defaultParams.createWithRange.asset,
-            defaultParams.createWithRange.cancelable,
-            LockupLinear.Range({ start: startTime, cliff: cliffTime, end: defaultParams.createWithRange.range.end }),
-            defaultParams.createWithRange.broker
-        );
+        createDefaultStreamWithRange(LockupLinear.Range({ start: startTime, cliff: cliffTime, end: DEFAULT_END_TIME }));
     }
 
     modifier startTimeNotGreaterThanCliffTime() {
@@ -86,15 +78,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
                 endTime
             )
         );
-        linear.createWithRange(
-            defaultParams.createWithRange.sender,
-            defaultParams.createWithRange.recipient,
-            defaultParams.createWithRange.totalAmount,
-            defaultParams.createWithRange.asset,
-            defaultParams.createWithRange.cancelable,
-            LockupLinear.Range({ start: defaultParams.createWithRange.range.start, cliff: cliffTime, end: endTime }),
-            defaultParams.createWithRange.broker
-        );
+        createDefaultStreamWithRange(LockupLinear.Range({ start: DEFAULT_START_TIME, cliff: cliffTime, end: endTime }));
     }
 
     modifier cliffTimeLessThanEndTime() {
@@ -139,15 +123,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierV2Lockup_BrokerFeeTooHigh.selector, brokerFee, DEFAULT_MAX_FEE)
         );
-        linear.createWithRange(
-            defaultParams.createWithRange.sender,
-            defaultParams.createWithRange.recipient,
-            defaultParams.createWithRange.totalAmount,
-            defaultParams.createWithRange.asset,
-            defaultParams.createWithRange.cancelable,
-            defaultParams.createWithRange.range,
-            Broker({ account: users.broker, fee: brokerFee })
-        );
+        createDefaultStreamWithBroker(Broker({ account: users.broker, fee: brokerFee }));
     }
 
     modifier brokerFeeNotTooHigh() {
@@ -166,15 +142,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
     {
         address nonContract = address(8128);
         vm.expectRevert("Address: call to non-contract");
-        linear.createWithRange(
-            defaultParams.createWithRange.sender,
-            defaultParams.createWithRange.recipient,
-            defaultParams.createWithRange.totalAmount,
-            IERC20(nonContract),
-            defaultParams.createWithRange.cancelable,
-            defaultParams.createWithRange.range,
-            defaultParams.createWithRange.broker
-        );
+        createDefaultStreamWithAsset(IERC20(nonContract));
     }
 
     modifier assetContract() {
@@ -256,15 +224,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
         });
 
         // Create the stream.
-        linear.createWithRange(
-            defaultParams.createWithRange.sender,
-            defaultParams.createWithRange.recipient,
-            defaultParams.createWithRange.totalAmount,
-            IERC20(asset),
-            defaultParams.createWithRange.cancelable,
-            defaultParams.createWithRange.range,
-            defaultParams.createWithRange.broker
-        );
+        createDefaultStreamWithAsset(IERC20(asset));
 
         // Assert that the stream has been created.
         LockupLinear.Stream memory actualStream = linear.getStream(streamId);
