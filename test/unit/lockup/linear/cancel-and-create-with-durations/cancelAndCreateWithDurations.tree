@@ -1,0 +1,2 @@
+cancelAndCreateWithDurations.t.sol
+└── it should cancel the stream and create a new one

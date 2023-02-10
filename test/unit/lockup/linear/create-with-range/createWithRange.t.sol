@@ -6,7 +6,6 @@ import { UD60x18, ud } from "@prb/math/UD60x18.sol";
 
 import { Errors } from "src/libraries/Errors.sol";
 import { Events } from "src/libraries/Events.sol";
-
 import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
 
 import { Linear_Unit_Test } from "../Linear.t.sol";
@@ -46,8 +45,8 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
 
     /// @dev it should revert.
     function test_RevertWhen_StartTimeGreaterThanCliffTime() external recipientNonZeroAddress depositAmountNotZero {
-        uint40 startTime = defaultParams.createWithRange.range.cliff;
-        uint40 cliffTime = defaultParams.createWithRange.range.start;
+        uint40 startTime = DEFAULT_CLIFF_TIME;
+        uint40 cliffTime = DEFAULT_START_TIME;
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2LockupLinear_StartTimeGreaterThanCliffTime.selector,
@@ -69,8 +68,8 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
         depositAmountNotZero
         startTimeNotGreaterThanCliffTime
     {
-        uint40 cliffTime = defaultParams.createWithRange.range.end;
-        uint40 endTime = defaultParams.createWithRange.range.cliff;
+        uint40 cliffTime = DEFAULT_END_TIME;
+        uint40 endTime = DEFAULT_CLIFF_TIME;
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime.selector,
@@ -177,6 +176,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
     /// - Emit a {CreateLockupLinearStream} event.
     function test_CreateWithRange()
         external
+        recipientNonZeroAddress
         depositAmountNotZero
         startTimeNotGreaterThanCliffTime
         cliffTimeLessThanEndTime
@@ -244,7 +244,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
 
         // Assert that the NFT has been minted.
         address actualNFTOwner = linear.ownerOf({ tokenId: streamId });
-        address expectedNFTOwner = defaultParams.createWithRange.recipient;
+        address expectedNFTOwner = users.recipient;
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }
 }

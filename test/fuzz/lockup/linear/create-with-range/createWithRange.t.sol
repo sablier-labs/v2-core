@@ -32,12 +32,12 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
     function testFuzz_RevertWhen_StartTimeGreaterThanCliffTime(
         uint40 startTime
     ) external recipientNonZeroAddress depositAmountNotZero {
-        startTime = boundUint40(startTime, defaultParams.createWithRange.range.cliff + 1, MAX_UNIX_TIMESTAMP);
+        startTime = boundUint40(startTime, DEFAULT_CLIFF_TIME + 1, MAX_UNIX_TIMESTAMP);
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2LockupLinear_StartTimeGreaterThanCliffTime.selector,
                 startTime,
-                defaultParams.createWithRange.range.cliff
+                DEFAULT_CLIFF_TIME
             )
         );
         createDefaultStreamWithStartTime(startTime);
@@ -53,7 +53,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
         uint40 endTime
     ) external recipientNonZeroAddress depositAmountNotZero startTimeNotGreaterThanCliffTime {
         vm.assume(cliffTime >= endTime);
-        vm.assume(endTime > defaultParams.createWithRange.range.start);
+        vm.assume(endTime > DEFAULT_START_TIME);
 
         vm.expectRevert(
             abi.encodeWithSelector(

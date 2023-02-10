@@ -41,6 +41,42 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @notice Cancels the stream and creates a new one by calling {createWithDurations}.
+    ///
+    /// @dev Emits a {CancelLockupStream}, a {CreateLockupLinearStream}, and multiple {Transfer} events.
+    ///
+    /// Notes:
+    /// - All from {SablierV2Lockup-cancel} and {createWithDurations}.
+    ///
+    /// Notes:
+    /// - All from {SablierV2Lockup-cancel} and {createWithDurations}.
+    ///
+    /// @param streamId The id of the stream to cancel.
+    /// @param params The params to pass to {createWithDurations}.
+    /// @return newStreamId The id of the newly created stream.
+    function cancelAndCreateWithDurations(
+        uint256 streamId,
+        LockupLinear.CreateWithDurations calldata params
+    ) external returns (uint256 newStreamId);
+
+    /// @notice Cancels the stream and creates a new one by calling {createWithRange}.
+    ///
+    /// @dev Emits a {CancelLockupStream}, a {CreateLockupLinearStream}, and multiple {Transfer} events.
+    ///
+    /// Notes:
+    /// - All from {SablierV2Lockup-cancel} and {createWithRange}.
+    ///
+    /// Notes:
+    /// - All from {SablierV2Lockup-cancel} and {createWithRange}.
+    ///
+    /// @param streamId The id of the stream to cancel.
+    /// @param params The params to pass to {createWithRange}.
+    /// @return newStreamId The id of the newly created stream.
+    function cancelAndCreateWithRange(
+        uint256 streamId,
+        LockupLinear.CreateWithRange calldata params
+    ) external returns (uint256 newStreamId);
+
     /// @notice Creates a stream by setting the start time to `block.timestamp` and the end time to `block.timestamp +
     /// params.durations.total`. The stream is funded by `msg.sender` and is wrapped in an ERC-721 NFT.
     ///

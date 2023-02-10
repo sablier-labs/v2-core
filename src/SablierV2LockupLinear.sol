@@ -225,9 +225,33 @@ contract SablierV2LockupLinear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2LockupLinear
+    function cancelAndCreateWithDurations(
+        uint256 streamId,
+        LockupLinear.CreateWithDurations calldata params
+    ) external override returns (uint256 newStreamId) {
+        // Cancel the current stream.
+        _cancel(streamId);
+
+        // Create a new stream with the provided durations.
+        newStreamId = createWithDurations(params);
+    }
+
+    /// @inheritdoc ISablierV2LockupLinear
+    function cancelAndCreateWithRange(
+        uint256 streamId,
+        LockupLinear.CreateWithRange calldata params
+    ) external override returns (uint256 newStreamId) {
+        // Cancel the current stream.
+        _cancel(streamId);
+
+        // Create a new stream with the provided range.
+        newStreamId = createWithRange(params);
+    }
+
+    /// @inheritdoc ISablierV2LockupLinear
     function createWithDurations(
         LockupLinear.CreateWithDurations calldata params
-    ) external override returns (uint256 streamId) {
+    ) public override returns (uint256 streamId) {
         // Set the current block timestamp as the start time of the stream.
         LockupLinear.Range memory range;
         range.start = uint40(block.timestamp);
