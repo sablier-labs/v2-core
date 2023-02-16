@@ -41,7 +41,6 @@
 # See "SMTChecker and Formal Verification" in the Solidity docs
 [profile.smt.model_checker]
   engine = "chc" # constrained Horn clauses
-  showUnproved = true
   timeout = 100_000 # in milliseconds
   targets = [
     "assert",
