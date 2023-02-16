@@ -110,24 +110,6 @@ interface ISablierV2Lockup is
     /// @param streamId The id of the stream to cancel.
     function cancel(uint256 streamId) external;
 
-    /// @notice Cancels multiple streams and transfers any remaining assets to the sender and the recipient.
-    ///
-    /// @dev Emits multiple {CancelLockupStream} events.
-    ///
-    /// Notes:
-    /// - Does not revert if one of the stream ids points to a stream that is not active or is active but is
-    /// not cancelable.
-    /// - This function will attempt to call a hook on either the sender or the recipient of each stream.
-    ///
-    /// Requirements:
-    /// - Each stream id in `streamIds` must point to an active stream.
-    /// - `msg.sender` must be either the sender of the stream or the recipient of the stream (also known as the
-    /// owner of the NFT) of every stream.
-    /// - Each stream must be cancelable.
-    ///
-    /// @param streamIds The ids of the streams to cancel.
-    function cancelMultiple(uint256[] calldata streamIds) external;
-
     /// @notice Counter for stream ids.
     /// @return The next stream id.
     function nextStreamId() external view returns (uint256);

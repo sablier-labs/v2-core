@@ -122,27 +122,6 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function cancelMultiple(uint256[] calldata streamIds) external override {
-        // Iterate over the provided array of stream ids and cancel each stream.
-        uint256 count = streamIds.length;
-        uint256 streamId;
-        for (uint256 i = 0; i < count; ) {
-            streamId = streamIds[i];
-
-            // Effects and Interactions: cancel the stream.
-            // Cancel this stream only if the `streamId` points to a stream that is active and cancelable.
-            if (getStatus(streamId) == Lockup.Status.ACTIVE && isCancelable(streamId)) {
-                _cancel(streamId);
-            }
-
-            // Increment the for loop iterator.
-            unchecked {
-                i += 1;
-            }
-        }
-    }
-
-    /// @inheritdoc ISablierV2Lockup
     function renounce(uint256 streamId) external override isActiveStream(streamId) {
         // Checks: `msg.sender` is the sender of the stream.
         if (!_isCallerStreamSender(streamId)) {
