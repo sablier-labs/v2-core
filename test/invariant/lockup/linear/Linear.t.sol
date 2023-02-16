@@ -140,7 +140,7 @@ contract Linear_Invariant_Test is Lockup_Invariant_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Mark this function as `external` to enable call summaries.
-    function invariant_CallSummary() external onlyInCI {
+    function invariant_CallSummary() internal view {
         console2.log("\nCall Summary\n");
         console2.log("Comptroller");
         console2.log("setFlashFee          ", comptrollerHandler.calls("setFlashFee"));
