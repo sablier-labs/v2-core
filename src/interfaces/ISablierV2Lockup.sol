@@ -8,6 +8,7 @@ import { UD60x18 } from "@prb/math/UD60x18.sol";
 import { Lockup } from "../types/DataTypes.sol";
 import { ISablierV2Config } from "./ISablierV2Config.sol";
 import { ISablierV2Comptroller } from "./ISablierV2Comptroller.sol";
+import { ISablierV2NftDescriptor } from "./ISablierV2NftDescriptor.sol";
 
 /// @title ISablierV2Lockup
 /// @notice The common interface between all Sablier V2 lockup streaming contracts.
@@ -63,6 +64,10 @@ interface ISablierV2Lockup is
     /// @notice Counter for stream ids.
     /// @return The next stream id.
     function nextStreamId() external view returns (uint256);
+
+    /// @notice Contract that produces the non-fungible token URI.
+    /// @return The contract address.
+    function NFT_DESCRIPTOR() external view returns (ISablierV2NftDescriptor);
 
     /// @notice Calculates the amount that the sender would be paid if the stream had been canceled, in units of
     /// the asset's decimals.
