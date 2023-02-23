@@ -4,6 +4,7 @@ pragma solidity >=0.8.19;
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 import { Script } from "forge-std/Script.sol";
 
+import { ISablierV2NftDescriptor } from "../../src/interfaces/ISablierV2NftDescriptor.sol";
 import { SablierV2Comptroller } from "../../src/SablierV2Comptroller.sol";
 import { SablierV2LockupLinear } from "../../src/SablierV2LockupLinear.sol";
 import { SablierV2LockupPro } from "../../src/SablierV2LockupPro.sol";
@@ -21,10 +22,11 @@ contract DeployProtocol is DeployComptroller, DeployLockupLinear, DeployLockupPr
     function run(
         address initialAdmin,
         UD60x18 maxFee,
+        ISablierV2NftDescriptor nftDescriptor,
         uint256 maxSegmentCount
     ) public virtual returns (SablierV2Comptroller comptroller, SablierV2LockupLinear linear, SablierV2LockupPro pro) {
         comptroller = DeployComptroller.run(initialAdmin);
-        linear = DeployLockupLinear.run(initialAdmin, comptroller, maxFee);
-        pro = DeployLockupPro.run(initialAdmin, comptroller, maxFee, maxSegmentCount);
+        linear = DeployLockupLinear.run(initialAdmin, comptroller, maxFee, nftDescriptor);
+        pro = DeployLockupPro.run(initialAdmin, comptroller, maxFee, nftDescriptor, maxSegmentCount);
     }
 }

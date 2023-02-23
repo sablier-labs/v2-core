@@ -5,6 +5,7 @@ import { Script } from "forge-std/Script.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { ISablierV2Comptroller } from "../../src/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2NftDescriptor } from "../../src/interfaces/ISablierV2NftDescriptor.sol";
 import { SablierV2LockupPro } from "../../src/SablierV2LockupPro.sol";
 
 import { BaseScript } from "../shared/Base.s.sol";
@@ -18,8 +19,15 @@ contract DeployDeterministicLockupPro is Script, BaseScript {
         address initialAdmin,
         ISablierV2Comptroller initialComptroller,
         UD60x18 maxFee,
+        ISablierV2NftDescriptor nftDescriptor,
         uint256 maxSegmentCount
     ) public virtual broadcaster returns (SablierV2LockupPro pro) {
-        pro = new SablierV2LockupPro{ salt: ZERO_SALT }(initialAdmin, initialComptroller, maxFee, maxSegmentCount);
+        pro = new SablierV2LockupPro{ salt: ZERO_SALT }(
+            initialAdmin,
+            initialComptroller,
+            maxFee,
+            nftDescriptor,
+            maxSegmentCount
+        );
     }
 }
