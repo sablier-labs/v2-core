@@ -19,7 +19,8 @@ contract Constructor_Linear_Unit_Test is Linear_Unit_Test {
         SablierV2LockupLinear constructedLinear = new SablierV2LockupLinear({
             initialAdmin: users.admin,
             initialComptroller: comptroller,
-            maxFee: DEFAULT_MAX_FEE
+            maxFee: DEFAULT_MAX_FEE,
+            nftDescriptor: nftDescriptor
         });
 
         // {SablierV2-constructor}
