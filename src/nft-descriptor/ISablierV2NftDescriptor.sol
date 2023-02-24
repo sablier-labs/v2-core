@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.18;
 
-import { ISablierV2Lockup } from "./ISablierV2Lockup.sol";
+import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 
 /// @title ISablierV2NftDescriptor
 interface ISablierV2NftDescriptor {
