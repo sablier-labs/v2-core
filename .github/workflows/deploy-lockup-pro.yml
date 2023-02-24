@@ -27,6 +27,10 @@ on:
 
           Defaults to 10%.
         required: false
+      nft-descriptor:
+        default: "0x0F1dE24BAe4d7523bC529EB804ED6C0B4966e1c8"
+        description: "The address of the contract that produces the NFT descriptor"
+        required: false
       max-segment-count:
         default: "1000"
         description: |
@@ -57,6 +61,7 @@ jobs:
           "${{ github.event.inputs.admin }}"
           "${{ github.event.inputs.comptroller }}"
           "${{ github.event.inputs.max-fee }}"
+          "${{ github.event.inputs.nft-descriptor }}"
           "${{ github.event.inputs.max-segment-count }}"
 
 
