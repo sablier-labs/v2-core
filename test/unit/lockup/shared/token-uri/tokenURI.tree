@@ -1,5 +1,5 @@
 getStartTime.t.sol
 ├── when the stream is null
-│  └── it should return the descriptor uri
+│  └── it should return the descriptor URI
 └── when the stream is not null
-   └── it should return the descriptor uri
+   └── it should return the descriptor URI
