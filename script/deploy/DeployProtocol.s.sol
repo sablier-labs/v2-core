@@ -21,12 +21,12 @@ import { DeployLockupPro } from "./DeployLockupPro.s.sol";
 contract DeployProtocol is DeployComptroller, DeployLockupLinear, DeployLockupPro {
     function run(
         address initialAdmin,
-        UD60x18 maxFee,
         ISablierV2NftDescriptor nftDescriptor,
+        UD60x18 maxFee,
         uint256 maxSegmentCount
     ) public virtual returns (SablierV2Comptroller comptroller, SablierV2LockupLinear linear, SablierV2LockupPro pro) {
         comptroller = DeployComptroller.run(initialAdmin);
-        linear = DeployLockupLinear.run(initialAdmin, comptroller, maxFee, nftDescriptor);
-        pro = DeployLockupPro.run(initialAdmin, comptroller, maxFee, nftDescriptor, maxSegmentCount);
+        linear = DeployLockupLinear.run(initialAdmin, comptroller, nftDescriptor, maxFee);
+        pro = DeployLockupPro.run(initialAdmin, comptroller, nftDescriptor, maxFee, maxSegmentCount);
     }
 }

@@ -30,17 +30,17 @@ contract DeployDeterministicProtocol is
     /// https://github.com/Arachnid/deterministic-deployment-proxy
     function run(
         address initialAdmin,
-        UD60x18 maxFee,
         ISablierV2NftDescriptor nftDescriptor,
+        UD60x18 maxFee,
         uint256 maxSegmentCount
     ) public virtual returns (SablierV2Comptroller comptroller, SablierV2LockupLinear linear, SablierV2LockupPro pro) {
         // Deploy the SablierV2Comptroller contract.
         comptroller = DeployDeterministicComptroller.run(initialAdmin);
 
         // Deploy the SablierV2LockupLinear contract.
-        linear = DeployDeterministicLockupLinear.run(initialAdmin, comptroller, maxFee, nftDescriptor);
+        linear = DeployDeterministicLockupLinear.run(initialAdmin, comptroller, nftDescriptor, maxFee);
 
         // Deploy the SablierV2LockupPro contract.
-        pro = DeployDeterministicLockupPro.run(initialAdmin, comptroller, maxFee, nftDescriptor, maxSegmentCount);
+        pro = DeployDeterministicLockupPro.run(initialAdmin, comptroller, nftDescriptor, maxFee, maxSegmentCount);
     }
 }

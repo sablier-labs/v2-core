@@ -66,8 +66,8 @@ abstract contract Base_Test is Assertions, Calculations, Fuzzers, StdCheats {
     ISablierV2Comptroller internal comptroller;
     IERC20 internal dai = new ERC20("Dai Stablecoin", "DAI");
     ISablierV2LockupLinear internal linear;
-    NonCompliantERC20 internal nonCompliantAsset = new NonCompliantERC20("Non-Compliant ERC-20 Asset", "NCT", 18);
     SablierV2NftDescriptor internal nftDescriptor = new SablierV2NftDescriptor();
+    NonCompliantERC20 internal nonCompliantAsset = new NonCompliantERC20("Non-Compliant ERC-20 Asset", "NCT", 18);
     ISablierV2LockupPro internal pro;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -168,7 +168,7 @@ abstract contract Base_Test is Assertions, Calculations, Fuzzers, StdCheats {
             linear = ISablierV2LockupLinear(
                 deployCode(
                     "optimized-out/SablierV2LockupLinear.sol/SablierV2LockupLinear.json",
-                    abi.encode(users.admin, address(comptroller), DEFAULT_MAX_FEE, address(nftDescriptor))
+                    abi.encode(users.admin, address(comptroller), address(nftDescriptor), DEFAULT_MAX_FEE)
                 )
             );
             pro = ISablierV2LockupPro(
@@ -177,8 +177,8 @@ abstract contract Base_Test is Assertions, Calculations, Fuzzers, StdCheats {
                     abi.encode(
                         users.admin,
                         address(comptroller),
-                        DEFAULT_MAX_FEE,
                         address(nftDescriptor),
+                        DEFAULT_MAX_FEE,
                         DEFAULT_MAX_SEGMENT_COUNT
                     )
                 )
@@ -188,8 +188,8 @@ abstract contract Base_Test is Assertions, Calculations, Fuzzers, StdCheats {
         else {
             (comptroller, linear, pro) = new DeployProtocol().run({
                 initialAdmin: users.admin,
-                maxFee: DEFAULT_MAX_FEE,
                 nftDescriptor: nftDescriptor,
+                maxFee: DEFAULT_MAX_FEE,
                 maxSegmentCount: DEFAULT_MAX_SEGMENT_COUNT
             });
         }

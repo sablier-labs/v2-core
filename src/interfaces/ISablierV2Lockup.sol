@@ -65,10 +65,6 @@ interface ISablierV2Lockup is
     /// @return The next stream id.
     function nextStreamId() external view returns (uint256);
 
-    /// @notice Contract that produces the non-fungible token URI.
-    /// @return The contract address.
-    function NFT_DESCRIPTOR() external view returns (ISablierV2NftDescriptor);
-
     /// @notice Calculates the amount that the sender would be paid if the stream had been canceled, in units of
     /// the asset's decimals.
     /// @param streamId The id of the stream to make the query for.

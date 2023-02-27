@@ -15,10 +15,10 @@ contract DeployLockupPro is Script, BaseScript {
     function run(
         address initialAdmin,
         ISablierV2Comptroller initialComptroller,
-        UD60x18 maxFee,
         ISablierV2NftDescriptor nftDescriptor,
+        UD60x18 maxFee,
         uint256 maxSegmentCount
     ) public virtual broadcaster returns (SablierV2LockupPro pro) {
-        pro = new SablierV2LockupPro(initialAdmin, initialComptroller, maxFee, nftDescriptor, maxSegmentCount);
+        pro = new SablierV2LockupPro(initialAdmin, initialComptroller, nftDescriptor, maxFee, maxSegmentCount);
     }
 }

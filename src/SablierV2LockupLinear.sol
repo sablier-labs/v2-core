@@ -11,12 +11,12 @@ import { SablierV2Lockup } from "./abstracts/SablierV2Lockup.sol";
 import { ISablierV2Comptroller } from "./interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2Lockup } from "./interfaces/ISablierV2Lockup.sol";
 import { ISablierV2LockupLinear } from "./interfaces/ISablierV2LockupLinear.sol";
-import { ISablierV2NftDescriptor } from "./nft-descriptor/ISablierV2NftDescriptor.sol";
 import { ISablierV2LockupRecipient } from "./interfaces/hooks/ISablierV2LockupRecipient.sol";
 import { ISablierV2LockupSender } from "./interfaces/hooks/ISablierV2LockupSender.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { Events } from "./libraries/Events.sol";
 import { Helpers } from "./libraries/Helpers.sol";
+import { ISablierV2NftDescriptor } from "./nft-descriptor/ISablierV2NftDescriptor.sol";
 import { Lockup, LockupLinear } from "./types/DataTypes.sol";
 
 /*
@@ -60,14 +60,15 @@ contract SablierV2LockupLinear is
     /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialComptroller The address of the initial comptroller.
+    /// @param nftDescriptor The address of the NFT descriptor contract.
     /// @param maxFee The maximum fee that can be charged by either the protocol or a broker, as an UD60x18 number
     /// where 100% = 1e18.
     constructor(
         address initialAdmin,
         ISablierV2Comptroller initialComptroller,
-        UD60x18 maxFee,
-        ISablierV2NftDescriptor nftDescriptor
-    ) SablierV2Lockup(initialAdmin, initialComptroller, maxFee, nftDescriptor) {}
+        ISablierV2NftDescriptor nftDescriptor,
+        UD60x18 maxFee
+    ) SablierV2Lockup(initialAdmin, initialComptroller, nftDescriptor, maxFee) {}
 
     /*//////////////////////////////////////////////////////////////////////////
                             PUBLIC CONSTANT FUNCTIONS
@@ -210,7 +211,7 @@ contract SablierV2LockupLinear is
 
     /// @inheritdoc ERC721
     function tokenURI(uint256 streamId) public view override(IERC721Metadata, ERC721) returns (string memory uri) {
-        uri = NFT_DESCRIPTOR.tokenURI(this, streamId);
+        uri = _NFT_DESCRIPTOR.tokenURI(this, streamId);
     }
 
     /// @inheritdoc ISablierV2Lockup

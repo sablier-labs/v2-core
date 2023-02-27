@@ -23,8 +23,8 @@ abstract contract SablierV2Lockup is
                                      CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierV2Lockup
-    ISablierV2NftDescriptor public immutable override NFT_DESCRIPTOR;
+    /// @dev Contract that generates the non-fungible token URI.
+    ISablierV2NftDescriptor internal immutable _NFT_DESCRIPTOR;
 
     /*//////////////////////////////////////////////////////////////////////////
                                    PUBLIC STORAGE
@@ -75,11 +75,11 @@ abstract contract SablierV2Lockup is
     constructor(
         address initialAdmin,
         ISablierV2Comptroller initialComptroller,
-        UD60x18 maxFee,
-        ISablierV2NftDescriptor nftDescriptor
+        ISablierV2NftDescriptor nftDescriptor,
+        UD60x18 maxFee
     ) SablierV2Config(initialAdmin, initialComptroller, maxFee) {
         nextStreamId = 1;
-        NFT_DESCRIPTOR = nftDescriptor;
+        _NFT_DESCRIPTOR = nftDescriptor;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

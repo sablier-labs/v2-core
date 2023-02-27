@@ -29,7 +29,7 @@ on:
         required: false
       nft-descriptor:
         default: "0x0F1dE24BAe4d7523bC529EB804ED6C0B4966e1c8"
-        description: "The address of the contract that produces the NFT descriptor"
+        description: "The address of the contract that generates the NFT descriptor"
         required: false
 
 jobs:
