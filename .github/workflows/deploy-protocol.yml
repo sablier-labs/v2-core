@@ -25,9 +25,8 @@ on:
           Defaults to 10%.
         required: false
       nft-descriptor:
-        default: "0x0F1dE24BAe4d7523bC529EB804ED6C0B4966e1c8"
         description: "The address of the contract that generates the NFT descriptor"
-        required: false
+        required: true
       max-segment-count:
         default: "1000"
         description: |
@@ -54,11 +53,11 @@ jobs:
           --broadcast
           --rpc-url "${{ github.event.inputs.chain }}"
           --sig "run(address,uint256,uint256)"
-          -vvvv
           "${{ github.event.inputs.admin }}"
           "${{ github.event.inputs.max-fee }}"
           "${{ github.event.inputs.nft-descriptor }}"
           "${{ github.event.inputs.max-segment-count }}"
+          -vvvv
 
       - name: "Add summary"
         run: |
