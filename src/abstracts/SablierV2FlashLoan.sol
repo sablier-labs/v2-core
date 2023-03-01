@@ -7,13 +7,14 @@ import { ud } from "@prb/math/UD60x18.sol";
 import { IERC3156FlashBorrower } from "erc3156/interfaces/IERC3156FlashBorrower.sol";
 import { IERC3156FlashLender } from "erc3156/interfaces/IERC3156FlashLender.sol";
 
+import { SablierV2Events } from "../abstracts/SablierV2Events.sol";
 import { Errors } from "../libraries/Errors.sol";
-import { Events } from "../libraries/Events.sol";
 import { SablierV2Config } from "./SablierV2Config.sol";
 
 /// @dev Abstract contract that implements the {IERC3156FlashLender} interface.
 abstract contract SablierV2FlashLoan is
     IERC3156FlashLender, // no dependencies
+    SablierV2Events, // no dependencies
     SablierV2Config // three dependencies
 {
     using SafeERC20 for IERC20;
@@ -147,7 +148,7 @@ abstract contract SablierV2FlashLoan is
         IERC20(asset).safeTransferFrom({ from: address(receiver), to: address(this), value: returnAmount });
 
         // Log the flash loan.
-        emit Events.FlashLoan({
+        emit FlashLoan({
             initiator: msg.sender,
             receiver: receiver,
             asset: IERC20(asset),

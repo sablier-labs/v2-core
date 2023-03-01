@@ -8,6 +8,7 @@ import { eqString } from "@prb/test/Helpers.sol";
 import { StdCheats } from "forge-std/StdCheats.sol";
 
 import { DeployProtocol } from "script/deploy/DeployProtocol.s.sol";
+import { SablierV2Events } from "src/abstracts/SablierV2Events.sol";
 import { ISablierV2Comptroller } from "src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2LockupLinear } from "src/interfaces/ISablierV2LockupLinear.sol";
 import { ISablierV2LockupPro } from "src/interfaces/ISablierV2LockupPro.sol";
@@ -22,7 +23,13 @@ import { GoodSender } from "./shared/mockups/hooks/GoodSender.t.sol";
 
 /// @title Base_Test
 /// @notice Base test contract with common logic needed by all test contracts.
-abstract contract Base_Test is Assertions, Calculations, Fuzzers, StdCheats {
+abstract contract Base_Test is
+    SablierV2Events, // no dependencies
+    Calculations, // one dependency
+    StdCheats, // one dependency
+    Assertions, // two dependencies
+    Fuzzers // two dependencies
+{
     /*//////////////////////////////////////////////////////////////////////////
                                        STRUCTS
     //////////////////////////////////////////////////////////////////////////*/

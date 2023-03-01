@@ -69,7 +69,6 @@ jobs:
           name: contract-abis
           path: |
             optimized-out/Errors.sol/Errors.json
-            optimized-out/Events.sol/Events.json
             optimized-out/IERC20.sol/IERC20.json
             optimized-out/IERC721.sol/IERC721.json
             optimized-out/IERC721Metadata.sol/IERC721Metadata.json
@@ -85,6 +84,7 @@ jobs:
             optimized-out/SablierV2Adminable.sol/SablierV2Adminable.json
             optimized-out/SablierV2Comptroller.sol/SablierV2Comptroller.json
             optimized-out/SablierV2Config.sol/ISablierV2Config.json
+            optimized-out/SablierV2Events.sol/SablierV2Events.json
             optimized-out/SablierV2Lockup.sol/SablierV2Lockup.json
             optimized-out/SablierV2LockupLinear.sol/SablierV2LockupLinear.json
             optimized-out/SablierV2LockupPro.sol/SablierV2LockupPro.json

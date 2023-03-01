@@ -8,9 +8,9 @@ import { IERC3156FlashBorrower } from "erc3156/interfaces/IERC3156FlashBorrower.
 import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { Lockup, LockupLinear, LockupPro } from "../types/DataTypes.sol";
 
-/// @title Events
+/// @title SablierV2Events
 /// @notice Library with events emitted across all contracts.
-library Events {
+abstract contract SablierV2Events {
     /*//////////////////////////////////////////////////////////////////////////
                                 SABLIER-V2-ADMINABLE
     //////////////////////////////////////////////////////////////////////////*/
@@ -21,7 +21,7 @@ library Events {
     event TransferAdmin(address indexed oldAdmin, address indexed newAdmin);
 
     /*//////////////////////////////////////////////////////////////////////////
-                                     SABLIER-V2-CONFIG
+                                 SABLIER-V2-CONFIG
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when the contract admin claims all protocol revenues accrued for the provided ERC-20 asset.

@@ -4,6 +4,7 @@ pragma solidity >=0.8.18;
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
+import { SablierV2Events } from "../abstracts/SablierV2Events.sol";
 import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NftDescriptor } from "../interfaces/ISablierV2NftDescriptor.sol";
@@ -15,6 +16,7 @@ import { SablierV2FlashLoan } from "./SablierV2FlashLoan.sol";
 /// @title SablierV2Lockup
 /// @dev Abstract contract that implements the {ISablierV2Lockup} interface and other common logic.
 abstract contract SablierV2Lockup is
+    SablierV2Events, // no dependencies
     SablierV2Config, // three dependencies
     ISablierV2Lockup, // four dependencies
     SablierV2FlashLoan // five dependencies

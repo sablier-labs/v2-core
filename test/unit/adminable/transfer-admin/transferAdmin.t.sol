@@ -2,7 +2,6 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import { Errors } from "src/libraries/Errors.sol";
-import { Events } from "src/libraries/Events.sol";
 
 import { Adminable_Unit_Test } from "../Adminable.t.sol";
 
@@ -27,7 +26,7 @@ contract TransferAdmin_Unit_Test is Adminable_Unit_Test {
     function test_TransferAdmin_SameAdmin() external callerAdmin {
         // Expect a {TransferAdmin} event to be emitted.
         expectEmit();
-        emit Events.TransferAdmin({ oldAdmin: users.admin, newAdmin: users.admin });
+        emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.admin });
 
         // Transfer the admin.
         adminable.transferAdmin(users.admin);
@@ -46,7 +45,7 @@ contract TransferAdmin_Unit_Test is Adminable_Unit_Test {
     function test_TransferAdmin_ZeroAddress() external callerAdmin {
         // Expect a {TransferAdmin} event to be emitted.
         expectEmit();
-        emit Events.TransferAdmin({ oldAdmin: users.admin, newAdmin: address(0) });
+        emit TransferAdmin({ oldAdmin: users.admin, newAdmin: address(0) });
 
         // Transfer the admin.
         adminable.transferAdmin(address(0));
@@ -61,7 +60,7 @@ contract TransferAdmin_Unit_Test is Adminable_Unit_Test {
     function test_TransferAdmin_NewAdmin() external callerAdmin notZeroAddress {
         // Expect a {TransferAdmin} event to be emitted.
         expectEmit();
-        emit Events.TransferAdmin({ oldAdmin: users.admin, newAdmin: users.alice });
+        emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.alice });
 
         // Transfer the admin.
         adminable.transferAdmin(users.alice);

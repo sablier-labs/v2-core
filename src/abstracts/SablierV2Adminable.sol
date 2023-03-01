@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.18;
 
+import { SablierV2Events } from "../abstracts/SablierV2Events.sol";
 import { ISablierV2Adminable } from "../interfaces/ISablierV2Adminable.sol";
 import { Errors } from "../libraries/Errors.sol";
-import { Events } from "../libraries/Events.sol";
 
 /// @title SablierV2Adminable
 /// @dev Abstract contract that implements the {ISablierV2Adminable} interface.
-abstract contract SablierV2Adminable is ISablierV2Adminable {
+abstract contract SablierV2Adminable is
+    ISablierV2Adminable, // no dependencies
+    SablierV2Events // no dependencies
+{
     /*//////////////////////////////////////////////////////////////////////////
                                        STORAGE
     //////////////////////////////////////////////////////////////////////////*/
@@ -40,6 +43,6 @@ abstract contract SablierV2Adminable is ISablierV2Adminable {
         admin = newAdmin;
 
         // Log the transfer of the admin.
-        emit Events.TransferAdmin(oldAdmin, newAdmin);
+        emit TransferAdmin(oldAdmin, newAdmin);
     }
 }

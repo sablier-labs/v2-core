@@ -5,16 +5,17 @@ import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/token/ERC20/utils/SafeERC20.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
+import { SablierV2Events } from "../abstracts/SablierV2Events.sol";
 import { ISablierV2Config } from "../interfaces/ISablierV2Config.sol";
 import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { Errors } from "../libraries/Errors.sol";
-import { Events } from "../libraries/Events.sol";
 import { SablierV2Adminable } from "./SablierV2Adminable.sol";
 
 /// @title SablierV2Config
 /// @dev Abstract contract that implements the {ISablierV2Config} interface.
 abstract contract SablierV2Config is
     ISablierV2Config, // no dependencies
+    SablierV2Events, // no dependencies
     SablierV2Adminable // one dependency
 {
     using SafeERC20 for IERC20;
@@ -53,7 +54,7 @@ abstract contract SablierV2Config is
         admin = initialAdmin;
         comptroller = initialComptroller;
         MAX_FEE = maxFee;
-        emit Events.TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+        emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -84,7 +85,7 @@ abstract contract SablierV2Config is
         asset.safeTransfer({ to: msg.sender, value: protocolRevenues });
 
         // Log the claim of the protocol revenues.
-        emit Events.ClaimProtocolRevenues({ admin: msg.sender, asset: asset, protocolRevenues: protocolRevenues });
+        emit ClaimProtocolRevenues({ admin: msg.sender, asset: asset, protocolRevenues: protocolRevenues });
     }
 
     /// @inheritdoc ISablierV2Config
@@ -94,10 +95,6 @@ abstract contract SablierV2Config is
         comptroller = newComptroller;
 
         // Log the change of the comptroller.
-        emit Events.SetComptroller({
-            admin: msg.sender,
-            oldComptroller: oldComptroller,
-            newComptroller: newComptroller
-        });
+        emit SetComptroller({ admin: msg.sender, oldComptroller: oldComptroller, newComptroller: newComptroller });
     }
 }

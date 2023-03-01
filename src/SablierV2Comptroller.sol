@@ -5,8 +5,8 @@ import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { SablierV2Adminable } from "./abstracts/SablierV2Adminable.sol";
+import { SablierV2Events } from "./abstracts/SablierV2Events.sol";
 import { ISablierV2Comptroller } from "./interfaces/ISablierV2Comptroller.sol";
-import { Events } from "./libraries/Events.sol";
 
 /*
 
@@ -29,6 +29,7 @@ import { Events } from "./libraries/Events.sol";
 /// @title SablierV2Comptroller
 /// @dev This contract implements the {ISablierV2Comptroller} interface.
 contract SablierV2Comptroller is
+    SablierV2Events, // no dependencies
     ISablierV2Comptroller, // one dependency
     SablierV2Adminable // one dependency
 {
@@ -57,7 +58,7 @@ contract SablierV2Comptroller is
     /// @param initialAdmin The address of the initial contract admin.
     constructor(address initialAdmin) {
         admin = initialAdmin;
-        emit Events.TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+        emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ contract SablierV2Comptroller is
         flashFee = newFlashFee;
 
         // Log the change of the flash fee.
-        emit Events.SetFlashFee({ admin: msg.sender, oldFlashFee: oldFlashFee, newFlashFee: newFlashFee });
+        emit SetFlashFee({ admin: msg.sender, oldFlashFee: oldFlashFee, newFlashFee: newFlashFee });
     }
 
     /// @inheritdoc ISablierV2Comptroller
@@ -95,7 +96,7 @@ contract SablierV2Comptroller is
         _protocolFees[asset] = newProtocolFee;
 
         // Log the change of the protocol fee.
-        emit Events.SetProtocolFee({
+        emit SetProtocolFee({
             admin: msg.sender,
             asset: asset,
             oldProtocolFee: oldProtocolFee,
@@ -110,6 +111,6 @@ contract SablierV2Comptroller is
         _flashAssets[asset] = !oldFlag;
 
         // Log the change of the flash asset flag.
-        emit Events.ToggleFlashAsset({ admin: msg.sender, asset: asset, newFlag: !oldFlag });
+        emit ToggleFlashAsset({ admin: msg.sender, asset: asset, newFlag: !oldFlag });
     }
 }

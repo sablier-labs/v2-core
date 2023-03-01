@@ -2,7 +2,6 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import { Errors } from "src/libraries/Errors.sol";
-import { Events } from "src/libraries/Events.sol";
 
 import { Adminable_Fuzz_Test } from "../Adminable.t.sol";
 
@@ -17,7 +16,7 @@ contract TransferAdmin_Fuzz_Test is Adminable_Fuzz_Test {
 
         // Expect a {TransferAdmin} event to be emitted.
         expectEmit();
-        emit Events.TransferAdmin({ oldAdmin: users.admin, newAdmin: newAdmin });
+        emit TransferAdmin({ oldAdmin: users.admin, newAdmin: newAdmin });
 
         // Transfer the admin.
         adminable.transferAdmin(newAdmin);
