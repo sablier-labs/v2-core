@@ -79,6 +79,7 @@ jobs:
             optimized-out/ISablierV2Lockup.sol/ISablierV2Lockup.json
             optimized-out/ISablierV2LockupLinear.sol/ISablierV2LockupLinear.json
             optimized-out/ISablierV2LockupPro.sol/ISablierV2LockupPro.json
+            optimized-out/ISablierV2NftDescriptor.sol/ISablierV2NftDescriptor.json
             optimized-out/ISablierV2Recipient.sol/ISablierV2Recipient.json
             optimized-out/ISablierV2Sender.sol/ISablierV2Sender.json
             optimized-out/SablierV2Adminable.sol/SablierV2Adminable.json
