@@ -4,6 +4,7 @@ pragma solidity >=0.8.19 <0.9.0;
 import { PRBMathCastingUint128 as CastingUint128 } from "@prb/math/casting/Uint128.sol";
 import { UD60x18, ud, uUNIT } from "@prb/math/UD60x18.sol";
 import { arange } from "solidity-generators/Generators.sol";
+import { UC, uc } from "unchecked-counter/UC.sol";
 
 import { Constants } from "./Constants.t.sol";
 import { Lockup, LockupPro } from "src/types/DataTypes.sol";
@@ -39,11 +40,8 @@ abstract contract Fuzzers is Constants, Utils {
             protocolFee: DEFAULT_PROTOCOL_FEE,
             brokerFee: DEFAULT_BROKER_FEE
         });
-        for (uint256 i = 0; i < segmentsWithMilestones.length; ) {
-            segments[i].amount = segmentsWithMilestones[i].amount;
-            unchecked {
-                i += 1;
-            }
+        for (UC i = uc(0); i < uc(segmentsWithMilestones.length); i = i + uc(1)) {
+            segments[i.into()].amount = segmentsWithMilestones[i.into()].amount;
         }
     }
 
@@ -61,11 +59,8 @@ abstract contract Fuzzers is Constants, Utils {
             protocolFee,
             brokerFee
         );
-        for (uint256 i = 0; i < segmentsWithMilestones.length; ) {
-            segments[i].amount = segmentsWithMilestones[i].amount;
-            unchecked {
-                i += 1;
-            }
+        for (UC i = uc(0); i < uc(segmentsWithMilestones.length); i = i + uc(1)) {
+            segments[i.into()].amount = segmentsWithMilestones[i.into()].amount;
         }
     }
 
@@ -85,11 +80,10 @@ abstract contract Fuzzers is Constants, Utils {
 
         // Fuzz the other segment amounts by bounding from 0.
         unchecked {
-            for (uint256 i = 1; i < segmentCount; ) {
+            for (uint256 i = 1; i < segmentCount; i += 1) {
                 uint128 segmentAmount = boundUint128(segments[i].amount, 0, maxSegmentAmount);
                 segments[i].amount = segmentAmount;
                 estimatedDepositAmount += segmentAmount;
-                i += 1;
             }
         }
 
@@ -146,13 +140,10 @@ abstract contract Fuzzers is Constants, Utils {
         uint256[] memory milestones = arange(startTime + 1, MAX_UNIX_TIMESTAMP, step);
 
         // Fuzz the milestones in a way that preserves their order in the array.
-        for (uint256 i = 1; i < segmentCount; ) {
-            uint256 milestone = milestones[i];
+        for (UC i = uc(1); i < uc(segmentCount); i = i + uc(1)) {
+            uint256 milestone = milestones[i.into()];
             milestone = bound(milestone, milestone - halfStep, milestone + halfStep);
-            segments[i].milestone = uint40(milestone);
-            unchecked {
-                i += 1;
-            }
+            segments[i.into()].milestone = uint40(milestone);
         }
     }
 }

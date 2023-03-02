@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
+import { UC, uc } from "unchecked-counter/UC.sol";
+
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
 
 import { Invariant_Test } from "../Invariant.t.sol";
@@ -47,13 +49,10 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
         uint256 depositAmountsSum;
         uint256 withdrawnAmountsSum;
-        for (uint256 i = 0; i < lastStreamId; ) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i);
+        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
             depositAmountsSum += uint256(lockup.getDepositAmount(streamId));
             withdrawnAmountsSum += uint256(lockup.getWithdrawnAmount(streamId));
-            unchecked {
-                i += 1;
-            }
         }
 
         assertGte(
@@ -65,102 +64,81 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
 
     function invariant_DepositAmountGteStreamedAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (uint256 i = 0; i < lastStreamId; ) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i);
+        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
             assertGte(
                 lockup.getDepositAmount(streamId),
                 lockup.streamedAmountOf(streamId),
                 "Invariant violated: deposit amount < streamed amount"
             );
-            unchecked {
-                i += 1;
-            }
         }
     }
 
     function invariant_DepositAmountGteWithdrawableAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (uint256 i = 0; i < lastStreamId; ) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i);
+        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
             assertGte(
                 lockup.getDepositAmount(streamId),
                 lockup.withdrawableAmountOf(streamId),
                 "Invariant violated: deposit amount < withdrawable amount"
             );
-            unchecked {
-                i += 1;
-            }
         }
     }
 
     function invariant_DepositAmountGteWithdrawnAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (uint256 i = 0; i < lastStreamId; ) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i);
+        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
             assertGte(
                 lockup.getDepositAmount(streamId),
                 lockup.getWithdrawnAmount(streamId),
                 "Invariant violated: deposit amount < withdrawn amount"
             );
-            unchecked {
-                i += 1;
-            }
         }
     }
 
     function invariant_EndTimeGtStartTime() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (uint256 i = 0; i < lastStreamId; ) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i);
+        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
             assertGt(
                 lockup.getEndTime(streamId),
                 lockup.getStartTime(streamId),
                 "Invariant violated: end time < start time"
             );
-            unchecked {
-                i += 1;
-            }
         }
     }
 
     function invariant_NextStreamIdIncrement() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (uint256 i = 1; i < lastStreamId; ) {
+        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
             uint256 nextStreamId = lockup.nextStreamId();
             assertEq(nextStreamId, lastStreamId + 1, "Invariant violated: nonce did not increment");
-            unchecked {
-                i += 1;
-            }
         }
     }
 
     function invariant_StreamedAmountGteWithdrawableAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (uint256 i = 0; i < lastStreamId; ) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i);
+        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
             assertGte(
                 lockup.streamedAmountOf(streamId),
                 lockup.withdrawableAmountOf(streamId),
                 "Invariant violated: streamed amount < withdrawable amount"
             );
-            unchecked {
-                i += 1;
-            }
         }
     }
 
     function invariant_StreamedAmountGteWithdrawnAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (uint256 i = 0; i < lastStreamId; ) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i);
+        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
             assertGte(
                 lockup.streamedAmountOf(streamId),
                 lockup.getWithdrawnAmount(streamId),
                 "Invariant violated: streamed amount < withdrawn amount"
             );
-            unchecked {
-                i += 1;
-            }
         }
     }
 }

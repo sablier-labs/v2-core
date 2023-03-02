@@ -30,3 +30,7 @@
   branch = "main"
   path = "lib/solidity-generators"
   url = "https://github.com/mds1/solidity-generators"
+[submodule "lib/unchecked-counter"]
+	branch = "main"
+	path = "lib/unchecked-counter"
+	url = "https://github.com/PaulRBerg/unchecked-counter"
