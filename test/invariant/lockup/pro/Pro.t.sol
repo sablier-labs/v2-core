@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { UC, uc } from "unchecked-counter/UC.sol";
-
 import { SablierV2FlashLoan } from "src/abstracts/SablierV2FlashLoan.sol";
 import { SablierV2LockupPro } from "src/SablierV2LockupPro.sol";
 import { Lockup, LockupPro } from "src/types/DataTypes.sol";
@@ -74,8 +72,8 @@ contract Pro_Invariant_Test is Lockup_Invariant_Test {
     // solhint-disable max-line-length
     function invariant_NullStatus() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
+        for (uint256 i = 0; i < lastStreamId; ++i) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i);
             LockupPro.Stream memory actualStream = pro.getStream(streamId);
             address actualRecipient = lockup.getRecipient(streamId);
 

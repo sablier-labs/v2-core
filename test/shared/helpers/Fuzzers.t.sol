@@ -4,7 +4,6 @@ pragma solidity >=0.8.19 <0.9.0;
 import { PRBMathCastingUint128 as CastingUint128 } from "@prb/math/casting/Uint128.sol";
 import { UD60x18, ud, uUNIT } from "@prb/math/UD60x18.sol";
 import { arange } from "solidity-generators/Generators.sol";
-import { UC, uc } from "unchecked-counter/UC.sol";
 
 import { Constants } from "./Constants.t.sol";
 import { Lockup, LockupPro } from "src/types/DataTypes.sol";
@@ -40,8 +39,8 @@ abstract contract Fuzzers is Constants, Utils {
             protocolFee: DEFAULT_PROTOCOL_FEE,
             brokerFee: DEFAULT_BROKER_FEE
         });
-        for (UC i = uc(0); i < uc(segmentsWithMilestones.length); i = i + uc(1)) {
-            segments[i.into()].amount = segmentsWithMilestones[i.into()].amount;
+        for (uint256 i = 0; i < segmentsWithMilestones.length; ++i) {
+            segments[i].amount = segmentsWithMilestones[i].amount;
         }
     }
 
@@ -59,8 +58,8 @@ abstract contract Fuzzers is Constants, Utils {
             protocolFee,
             brokerFee
         );
-        for (UC i = uc(0); i < uc(segmentsWithMilestones.length); i = i + uc(1)) {
-            segments[i.into()].amount = segmentsWithMilestones[i.into()].amount;
+        for (uint256 i = 0; i < segmentsWithMilestones.length; ++i) {
+            segments[i].amount = segmentsWithMilestones[i].amount;
         }
     }
 
@@ -140,10 +139,10 @@ abstract contract Fuzzers is Constants, Utils {
         uint256[] memory milestones = arange(startTime + 1, MAX_UNIX_TIMESTAMP, step);
 
         // Fuzz the milestones in a way that preserves their order in the array.
-        for (UC i = uc(1); i < uc(segmentCount); i = i + uc(1)) {
-            uint256 milestone = milestones[i.into()];
+        for (uint256 i = 1; i < segmentCount; ++i) {
+            uint256 milestone = milestones[i];
             milestone = bound(milestone, milestone - halfStep, milestone + halfStep);
-            segments[i.into()].milestone = uint40(milestone);
+            segments[i].milestone = uint40(milestone);
         }
     }
 }

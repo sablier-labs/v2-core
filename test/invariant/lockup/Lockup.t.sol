@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { UC, uc } from "unchecked-counter/UC.sol";
-
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
 
 import { Invariant_Test } from "../Invariant.t.sol";
@@ -49,8 +47,8 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
         uint256 depositAmountsSum;
         uint256 withdrawnAmountsSum;
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
+        for (uint256 i = 0; i < lastStreamId; ++i) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i);
             depositAmountsSum += uint256(lockup.getDepositAmount(streamId));
             withdrawnAmountsSum += uint256(lockup.getWithdrawnAmount(streamId));
         }
@@ -64,8 +62,8 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
 
     function invariant_DepositAmountGteStreamedAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
+        for (uint256 i = 0; i < lastStreamId; ++i) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i);
             assertGte(
                 lockup.getDepositAmount(streamId),
                 lockup.streamedAmountOf(streamId),
@@ -76,8 +74,8 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
 
     function invariant_DepositAmountGteWithdrawableAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
+        for (uint256 i = 0; i < lastStreamId; ++i) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i);
             assertGte(
                 lockup.getDepositAmount(streamId),
                 lockup.withdrawableAmountOf(streamId),
@@ -88,8 +86,8 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
 
     function invariant_DepositAmountGteWithdrawnAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
+        for (uint256 i = 0; i < lastStreamId; ++i) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i);
             assertGte(
                 lockup.getDepositAmount(streamId),
                 lockup.getWithdrawnAmount(streamId),
@@ -100,8 +98,8 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
 
     function invariant_EndTimeGtStartTime() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
+        for (uint256 i = 0; i < lastStreamId; ++i) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i);
             assertGt(
                 lockup.getEndTime(streamId),
                 lockup.getStartTime(streamId),
@@ -112,7 +110,7 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
 
     function invariant_NextStreamIdIncrement() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
+        for (uint256 i = 0; i < lastStreamId; ++i) {
             uint256 nextStreamId = lockup.nextStreamId();
             assertEq(nextStreamId, lastStreamId + 1, "Invariant violated: nonce did not increment");
         }
@@ -120,8 +118,8 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
 
     function invariant_StreamedAmountGteWithdrawableAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
+        for (uint256 i = 0; i < lastStreamId; ++i) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i);
             assertGte(
                 lockup.streamedAmountOf(streamId),
                 lockup.withdrawableAmountOf(streamId),
@@ -132,8 +130,8 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
 
     function invariant_StreamedAmountGteWithdrawnAmount() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
-        for (UC i = uc(0); i < uc(lastStreamId); i = i + uc(1)) {
-            uint256 streamId = lockupHandlerStorage.streamIds(i.into());
+        for (uint256 i = 0; i < lastStreamId; ++i) {
+            uint256 streamId = lockupHandlerStorage.streamIds(i);
             assertGte(
                 lockup.streamedAmountOf(streamId),
                 lockup.getWithdrawnAmount(streamId),
