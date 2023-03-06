@@ -211,7 +211,7 @@ contract SablierV2LockupLinear is
 
     /// @inheritdoc ERC721
     function tokenURI(uint256 streamId) public view override(IERC721Metadata, ERC721) returns (string memory uri) {
-        uri = _NFT_DESCRIPTOR.tokenURI(this, streamId);
+        uri = _NFT_DESCRIPTOR.tokenURI(this, streamId, "Linear");
     }
 
     /// @inheritdoc ISablierV2Lockup

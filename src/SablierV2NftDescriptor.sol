@@ -7,8 +7,13 @@ import { ISablierV2NftDescriptor } from "src/interfaces/ISablierV2NftDescriptor.
 /// @title SablierV2NftDescriptor
 /// @dev This is an example of an NFT descriptor, used in our scripts and tests.
 contract SablierV2NftDescriptor is ISablierV2NftDescriptor {
-    function tokenURI(ISablierV2Lockup lockup, uint256 streamId) external view override returns (string memory uri) {
+    function tokenURI(
+        ISablierV2Lockup lockup,
+        uint256 streamId,
+        string memory differentiator
+    ) external view override returns (string memory uri) {
         lockup.getStartTime(streamId);
-        uri = "This is an NFT descriptor";
+        string memory str = "This is the NFT descriptor of the Sablier V2 Lockup";
+        uri = string(abi.encodePacked(str, differentiator));
     }
 }

@@ -11,5 +11,9 @@ interface ISablierV2NftDescriptor {
     /// @param lockup The address of the lockup streaming contract the stream belongs to.
     /// @param streamId The id of the stream for which to produce a description.
     /// @return uri The URI of the ERC721-compliant metadata.
-    function tokenURI(ISablierV2Lockup lockup, uint256 streamId) external view returns (string memory uri);
+    function tokenURI(
+        ISablierV2Lockup lockup,
+        uint256 streamId,
+        string memory differentiator
+    ) external view returns (string memory uri);
 }

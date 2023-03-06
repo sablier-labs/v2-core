@@ -11,7 +11,17 @@ abstract contract TokenURI_Unit_Test is Unit_Test, Lockup_Shared_Test {
     function test_TokenURI_StreamNull() external {
         uint256 nullStreamId = 1729;
         string memory actualTokenURI = lockup.tokenURI({ tokenId: nullStreamId });
-        string memory expectedTokenURI = string("This is an NFT descriptor");
+        string memory expectedTokenURI;
+        if (
+            keccak256(abi.encodePacked((lockup.name()))) ==
+            keccak256(abi.encodePacked(("Sablier V2 Lockup Linear NFT")))
+        ) {
+            expectedTokenURI = string("This is the NFT descriptor of the Sablier V2 Lockup Linear");
+        } else if (
+            keccak256(abi.encodePacked((lockup.name()))) == keccak256(abi.encodePacked(("Sablier V2 Lockup Pro NFT")))
+        ) {
+            expectedTokenURI = string("This is the NFT descriptor of the Sablier V2 Lockup Pro");
+        }
         assertEq(actualTokenURI, expectedTokenURI, "tokenURI");
     }
 
@@ -23,7 +33,17 @@ abstract contract TokenURI_Unit_Test is Unit_Test, Lockup_Shared_Test {
     function test_TokenURI() external streamNonNull {
         uint256 streamId = createDefaultStream();
         string memory actualTokenURI = lockup.tokenURI({ tokenId: streamId });
-        string memory expectedTokenURI = string("This is an NFT descriptor");
+        string memory expectedTokenURI;
+        if (
+            keccak256(abi.encodePacked((lockup.name()))) ==
+            keccak256(abi.encodePacked(("Sablier V2 Lockup Linear NFT")))
+        ) {
+            expectedTokenURI = string("This is the NFT descriptor of the Sablier V2 Lockup Linear");
+        } else if (
+            keccak256(abi.encodePacked((lockup.name()))) == keccak256(abi.encodePacked(("Sablier V2 Lockup Pro NFT")))
+        ) {
+            expectedTokenURI = string("This is the NFT descriptor of the Sablier V2 Lockup Pro");
+        }
         assertEq(actualTokenURI, expectedTokenURI, "tokenURI");
     }
 }
