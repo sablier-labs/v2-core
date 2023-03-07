@@ -10,6 +10,7 @@ interface ISablierV2NftDescriptor {
     /// @dev Note This is a data URI with the JSON contents directly inlined.
     /// @param lockup The address of the lockup streaming contract the stream belongs to.
     /// @param streamId The id of the stream for which to produce a description.
+    /// @param differentiator The string that will be used to differentiate the lockup contracts.
     /// @return uri The URI of the ERC721-compliant metadata.
     function tokenURI(
         ISablierV2Lockup lockup,
