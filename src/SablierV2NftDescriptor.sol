@@ -13,7 +13,7 @@ contract SablierV2NftDescriptor is ISablierV2NftDescriptor {
         string memory differentiator
     ) external view override returns (string memory uri) {
         lockup.getStartTime(streamId);
-        string memory str = "This is the NFT descriptor of the Sablier V2 Lockup";
+        string memory str = "This is the NFT descriptor of the Sablier V2 Lockup ";
         uri = string(abi.encodePacked(str, differentiator));
     }
 }
