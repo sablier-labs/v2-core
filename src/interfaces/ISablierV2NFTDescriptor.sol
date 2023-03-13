@@ -3,10 +3,10 @@ pragma solidity >=0.8.18;
 
 import { ISablierV2Lockup } from "./ISablierV2Lockup.sol";
 
-/// @title ISablierV2NftDescriptor
-/// @notice The contract that produces the URI describing Sablier streams.
-interface ISablierV2NftDescriptor {
-    /// @notice Produces the URI describing a particular stream.
+/// @title ISablierV2NFTDescriptor
+/// @notice The contract that produces the URI describing the Sablier stream NFTs.
+interface ISablierV2NFTDescriptor {
+    /// @notice Produces the URI describing a particular stream NFT.
     /// @dev Note This is a data URI with the JSON contents directly inlined.
     /// @param lockup The address of the lockup streaming contract the stream belongs to.
     /// @param streamId The id of the stream for which to produce a description.
