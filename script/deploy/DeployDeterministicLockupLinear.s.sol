@@ -21,6 +21,11 @@ contract DeployDeterministicLockupLinear is Script, BaseScript {
         ISablierV2NFTDescriptor initialNFTDescriptor,
         UD60x18 maxFee
     ) public virtual broadcaster returns (SablierV2LockupLinear linear) {
-        linear = new SablierV2LockupLinear{ salt: ZERO_SALT }(initialAdmin, initialComptroller, initialNFTDescriptor, maxFee);
+        linear = new SablierV2LockupLinear{ salt: ZERO_SALT }(
+            initialAdmin,
+            initialComptroller,
+            initialNFTDescriptor,
+            maxFee
+        );
     }
 }

@@ -41,6 +41,12 @@ contract DeployDeterministicProtocol is
         linear = DeployDeterministicLockupLinear.run(initialAdmin, comptroller, initialNFTDescriptor, maxFee);
 
         // Deploy the SablierV2LockupPro contract.
-        pro = DeployDeterministicLockupPro.run(initialAdmin, comptroller, initialNFTDescriptor, maxFee, maxSegmentCount);
+        pro = DeployDeterministicLockupPro.run(
+            initialAdmin,
+            comptroller,
+            initialNFTDescriptor,
+            maxFee,
+            maxSegmentCount
+        );
     }
 }
