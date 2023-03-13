@@ -18,14 +18,14 @@ contract DeployDeterministicLockupPro is Script, BaseScript {
     function run(
         address initialAdmin,
         ISablierV2Comptroller initialComptroller,
-        ISablierV2NftDescriptor nftDescriptor,
+        ISablierV2NftDescriptor initialNftDescriptor,
         UD60x18 maxFee,
         uint256 maxSegmentCount
     ) public virtual broadcaster returns (SablierV2LockupPro pro) {
         pro = new SablierV2LockupPro{ salt: ZERO_SALT }(
             initialAdmin,
             initialComptroller,
-            nftDescriptor,
+            initialNftDescriptor,
             maxFee,
             maxSegmentCount
         );

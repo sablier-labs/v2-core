@@ -8,7 +8,7 @@ import { SablierV2NftDescriptor } from "../../src/SablierV2NftDescriptor.sol";
 import { BaseScript } from "../shared/Base.s.sol";
 
 contract DeployNftDescriptor is Script, BaseScript {
-    function run() public virtual broadcaster returns (SablierV2NftDescriptor nftDescriptor) {
-        nftDescriptor = new SablierV2NftDescriptor();
+    function run() public virtual broadcaster returns (SablierV2NftDescriptor initialNftDescriptor) {
+        initialNftDescriptor = new SablierV2NftDescriptor();
     }
 }

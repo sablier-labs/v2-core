@@ -177,7 +177,7 @@ abstract contract Base_Test is Assertions, Calculations, Events, Fuzzers, StdChe
         else {
             (comptroller, linear, pro) = new DeployProtocol().run({
                 initialAdmin: users.admin,
-                nftDescriptor: nftDescriptor,
+                initialNftDescriptor: nftDescriptor,
                 maxFee: DEFAULT_MAX_FEE,
                 maxSegmentCount: DEFAULT_MAX_SEGMENT_COUNT
             });

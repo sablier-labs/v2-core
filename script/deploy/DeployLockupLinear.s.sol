@@ -15,9 +15,9 @@ contract DeployLockupLinear is Script, BaseScript {
     function run(
         address initialAdmin,
         ISablierV2Comptroller initialComptroller,
-        ISablierV2NftDescriptor nftDescriptor,
+        ISablierV2NftDescriptor initialNftDescriptor,
         UD60x18 maxFee
     ) public virtual broadcaster returns (SablierV2LockupLinear linear) {
-        linear = new SablierV2LockupLinear(initialAdmin, initialComptroller, nftDescriptor, maxFee);
+        linear = new SablierV2LockupLinear(initialAdmin, initialComptroller, initialNftDescriptor, maxFee);
     }
 }
