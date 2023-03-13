@@ -20,18 +20,18 @@ abstract contract SablierV2Lockup is
     SablierV2FlashLoan // five dependencies
 {
     /*//////////////////////////////////////////////////////////////////////////
-                                 INTERNAL CONSTANTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @dev Contract that generates the non-fungible token URI.
-    ISablierV2NFTDescriptor internal immutable _nftDescriptor;
-
-    /*//////////////////////////////////////////////////////////////////////////
                                    PUBLIC STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Lockup
     uint256 public override nextStreamId;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                  INTERNAL STORAGE
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev Contract that generates the non-fungible token URI.
+    ISablierV2NFTDescriptor internal _nftDescriptor;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR
@@ -167,6 +167,20 @@ abstract contract SablierV2Lockup is
 
         // Effects: renounce the stream.
         _renounce(streamId);
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function setNFTDescriptor(ISablierV2NFTDescriptor newNFTDescriptor) external override onlyAdmin {
+        // Effects: set the NFT descriptor.
+        ISablierV2NFTDescriptor oldNftDescriptor = _nftDescriptor;
+        _nftDescriptor = newNFTDescriptor;
+
+        // Log the change of the NFT descriptor.
+        emit ISablierV2Lockup.SetNFTDescriptor({
+            admin: msg.sender,
+            oldNFTDescriptor: oldNftDescriptor,
+            newNFTDescriptor: newNFTDescriptor
+        });
     }
 
     /// @inheritdoc ISablierV2Lockup
