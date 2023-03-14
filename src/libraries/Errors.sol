@@ -22,7 +22,7 @@ library Errors {
     error SablierV2Config_NoProtocolRevenues(IERC20 asset);
 
     /// @notice Thrown when attempting to delegate call to this contract.
-    error SablierV2Lockup_NotDelegateCall();
+    error SablierV2Config_NotDelegateCall();
 
     /*//////////////////////////////////////////////////////////////////////////
                                SABLIER-V2-FLASH-LOAN

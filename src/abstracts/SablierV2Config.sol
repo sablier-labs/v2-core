@@ -123,17 +123,17 @@ abstract contract SablierV2Config is
                             INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Checks that a delegate call is been made.
+    /// @dev Checks that no delegate call is being made.
     ///
     /// Notes:
-    /// - We are using a internal function instead of inlining it into a modifier because modifiers
+    /// - We are using an internal function instead of inlining it into a modifier because modifiers
     /// are copied into every method that uses them. The use of immutable variables means that
     /// the address bytes are also copied in every place the modifier is used, which can lead
     /// to increased contract size. By using a internal function instead, we can avoid this duplication
     /// of code and reduce the overall size of the contract.
     function _checkNotDelegateCall() internal view {
         if (address(this) != _selfAddress) {
-            revert Errors.SablierV2Lockup_NotDelegateCall();
+            revert Errors.SablierV2Config_NotDelegateCall();
         }
     }
 }
