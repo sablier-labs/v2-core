@@ -110,7 +110,7 @@ abstract contract SablierV2FlashLoan is
         address asset,
         uint256 amount,
         bytes calldata data
-    ) external override returns (bool success) {
+    ) external override noDelegateCall returns (bool success) {
         // Checks: the amount is less than 2^128. This prevents the below calculations from overflowing.
         if (amount > type(uint128).max) {
             revert Errors.SablierV2FlashLoan_AmountTooHigh(amount);

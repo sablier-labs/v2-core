@@ -103,7 +103,7 @@ abstract contract SablierV2Lockup is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Lockup
-    function burn(uint256 streamId) external override {
+    function burn(uint256 streamId) external override noDelegateCall {
         // Checks: the stream is either canceled or depleted.
         Lockup.Status status = getStatus(streamId);
         if (status != Lockup.Status.CANCELED && status != Lockup.Status.DEPLETED) {
@@ -154,7 +154,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function renounce(uint256 streamId) external override isActiveStream(streamId) {
+    function renounce(uint256 streamId) external override isActiveStream(streamId) noDelegateCall {
         // Checks: `msg.sender` is the sender of the stream.
         if (!_isCallerStreamSender(streamId)) {
             revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);

@@ -37,6 +37,9 @@ abstract contract SablierV2Config is
                                   INTERNAL STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @dev The address of this contract.
+    address internal immutable _selfAddress;
+
     /// @dev Protocol revenues mapped by ERC-20 asset addresses.
     mapping(IERC20 asset => uint128 revenues) internal _protocolRevenues;
 
@@ -50,10 +53,21 @@ abstract contract SablierV2Config is
     /// @param maxFee The maximum fee that can be charged by either the protocol or a broker, as an UD60x18 number
     /// where 100% = 1e18.
     constructor(address initialAdmin, ISablierV2Comptroller initialComptroller, UD60x18 maxFee) {
+        _selfAddress = address(this);
         admin = initialAdmin;
         comptroller = initialComptroller;
         MAX_FEE = maxFee;
         emit ISablierV2Adminable.TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                     MODIFIERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Prevents delegate call in the function used.
+    modifier noDelegateCall() {
+        _checkNotDelegateCall();
+        _;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -74,7 +88,7 @@ abstract contract SablierV2Config is
         // Checks: the protocol revenues are not zero.
         uint128 protocolRevenues = _protocolRevenues[asset];
         if (protocolRevenues == 0) {
-            revert Errors.SablierV2Lockup_NoProtocolRevenues(asset);
+            revert Errors.SablierV2Config_NoProtocolRevenues(asset);
         }
 
         // Effects: set the protocol revenues to zero.
@@ -103,5 +117,23 @@ abstract contract SablierV2Config is
             oldComptroller: oldComptroller,
             newComptroller: newComptroller
         });
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                            INTERNAL CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev Checks that a delegate call is been made.
+    ///
+    /// Notes:
+    /// - We are using a internal function instead of inlining it into a modifier because modifiers
+    /// are copied into every method that uses them. The use of immutable variables means that
+    /// the address bytes are also copied in every place the modifier is used, which can lead
+    /// to increased contract size. By using a internal function instead, we can avoid this duplication
+    /// of code and reduce the overall size of the contract.
+    function _checkNotDelegateCall() internal view {
+        if (address(this) != _selfAddress) {
+            revert Errors.SablierV2Lockup_NotDelegateCall();
+        }
     }
 }

@@ -289,7 +289,7 @@ contract SablierV2LockupLinear is
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
-    function _cancel(uint256 streamId) internal override onlySenderOrRecipient(streamId) {
+    function _cancel(uint256 streamId) internal override noDelegateCall onlySenderOrRecipient(streamId) {
         LockupLinear.Stream memory stream = _streams[streamId];
 
         // Calculate the sender's and the recipient's amount.
@@ -355,7 +355,9 @@ contract SablierV2LockupLinear is
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
-    function _createWithRange(LockupLinear.CreateWithRange memory params) internal returns (uint256 streamId) {
+    function _createWithRange(
+        LockupLinear.CreateWithRange memory params
+    ) internal noDelegateCall returns (uint256 streamId) {
         // Safe Interactions: query the protocol fee. This is safe because it's a known Sablier contract.
         UD60x18 protocolFee = comptroller.getProtocolFee(params.asset);
 
@@ -446,7 +448,7 @@ contract SablierV2LockupLinear is
     }
 
     /// @dev See the documentation for the public functions that call this internal function.
-    function _withdraw(uint256 streamId, address to, uint128 amount) internal override {
+    function _withdraw(uint256 streamId, address to, uint128 amount) internal override noDelegateCall {
         // Checks: the amount is not zero.
         if (amount == 0) {
             revert Errors.SablierV2Lockup_WithdrawAmountZero(streamId);
