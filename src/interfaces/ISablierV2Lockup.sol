@@ -245,12 +245,12 @@ interface ISablierV2Lockup is
     /// Notes:
     /// - Does not revert if one of the ids points to a lockup stream that is not active.
     /// - This function will attempt to call a hook on the recipient of each stream.
-    /// - The call cannot be a delegate call.
     ///
     /// Requirements:
     /// - The count of `streamIds` must match the count of `amounts`.
     /// - `msg.sender` must be either the recipient of the stream (a.k.a the owner of the NFT) or an approved operator.
     /// - Every amount in `amounts` must not be zero and must not exceed the withdrawable amount.
+    /// - The call cannot be a delegate call.
     ///
     /// @param streamIds The ids of the lockup streams to withdraw.
     /// @param to The address that receives the withdrawn assets, if the `msg.sender` is not the sender of the stream.

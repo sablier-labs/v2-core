@@ -11,7 +11,17 @@ import { FlashLoan_Unit_Test } from "../FlashLoan.t.sol";
 
 contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     /// @dev it should revert.
-    function test_RevertWhen_AmountTooHigh() external {
+    function test_RevertWhen_DelegateCall() external payable {
+        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        delegateCallFlashLoan(address(flashLoan), IERC3156FlashBorrower(address(0)), address(0), 0, bytes(""));
+    }
+
+    modifier noDelegateCall() {
+        _;
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_AmountTooHigh() external noDelegateCall {
         uint256 amount = uint256(UINT128_MAX) + 1;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2FlashLoan_AmountTooHigh.selector, amount));
         flashLoan.flashLoan({
@@ -27,7 +37,7 @@ contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_AssetNotFlashLoanable() external amountNotTooHigh {
+    function test_RevertWhen_AssetNotFlashLoanable() external noDelegateCall amountNotTooHigh {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierV2FlashLoan_AssetNotFlashLoanable.selector, DEFAULT_ASSET)
         );
@@ -45,7 +55,7 @@ contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_CalculatedFeeTooHigh() external amountNotTooHigh assetFlashLoanable {
+    function test_RevertWhen_CalculatedFeeTooHigh() external noDelegateCall amountNotTooHigh assetFlashLoanable {
         // Set the comptroller flash fee so that the calculated fee ends up being greater than 2^128.
         comptroller.setFlashFee({ newFlashFee: ud(1.1e18) });
 
@@ -66,7 +76,7 @@ contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     /// @dev it should revert.
     function test_RevertWhen_InsufficientAssetLiquidity(
         uint128 amount
-    ) external amountNotTooHigh assetFlashLoanable calculatedFeeNotTooHigh {
+    ) external noDelegateCall amountNotTooHigh assetFlashLoanable calculatedFeeNotTooHigh {
         vm.assume(amount != 0);
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -91,6 +101,7 @@ contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     /// @dev it should revert.
     function test_RevertWhen_BorrowFailed()
         external
+        noDelegateCall
         amountNotTooHigh
         assetFlashLoanable
         calculatedFeeNotTooHigh
@@ -114,6 +125,7 @@ contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     /// @dev it should revert.
     function test_RevertWhen_Reentrancy()
         external
+        noDelegateCall
         amountNotTooHigh
         assetFlashLoanable
         calculatedFeeNotTooHigh
@@ -146,6 +158,7 @@ contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     /// a {FlashLoan} event.
     function test_FlashLoan()
         external
+        noDelegateCall
         amountNotTooHigh
         assetFlashLoanable
         calculatedFeeNotTooHigh

@@ -42,13 +42,21 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     modifier streamActive() {
-        // Create the default stream.
-        defaultStreamId = createDefaultStream();
         _;
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_CallerNotSender() external streamActive {
+    function test_RevertWhen_DelegateCall() external payable streamActive {
+        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        delegateCallRenounce(address(lockup), defaultStreamId);
+    }
+
+    modifier noDelegateCall() {
+        _;
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_CallerNotSender() external streamActive noDelegateCall {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
 
@@ -64,7 +72,7 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_NonCancelableStream() external streamActive callerSender {
+    function test_RevertWhen_NonCancelableStream() external streamActive noDelegateCall callerSender {
         // Create the non-cancelable stream.
         uint256 nonCancelableStreamId = createDefaultStreamNonCancelable();
 
@@ -80,7 +88,7 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should renounce the stream.
-    function test_Renounce_RecipientNotContract() external streamActive callerSender streamCancelable {
+    function test_Renounce_RecipientNotContract() external streamActive noDelegateCall callerSender streamCancelable {
         lockup.renounce(defaultStreamId);
         bool isCancelable = lockup.isCancelable(defaultStreamId);
         assertFalse(isCancelable, "isCancelable");

@@ -21,7 +21,17 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_RecipientZeroAddress() external {
+    function test_RevertWhen_DelegateCall() external payable {
+        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        delegateCallCreateWithRange(address(linear), defaultParams.createWithRange);
+    }
+
+    modifier noDelegateCall() {
+        _;
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_RecipientZeroAddress() external noDelegateCall {
         vm.expectRevert("ERC721: mint to the zero address");
         createDefaultStreamWithRecipient({ recipient: address(0) });
     }
@@ -34,7 +44,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
     ///
     /// It is not possible to obtain a zero deposit amount from a non-zero total amount, because the
     /// `MAX_FEE` is hard coded to 10%.
-    function test_RevertWhen_DepositAmountZero() external recipientNonZeroAddress {
+    function test_RevertWhen_DepositAmountZero() external noDelegateCall recipientNonZeroAddress {
         vm.expectRevert(Errors.SablierV2Lockup_DepositAmountZero.selector);
         createDefaultStreamWithTotalAmount(0);
     }
@@ -44,7 +54,12 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StartTimeGreaterThanCliffTime() external recipientNonZeroAddress depositAmountNotZero {
+    function test_RevertWhen_StartTimeGreaterThanCliffTime()
+        external
+        noDelegateCall
+        recipientNonZeroAddress
+        depositAmountNotZero
+    {
         uint40 startTime = DEFAULT_CLIFF_TIME;
         uint40 cliffTime = DEFAULT_START_TIME;
         vm.expectRevert(

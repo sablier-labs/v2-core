@@ -108,7 +108,23 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_WithdrawAmountZero() external streamActive callerAuthorized toNonZeroAddress {
+    function test_RevertWhen_DelegateCall() external payable streamActive callerAuthorized toNonZeroAddress {
+        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        delegateCallWithdraw(address(lockup), defaultStreamId, users.recipient, 0);
+    }
+
+    modifier noDelegateCall() {
+        _;
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_WithdrawAmountZero()
+        external
+        streamActive
+        callerAuthorized
+        toNonZeroAddress
+        noDelegateCall
+    {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_WithdrawAmountZero.selector, defaultStreamId));
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: 0 });
     }
@@ -123,6 +139,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
     {
         uint128 withdrawableAmount = 0;
@@ -147,6 +164,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
     {
@@ -176,6 +194,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
     {
@@ -214,6 +233,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -247,6 +267,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -289,6 +310,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -331,6 +353,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -374,6 +397,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -422,6 +446,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         streamActive
         callerAuthorized
         toNonZeroAddress
+        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender

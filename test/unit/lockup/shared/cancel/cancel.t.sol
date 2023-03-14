@@ -3,6 +3,7 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 
+import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
 import { ISablierV2LockupRecipient } from "src/interfaces/hooks/ISablierV2LockupRecipient.sol";
 import { ISablierV2LockupSender } from "src/interfaces/hooks/ISablierV2LockupSender.sol";
 import { Errors } from "src/libraries/Errors.sol";
@@ -68,7 +69,22 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_CallerUnauthorized_MaliciousThirdParty() external streamActive streamCancelable {
+    function test_RevertWhen_DelegateCall() external payable streamActive streamCancelable {
+        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        delegateCallCancel(address(lockup), defaultStreamId);
+    }
+
+    modifier noDelegateCall() {
+        _;
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_CallerUnauthorized_MaliciousThirdParty()
+        external
+        streamActive
+        streamCancelable
+        noDelegateCall
+    {
         // Make the unauthorized user the caller in this test.
         changePrank({ msgSender: users.eve });
 
@@ -80,7 +96,12 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_CallerUnauthorized_ApprovedOperator() external streamActive streamCancelable {
+    function test_RevertWhen_CallerUnauthorized_ApprovedOperator()
+        external
+        streamActive
+        streamCancelable
+        noDelegateCall
+    {
         // Approve Alice for the stream.
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });
 
@@ -95,7 +116,12 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_CallerUnauthorized_FormerRecipient() external streamActive streamCancelable {
+    function test_RevertWhen_CallerUnauthorized_FormerRecipient()
+        external
+        streamActive
+        streamCancelable
+        noDelegateCall
+    {
         // Transfer the stream to Alice.
         lockup.transferFrom({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
@@ -121,6 +147,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerSender
     {
@@ -139,6 +166,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerSender
         recipientContract
@@ -172,6 +200,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerSender
         recipientContract
@@ -206,6 +235,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerSender
         recipientContract
@@ -242,6 +272,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerSender
         recipientContract
@@ -301,6 +332,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerRecipient
     {
@@ -319,6 +351,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerRecipient
         senderContract
@@ -352,6 +385,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerRecipient
         senderContract
@@ -386,6 +420,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerRecipient
         senderContract
@@ -422,6 +457,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         streamActive
         streamCancelable
+        noDelegateCall
         callerAuthorized
         callerRecipient
         senderContract
