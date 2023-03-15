@@ -38,7 +38,7 @@ abstract contract SablierV2Config is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev The address of this contract.
-    address internal immutable _self;
+    address internal immutable _original;
 
     /// @dev Protocol revenues mapped by ERC-20 asset addresses.
     mapping(IERC20 asset => uint128 revenues) internal _protocolRevenues;
@@ -53,7 +53,7 @@ abstract contract SablierV2Config is
     /// @param maxFee The maximum fee that can be charged by either the protocol or a broker, as an UD60x18 number
     /// where 100% = 1e18.
     constructor(address initialAdmin, ISablierV2Comptroller initialComptroller, UD60x18 maxFee) {
-        _self = address(this);
+        _original = address(this);
         admin = initialAdmin;
         comptroller = initialComptroller;
         MAX_FEE = maxFee;
@@ -132,7 +132,7 @@ abstract contract SablierV2Config is
     /// to increased contract size. By using a internal function instead, we can avoid this duplication
     /// of code and reduce the overall size of the contract.
     function _checkNotDelegateCall() internal view {
-        if (address(this) != _self) {
+        if (address(this) != _original) {
             revert Errors.SablierV2Config_NotDelegateCall();
         }
     }
