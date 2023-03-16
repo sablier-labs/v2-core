@@ -23,7 +23,7 @@ contract CreateWithMilestones_Pro_Unit_Test is Pro_Unit_Test {
 
     /// @dev it should revert.
     function test_RevertWhen_DelegateCall() external payable {
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        vm.expectRevert(Errors.SablierV2NoDelegateCall.selector);
         (bool succes, ) = address(pro).delegatecall(
             abi.encodeCall(ISablierV2LockupPro.createWithMilestones, defaultParams.createWithMilestones)
         );

@@ -27,7 +27,7 @@ contract Cancel_Linear_DelegateCall is LinearStorage {
         uint256 streamId = _nextStreamId - 1;
         setStorage(stream, recipient, streamId);
 
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        vm.expectRevert(Errors.SablierV2NoDelegateCall.selector);
         (bool succes, ) = _original.delegatecall(abi.encodeCall(ISablierV2Lockup.cancel, streamId));
         succes; // To avoid: "Warning: Return value of low-level calls not used."
     }

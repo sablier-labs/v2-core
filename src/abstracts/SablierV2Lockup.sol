@@ -11,13 +11,15 @@ import { Errors } from "../libraries/Errors.sol";
 import { Lockup } from "../types/DataTypes.sol";
 import { SablierV2Config } from "./SablierV2Config.sol";
 import { SablierV2FlashLoan } from "./SablierV2FlashLoan.sol";
+import { SablierV2NoDelegateCall } from "./SablierV2NoDelegateCall.sol";
 
 /// @title SablierV2Lockup
 /// @notice See the documentation in {ISablierV2Lockup}.
 abstract contract SablierV2Lockup is
+    SablierV2NoDelegateCall, // no dependencies
     SablierV2Config, // three dependencies
     ISablierV2Lockup, // four dependencies
-    SablierV2FlashLoan // five dependencies
+    SablierV2FlashLoan // six dependencies
 {
     /*//////////////////////////////////////////////////////////////////////////
                                    PUBLIC STORAGE

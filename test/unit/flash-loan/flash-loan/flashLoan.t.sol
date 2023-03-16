@@ -13,7 +13,7 @@ import { FlashLoan_Unit_Test } from "../FlashLoan.t.sol";
 contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     /// @dev it should revert.
     function test_RevertWhen_DelegateCall() external payable {
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        vm.expectRevert(Errors.SablierV2NoDelegateCall.selector);
         (bool succes, ) = address(flashLoan).delegatecall(
             abi.encodeCall(
                 IERC3156FlashLender.flashLoan,

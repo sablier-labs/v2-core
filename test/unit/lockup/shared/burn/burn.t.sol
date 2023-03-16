@@ -20,7 +20,7 @@ abstract contract Burn_Unit_Test is Unit_Test, Lockup_Shared_Test {
 
     /// @dev it should revert.
     function test_RevertWhen_DelegateCall() external payable {
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        vm.expectRevert(Errors.SablierV2NoDelegateCall.selector);
         (bool succes, ) = address(lockup).delegatecall(abi.encodeCall(ISablierV2Lockup.burn, streamId));
         succes; // To avoid: "Warning: Return value of low-level calls not used."
     }

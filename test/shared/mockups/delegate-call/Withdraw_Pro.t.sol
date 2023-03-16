@@ -29,7 +29,7 @@ contract Withdraw_Pro_DelegateCall is ProStorage {
         uint256 streamId = _nextStreamId - 1;
         setStorage(stream, recipient, streamId);
 
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        vm.expectRevert(Errors.SablierV2NoDelegateCall.selector);
         (bool succes, ) = _original.delegatecall(
             abi.encodeCall(ISablierV2Lockup.withdraw, (streamId, recipient, withdrawAmount))
         );

@@ -21,8 +21,12 @@ library Errors {
     /// @notice Thrown when attempting to claim protocol revenues for an asset that did not accrue any revenues.
     error SablierV2Config_NoProtocolRevenues(IERC20 asset);
 
-    /// @notice Thrown when attempting to delegate call to this contract.
-    error SablierV2Config_NotDelegateCall();
+    /*//////////////////////////////////////////////////////////////////////////
+                        SABLIER-V2-NO-DELEGATE-CALL
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when attempting to delegate call to a sablier contract.
+    error SablierV2NoDelegateCall();
 
     /*//////////////////////////////////////////////////////////////////////////
                                SABLIER-V2-FLASH-LOAN

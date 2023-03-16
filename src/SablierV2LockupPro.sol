@@ -44,7 +44,7 @@ import { Lockup, LockupPro } from "./types/DataTypes.sol";
 contract SablierV2LockupPro is
     ISablierV2LockupPro, // one dependency
     ERC721("Sablier V2 Lockup Pro NFT", "SAB-V2-LOCKUP-PRO"), // six dependencies
-    SablierV2Lockup // ten dependencies
+    SablierV2Lockup // eleven dependencies
 {
     using CastingUint128 for uint128;
     using CastingUint40 for uint40;

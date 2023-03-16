@@ -23,7 +23,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
 
     /// @dev it should revert.
     function test_RevertWhen_DelegateCall() external payable {
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        vm.expectRevert(Errors.SablierV2NoDelegateCall.selector);
         (bool succes, ) = address(linear).delegatecall(
             abi.encodeCall(ISablierV2LockupLinear.createWithRange, defaultParams.createWithRange)
         );

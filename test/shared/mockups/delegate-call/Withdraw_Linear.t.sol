@@ -28,7 +28,7 @@ contract Withdraw_Linear_DelegateCall is LinearStorage {
         uint256 streamId = _nextStreamId - 1;
         setStorage(stream, recipient, streamId);
 
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
+        vm.expectRevert(Errors.SablierV2NoDelegateCall.selector);
         (bool succes, ) = _original.delegatecall(
             abi.encodeCall(ISablierV2Lockup.withdraw, (streamId, recipient, withdrawAmount))
         );

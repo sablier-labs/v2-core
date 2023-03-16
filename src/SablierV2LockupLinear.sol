@@ -41,7 +41,7 @@ import { Lockup, LockupLinear } from "./types/DataTypes.sol";
 contract SablierV2LockupLinear is
     ISablierV2LockupLinear, // one dependency
     ERC721("Sablier V2 Lockup Linear NFT", "SAB-V2-LOCKUP-LIN"), // six dependencies
-    SablierV2Lockup // ten dependencies
+    SablierV2Lockup // eleven dependencies
 {
     using SafeERC20 for IERC20;
 
