@@ -154,7 +154,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function renounce(uint256 streamId) external override isActiveStream(streamId) noDelegateCall {
+    function renounce(uint256 streamId) external override noDelegateCall isActiveStream(streamId) {
         // Checks: `msg.sender` is the sender of the stream.
         if (!_isCallerStreamSender(streamId)) {
             revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);

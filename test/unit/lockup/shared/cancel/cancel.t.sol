@@ -68,12 +68,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    /// @dev it should revert.
-    function test_RevertWhen_DelegateCall() external payable streamActive streamCancelable {
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
-        delegateCallCancel(address(lockup), defaultStreamId);
-    }
-
+    // The tests can be found at:
+    // - test/unit/lockup/linear/cancel/cancel.t.sol
+    // - test/unit/lockup/pro/cancel/cancel.t.sol
     modifier noDelegateCall() {
         _;
     }
