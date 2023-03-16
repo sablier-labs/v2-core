@@ -4,6 +4,7 @@ pragma solidity >=0.8.19 <0.9.0;
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { UD60x18, ud } from "@prb/math/UD60x18.sol";
 
+import { ISablierV2LockupLinear } from "src/interfaces/ISablierV2LockupLinear.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
 import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
@@ -23,7 +24,10 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
     /// @dev it should revert.
     function test_RevertWhen_DelegateCall() external payable {
         vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
-        delegateCallCreateWithRange(address(linear), defaultParams.createWithRange);
+        (bool succes, ) = address(linear).delegatecall(
+            abi.encodeCall(ISablierV2LockupLinear.createWithRange, defaultParams.createWithRange)
+        );
+        succes; // To avoid: "Warning: Return value of low-level calls not used."
     }
 
     modifier noDelegateCall() {

@@ -107,12 +107,9 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    /// @dev it should revert.
-    function test_RevertWhen_DelegateCall() external payable streamActive callerAuthorized toNonZeroAddress {
-        vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
-        delegateCallWithdraw(address(lockup), defaultStreamId, users.recipient, 0);
-    }
-
+    // The tests can be found at:
+    // - test/unit/lockup/linear/withdraw/withdraw.t.sol
+    // - test/unit/lockup/pro/withdraw/withdraw.t.sol
     modifier noDelegateCall() {
         _;
     }

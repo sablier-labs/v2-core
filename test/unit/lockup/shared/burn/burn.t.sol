@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
+import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
 import { Lockup_Shared_Test } from "../../../../shared/lockup/Lockup.t.sol";
@@ -20,7 +21,8 @@ abstract contract Burn_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should revert.
     function test_RevertWhen_DelegateCall() external payable {
         vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
-        delegateCallBurn(address(lockup), streamId);
+        (bool succes, ) = address(lockup).delegatecall(abi.encodeCall(ISablierV2Lockup.burn, streamId));
+        succes; // To avoid: "Warning: Return value of low-level calls not used."
     }
 
     modifier noDelegateCall() {

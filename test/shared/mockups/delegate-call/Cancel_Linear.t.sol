@@ -5,8 +5,8 @@ import { UD60x18 } from "@prb/math/UD60x18.sol";
 import { Vm } from "@prb/test/Vm.sol";
 
 import { ISablierV2Comptroller } from "src/interfaces/ISablierV2Comptroller.sol";
-import { ISablierV2NFTDescriptor } from "src/interfaces/ISablierV2NFTDescriptor.sol";
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
+import { ISablierV2NFTDescriptor } from "src/interfaces/ISablierV2NFTDescriptor.sol";
 import { Errors } from "src/libraries/Errors.sol";
 import { LockupLinear } from "src/types/DataTypes.sol";
 
@@ -24,17 +24,11 @@ contract Cancel_Linear_DelegateCall is LinearStorage {
         address recipient,
         Vm vm
     ) payable LinearStorage(_admin, _maxFee, _comptroller, _original, _nftDescriptor, _nextStreamId) {
-        setStreamStorage(stream, recipient, _nextStreamId - 1);
-        delegateCallCancel(_original, _nextStreamId - 1, vm);
-    }
+        uint256 streamId = _nextStreamId - 1;
+        setStorage(stream, recipient, streamId);
 
-    function delegateCallCancel(address linear, uint256 streamId, Vm vm) public payable {
         vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
-        linear.delegatecall(abi.encodeCall(ISablierV2Lockup.cancel, streamId));
-    }
-
-    function setStreamStorage(LockupLinear.Stream memory stream, address recipient, uint256 streamId) public {
-        _streams[streamId] = stream;
-        _mint({ to: recipient, tokenId: streamId });
+        (bool succes, ) = _original.delegatecall(abi.encodeCall(ISablierV2Lockup.cancel, streamId));
+        succes; // To avoid: "Warning: Return value of low-level calls not used."
     }
 }

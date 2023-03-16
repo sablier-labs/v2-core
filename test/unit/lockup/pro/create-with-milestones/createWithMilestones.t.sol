@@ -8,9 +8,8 @@ import { stdError } from "forge-std/StdError.sol";
 
 import { Errors } from "src/libraries/Errors.sol";
 
-import { Broker, Lockup, LockupPro } from "src/types/DataTypes.sol";
-
 import { ISablierV2LockupPro } from "src/interfaces/ISablierV2LockupPro.sol";
+import { Broker, Lockup, LockupPro } from "src/types/DataTypes.sol";
 
 import { Pro_Unit_Test } from "../Pro.t.sol";
 
@@ -25,7 +24,10 @@ contract CreateWithMilestones_Pro_Unit_Test is Pro_Unit_Test {
     /// @dev it should revert.
     function test_RevertWhen_DelegateCall() external payable {
         vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
-        delegateCallCreateWithMilestones(address(pro), defaultParams.createWithMilestones);
+        (bool succes, ) = address(pro).delegatecall(
+            abi.encodeCall(ISablierV2LockupPro.createWithMilestones, defaultParams.createWithMilestones)
+        );
+        succes; // To avoid: "Warning: Return value of low-level calls not used."
     }
 
     modifier noDelegateCall() {

@@ -12,7 +12,7 @@ import { LockupPro } from "src/types/DataTypes.sol";
 
 import { ProStorage } from "../../lockup/pro/ProStorage.t.sol";
 
-contract Cancel_Pro_DelegateCall is ProStorage {
+contract Withdraw_Pro_DelegateCall is ProStorage {
     constructor(
         address _admin,
         UD60x18 _maxFee,
@@ -23,13 +23,16 @@ contract Cancel_Pro_DelegateCall is ProStorage {
         uint256 _maxSegmentCount,
         LockupPro.Stream memory stream,
         address recipient,
+        uint128 withdrawAmount,
         Vm vm
     ) payable ProStorage(_admin, _maxFee, _comptroller, _original, _nftDescriptor, _nextStreamId, _maxSegmentCount) {
         uint256 streamId = _nextStreamId - 1;
         setStorage(stream, recipient, streamId);
 
         vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
-        (bool succes, ) = _original.delegatecall(abi.encodeCall(ISablierV2Lockup.cancel, streamId));
+        (bool succes, ) = _original.delegatecall(
+            abi.encodeCall(ISablierV2Lockup.withdraw, (streamId, recipient, withdrawAmount))
+        );
         succes; // To avoid: "Warning: Return value of low-level calls not used."
     }
 }

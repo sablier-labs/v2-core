@@ -27,7 +27,6 @@ import { ReturnableAmountOf_Unit_Test } from "../shared/returnable-amount-of/ret
 import { SetComptroller_Unit_Test } from "../shared/set-comptroller/setComptroller.t.sol";
 import { SetNFTDescriptor_Unit_Test } from "../shared/set-nft-descriptor/setNFTDescriptor.t.sol";
 import { TokenURI_Unit_Test } from "../shared/token-uri/tokenURI.t.sol";
-import { Withdraw_Unit_Test } from "../shared/withdraw/withdraw.t.sol";
 import { WithdrawMax_Unit_Test } from "../shared/withdraw-max/withdrawMax.t.sol";
 import { WithdrawMultiple_Unit_Test } from "../shared/withdraw-multiple/withdrawMultiple.t.sol";
 
@@ -184,13 +183,6 @@ contract TokenURI_Linear_Unit_Test is Linear_Unit_Test, TokenURI_Unit_Test {
     function setUp() public virtual override(Linear_Unit_Test, TokenURI_Unit_Test) {
         Linear_Unit_Test.setUp();
         TokenURI_Unit_Test.setUp();
-    }
-}
-
-contract Withdraw_Linear_Unit_Test is Linear_Unit_Test, Withdraw_Unit_Test {
-    function setUp() public virtual override(Linear_Unit_Test, Withdraw_Unit_Test) {
-        Linear_Unit_Test.setUp();
-        Withdraw_Unit_Test.setUp();
     }
 }
 

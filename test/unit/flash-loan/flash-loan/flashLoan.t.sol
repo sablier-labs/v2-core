@@ -4,6 +4,7 @@ pragma solidity >=0.8.19;
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { UD60x18, ud } from "@prb/math/UD60x18.sol";
 import { IERC3156FlashBorrower } from "erc3156/interfaces/IERC3156FlashBorrower.sol";
+import { IERC3156FlashLender } from "erc3156/interfaces/IERC3156FlashLender.sol";
 
 import { Errors } from "src/libraries/Errors.sol";
 
@@ -13,7 +14,13 @@ contract FlashLoanFunction_Unit_Test is FlashLoan_Unit_Test {
     /// @dev it should revert.
     function test_RevertWhen_DelegateCall() external payable {
         vm.expectRevert(Errors.SablierV2Config_NotDelegateCall.selector);
-        delegateCallFlashLoan(address(flashLoan), IERC3156FlashBorrower(address(0)), address(0), 0, bytes(""));
+        (bool succes, ) = address(flashLoan).delegatecall(
+            abi.encodeCall(
+                IERC3156FlashLender.flashLoan,
+                (IERC3156FlashBorrower(address(0)), address(DEFAULT_ASSET), 0, bytes(""))
+            )
+        );
+        succes; // To avoid: "Warning: Return value of low-level calls not used."
     }
 
     modifier noDelegateCall() {

@@ -195,13 +195,6 @@ contract TokenURI_Pro_Unit_Test is Pro_Unit_Test, TokenURI_Unit_Test {
     }
 }
 
-contract Withdraw_Pro_Unit_Test is Pro_Unit_Test, Withdraw_Unit_Test {
-    function setUp() public virtual override(Pro_Unit_Test, Withdraw_Unit_Test) {
-        Pro_Unit_Test.setUp();
-        Withdraw_Unit_Test.setUp();
-    }
-}
-
 contract WithdrawMax_Pro_Unit_Test is Pro_Unit_Test, WithdrawMax_Unit_Test {
     function setUp() public virtual override(Pro_Unit_Test, WithdrawMax_Unit_Test) {
         Pro_Unit_Test.setUp();
