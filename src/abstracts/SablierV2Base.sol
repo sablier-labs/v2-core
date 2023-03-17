@@ -5,19 +5,19 @@ import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/token/ERC20/utils/SafeERC20.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
-import { ISablierV2Adminable } from "../interfaces/ISablierV2Adminable.sol";
-import { ISablierV2Config } from "../interfaces/ISablierV2Config.sol";
+import { IAdminable } from "../interfaces/IAdminable.sol";
+import { ISablierV2Base } from "../interfaces/ISablierV2Base.sol";
 import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { Errors } from "../libraries/Errors.sol";
-import { SablierV2Adminable } from "./SablierV2Adminable.sol";
-import { SablierV2NoDelegateCall } from "./SablierV2NoDelegateCall.sol";
+import { Adminable } from "./Adminable.sol";
+import { NoDelegateCall } from "./NoDelegateCall.sol";
 
-/// @title SablierV2Config
-/// @notice See the documentation in {ISablierV2Config}.
-abstract contract SablierV2Config is
-    ISablierV2Config, // no dependencies
-    SablierV2NoDelegateCall, // no dependencies
-    SablierV2Adminable // one dependency
+/// @title SablierV2Base
+/// @notice See the documentation in {ISablierV2Base}.
+abstract contract SablierV2Base is
+    ISablierV2Base, // no dependencies
+    NoDelegateCall, // no dependencies
+    Adminable // one dependency
 {
     using SafeERC20 for IERC20;
 
@@ -25,17 +25,17 @@ abstract contract SablierV2Config is
                                   PUBLIC CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierV2Config
+    /// @inheritdoc ISablierV2Base
     UD60x18 public immutable override MAX_FEE;
 
     /*//////////////////////////////////////////////////////////////////////////
                                    PUBLIC STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierV2Config
+    /// @inheritdoc ISablierV2Base
     ISablierV2Comptroller public override comptroller;
 
-    /// @inheritdoc ISablierV2Config
+    /// @inheritdoc ISablierV2Base
     mapping(IERC20 asset => uint128 revenues) public override protocolRevenues;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -51,19 +51,19 @@ abstract contract SablierV2Config is
         admin = initialAdmin;
         comptroller = initialComptroller;
         MAX_FEE = maxFee;
-        emit ISablierV2Adminable.TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+        emit IAdminable.TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierV2Config
+    /// @inheritdoc ISablierV2Base
     function claimProtocolRevenues(IERC20 asset) external override onlyAdmin {
         // Checks: the protocol revenues are not zero.
         uint128 revenues = protocolRevenues[asset];
         if (revenues == 0) {
-            revert Errors.SablierV2Config_NoProtocolRevenues(asset);
+            revert Errors.SablierV2Base_NoProtocolRevenues(asset);
         }
 
         // Effects: set the protocol revenues to zero.
@@ -73,17 +73,17 @@ abstract contract SablierV2Config is
         asset.safeTransfer({ to: msg.sender, value: revenues });
 
         // Log the claim of the protocol revenues.
-        emit ISablierV2Config.ClaimProtocolRevenues({ admin: msg.sender, asset: asset, protocolRevenues: revenues });
+        emit ISablierV2Base.ClaimProtocolRevenues({ admin: msg.sender, asset: asset, protocolRevenues: revenues });
     }
 
-    /// @inheritdoc ISablierV2Config
+    /// @inheritdoc ISablierV2Base
     function setComptroller(ISablierV2Comptroller newComptroller) external override onlyAdmin {
         // Effects: set the new comptroller.
         ISablierV2Comptroller oldComptroller = comptroller;
         comptroller = newComptroller;
 
         // Log the change of the comptroller.
-        emit ISablierV2Config.SetComptroller({
+        emit ISablierV2Base.SetComptroller({
             admin: msg.sender,
             oldComptroller: oldComptroller,
             newComptroller: newComptroller

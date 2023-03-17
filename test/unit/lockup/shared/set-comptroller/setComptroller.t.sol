@@ -17,10 +17,8 @@ abstract contract SetComptroller_Unit_Test is Unit_Test, Lockup_Shared_Test {
         changePrank({ msgSender: users.eve });
 
         // Run the test.
-        vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2Adminable_CallerNotAdmin.selector, users.admin, users.eve)
-        );
-        config.setComptroller(ISablierV2Comptroller(users.eve));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
+        base.setComptroller(ISablierV2Comptroller(users.eve));
     }
 
     modifier whenCallerAdmin() {
@@ -36,10 +34,10 @@ abstract contract SetComptroller_Unit_Test is Unit_Test, Lockup_Shared_Test {
         emit SetComptroller(users.admin, comptroller, comptroller);
 
         // Re-set the comptroller.
-        config.setComptroller(comptroller);
+        base.setComptroller(comptroller);
 
         // Assert that the comptroller did not change.
-        address actualComptroller = address(config.comptroller());
+        address actualComptroller = address(base.comptroller());
         address expectedComptroller = address(comptroller);
         assertEq(actualComptroller, expectedComptroller, "comptroller");
     }
@@ -54,10 +52,10 @@ abstract contract SetComptroller_Unit_Test is Unit_Test, Lockup_Shared_Test {
         emit SetComptroller(users.admin, comptroller, newComptroller);
 
         // Set the new comptroller.
-        config.setComptroller(newComptroller);
+        base.setComptroller(newComptroller);
 
         // Assert that the new comptroller has been set.
-        address actualComptroller = address(config.comptroller());
+        address actualComptroller = address(base.comptroller());
         address expectedComptroller = address(newComptroller);
         assertEq(actualComptroller, expectedComptroller, "comptroller");
     }
