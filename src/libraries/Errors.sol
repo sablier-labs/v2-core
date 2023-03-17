@@ -22,11 +22,11 @@ library Errors {
     error SablierV2Config_NoProtocolRevenues(IERC20 asset);
 
     /*//////////////////////////////////////////////////////////////////////////
-                        SABLIER-V2-NO-DELEGATE-CALL
+                            SABLIER-V2-NO-DELEGATE-CALL
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Thrown when attempting to delegate call to a sablier contract.
-    error SablierV2NoDelegateCall();
+    /// @notice Thrown when attempting to delegate call to a Sablier contract.
+    error SablierV2DelegateCall();
 
     /*//////////////////////////////////////////////////////////////////////////
                                SABLIER-V2-FLASH-LOAN

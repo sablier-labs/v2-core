@@ -10,7 +10,7 @@ abstract contract SablierV2NoDelegateCall {
                                   INTERNAL STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
-    address internal immutable _original;
+    address private immutable _original;
 
     /*//////////////////////////////////////////////////////////////////////////
                                     CONSTRUCTOR
@@ -24,9 +24,9 @@ abstract contract SablierV2NoDelegateCall {
                                      MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Prevents delegate call in the function used.
+    /// @notice Prevents delegate calls.
     modifier noDelegateCall() {
-        _checkNotDelegateCall();
+        _preventDelegateCall();
         _;
     }
 
@@ -34,17 +34,15 @@ abstract contract SablierV2NoDelegateCall {
                             INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Checks that no delegate call is being made.
+    /// @dev This function checks whether a delegate call is being made.
     ///
-    /// Notes:
-    /// - We are using an internal function instead of inlining it into a modifier because modifiers
-    /// are copied into every method that uses them. The use of immutable variables means that
-    /// the address bytes are also copied in every place the modifier is used, which can lead
-    /// to increased contract size. By using a internal function instead, we can avoid this duplication
-    /// of code and reduce the overall size of the contract.
-    function _checkNotDelegateCall() internal view {
+    /// A private function is used instead of inlining this logic in a modifier because Solidity copies modifiers into
+    /// every function that uses them. The `_original` address would get copied in every place the modifier is used,
+    /// which would increase the contract size. By using a function instead, we can avoid this duplication of code
+    /// and reduce the overall size of the contract.
+    function _preventDelegateCall() private view {
         if (address(this) != _original) {
-            revert Errors.SablierV2NoDelegateCall();
+            revert Errors.SablierV2DelegateCall();
         }
     }
 }

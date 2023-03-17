@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
-
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
 import { ISablierV2LockupRecipient } from "src/interfaces/hooks/ISablierV2LockupRecipient.sol";
 import { ISablierV2LockupSender } from "src/interfaces/hooks/ISablierV2LockupSender.sol";
@@ -24,26 +22,37 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         defaultStreamId = createDefaultStream();
     }
 
+    /// @dev it should revert.
+    function test_RevertWhen_DelegateCall() external whenNoDelegateCall streamActive {
+        bytes memory callData = abi.encodeCall(ISablierV2Lockup.cancel, defaultStreamId);
+        (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
+        expectRevertDueToDelegateCall(success, returnData);
+    }
+
+    modifier whenNoDelegateCall() {
+        _;
+    }
+
     modifier streamNotActive() {
         _;
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamNull() external streamNotActive {
+    function test_RevertWhen_StreamNull() external whenNoDelegateCall streamNotActive {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotActive.selector, nullStreamId));
         lockup.cancel(nullStreamId);
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamCanceled() external streamNotActive {
+    function test_RevertWhen_StreamCanceled() external whenNoDelegateCall streamNotActive {
         lockup.cancel(defaultStreamId);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotActive.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamDepleted() external streamNotActive {
+    function test_RevertWhen_StreamDepleted() external whenNoDelegateCall streamNotActive {
         vm.warp({ timestamp: DEFAULT_END_TIME });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotActive.selector, defaultStreamId));
@@ -55,7 +64,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamNonCancelable() external streamActive {
+    function test_RevertWhen_StreamNonCancelable() external whenNoDelegateCall streamActive {
         // Create the non-cancelable stream.
         uint256 streamId = createDefaultStreamNonCancelable();
 
@@ -68,19 +77,13 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    // The tests can be found at:
-    // - test/unit/lockup/linear/cancel/cancel.t.sol
-    // - test/unit/lockup/pro/cancel/cancel.t.sol
-    modifier noDelegateCall() {
-        _;
-    }
-
     /// @dev it should revert.
     function test_RevertWhen_CallerUnauthorized_MaliciousThirdParty()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
+        whenNoDelegateCall
     {
         // Make the unauthorized user the caller in this test.
         changePrank({ msgSender: users.eve });
@@ -95,9 +98,10 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should revert.
     function test_RevertWhen_CallerUnauthorized_ApprovedOperator()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
+        whenNoDelegateCall
     {
         // Approve Alice for the stream.
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });
@@ -115,9 +119,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should revert.
     function test_RevertWhen_CallerUnauthorized_FormerRecipient()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
     {
         // Transfer the stream to Alice.
         lockup.transferFrom({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
@@ -142,9 +146,10 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should cancel the stream.
     function test_Cancel_Sender_RecipientNotContract()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
+        whenNoDelegateCall
         callerAuthorized
         callerSender
     {
@@ -161,9 +166,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should cancel the stream, call the recipient hook, and ignore the revert.
     function test_Cancel_Sender_RecipientDoesNotImplementHook()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerSender
         recipientContract
@@ -195,9 +200,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should cancel the stream, call the recipient hook, and ignore the revert.
     function test_Cancel_Sender_RecipientReverts()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerSender
         recipientContract
@@ -230,9 +235,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should cancel the stream, call the recipient hook, and ignore the revert.
     function test_Cancel_Sender_RecipientReentrancy()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerSender
         recipientContract
@@ -267,9 +272,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// recipient hook, and emit a {CancelLockupStream} event.
     function test_Cancel_Sender()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerSender
         recipientContract
@@ -327,9 +332,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should cancel the stream.
     function test_Cancel_Recipient_SenderNotContract()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerRecipient
     {
@@ -346,9 +351,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should cancel the stream, call the sender hook, and ignore the revert.
     function test_Cancel_Recipient_SenderDoesNotImplementHook()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerRecipient
         senderContract
@@ -380,9 +385,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should cancel the stream, call the sender hook, and ignore the revert.
     function test_Cancel_Recipient_SenderReverts()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerRecipient
         senderContract
@@ -415,9 +420,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should cancel the stream, call the sender hook, and ignore the revert.
     function test_Cancel_Recipient_SenderReentrancy()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerRecipient
         senderContract
@@ -452,9 +457,9 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// sender hook, and emit a {CancelLockupStream} event
     function test_Cancel_Recipient()
         external
+        whenNoDelegateCall
         streamActive
         streamCancelable
-        noDelegateCall
         callerAuthorized
         callerRecipient
         senderContract

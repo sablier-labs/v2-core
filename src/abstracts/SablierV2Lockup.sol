@@ -11,13 +11,11 @@ import { Errors } from "../libraries/Errors.sol";
 import { Lockup } from "../types/DataTypes.sol";
 import { SablierV2Config } from "./SablierV2Config.sol";
 import { SablierV2FlashLoan } from "./SablierV2FlashLoan.sol";
-import { SablierV2NoDelegateCall } from "./SablierV2NoDelegateCall.sol";
 
 /// @title SablierV2Lockup
 /// @notice See the documentation in {ISablierV2Lockup}.
 abstract contract SablierV2Lockup is
-    SablierV2NoDelegateCall, // no dependencies
-    SablierV2Config, // three dependencies
+    SablierV2Config, // four dependencies
     ISablierV2Lockup, // four dependencies
     SablierV2FlashLoan // six dependencies
 {
@@ -124,7 +122,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function cancel(uint256 streamId) external override isActiveStream(streamId) {
+    function cancel(uint256 streamId) external override noDelegateCall isActiveStream(streamId) {
         // Checks: the stream is cancelable.
         if (!isCancelable(streamId)) {
             revert Errors.SablierV2Lockup_StreamNonCancelable(streamId);
@@ -135,7 +133,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function cancelMultiple(uint256[] calldata streamIds) external override {
+    function cancelMultiple(uint256[] calldata streamIds) external override noDelegateCall {
         // Iterate over the provided array of stream ids and cancel each stream.
         uint256 count = streamIds.length;
         uint256 streamId;
@@ -190,7 +188,7 @@ abstract contract SablierV2Lockup is
         uint256 streamId,
         address to,
         uint128 amount
-    ) public override isActiveStream(streamId) isAuthorizedForStream(streamId) {
+    ) public override noDelegateCall isActiveStream(streamId) isAuthorizedForStream(streamId) {
         // Checks: if `msg.sender` is the sender of the stream, the provided address is the recipient.
         if (_isCallerStreamSender(streamId) && to != getRecipient(streamId)) {
             revert Errors.SablierV2Lockup_WithdrawSenderUnauthorized(streamId, msg.sender, to);
@@ -211,7 +209,11 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function withdrawMultiple(uint256[] calldata streamIds, address to, uint128[] calldata amounts) external override {
+    function withdrawMultiple(
+        uint256[] calldata streamIds,
+        address to,
+        uint128[] calldata amounts
+    ) external override noDelegateCall {
         // Checks: the provided address to withdraw to is not zero.
         if (to == address(0)) {
             revert Errors.SablierV2Lockup_WithdrawToZeroAddress();

@@ -10,6 +10,7 @@ import { SablierV2LockupLinear } from "src/SablierV2LockupLinear.sol";
 import { Linear_Shared_Test } from "../../../shared/lockup/linear/Linear.t.sol";
 import { Unit_Test } from "../../Unit.t.sol";
 import { Burn_Unit_Test } from "../shared/burn/burn.t.sol";
+import { Cancel_Unit_Test } from "../shared/cancel/cancel.t.sol";
 import { CancelMultiple_Unit_Test } from "../shared/cancel-multiple/cancelMultiple.t.sol";
 import { ClaimProtocolRevenues_Unit_Test } from "../shared/claim-protocol-revenues/claimProtocolRevenues.t.sol";
 import { GetAsset_Unit_Test } from "../shared/get-asset/getAsset.t.sol";
@@ -27,6 +28,7 @@ import { ReturnableAmountOf_Unit_Test } from "../shared/returnable-amount-of/ret
 import { SetComptroller_Unit_Test } from "../shared/set-comptroller/setComptroller.t.sol";
 import { SetNFTDescriptor_Unit_Test } from "../shared/set-nft-descriptor/setNFTDescriptor.t.sol";
 import { TokenURI_Unit_Test } from "../shared/token-uri/tokenURI.t.sol";
+import { Withdraw_Unit_Test } from "../shared/withdraw/withdraw.t.sol";
 import { WithdrawMax_Unit_Test } from "../shared/withdraw-max/withdrawMax.t.sol";
 import { WithdrawMultiple_Unit_Test } from "../shared/withdraw-multiple/withdrawMultiple.t.sol";
 
@@ -64,6 +66,13 @@ contract Burn_Linear_Unit_Test is Linear_Unit_Test, Burn_Unit_Test {
     function setUp() public virtual override(Linear_Unit_Test, Burn_Unit_Test) {
         Linear_Unit_Test.setUp();
         Burn_Unit_Test.setUp();
+    }
+}
+
+contract Cancel_Linear_Unit_Test is Linear_Unit_Test, Cancel_Unit_Test {
+    function setUp() public virtual override(Linear_Unit_Test, Cancel_Unit_Test) {
+        Linear_Unit_Test.setUp();
+        Cancel_Unit_Test.setUp();
     }
 }
 
@@ -183,6 +192,13 @@ contract TokenURI_Linear_Unit_Test is Linear_Unit_Test, TokenURI_Unit_Test {
     function setUp() public virtual override(Linear_Unit_Test, TokenURI_Unit_Test) {
         Linear_Unit_Test.setUp();
         TokenURI_Unit_Test.setUp();
+    }
+}
+
+contract Withdraw_Linear_Unit_Test is Linear_Unit_Test, Withdraw_Unit_Test {
+    function setUp() public virtual override(Linear_Unit_Test, Withdraw_Unit_Test) {
+        Linear_Unit_Test.setUp();
+        Withdraw_Unit_Test.setUp();
     }
 }
 

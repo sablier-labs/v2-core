@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
-
+import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
 import { ISablierV2LockupRecipient } from "src/interfaces/hooks/ISablierV2LockupRecipient.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
@@ -22,26 +21,40 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         defaultStreamId = createDefaultStream();
     }
 
+    /// @dev it should revert.
+    function test_RevertWhen_DelegateCall() external whenNoDelegateCall streamActive {
+        bytes memory callData = abi.encodeCall(
+            ISablierV2Lockup.withdraw,
+            (defaultStreamId, users.recipient, DEFAULT_WITHDRAW_AMOUNT)
+        );
+        (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
+        expectRevertDueToDelegateCall(success, returnData);
+    }
+
+    modifier whenNoDelegateCall() {
+        _;
+    }
+
     modifier streamNotActive() {
         _;
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamNull() external streamNotActive {
+    function test_RevertWhen_StreamNull() external whenNoDelegateCall streamNotActive {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotActive.selector, nullStreamId));
         lockup.withdraw({ streamId: nullStreamId, to: users.recipient, amount: DEFAULT_WITHDRAW_AMOUNT });
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamCanceled() external streamNotActive {
+    function test_RevertWhen_StreamCanceled() external whenNoDelegateCall streamNotActive {
         lockup.cancel(defaultStreamId);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotActive.selector, defaultStreamId));
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: DEFAULT_WITHDRAW_AMOUNT });
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_StreamDepleted() external streamNotActive {
+    function test_RevertWhen_StreamDepleted() external whenNoDelegateCall streamNotActive {
         vm.warp({ timestamp: DEFAULT_END_TIME });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotActive.selector, defaultStreamId));
@@ -53,7 +66,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_CallerUnauthorized_MaliciousThirdParty() external streamActive {
+    function test_RevertWhen_CallerUnauthorized_MaliciousThirdParty() external whenNoDelegateCall streamActive {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
 
@@ -65,7 +78,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_CallerUnauthorized_Sender() external streamActive {
+    function test_RevertWhen_CallerUnauthorized_Sender() external whenNoDelegateCall streamActive {
         // Make the sender the caller in this test.
         changePrank({ msgSender: users.sender });
 
@@ -82,7 +95,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_FormerRecipient() external streamActive {
+    function test_RevertWhen_FormerRecipient() external whenNoDelegateCall streamActive {
         // Transfer the stream to Alice.
         lockup.transferFrom(users.recipient, users.alice, defaultStreamId);
 
@@ -98,7 +111,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_ToZeroAddress() external streamActive callerAuthorized {
+    function test_RevertWhen_ToZeroAddress() external whenNoDelegateCall streamActive callerAuthorized {
         vm.expectRevert(Errors.SablierV2Lockup_WithdrawToZeroAddress.selector);
         lockup.withdraw({ streamId: defaultStreamId, to: address(0), amount: DEFAULT_WITHDRAW_AMOUNT });
     }
@@ -107,20 +120,13 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    // The tests can be found at:
-    // - test/unit/lockup/linear/withdraw/withdraw.t.sol
-    // - test/unit/lockup/pro/withdraw/withdraw.t.sol
-    modifier noDelegateCall() {
-        _;
-    }
-
     /// @dev it should revert.
     function test_RevertWhen_WithdrawAmountZero()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
     {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_WithdrawAmountZero.selector, defaultStreamId));
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: 0 });
@@ -133,10 +139,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should revert.
     function test_RevertWhen_WithdrawAmountGreaterThanWithdrawableAmount()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
     {
         uint128 withdrawableAmount = 0;
@@ -158,10 +164,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should make the withdrawal and update the withdrawn amount.
     function test_Withdraw_CallerRecipient()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
     {
@@ -188,10 +194,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should make the withdrawal and update the withdrawn amount.
     function test_Withdraw_CallerApprovedOperator()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
     {
@@ -227,10 +233,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should make the withdrawal and mark the stream as depleted.
     function test_Withdraw_CurrentTimeEqualToEndTime()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -261,10 +267,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should make the withdrawal and update the withdrawn amount.
     function test_Withdraw_RecipientNotContract()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -304,10 +310,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should make the withdrawal, update the withdrawn amount, call the recipient hook, and ignore the revert.
     function test_Withdraw_RecipientDoesNotImplementHook()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -347,10 +353,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should make the withdrawal, update the withdrawn amount, call the recipient hook, and ignore the revert.
     function test_Withdraw_RecipientReverts()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -391,10 +397,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// @dev it should make multiple withdrawals, update the withdrawn amounts, and call the recipient hook.
     function test_Withdraw_RecipientReentrancy()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender
@@ -440,10 +446,10 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     /// a {WithdrawFromLockupStream} event.
     function test_Withdraw()
         external
+        whenNoDelegateCall
         streamActive
         callerAuthorized
         toNonZeroAddress
-        noDelegateCall
         withdrawAmountNotZero
         withdrawAmountNotGreaterThanWithdrawableAmount
         callerSender

@@ -1,18 +1,18 @@
 cancel.t.sol
-├── when the stream is not active
-│  ├── when the stream is null
-│  │  └── it should revert
-│  ├── when the stream is canceled
-│  │  └── it should revert
-│  └── when the stream is depleted
-│     └── it should revert
-└── when the stream is active
-   ├── when the stream is non-cancelable
-   │  └── it should revert
-   └── when the stream is cancelable
-      ├── when the call is a delegate call
+├── when the call is a delegate call
+│  └── it should revert
+└── when the call is not a delegate call
+   ├── when the stream is not active
+   │  ├── when the stream is null
+   │  │  └── it should revert
+   │  ├── when the stream is canceled
+   │  │  └── it should revert
+   │  └── when the stream is depleted
+   │     └── it should revert
+   └── when the stream is active
+      ├── when the stream is non-cancelable
       │  └── it should revert
-      └── when the call is not a delegate call   
+      └── when the stream is cancelable
          ├── when the caller is unauthorized
          │  ├── when the caller is a malicious third-party
          │  │  └── it should revert
