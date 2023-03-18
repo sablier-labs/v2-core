@@ -1,12 +1,12 @@
 {
-  "[solidity]": {
-    "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
-  },
+  "solidity.packageDefaultDependenciesContractsDirectory": "src",
+  "solidity.packageDefaultDependenciesDirectory": "lib",
+  "solidity.compileUsingRemoteVersion": "v0.8.19",
+  "solidity.formatter": "forge",
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
   "files.associations": {
     ".gas-snapshot": "julia"
-  },
-  "solidity.formatter": "forge"
+  }
 }
