@@ -17,7 +17,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
         Linear_Fuzz_Test.setUp();
 
         // Load the stream id.
-        streamId = linear.nextStreamId();
+        streamId = linear.getNextStreamId();
     }
 
     modifier whenRecipientNonZeroAddress() {
@@ -242,7 +242,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
         assertEq(actualStream.status, defaultStream.status);
 
         // Assert that the next stream id has been bumped.
-        vars.actualNextStreamId = linear.nextStreamId();
+        vars.actualNextStreamId = linear.getNextStreamId();
         vars.expectedNextStreamId = streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "nextStreamId");
 

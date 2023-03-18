@@ -17,7 +17,7 @@ contract CreateWithMilestones_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
         super.setUp();
 
         // Load the stream id.
-        streamId = dynamic.nextStreamId();
+        streamId = dynamic.getNextStreamId();
     }
 
     modifier whenRecipientNonZeroAddress() {
@@ -343,7 +343,7 @@ contract CreateWithMilestones_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
         assertEq(actualStream.status, defaultStream.status);
 
         // Assert that the next stream id has been bumped.
-        vars.actualNextStreamId = dynamic.nextStreamId();
+        vars.actualNextStreamId = dynamic.getNextStreamId();
         vars.expectedNextStreamId = streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "nextStreamId");
 

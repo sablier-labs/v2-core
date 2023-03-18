@@ -70,6 +70,10 @@ interface ISablierV2Lockup is
     /// @param streamId The id of the lockup stream to make the query for.
     function getEndTime(uint256 streamId) external view returns (uint40 endTime);
 
+    /// @notice Counter for stream ids.
+    /// @return nextStreamId The next stream id.
+    function getNextStreamId() external view returns (uint256 nextStreamId);
+
     /// @notice Queries the recipient of the lockup stream.
     /// @param streamId The id of the lockup stream to make the query for.
     function getRecipient(uint256 streamId) external view returns (address recipient);
@@ -97,10 +101,6 @@ interface ISablierV2Lockup is
     ///
     /// @param streamId The id of the lockup stream to make the query for.
     function isCancelable(uint256 streamId) external view returns (bool result);
-
-    /// @notice Counter for stream ids.
-    /// @return The next stream id.
-    function nextStreamId() external view returns (uint256);
 
     /// @notice Calculates the amount that the sender would be paid if the lockup stream had been canceled, in units
     /// of the asset's decimals.

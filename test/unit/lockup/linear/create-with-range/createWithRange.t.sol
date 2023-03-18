@@ -17,7 +17,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
         Linear_Unit_Test.setUp();
 
         // Load the stream id.
-        streamId = linear.nextStreamId();
+        streamId = linear.getNextStreamId();
     }
 
     /// @dev it should revert.
@@ -249,7 +249,7 @@ contract CreateWithRange_Linear_Unit_Test is Linear_Unit_Test {
         assertEq(actualStream.status, defaultStream.status);
 
         // Assert that the next stream id has been bumped.
-        uint256 actualNextStreamId = linear.nextStreamId();
+        uint256 actualNextStreamId = linear.getNextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
 

@@ -49,6 +49,9 @@ contract SablierV2LockupLinear is
                                   INTERNAL STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @dev A counter for the next streams that will be minted.
+    uint256 private _nextId;
+
     /// @dev Sablier V2 lockup linear streams mapped by unsigned integers.
     mapping(uint256 id => LockupLinear.Stream stream) private _streams;
 
@@ -69,7 +72,9 @@ contract SablierV2LockupLinear is
         UD60x18 maxFee
     )
         SablierV2Lockup(initialAdmin, initialComptroller, initialNFTDescriptor, maxFee)
-    { }
+    {
+        _nextId = 1;
+    }
 
     /*//////////////////////////////////////////////////////////////////////////
                            USER-FACING CONSTANT FUNCTIONS
@@ -93,6 +98,11 @@ contract SablierV2LockupLinear is
     /// @inheritdoc ISablierV2Lockup
     function getEndTime(uint256 streamId) external view override returns (uint40 endTime) {
         endTime = _streams[streamId].endTime;
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function getNextStreamId() external view override returns (uint256 nextStreamId) {
+        nextStreamId = _nextId;
     }
 
     /// @inheritdoc ISablierV2LockupLinear
@@ -396,7 +406,7 @@ contract SablierV2LockupLinear is
         Helpers.checkCreateLinearParams(createAmounts.deposit, params.range);
 
         // Load the stream id.
-        streamId = nextStreamId;
+        streamId = _nextId;
 
         // Effects: create the stream.
         _streams[streamId] = LockupLinear.Stream({
@@ -413,7 +423,7 @@ contract SablierV2LockupLinear is
         // Effects: bump the next stream id and record the protocol fee.
         // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
         unchecked {
-            nextStreamId = streamId + 1;
+            _nextId = streamId + 1;
             protocolRevenues[params.asset] += createAmounts.protocolFee;
         }
 

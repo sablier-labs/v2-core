@@ -142,7 +142,7 @@ abstract contract Linear_Fork_Test is Fork_Test {
         vars.createAmounts.deposit = params.totalAmount - vars.createAmounts.protocolFee - vars.createAmounts.brokerFee;
 
         // Expect a {CreateLockupLinearStream} event to be emitted.
-        vars.streamId = linear.nextStreamId();
+        vars.streamId = linear.getNextStreamId();
         vm.expectEmit({ emitter: address(linear) });
         emit CreateLockupLinearStream({
             streamId: vars.streamId,
@@ -181,7 +181,7 @@ abstract contract Linear_Fork_Test is Fork_Test {
         assertEq(actualStream.status, Lockup.Status.ACTIVE);
 
         // Assert that the next stream id has been bumped.
-        vars.actualNextStreamId = linear.nextStreamId();
+        vars.actualNextStreamId = linear.getNextStreamId();
         vars.expectedNextStreamId = vars.streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "nextStreamId");
 

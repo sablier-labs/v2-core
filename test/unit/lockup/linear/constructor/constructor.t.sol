@@ -36,7 +36,7 @@ contract Constructor_Linear_Unit_Test is Linear_Unit_Test {
         assertEq(actualMaxFee, expectedMaxFee, "MAX_FEE");
 
         // {SablierV2Lockup-constructor}
-        uint256 actualStreamId = constructedLinear.nextStreamId();
+        uint256 actualStreamId = constructedLinear.getNextStreamId();
         uint256 expectedStreamId = 1;
         assertEq(actualStreamId, expectedStreamId, "nextStreamId");
     }

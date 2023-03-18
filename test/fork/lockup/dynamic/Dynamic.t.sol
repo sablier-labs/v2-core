@@ -145,7 +145,7 @@ abstract contract Dynamic_Fork_Test is Fork_Test {
         vars.initialBrokerBalance = vars.balances[1];
 
         // Expect a {CreateLockupDynamicStream} event to be emitted.
-        vars.streamId = dynamic.nextStreamId();
+        vars.streamId = dynamic.getNextStreamId();
         vm.expectEmit({ emitter: address(dynamic) });
         LockupDynamic.Range memory range =
             LockupDynamic.Range({ start: params.startTime, end: params.segments[params.segments.length - 1].milestone });
@@ -188,7 +188,7 @@ abstract contract Dynamic_Fork_Test is Fork_Test {
         assertEq(actualStream.status, Lockup.Status.ACTIVE);
 
         // Assert that the next stream id has been bumped.
-        vars.actualNextStreamId = dynamic.nextStreamId();
+        vars.actualNextStreamId = dynamic.getNextStreamId();
         vars.expectedNextStreamId = vars.streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "nextStreamId");
 

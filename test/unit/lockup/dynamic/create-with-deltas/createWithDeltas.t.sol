@@ -16,7 +16,7 @@ contract CreateWithDeltas_Dynamic_Unit_Test is Dynamic_Unit_Test {
         Dynamic_Unit_Test.setUp();
 
         // Load the stream id.
-        streamId = dynamic.nextStreamId();
+        streamId = dynamic.getNextStreamId();
     }
 
     /// @dev it should revert.
@@ -163,7 +163,7 @@ contract CreateWithDeltas_Dynamic_Unit_Test is Dynamic_Unit_Test {
         assertEq(actualStream, defaultStream);
 
         // Assert that the next stream id has been bumped.
-        uint256 actualNextStreamId = dynamic.nextStreamId();
+        uint256 actualNextStreamId = dynamic.getNextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
 

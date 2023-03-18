@@ -37,7 +37,7 @@ contract Constructor_Dynamic_Unit_Test is Dynamic_Unit_Test {
         assertEq(actualMaxFee, expectedMaxFee, "MAX_FEE");
 
         // {SablierV2Lockup-constructor}
-        uint256 actualStreamId = constructedDynamic.nextStreamId();
+        uint256 actualStreamId = constructedDynamic.getNextStreamId();
         uint256 expectedStreamId = 1;
         assertEq(actualStreamId, expectedStreamId, "nextStreamId");
 

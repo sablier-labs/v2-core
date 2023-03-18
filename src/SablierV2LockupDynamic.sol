@@ -61,6 +61,9 @@ contract SablierV2LockupDynamic is
                                   INTERNAL STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @dev A counter for the next streams that will be minted.
+    uint256 private _nextId;
+
     /// @dev Sablier V2 dynamic streams mapped by unsigned integers ids.
     mapping(uint256 id => LockupDynamic.Stream stream) private _streams;
 
@@ -84,6 +87,7 @@ contract SablierV2LockupDynamic is
     )
         SablierV2Lockup(initialAdmin, initialComptroller, initialNFTDescriptor, maxFee)
     {
+        _nextId = 1;
         MAX_SEGMENT_COUNT = maxSegmentCount;
     }
 
@@ -104,6 +108,11 @@ contract SablierV2LockupDynamic is
     /// @inheritdoc ISablierV2Lockup
     function getEndTime(uint256 streamId) external view override returns (uint40 endTime) {
         endTime = _streams[streamId].endTime;
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function getNextStreamId() external view override returns (uint256 nextStreamId) {
+        nextStreamId = _nextId;
     }
 
     /// @inheritdoc ISablierV2LockupDynamic
@@ -222,9 +231,9 @@ contract SablierV2LockupDynamic is
         }
     }
 
-    /// @inheritdoc ERC721
-    function tokenURI(uint256 streamId) public view override(IERC721Metadata, ERC721) returns (string memory uri) {
-        uri = _nftDescriptor.tokenURI(this, streamId);
+    /// @inheritdoc IERC721Metadata
+    function tokenURI(uint256 id) public view override(IERC721Metadata, ERC721) returns (string memory uri) {
+        uri = _nftDescriptor.tokenURI(this, id);
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -469,7 +478,7 @@ contract SablierV2LockupDynamic is
         Helpers.checkCreateDynamicParams(createAmounts.deposit, params.segments, MAX_SEGMENT_COUNT, params.startTime);
 
         // Load the stream id.
-        streamId = nextStreamId;
+        streamId = _nextId;
 
         // Load the segment count.
         uint256 segmentCount = params.segments.length;
@@ -495,7 +504,7 @@ contract SablierV2LockupDynamic is
 
             // Effects: bump the next stream id and record the protocol fee.
             // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
-            nextStreamId = streamId + 1;
+            _nextId = streamId + 1;
             protocolRevenues[params.asset] += createAmounts.protocolFee;
         }
 

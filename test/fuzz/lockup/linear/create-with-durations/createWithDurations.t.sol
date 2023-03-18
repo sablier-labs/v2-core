@@ -16,7 +16,7 @@ contract CreateWithDurations_Linear_Fuzz_Test is Linear_Fuzz_Test {
         Linear_Fuzz_Test.setUp();
 
         // Load the stream id.
-        streamId = linear.nextStreamId();
+        streamId = linear.getNextStreamId();
     }
 
     /// @dev it should revert due to the start time being greater than the cliff time.
@@ -138,7 +138,7 @@ contract CreateWithDurations_Linear_Fuzz_Test is Linear_Fuzz_Test {
         assertEq(actualStream.status, defaultStream.status);
 
         // Assert that the next stream id has been bumped.
-        uint256 actualNextStreamId = linear.nextStreamId();
+        uint256 actualNextStreamId = linear.getNextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
 

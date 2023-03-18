@@ -18,7 +18,7 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
 
     function setUp() public virtual override {
         super.setUp();
-        streamId = dynamic.nextStreamId();
+        streamId = dynamic.getNextStreamId();
     }
 
     /// @dev it should revert.
@@ -435,7 +435,7 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
         assertEq(actualStream.status, defaultStream.status);
 
         // Assert that the next stream id has been bumped.
-        uint256 actualNextStreamId = dynamic.nextStreamId();
+        uint256 actualNextStreamId = dynamic.getNextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
 
