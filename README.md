@@ -10,7 +10,7 @@
 This repository contains the core smart contracts of the Sablier V2 Protocol. For higher-level logic, see the
 [sablierhq/v2-periphery](https://github.com/sablierhq/v2-periphery) repository.
 
-In-depth documentation is available at [docs.sablier.com](https://docs.sablier.com).
+In-depth documentation is available at [sablier-v2-docs.vercel.app](https://sablier-v2-docs.vercel.app/).
 
 ## Background
 
