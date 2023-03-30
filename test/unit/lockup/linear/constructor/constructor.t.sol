@@ -10,7 +10,7 @@ import { Linear_Unit_Test } from "../Linear.t.sol";
 contract Constructor_Linear_Unit_Test is Linear_Unit_Test {
     /// @dev it should initialize all values correctly and emit a {TransferAdmin} event.
     function test_Constructor() external {
-        // Expect a {TransferEvent} to be emitted.
+        // Expect a {TransferAdmin} event to be emitted.
         vm.expectEmit();
         emit TransferAdmin({ oldAdmin: address(0), newAdmin: users.admin });
 

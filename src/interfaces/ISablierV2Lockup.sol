@@ -22,8 +22,8 @@ interface ISablierV2Lockup is
     /// @param streamId The id of the lockup stream.
     /// @param sender The address of the sender.
     /// @param recipient The address of the recipient.
-    /// @param senderAmount The amount of ERC-20 assets returned to the sender, in units of the asset's decimals.
-    /// @param recipientAmount The amount of ERC-20 assets withdrawn to the recipient, in units of the asset's
+    /// @param senderAmount The amount of the ERC-20 asset returned to the sender, in units of the asset's decimals.
+    /// @param recipientAmount The amount of the ERC-20 asset withdrawn to the recipient, in units of the asset's
     /// decimals.
     event CancelLockupStream(
         uint256 indexed streamId,
@@ -146,7 +146,7 @@ interface ISablierV2Lockup is
     /// - The call must not be a delegate call.
     /// - `streamId` must point to an active lockup stream.
     /// - The lockup stream must be cancelable.
-    /// - `msg.sender` must be either the sender or the recipient of the stream (a.k.a the owner of the NFT).
+    /// - `msg.sender` must be either the sender or the recipient of the stream.
     ///
     /// @param streamId The id of the lockup stream to cancel.
     function cancel(uint256 streamId) external;
@@ -202,12 +202,13 @@ interface ISablierV2Lockup is
     /// @dev Emits a {WithdrawFromLockupStream} and a {Transfer} event.
     ///
     /// Notes:
-    /// - This function will attempt to call a hook on the recipient of the stream, if the recipient is a contract.
+    /// - This function will attempt to call a hook on the recipient of the stream, if the recipient is a contract,
+    /// and if the function has been called by either the sender or an approved operator.
     ///
     /// Requirements:
     /// - The call must not be a delegate call.
     /// - `streamId` must point to an active lockup stream.
-    /// - `msg.sender` must be either the recipient of the stream (a.k.a the owner of the NFT) or an approved operator.
+    /// - `msg.sender` must be either the recipient of the stream or an approved operator.
     /// - `to` must be the recipient if `msg.sender` is the sender of the stream.
     /// - `amount` must not be zero and must not exceed the withdrawable amount.
     ///
@@ -236,7 +237,8 @@ interface ISablierV2Lockup is
     ///
     /// Notes:
     /// - Does not revert if one of the ids points to a lockup stream that is not active.
-    /// - This function will attempt to call a hook on the recipient of each stream.
+    /// - This function will attempt to call a hook on the recipient of each stream,
+    /// unless the recipient is the caller of the function.
     ///
     /// Requirements:
     /// - The call must not be a delegate call.
@@ -244,7 +246,7 @@ interface ISablierV2Lockup is
     /// - `msg.sender` must be either the recipient or an approved operator of each stream.
     /// - Every amount in `amounts` must not be zero and must not exceed the withdrawable amount.
     ///
-    /// @param streamIds The ids of the lockup streams to withdraw.
+    /// @param streamIds The ids of the lockup streams to withdraw from.
     /// @param to The address that receives the withdrawn assets.
     /// @param amounts The amounts to withdraw, in units of the asset's decimals.
     function withdrawMultiple(uint256[] calldata streamIds, address to, uint128[] calldata amounts) external;

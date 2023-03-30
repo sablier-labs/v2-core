@@ -23,7 +23,7 @@ abstract contract CancelMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_DelegateCall() external whenNoDelegateCall {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData = abi.encodeCall(ISablierV2Lockup.cancelMultiple, (defaultStreamIds));
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
@@ -34,7 +34,7 @@ abstract contract CancelMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should do nothing.
-    function test_RevertWhen_ArrayCountZero() external whenNoDelegateCall {
+    function test_DoNothingWhenWhen_ArrayCountZero() external whenNoDelegateCall {
         uint256[] memory streamIds = new uint256[](0);
         lockup.cancelMultiple(streamIds);
     }
@@ -44,7 +44,7 @@ abstract contract CancelMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should do nothing.
-    function test_RevertWhen_OnlyNullStreams() external whenNoDelegateCall whenArrayCountNotZero {
+    function test_DoNothingWhen_OnlyNullStreams() external whenNoDelegateCall whenArrayCountNotZero {
         uint256 nullStreamId = 1729;
         uint256[] memory streamIds = Solarray.uint256s(nullStreamId);
         lockup.cancelMultiple(streamIds);
@@ -65,7 +65,7 @@ abstract contract CancelMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should do nothing.
-    function test_RevertWhen_AllStreamsNonCancelable()
+    function test_DoNothingWhen_AllStreamsNonCancelable()
         external
         whenNoDelegateCall
         whenArrayCountNotZero
@@ -76,6 +76,10 @@ abstract contract CancelMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
 
         // Run the test.
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(nonCancelableStreamId) });
+
+        // Assert that the non-cancelable stream has not been canceled.
+        Lockup.Status status = lockup.getStatus(nonCancelableStreamId);
+        assertEq(status, Lockup.Status.ACTIVE, "status");
     }
 
     /// @dev it should ignore the non-cancelable streams and cancel the cancelable streams.
@@ -152,9 +156,8 @@ abstract contract CancelMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         whenOnlyNonNullStreams
         whenAllStreamsCancelable
     {
-        // Transfer the streams to Alice.
+        // Transfer the stream to Alice.
         lockup.transferFrom({ from: users.recipient, to: users.alice, tokenId: defaultStreamIds[0] });
-        lockup.transferFrom({ from: users.recipient, to: users.alice, tokenId: defaultStreamIds[1] });
 
         // Run the test.
         vm.expectRevert(
@@ -277,7 +280,7 @@ abstract contract CancelMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         // Expect some ERC-20 assets to be returned to the sender (only for the ongoing stream).
         uint128 senderAmount0 = DEFAULT_DEPOSIT_AMOUNT - recipientAmount0;
         expectTransferCall({ to: users.sender, amount: senderAmount0 });
-        uint128 senderAmount1 = DEFAULT_DEPOSIT_AMOUNT - recipientAmount1;
+        uint128 senderAmount1 = 0;
 
         // Expect two {CancelLockupStream} events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });

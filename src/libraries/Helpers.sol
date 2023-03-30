@@ -119,7 +119,8 @@ library Helpers {
         // It is safe to use unchecked arithmetic because {_createWithMilestone} will nonetheless check the soundness
         // of the calculated segment milestones.
         unchecked {
-            // Precompute the first segment because of the need to add the start time to the first segment delta.
+            // Precompute the first segment because of the need to access the "previous" milestone (which is inexistent
+            // for the first segment) when calculating the milestone for the current segment.
             segmentsWithMilestones[0] = LockupDynamic.Segment({
                 amount: segments[0].amount,
                 exponent: segments[0].exponent,
@@ -168,10 +169,8 @@ library Helpers {
         uint40 previousMilestone;
 
         // Iterate over the segments to sum up the segment amounts and check that the milestones are ordered.
-        uint256 index;
-        uint256 segmentCount = segments.length;
-        for (index = 0; index < segmentCount;) {
-            // Add the current segment amount to the sum. Note that this can overflow.
+        for (uint256 index = 0; index < segments.length;) {
+            // Add the current segment amount to the sum. Note that this can overflow (causing the tx to revert).
             segmentAmountsSum += segments[index].amount;
 
             // Check that the current milestone is strictly greater than the previous milestone.

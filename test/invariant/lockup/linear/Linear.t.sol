@@ -95,7 +95,7 @@ contract Linear_Invariant_Test is Lockup_Invariant_Test {
                 assertEq(actualStream.startTime, 0, "Invariant violated: stream null, start time not zero");
                 assertEq(actualRecipient, address(0), "Invariant violated: stream null, recipient not zero address");
             }
-            // If the stream is not null, it should contain a non-zero deposit amount.
+            // If the stream is not null, it should contain a non-zero deposit amount and end time.
             else {
                 assertNotEq(actualStream.amounts.deposit, 0, "Invariant violated: stream non-null, deposit amount zero");
                 assertNotEq(actualStream.endTime, 0, "Invariant violated: stream non-null, end time zero");
@@ -120,7 +120,7 @@ contract Linear_Invariant_Test is Lockup_Invariant_Test {
         for (uint256 i = 0; i < lastStreamId; ++i) {
             uint256 streamId = lockupHandlerStorage.streamIds(i);
             assertGt(
-                linear.getEndTime(streamId), linear.getCliffTime(streamId), "Invariant violated: end time < cliff time"
+                linear.getEndTime(streamId), linear.getCliffTime(streamId), "Invariant violated: end time <= cliff time"
             );
         }
     }

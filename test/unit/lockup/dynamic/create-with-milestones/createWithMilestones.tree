@@ -39,8 +39,6 @@ createWithMilestones.t.sol
                                  └── when the broker fee is not too high
                                     ├── when the asset is not a contract
                                     │  └── it should revert
-                                    ├── when the asset is not a contract
-                                    │  └── it should revert
                                     └── when the asset is a contract
                                        ├── when the asset misses the return value
                                        │  └── it should perform the ERC-20 transfers, create the stream, bump the next stream id, and mint the NFT

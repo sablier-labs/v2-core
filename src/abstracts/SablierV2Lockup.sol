@@ -46,7 +46,7 @@ abstract contract SablierV2Lockup is
                                       MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Checks that `streamId` points to an active stream.
+    /// @dev Checks whether `streamId` points to an active stream.
     modifier isActiveStream(uint256 streamId) {
         if (getStatus(streamId) != Lockup.Status.ACTIVE) {
             revert Errors.SablierV2Lockup_StreamNotActive(streamId);
@@ -54,8 +54,8 @@ abstract contract SablierV2Lockup is
         _;
     }
 
-    /// @notice Checks that `msg.sender` is the sender of the stream, the recipient of the stream (also known as
-    /// the owner of the NFT), or an approved operator.
+    /// @notice Checks whether `msg.sender` is the sender of the stream, the recipient of the stream
+    /// or an approved operator.
     modifier isAuthorizedForStream(uint256 streamId) {
         if (!_isCallerStreamSender(streamId) && !_isApprovedOrOwner(streamId, msg.sender)) {
             revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);
@@ -63,11 +63,10 @@ abstract contract SablierV2Lockup is
         _;
     }
 
-    /// @notice Checks that `msg.sender` is either the sender of the stream or the recipient of the stream (also
-    /// known
-    /// as the owner of the NFT).
+    /// @notice Checks whether `msg.sender` is either the sender or the recipient of the stream (also
+    /// known as the owner of the NFT).
     modifier onlySenderOrRecipient(uint256 streamId) {
-        if (!_isCallerStreamSender(streamId) && msg.sender != getRecipient(streamId)) {
+        if (!_isCallerStreamSender(streamId) && !_isCallerStreamRecipient(streamId)) {
             revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);
         }
         _;
@@ -151,7 +150,7 @@ abstract contract SablierV2Lockup is
             revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);
         }
 
-        // Checks: the stream is not already non-cancelable.
+        // Checks: the stream is already non-cancelable.
         if (!isCancelable(streamId)) {
             revert Errors.SablierV2Lockup_RenounceNonCancelableStream(streamId);
         }
@@ -186,7 +185,7 @@ abstract contract SablierV2Lockup is
         isActiveStream(streamId)
         isAuthorizedForStream(streamId)
     {
-        // Checks: if `msg.sender` is the sender of the stream, the provided address is the recipient.
+        // Checks: if `msg.sender` is the sender of the stream, `to` must be the recipient.
         if (_isCallerStreamSender(streamId) && to != getRecipient(streamId)) {
             revert Errors.SablierV2Lockup_WithdrawSenderUnauthorized(streamId, msg.sender, to);
         }
@@ -234,8 +233,7 @@ abstract contract SablierV2Lockup is
 
             // If the `streamId` does not point to an active stream, simply skip it.
             if (getStatus(streamId) == Lockup.Status.ACTIVE) {
-                // Checks: `msg.sender` is an approved operator or the owner of the NFT (also known as the recipient
-                // of the stream).
+                // Checks: `msg.sender` is an approved operator or the owner of the NFT.
                 if (!_isApprovedOrOwner(streamId, msg.sender)) {
                     revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);
                 }
@@ -288,4 +286,12 @@ abstract contract SablierV2Lockup is
 
     /// @dev See the documentation for the public functions that call this internal function.
     function _withdraw(uint256 streamId, address to, uint128 amount) internal virtual;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                           PRIVATE NON-CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function _isCallerStreamRecipient(uint256 streamId) private view returns (bool result) {
+        result = msg.sender == getRecipient(streamId);
+    }
 }

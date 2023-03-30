@@ -97,30 +97,30 @@ abstract contract Linear_Fork_Test is Fork_Test {
     ///
     /// The fuzzing ensures that all of the following scenarios are tested:
     ///
-    /// - Multiple values for the the sender, recipient, and broker.
+    /// - Multiple values for the the sender, recipient and broker.
     /// - Multiple values for the total amount.
+    /// - Multiple values for the start time, cliff time and the end time
     /// - Start time in the past, present and future.
     /// - Start time lower than and equal to cliff time.
-    /// - Multiple values for the cliff time and the stop time.
     /// - Multiple values for the broker fee, including zero.
     /// - Multiple values for the protocol fee, including zero.
     /// - Multiple values for the withdraw amount, including zero.
     function testForkFuzz_Linear_CreateWithdrawCancel(Params memory params) external {
         checkUsers(params.sender, params.recipient, params.broker.account, address(linear));
         params.broker.fee = bound(params.broker.fee, 0, MAX_FEE);
+        params.protocolFee = bound(params.protocolFee, 0, MAX_FEE);
         params.range.start = boundUint40(
             params.range.start, uint40(block.timestamp - 1000 seconds), uint40(block.timestamp + 10_000 seconds)
         );
         params.range.cliff = boundUint40(params.range.cliff, params.range.start, params.range.start + 52 weeks);
         params.range.end = boundUint40(params.range.end, params.range.cliff + 1, MAX_UNIX_TIMESTAMP);
-        params.protocolFee = bound(params.protocolFee, 0, MAX_FEE);
         params.totalAmount = boundUint128(params.totalAmount, 1, uint128(initialHolderBalance));
 
         // Set the fuzzed protocol fee.
         changePrank({ msgSender: users.admin });
         comptroller.setProtocolFee({ asset: asset, newProtocolFee: params.protocolFee });
 
-        // Make the holder the caller in the rest of the test.
+        // Make the holder the caller.
         changePrank(holder);
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -183,17 +183,17 @@ abstract contract Linear_Fork_Test is Fork_Test {
         // Assert that the next stream id has been bumped.
         vars.actualNextStreamId = linear.nextStreamId();
         vars.expectedNextStreamId = vars.streamId + 1;
-        assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "nextStreamId");
+        assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "post-create nextStreamId");
 
         // Assert that the protocol fee has been recorded.
         vars.actualProtocolRevenues = linear.protocolRevenues(asset);
         vars.expectedProtocolRevenues = vars.initialProtocolRevenues + vars.createAmounts.protocolFee;
-        assertEq(vars.actualProtocolRevenues, vars.expectedProtocolRevenues, "protocolRevenues");
+        assertEq(vars.actualProtocolRevenues, vars.expectedProtocolRevenues, "post-create protocolRevenues");
 
         // Assert that the NFT has been minted.
         vars.actualNFTOwner = linear.ownerOf({ tokenId: vars.streamId });
         vars.expectedNFTOwner = params.recipient;
-        assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "NFT owner after create");
+        assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "post-create NFT owner");
 
         // Load the post-create asset balances.
         vars.balances =
@@ -250,7 +250,7 @@ abstract contract Linear_Fork_Test is Fork_Test {
             // Assert that the withdrawn amount has been updated.
             vars.actualWithdrawnAmount = linear.getWithdrawnAmount(vars.streamId);
             vars.expectedWithdrawnAmount = params.withdrawAmount;
-            assertEq(vars.actualWithdrawnAmount, vars.expectedWithdrawnAmount, "withdrawnAmount");
+            assertEq(vars.actualWithdrawnAmount, vars.expectedWithdrawnAmount, "post-withdraw withdrawnAmount");
 
             // Load the post-withdraw asset balances.
             vars.balances = getTokenBalances(address(asset), Solarray.addresses(address(linear), params.recipient));
@@ -298,12 +298,7 @@ abstract contract Linear_Fork_Test is Fork_Test {
             // Assert that the stream has been marked as canceled.
             vars.actualStatus = linear.getStatus(vars.streamId);
             vars.expectedStatus = Lockup.Status.CANCELED;
-            assertEq(vars.actualStatus, vars.expectedStatus, "status after cancel");
-
-            // Assert that the NFT has not been burned.
-            vars.actualNFTOwner = linear.ownerOf({ tokenId: vars.streamId });
-            vars.expectedNFTOwner = params.recipient;
-            assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "NFT owner after cancel");
+            assertEq(vars.actualStatus, vars.expectedStatus, "post-cancel Stream status");
 
             // Load the post-cancel asset balances.
             vars.balances =
@@ -321,7 +316,7 @@ abstract contract Linear_Fork_Test is Fork_Test {
                 "post-cancel linear contract balance"
             );
 
-            // Assert that the recipient's balance has been updated.
+            // Assert that the sender's balance has been updated.
             vars.expectedSenderBalance = vars.initialSenderBalance + uint256(vars.senderAmount);
             assertEq(vars.actualSenderBalance, vars.expectedSenderBalance, "post-cancel sender balance");
 
@@ -333,7 +328,12 @@ abstract contract Linear_Fork_Test is Fork_Test {
         else {
             vars.actualStatus = linear.getStatus(vars.streamId);
             vars.expectedStatus = Lockup.Status.DEPLETED;
-            assertEq(vars.actualStatus, vars.expectedStatus, "status after full withdraw");
+            assertEq(vars.actualStatus, vars.expectedStatus, "post-depletion Stream status");
         }
+
+        // Assert that the NFT has not been burned.
+        vars.actualNFTOwner = linear.ownerOf({ tokenId: vars.streamId });
+        vars.expectedNFTOwner = params.recipient;
+        assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "post-cancel NFT owner");
     }
 }

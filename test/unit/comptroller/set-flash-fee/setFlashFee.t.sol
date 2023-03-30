@@ -23,12 +23,17 @@ contract SetFlashFee_Unit_Test is Comptroller_Unit_Test {
         _;
     }
 
-    /// @dev it should re-set the flash fee.
+    /// @dev it should re-set the flash fee and emit a {SetFlashFee} event.
     function test_SetFlashFee_SameFee() external whenCallerAdmin {
-        comptroller.setFlashFee({ newFlashFee: ZERO });
+        UD60x18 oldFlashFee = comptroller.flashFee();
+
+        // Expect a {SetFlashFee} event to be emitted.
+        vm.expectEmit({ emitter: address(comptroller) });
+        emit SetFlashFee({ admin: users.admin, oldFlashFee: oldFlashFee, newFlashFee: oldFlashFee });
+        comptroller.setFlashFee({ newFlashFee: oldFlashFee });
 
         UD60x18 actualFlashFee = comptroller.flashFee();
-        UD60x18 expectedFlashFee = ZERO;
+        UD60x18 expectedFlashFee = oldFlashFee;
         assertEq(actualFlashFee, expectedFlashFee, "flashFee");
     }
 

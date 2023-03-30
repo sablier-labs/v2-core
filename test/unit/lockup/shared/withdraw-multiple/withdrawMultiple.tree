@@ -39,7 +39,7 @@ withdrawMultiple.t.sol
                         │  └── it should make the withdrawals and update the withdrawn amounts
                         └── when the caller is the recipient
                            ├── when all streams are ended
-                           │  └── it should make the withdrawals, emit multiple {WithdrawFromLockupStream} events, and mark the streams as depleted
+                           │  └── it should make the withdrawals, emit multiple {WithdrawFromLockupStream} events, update the withdrawn amounts and mark the streams as depleted.
                            ├── when all streams are ongoing
                            │  └── it should make the withdrawals, emit multiple {WithdrawFromLockupStream} events, and update the withdrawn amounts
                            └── when some streams are ended and some streams are ongoing

@@ -10,7 +10,7 @@ import { BaseHandler } from "./BaseHandler.t.sol";
 import { LockupHandlerStorage } from "./LockupHandlerStorage.t.sol";
 
 /// @title LockupHandler
-/// @dev Common handler logic between {SablierV2LockupLinear} and {SablierV2LockupDynamic}.
+/// @dev Common handler logic between {LockupLinearHandler} and {LockupDynamicHandler}.
 abstract contract LockupHandler is BaseHandler {
     /*//////////////////////////////////////////////////////////////////////////
                                    TEST CONTRACTS
@@ -54,6 +54,7 @@ abstract contract LockupHandler is BaseHandler {
         if (lastStreamId == 0) {
             return;
         }
+
         currentStreamId = store.streamIds(bound(streamIndexSeed, 0, lastStreamId - 1));
         currentRecipient = store.recipients(currentStreamId);
         vm.startPrank(currentRecipient);
@@ -66,6 +67,7 @@ abstract contract LockupHandler is BaseHandler {
         if (lastStreamId == 0) {
             return;
         }
+
         currentStreamId = store.streamIds(bound(streamIndexSeed, 0, lastStreamId - 1));
         currentSender = store.senders(currentStreamId);
         vm.startPrank(currentSender);
@@ -154,16 +156,16 @@ abstract contract LockupHandler is BaseHandler {
             return;
         }
 
-        // Bound the withdraw amount so that it is not zero.
-        withdrawAmount = boundUint128(withdrawAmount, 1, withdrawableAmount);
-
         // Non-active streams cannot be withdrawn from.
         Lockup.Status status = lockup.getStatus(currentStreamId);
         if (status != Lockup.Status.ACTIVE) {
             return;
         }
 
-        // Renounce the stream (make it non-cancelable).
+        // Bound the withdraw amount so that it is not zero.
+        withdrawAmount = boundUint128(withdrawAmount, 1, withdrawableAmount);
+
+        // Withdraw from the stream.
         lockup.withdraw({ streamId: currentStreamId, to: to, amount: withdrawAmount });
     }
 
@@ -192,7 +194,7 @@ abstract contract LockupHandler is BaseHandler {
             return;
         }
 
-        // Renounce the stream (make it non-cancelable).
+        // Withdraw the maximum amount from the stream.
         lockup.withdrawMax({ streamId: currentStreamId, to: to });
     }
 

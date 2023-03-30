@@ -160,11 +160,10 @@ library LockupDynamic {
 /// @notice Quasi-namespace for the structs used in {SablierV2LockupLinear}.
 library LockupLinear {
     /// @notice Struct that encapsulates the parameters of the {SablierV2LockupLinear-createWithDurations} function.
-    /// @param sender The address from which to stream the assets, which will have the ability to
-    /// cancel the stream. It doesn't have to be the same as `msg.sender`.
+    /// @param sender The address from which to stream the assets. Doesn't have to be the same as `msg.sender`.
     /// @param recipient The address toward which to stream the assets.
-    /// @param totalAmount The total amount of ERC-20 assets to be paid, which includes the stream deposit and any
-    /// potential fees. This is represented in units of the asset's decimals.
+    /// @param totalAmount The total amount of the ERC-20 asset to be streamed, which includes the stream deposit and
+    /// any potential fees. This is represented in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset to use for streaming.
     /// @param cancelable Boolean that indicates whether the stream will be cancelable or not.
     /// @param durations Struct that encapsulates (i) the duration of the cliff period and (ii) the total duration of
@@ -182,11 +181,10 @@ library LockupLinear {
     }
 
     /// @notice Struct that encapsulates the parameters of the {SablierV2LockupLinear-createWithRange} function.
-    /// @param sender The address from which to stream the assets, which will have the ability to cancel the stream.
-    /// It doesn't have to be the same as `msg.sender`.
+    /// @param sender The address from which to stream the assets. Doesn't have to be the same as `msg.sender`.
     /// @param recipient The address toward which to stream the assets.
-    /// @param totalAmount The total amount of ERC-20 assets to be paid, which includes the stream deposit and any
-    /// potential fees. This is represented in units of the asset's decimals.
+    /// @param totalAmount The total amount of the ERC-20 asset to be streamed, which includes the stream deposit and
+    /// any potential fees. This is represented in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset to use for streaming.
     /// @param cancelable Boolean that indicates whether the stream will be cancelable or not.
     /// @param range Struct that encapsulates (i) the start time of the stream, (ii) the cliff time of the stream,

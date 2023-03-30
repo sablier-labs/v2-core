@@ -158,6 +158,7 @@ contract SablierV2LockupLinear is
         if (_streams[streamId].status != Lockup.Status.ACTIVE) {
             return false;
         }
+
         result = _streams[streamId].isCancelable;
     }
 
@@ -187,8 +188,8 @@ contract SablierV2LockupLinear is
         override(ISablierV2Lockup, ISablierV2LockupLinear)
         returns (uint128 streamedAmount)
     {
-        // When the stream is null, return zero. When the stream is canceled or depleted, return the withdrawn
-        // amount.
+        //If the status of the stream is not Lockup.Status.ACTIVE, return the amount withdrawn so far
+        //(which is 0 for a stream with status Lockup.Status.NULL)
         if (_streams[streamId].status != Lockup.Status.ACTIVE) {
             return _streams[streamId].amounts.withdrawn;
         }
@@ -262,7 +263,7 @@ contract SablierV2LockupLinear is
         range.start = uint40(block.timestamp);
 
         // Calculate the cliff time and the end time. It is safe to use unchecked arithmetic because
-        // {_createWithRange} will nonetheless check that the end time is greater than or equal to the cliff time,
+        // {_createWithRange} will nonetheless check that the end time is greater than the cliff time,
         // and also that the cliff time is greater than or equal to the start time.
         unchecked {
             range.cliff = range.start + params.durations.cliff;
@@ -284,7 +285,7 @@ contract SablierV2LockupLinear is
 
     /// @inheritdoc ISablierV2LockupLinear
     function createWithRange(LockupLinear.CreateWithRange calldata params)
-        public
+        external
         override
         noDelegateCall
         returns (uint256 streamId)
@@ -329,7 +330,7 @@ contract SablierV2LockupLinear is
     function _cancel(uint256 streamId) internal override onlySenderOrRecipient(streamId) {
         LockupLinear.Stream memory stream = _streams[streamId];
 
-        // Calculate the sender's and the recipient's amount.
+        // Calculate the amounts for sender and recipient.
         uint128 senderAmount;
         uint128 recipientAmount = withdrawableAmountOf(streamId);
         unchecked {
@@ -419,7 +420,7 @@ contract SablierV2LockupLinear is
         // Effects: bump the next stream id and record the protocol fee.
         // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
         unchecked {
-            _nextStreamId = streamId + 1;
+            _nextStreamId += 1;
             protocolRevenues[params.asset] += createAmounts.protocolFee;
         }
 
@@ -441,7 +442,7 @@ contract SablierV2LockupLinear is
             params.asset.safeTransferFrom({ from: msg.sender, to: params.broker.account, value: createAmounts.brokerFee });
         }
 
-        // Log the newly created stream, and the address that funded it.
+        // Log the newly-created stream.
         emit ISablierV2LockupLinear.CreateLockupLinearStream({
             streamId: streamId,
             funder: msg.sender,

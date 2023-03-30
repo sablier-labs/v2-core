@@ -23,7 +23,7 @@ contract LockupHandlerStorage {
     }
 
     function pushStreamId(uint256 streamId, address sender, address recipient) external {
-        // Store the stream id in the ids array and the reverse mappings.
+        // Store the stream id in the array and the sender and recipient - in the mappings.
         streamIds.push(streamId);
         senders[streamId] = sender;
         recipients[streamId] = recipient;

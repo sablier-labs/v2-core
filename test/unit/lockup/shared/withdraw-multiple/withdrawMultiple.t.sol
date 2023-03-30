@@ -61,12 +61,17 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         lockup.withdrawMultiple({ streamIds: streamIds, to: users.recipient, amounts: amounts });
     }
 
-    modifier whenArrayCountsNotEqual() {
+    modifier whenArrayCountsEqual() {
         _;
     }
 
     /// @dev it should do nothing.
-    function test_RevertWhen_ArrayCountsZero() external whenNoDelegateCall whenToNonZeroAddress {
+    function test_DoNothingWhen_ArrayCountsZero()
+        external
+        whenNoDelegateCall
+        whenToNonZeroAddress
+        whenArrayCountsEqual
+    {
         uint256[] memory streamIds = new uint256[](0);
         uint128[] memory amounts = new uint128[](0);
         lockup.withdrawMultiple({ streamIds: streamIds, to: users.recipient, amounts: amounts });
@@ -77,11 +82,11 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should do nothing.
-    function test_RevertWhen_OnlyNullStreams()
+    function test_DoNothingWhen_OnlyNullStreams()
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
     {
         uint256 nullStreamId = 1729;
@@ -95,7 +100,7 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
     {
         uint256 nullStreamId = 1729;
@@ -120,7 +125,7 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
     {
@@ -139,7 +144,7 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
     {
@@ -158,7 +163,7 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
     {
@@ -178,7 +183,7 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
     {
@@ -204,7 +209,7 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
     {
@@ -225,15 +230,72 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
+    /// @dev it should revert.
+    function test_RevertWhen_SomeAmountsZero()
+        external
+        whenNoDelegateCall
+        whenToNonZeroAddress
+        whenArrayCountsEqual
+        whenArrayCountsNotZero
+        whenOnlyNonNullStreams
+        whenCallerAuthorizedAllStreams
+    {
+        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
+        vm.warp({ timestamp: DEFAULT_START_TIME + DEFAULT_TIME_WARP });
+
+        // Run the test.
+        uint128[] memory amounts = Solarray.uint128s(DEFAULT_WITHDRAW_AMOUNT, 0);
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_WithdrawAmountZero.selector, defaultStreamIds[1]));
+        lockup.withdrawMultiple({ streamIds: defaultStreamIds, to: users.recipient, amounts: amounts });
+    }
+
+    modifier whenAllAmountsNotZero() {
+        _;
+    }
+
+    /// @dev it should revert.
+    function test_RevertWhen_SomeAmountsGreaterThanWithdrawableAmount()
+        external
+        whenNoDelegateCall
+        whenToNonZeroAddress
+        whenArrayCountsEqual
+        whenArrayCountsNotZero
+        whenOnlyNonNullStreams
+        whenCallerAuthorizedAllStreams
+        whenAllAmountsNotZero
+    {
+        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
+        vm.warp({ timestamp: DEFAULT_START_TIME + DEFAULT_TIME_WARP });
+
+        // Run the test.
+        uint128 withdrawableAmount = lockup.withdrawableAmountOf(defaultStreamIds[1]);
+        uint128[] memory amounts = Solarray.uint128s(withdrawableAmount, UINT128_MAX);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierV2Lockup_WithdrawAmountGreaterThanWithdrawableAmount.selector,
+                defaultStreamIds[1],
+                UINT128_MAX,
+                withdrawableAmount
+            )
+        );
+        lockup.withdrawMultiple({ streamIds: defaultStreamIds, to: users.recipient, amounts: amounts });
+    }
+
+    modifier whenAllAmountsLessThanOrEqualToWithdrawableAmounts() {
+        _;
+    }
+
     /// @dev it should make the withdrawals and update the withdrawn amounts.
     function test_WithdrawMultiple_CallerApprovedOperator()
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
         whenCallerAuthorizedAllStreams
+        whenAllAmountsNotZero
+        whenAllAmountsLessThanOrEqualToWithdrawableAmounts
     {
         // Approve the operator for all streams.
         lockup.setApprovalForAll(users.operator, true);
@@ -264,76 +326,19 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    /// @dev it should revert.
-    function test_RevertWhen_SomeAmountsZero()
-        external
-        whenNoDelegateCall
-        whenToNonZeroAddress
-        whenArrayCountsNotEqual
-        whenArrayCountsNotZero
-        whenOnlyNonNullStreams
-        whenCallerAuthorizedAllStreams
-        whenCallerRecipient
-    {
-        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
-        vm.warp({ timestamp: DEFAULT_START_TIME + DEFAULT_TIME_WARP });
-
-        // Run the test.
-        uint128[] memory amounts = Solarray.uint128s(DEFAULT_WITHDRAW_AMOUNT, 0);
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_WithdrawAmountZero.selector, defaultStreamIds[1]));
-        lockup.withdrawMultiple({ streamIds: defaultStreamIds, to: users.recipient, amounts: amounts });
-    }
-
-    modifier whenAllAmountsNotZero() {
-        _;
-    }
-
-    /// @dev it should revert.
-    function test_RevertWhen_SomeAmountsGreaterThanWithdrawableAmount()
-        external
-        whenNoDelegateCall
-        whenToNonZeroAddress
-        whenArrayCountsNotEqual
-        whenArrayCountsNotZero
-        whenOnlyNonNullStreams
-        whenCallerAuthorizedAllStreams
-        whenCallerRecipient
-        whenAllAmountsNotZero
-    {
-        // Warp to 2,600 seconds after the start time (26% of the default stream duration).
-        vm.warp({ timestamp: DEFAULT_START_TIME + DEFAULT_TIME_WARP });
-
-        // Run the test.
-        uint128 withdrawableAmount = lockup.withdrawableAmountOf(defaultStreamIds[1]);
-        uint128[] memory amounts = Solarray.uint128s(withdrawableAmount, UINT128_MAX);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.SablierV2Lockup_WithdrawAmountGreaterThanWithdrawableAmount.selector,
-                defaultStreamIds[1],
-                UINT128_MAX,
-                withdrawableAmount
-            )
-        );
-        lockup.withdrawMultiple({ streamIds: defaultStreamIds, to: users.recipient, amounts: amounts });
-    }
-
-    modifier whenAllAmountsLessThanOrEqualToWithdrawableAmounts() {
-        _;
-    }
-
-    /// @dev it should make the withdrawals, emit multiple {WithdrawFromLockupStream} events, and mark the streams as
-    /// depleted.
+    /// @dev it should make the withdrawals, emit multiple {WithdrawFromLockupStream} events, update the withdrawn
+    /// amounts and mark the streams as depleted.
     function test_WithdrawMultiple_AllStreamsEnded()
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
         whenCallerAuthorizedAllStreams
-        whenCallerRecipient
         whenAllAmountsNotZero
         whenAllAmountsLessThanOrEqualToWithdrawableAmounts
+        whenCallerRecipient
     {
         // Warp into the future, past the end time.
         vm.warp({ timestamp: DEFAULT_END_TIME });
@@ -378,13 +383,12 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should make the withdrawals, emit multiple {WithdrawFromLockupStream} events, and update the
-    /// withdrawn
-    /// amounts.
+    /// withdrawn amounts.
     function test_WithdrawMultiple_AllStreamsOngoing()
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
         whenCallerAuthorizedAllStreams
@@ -452,13 +456,12 @@ abstract contract WithdrawMultiple_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should make the withdrawals, emit multiple {WithdrawFromLockupStream} events, mark the ended streams
-    /// as
-    /// depleted, and update the withdrawn amounts.
+    /// as depleted, and update the withdrawn amounts.
     function test_WithdrawMultiple_SomeStreamsEndedSomeStreamsOngoing()
         external
         whenNoDelegateCall
         whenToNonZeroAddress
-        whenArrayCountsNotEqual
+        whenArrayCountsEqual
         whenArrayCountsNotZero
         whenOnlyNonNullStreams
         whenCallerAuthorizedAllStreams

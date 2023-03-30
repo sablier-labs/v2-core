@@ -16,12 +16,12 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @notice Emitted when a lockup dynamic stream is created.
     /// @param streamId The id of the newly created lockup stream.
     /// @param funder The address which has funded the stream.
-    /// @param sender The address from which to stream the assets, who will have the ability to cancel the stream.
+    /// @param sender The address from which to stream the assets.
     /// @param recipient The address toward which to stream the assets.
     /// @param amounts Struct that encapsulates (i) the deposit amount, (ii) the protocol fee amount, and (iii) the
     /// broker fee amount, each in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
-    /// @param cancelable Boolean that indicates whether the stream will be cancelable or not.
+    /// @param cancelable Boolean that indicates whether the stream is cancelable or not.
     /// @param segments The segments the protocol uses to compose the custom streaming curve.
     /// @param range Struct that encapsulates (i) the start time of the stream, and (ii) the end time of the stream,
     /// both as Unix timestamps.
@@ -47,8 +47,8 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @dev This is initialized at construction time and cannot be changed later.
     function MAX_SEGMENT_COUNT() external view returns (uint256);
 
-    /// @notice Queries the range of the lockup dynamic stream, a struct that encapsulates (i) the start time of the
-    /// stream, and (ii) the end time of of the stream, both as Unix timestamps.
+    /// @notice Queries the range of the lockup dynamic stream, a struct that encapsulates (i) the start time
+    /// and (ii) the end time of the stream, both as Unix timestamps.
     /// @param streamId The id of the lockup dynamic stream to make the query for.
     function getRange(uint256 streamId) external view returns (LockupDynamic.Range memory range);
 

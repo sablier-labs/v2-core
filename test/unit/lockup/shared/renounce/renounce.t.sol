@@ -17,7 +17,7 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_DelegateCall() external whenStreamActive {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData = abi.encodeCall(ISablierV2Lockup.renounce, defaultStreamId);
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
@@ -106,7 +106,8 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    /// @dev it should renounce the stream, call the recipient hook, and ignore the revert.
+    /// @dev it should renounce the stream, call the recipient hook, emit a {RenounceLockupStream} event
+    /// and ignore the revert.
     function test_Renounce_RecipientDoesNotImplementHook()
         external
         whenNoDelegateCall
@@ -121,6 +122,10 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
         // Expect a call to the recipient hook.
         vm.expectCall(address(empty), abi.encodeCall(ISablierV2LockupRecipient.onStreamRenounced, (streamId)));
 
+        // Expect a {RenounceLockupStream} event to be emitted.
+        vm.expectEmit({ emitter: address(lockup) });
+        emit RenounceLockupStream(streamId);
+
         // Renounce the stream.
         lockup.renounce(streamId);
 
@@ -133,7 +138,8 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    /// @dev it should renounce the stream, call the recipient hook, and ignore the revert.
+    /// @dev it should renounce the stream, call the recipient hook, emit a {RenounceLockupStream} event
+    /// and ignore the revert.
     function test_Renounce_RecipientReverts()
         external
         whenNoDelegateCall
@@ -151,6 +157,10 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
             address(revertingRecipient), abi.encodeCall(ISablierV2LockupRecipient.onStreamRenounced, (streamId))
         );
 
+        // Expect a {RenounceLockupStream} event to be emitted.
+        vm.expectEmit({ emitter: address(lockup) });
+        emit RenounceLockupStream(streamId);
+
         // Renounce the stream.
         lockup.renounce(streamId);
 
@@ -163,7 +173,8 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    /// @dev it should renounce the stream, call the recipient hook, and ignore the revert.
+    /// @dev it should renounce the stream, call the recipient hook, emit a {RenounceLockupStream} event
+    /// and ignore the revert.
     function test_Renounce_RecipientReentrancy()
         external
         whenNoDelegateCall
@@ -182,6 +193,10 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
             address(reentrantRecipient), abi.encodeCall(ISablierV2LockupRecipient.onStreamRenounced, (streamId))
         );
 
+        // Expect a {RenounceLockupStream} event to be emitted.
+        vm.expectEmit({ emitter: address(lockup) });
+        emit RenounceLockupStream(streamId);
+
         // Renounce the stream.
         lockup.renounce(streamId);
 
@@ -194,7 +209,7 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    /// @dev it should call the recipient hook, renounce the stream, and emit a {RenounceLockupStream} event.
+    /// @dev it should call the recipient hook, renounce the stream and emit a {RenounceLockupStream} event.
     function test_Renounce()
         external
         whenNoDelegateCall
@@ -216,10 +231,10 @@ abstract contract Renounce_Unit_Test is Unit_Test, Lockup_Shared_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit RenounceLockupStream(streamId);
 
-        // RenounceLockupStream the stream.
+        // Renounce the stream.
         lockup.renounce(streamId);
 
-        // Assert that the stream is non-cancelable now.
+        // Assert that the stream is non-cancelable.
         bool isCancelable = lockup.isCancelable(streamId);
         assertFalse(isCancelable, "isCancelable");
     }

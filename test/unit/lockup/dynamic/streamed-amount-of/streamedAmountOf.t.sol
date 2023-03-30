@@ -27,8 +27,9 @@ contract StreamedAmountOf_Dynamic_Unit_Test is Dynamic_Unit_Test {
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    /// @dev it should return zero.
+    /// @dev it should return the withdrawn amount.
     function test_StreamedAmountOf_StreamCanceled() external whenStreamNotActive {
+        vm.warp({ timestamp: DEFAULT_END_TIME });
         lockup.cancel(defaultStreamId);
         uint256 actualStreamedAmount = dynamic.streamedAmountOf(defaultStreamId);
         uint256 expectedStreamedAmount = dynamic.getWithdrawnAmount(defaultStreamId);

@@ -23,7 +23,7 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_DelegateCall() external whenNoDelegateCall whenStreamActive {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData = abi.encodeCall(ISablierV2Lockup.cancel, defaultStreamId);
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
@@ -83,7 +83,6 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         whenNoDelegateCall
         whenStreamActive
         whenStreamCancelable
-        whenNoDelegateCall
     {
         // Make the unauthorized user the caller in this test.
         changePrank({ msgSender: users.eve });
@@ -101,7 +100,6 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         whenNoDelegateCall
         whenStreamActive
         whenStreamCancelable
-        whenNoDelegateCall
     {
         // Approve Alice for the stream.
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });
@@ -149,7 +147,6 @@ abstract contract Cancel_Unit_Test is Unit_Test, Lockup_Shared_Test {
         whenNoDelegateCall
         whenStreamActive
         whenStreamCancelable
-        whenNoDelegateCall
         whenCallerAuthorized
         whenCallerSender
     {

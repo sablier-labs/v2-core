@@ -94,7 +94,7 @@ abstract contract SablierV2FlashLoan is
     ///
     /// Requirements:
     /// - The call must not be a delegate call.
-    /// - All from {flashFee}.
+    /// - All the requirements from {flashFee}.
     /// - `amount` must be less than 2^128.
     /// - `fee` must be less than 2^128.
     /// - `amount` must not exceed the liquidity available for `asset`.
@@ -132,11 +132,11 @@ abstract contract SablierV2FlashLoan is
         }
 
         // Checks: the amount flash loaned is not greater than the current asset balance of the contract.
-        uint256 initialBalance = IERC20(asset).balanceOf(address(this));
-        if (amount > initialBalance) {
+        uint256 balance = IERC20(asset).balanceOf(address(this));
+        if (amount > balance) {
             revert Errors.SablierV2FlashLoan_InsufficientAssetLiquidity({
                 asset: IERC20(asset),
-                amountAvailable: initialBalance,
+                amountAvailable: balance,
                 amountRequested: amount
             });
         }

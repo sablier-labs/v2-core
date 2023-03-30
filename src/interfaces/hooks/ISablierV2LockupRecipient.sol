@@ -2,9 +2,9 @@
 pragma solidity >=0.8.13;
 
 /// @title ISablierV2LockupRecipient
-/// @notice Interface for recipient contracts that can react to cancellations and withdrawals.
-/// @dev Implementing this interface is entirely optional. If the recipient contract does not implement this
-/// interface,
+/// @notice Interface for recipient contracts that can react to Stream cancellations, withdrawals and
+/// renouncements made by the sender.
+/// @dev Implementing this interface is entirely optional. If the recipient contract does not implement it,
 /// the function execution will not revert. Furthermore, if the recipient contract implements this interface only
 /// partially, the function execution will not revert either.
 interface ISablierV2LockupRecipient {

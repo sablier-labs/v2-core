@@ -22,7 +22,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_DelegateCall() external whenNoDelegateCall whenStreamActive {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData =
             abi.encodeCall(ISablierV2Lockup.withdraw, (defaultStreamId, users.recipient, DEFAULT_WITHDRAW_AMOUNT));
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
@@ -391,7 +391,7 @@ abstract contract Withdraw_Unit_Test is Unit_Test, Lockup_Shared_Test {
         _;
     }
 
-    /// @dev it should make multiple withdrawals, update the withdrawn amounts, and call the recipient hook.
+    /// @dev it should make the withdrawal, update the withdrawn amount and call the recipient hook.
     function test_Withdraw_RecipientReentrancy()
         external
         whenNoDelegateCall

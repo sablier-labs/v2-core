@@ -3,6 +3,6 @@ setFlashFee.t.sol
 │  └── it should revert
 └── when the caller is the admin
    ├── when the new flash fee is the same as the current flash fee
-   │  └── it should re-set the flash fee
+   │  └── it should re-set the flash fee and emit a {SetFlashFee} event
    └── when the new flash fee is not the same as the current flash fee
       └── it should set the new flash fee and emit a {SetFlashFee} event
