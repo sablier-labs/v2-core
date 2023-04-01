@@ -136,8 +136,8 @@ abstract contract SablierV2Lockup is
             streamId = streamIds[i];
 
             // Effects and Interactions: cancel the stream.
-            // Cancel this stream only if the `streamId` points to a stream that is active and cancelable.
-            if (getStatus(streamId) == Lockup.Status.ACTIVE && isCancelable(streamId)) {
+            // Cancel this stream only if the stream id points to a stream that is active and cancelable.
+            if (isCancelable(streamId)) {
                 _cancel(streamId);
             }
 
