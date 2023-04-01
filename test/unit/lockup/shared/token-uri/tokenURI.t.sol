@@ -8,10 +8,10 @@ abstract contract TokenURI_Unit_Test is Unit_Test, Lockup_Shared_Test {
     function setUp() public virtual override(Unit_Test, Lockup_Shared_Test) { }
 
     /// @dev it should revert.
-    function test_TokenURI_NonExistentNFT() external {
-        uint256 nonExistentStreamId = 1729;
+    function test_RevertWhen_NonExistentNFT() external {
+        uint256 nullStreamId = 1729;
         vm.expectRevert("ERC721: invalid token ID");
-        lockup.tokenURI({ tokenId: nonExistentStreamId });
+        lockup.tokenURI({ tokenId: nullStreamId });
     }
 
     modifier whenNFTExists() {
