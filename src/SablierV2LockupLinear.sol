@@ -365,8 +365,10 @@ contract SablierV2LockupLinear is
     /// @inheritdoc SablierV2Lockup
     function _isCallerStreamRecipientOrApproved(uint256 streamId) internal view override returns (bool result) {
         address recipient = _ownerOf(streamId);
-        bool approvedForAll = isApprovedForAll({ owner: recipient, operator: msg.sender });
-        result = (msg.sender == recipient || approvedForAll || getApproved(streamId) == msg.sender);
+        result = (
+            msg.sender == recipient || isApprovedForAll({ owner: recipient, operator: msg.sender })
+                || getApproved(streamId) == msg.sender
+        );
     }
 
     /// @inheritdoc SablierV2Lockup
