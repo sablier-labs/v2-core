@@ -124,7 +124,7 @@ contract CreateWithDurations_Linear_Unit_Test is Linear_Unit_Test {
             recipient: users.recipient,
             amounts: DEFAULT_LOCKUP_CREATE_AMOUNTS,
             asset: DEFAULT_ASSET,
-            cancelable: true,
+            isCancelable: true,
             range: DEFAULT_LINEAR_RANGE,
             broker: users.broker
         });

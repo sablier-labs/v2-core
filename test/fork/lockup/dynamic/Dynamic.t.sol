@@ -156,7 +156,7 @@ abstract contract Dynamic_Fork_Test is Fork_Test {
             recipient: params.recipient,
             amounts: vars.createAmounts,
             asset: asset,
-            cancelable: true,
+            isCancelable: true,
             segments: params.segments,
             range: range,
             broker: params.broker.account
@@ -169,7 +169,7 @@ abstract contract Dynamic_Fork_Test is Fork_Test {
                 recipient: params.recipient,
                 totalAmount: vars.totalAmount,
                 asset: asset,
-                cancelable: true,
+                isCancelable: true,
                 segments: params.segments,
                 startTime: params.startTime,
                 broker: params.broker

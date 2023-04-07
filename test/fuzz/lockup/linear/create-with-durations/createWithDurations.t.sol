@@ -125,7 +125,7 @@ contract CreateWithDurations_Linear_Fuzz_Test is Linear_Fuzz_Test {
             recipient: defaultParams.createWithDurations.recipient,
             amounts: DEFAULT_LOCKUP_CREATE_AMOUNTS,
             asset: DEFAULT_ASSET,
-            cancelable: defaultParams.createWithDurations.cancelable,
+            isCancelable: defaultParams.createWithDurations.isCancelable,
             range: range,
             broker: defaultParams.createWithDurations.broker.account
         });

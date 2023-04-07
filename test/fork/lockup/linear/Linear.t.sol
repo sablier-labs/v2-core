@@ -157,7 +157,7 @@ abstract contract Linear_Fork_Test is Fork_Test {
             recipient: params.recipient,
             amounts: vars.createAmounts,
             asset: asset,
-            cancelable: true,
+            isCancelable: true,
             range: params.range,
             broker: params.broker.account
         });
@@ -169,7 +169,7 @@ abstract contract Linear_Fork_Test is Fork_Test {
                 recipient: params.recipient,
                 totalAmount: params.totalAmount,
                 asset: asset,
-                cancelable: true,
+                isCancelable: true,
                 range: params.range,
                 broker: params.broker
             })

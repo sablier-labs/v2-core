@@ -21,7 +21,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @param amounts Struct that encapsulates (i) the deposit amount, (ii) the protocol fee amount, and (iii) the
     /// broker fee amount, each in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
-    /// @param cancelable Boolean that indicates whether the stream will be cancelable or not.
+    /// @param isCancelable Boolean that indicates whether the stream will be cancelable or not.
     /// @param range Struct that encapsulates (i) the start time of the stream, (ii) the cliff time of the stream,
     /// and (iii) the end time of the stream, all as Unix timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
@@ -32,7 +32,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
         address indexed recipient,
         Lockup.CreateAmounts amounts,
         IERC20 asset,
-        bool cancelable,
+        bool isCancelable,
         LockupLinear.Range range,
         address broker
     );

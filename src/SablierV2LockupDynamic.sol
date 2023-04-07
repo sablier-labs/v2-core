@@ -334,7 +334,7 @@ contract SablierV2LockupDynamic is
             LockupDynamic.CreateWithMilestones({
                 asset: params.asset,
                 broker: params.broker,
-                cancelable: params.cancelable,
+                isCancelable: params.isCancelable,
                 recipient: params.recipient,
                 segments: segments,
                 sender: params.sender,
@@ -542,7 +542,7 @@ contract SablierV2LockupDynamic is
         LockupDynamic.Stream storage stream = _streams[streamId];
         stream.amounts = Lockup.Amounts({ deposit: createAmounts.deposit, withdrawn: 0 });
         stream.asset = params.asset;
-        stream.isCancelable = params.cancelable;
+        stream.isCancelable = params.isCancelable;
         stream.sender = params.sender;
         stream.status = Lockup.Status.ACTIVE;
 
@@ -589,7 +589,7 @@ contract SablierV2LockupDynamic is
             recipient: params.recipient,
             amounts: createAmounts,
             asset: params.asset,
-            cancelable: params.cancelable,
+            isCancelable: params.isCancelable,
             segments: params.segments,
             range: LockupDynamic.Range({ start: stream.startTime, end: stream.endTime }),
             broker: params.broker.account

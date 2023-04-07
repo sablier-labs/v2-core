@@ -61,7 +61,7 @@ library LockupDynamic {
     /// @param totalAmount The total amount of ERC-20 assets to be paid, which includes the stream deposit and any
     /// potential fees. This is represented in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset to use for streaming.
-    /// @param cancelable Boolean that indicates whether the stream is cancelable or not.
+    /// @param isCancelable Boolean that indicates whether the stream is cancelable or not.
     /// @param segments The segments with deltas the protocol will use to compose the custom streaming curve.
     /// The milestones will be be calculated by adding each delta to `block.timestamp`.
     /// @param broker An optional struct that encapsulates (i) the address of the broker that has helped create the
@@ -69,7 +69,7 @@ library LockupDynamic {
     struct CreateWithDeltas {
         LockupDynamic.SegmentWithDelta[] segments;
         address sender;
-        bool cancelable;
+        bool isCancelable;
         address recipient;
         uint128 totalAmount;
         IERC20 asset;
@@ -82,7 +82,7 @@ library LockupDynamic {
     /// @param sender The address from which to stream the assets, which will have the ability to cancel the stream.
     /// It doesn't have to be the same as `msg.sender`.
     /// @param startTime The Unix timestamp for when the stream will start.
-    /// @param cancelable Boolean that indicates whether the stream will be cancelable or not.
+    /// @param isCancelable Boolean that indicates whether the stream will be cancelable or not.
     /// @param recipient The address toward which to stream the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be paid, which includes the stream deposit and any
     /// potential fees. This is represented in units of the asset's decimals.
@@ -93,7 +93,7 @@ library LockupDynamic {
         LockupDynamic.Segment[] segments;
         address sender;
         uint40 startTime;
-        bool cancelable;
+        bool isCancelable;
         address recipient;
         uint128 totalAmount;
         IERC20 asset;
@@ -164,7 +164,7 @@ library LockupLinear {
     /// @param totalAmount The total amount of ERC-20 assets to be paid, which includes the stream deposit and any
     /// potential fees. This is represented in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset to use for streaming.
-    /// @param cancelable Boolean that indicates whether the stream will be cancelable or not.
+    /// @param isCancelable Boolean that indicates whether the stream will be cancelable or not.
     /// @param durations Struct that encapsulates (i) the duration of the cliff period and (ii) the total duration of
     /// the stream, both in seconds.
     /// @param broker An optional struct that encapsulates (i) the address of the broker that has helped create the
@@ -174,7 +174,7 @@ library LockupLinear {
         address recipient;
         uint128 totalAmount;
         IERC20 asset;
-        bool cancelable;
+        bool isCancelable;
         LockupLinear.Durations durations;
         Broker broker;
     }
@@ -186,7 +186,7 @@ library LockupLinear {
     /// @param totalAmount The total amount of ERC-20 assets to be paid, which includes the stream deposit and any
     /// potential fees. This is represented in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset to use for streaming.
-    /// @param cancelable Boolean that indicates whether the stream will be cancelable or not.
+    /// @param isCancelable Boolean that indicates whether the stream will be cancelable or not.
     /// @param range Struct that encapsulates (i) the start time of the stream, (ii) the cliff time of the stream,
     /// and (iii) the end time of the stream, all as Unix timestamps.
     /// @param broker An optional struct that encapsulates (i) the address of the broker that has helped create the
@@ -196,7 +196,7 @@ library LockupLinear {
         address recipient;
         uint128 totalAmount;
         IERC20 asset;
-        bool cancelable;
+        bool isCancelable;
         Range range;
         Broker broker;
     }

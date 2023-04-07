@@ -38,14 +38,14 @@ abstract contract Dynamic_Shared_Test is Lockup_Shared_Test {
         defaultParams.createWithDeltas.recipient = users.recipient;
         defaultParams.createWithDeltas.totalAmount = DEFAULT_TOTAL_AMOUNT;
         defaultParams.createWithDeltas.asset = DEFAULT_ASSET;
-        defaultParams.createWithDeltas.cancelable = true;
+        defaultParams.createWithDeltas.isCancelable = true;
         defaultParams.createWithDeltas.broker = Broker({ account: users.broker, fee: DEFAULT_BROKER_FEE });
 
         defaultParams.createWithMilestones.sender = users.sender;
         defaultParams.createWithMilestones.recipient = users.recipient;
         defaultParams.createWithMilestones.totalAmount = DEFAULT_TOTAL_AMOUNT;
         defaultParams.createWithMilestones.asset = DEFAULT_ASSET;
-        defaultParams.createWithMilestones.cancelable = true;
+        defaultParams.createWithMilestones.isCancelable = true;
         defaultParams.createWithMilestones.startTime = DEFAULT_START_TIME;
         defaultParams.createWithMilestones.broker = Broker({ account: users.broker, fee: DEFAULT_BROKER_FEE });
 
@@ -58,7 +58,7 @@ abstract contract Dynamic_Shared_Test is Lockup_Shared_Test {
         // Create the default stream to be used across the tests.
         defaultStream.amounts = DEFAULT_LOCKUP_AMOUNTS;
         defaultStream.endTime = DEFAULT_END_TIME;
-        defaultStream.isCancelable = defaultParams.createWithMilestones.cancelable;
+        defaultStream.isCancelable = defaultParams.createWithMilestones.isCancelable;
         defaultStream.segments = defaultParams.createWithMilestones.segments;
         defaultStream.sender = defaultParams.createWithMilestones.sender;
         defaultStream.startTime = DEFAULT_START_TIME;
@@ -114,7 +114,7 @@ abstract contract Dynamic_Shared_Test is Lockup_Shared_Test {
     /// @dev Creates a non-cancelable stream.
     function createDefaultStreamNonCancelable() internal override returns (uint256 streamId) {
         LockupDynamic.CreateWithMilestones memory params = defaultParams.createWithMilestones;
-        params.cancelable = false;
+        params.isCancelable = false;
         streamId = dynamic.createWithMilestones(params);
     }
 

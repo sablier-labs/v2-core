@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { Solarray } from "solarray/Solarray.sol";
+import {Solarray} from "solarray/Solarray.sol";
 
-import { Errors } from "src/libraries/Errors.sol";
-import { Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import {Errors} from "src/libraries/Errors.sol";
+import {Lockup, LockupDynamic} from "src/types/DataTypes.sol";
 
-import { Dynamic_Fuzz_Test } from "../Dynamic.t.sol";
+import {Dynamic_Fuzz_Test} from "../Dynamic.t.sol";
 
 contract CreateWithDeltas_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
     uint256 internal streamId;
@@ -73,7 +73,7 @@ contract CreateWithDeltas_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
         vars.initialProtocolRevenues = dynamic.protocolRevenues(DEFAULT_ASSET);
 
         // Mint enough ERC-20 assets to the fuzzed funder.
-        deal({ token: address(DEFAULT_ASSET), to: vars.funder, give: vars.totalAmount });
+        deal({token: address(DEFAULT_ASSET), to: vars.funder, give: vars.totalAmount});
 
         // Expect the ERC-20 assets to be transferred from the funder to {SablierV2LockupDynamic}.
         expectTransferFromCall({
@@ -84,7 +84,7 @@ contract CreateWithDeltas_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
 
         // Expect the broker fee to be paid to the broker, if not zero.
         if (vars.createAmounts.brokerFee > 0) {
-            expectTransferFromCall({ from: vars.funder, to: users.broker, amount: vars.createAmounts.brokerFee });
+            expectTransferFromCall({from: vars.funder, to: users.broker, amount: vars.createAmounts.brokerFee});
         }
 
         // Create the range struct.
@@ -95,7 +95,7 @@ contract CreateWithDeltas_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
         });
 
         // Expect a {CreateLockupDynamicStream} event to be emitted.
-        vm.expectEmit({ emitter: address(dynamic) });
+        vm.expectEmit({emitter: address(dynamic)});
         emit CreateLockupDynamicStream({
             streamId: streamId,
             funder: vars.funder,
@@ -103,7 +103,7 @@ contract CreateWithDeltas_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
             recipient: defaultParams.createWithDeltas.recipient,
             amounts: vars.createAmounts,
             asset: DEFAULT_ASSET,
-            cancelable: defaultParams.createWithDeltas.cancelable,
+            isCancelable: defaultParams.createWithDeltas.isCancelable,
             segments: vars.segmentsWithMilestones,
             range: range,
             broker: defaultParams.createWithDeltas.broker.account
@@ -117,7 +117,7 @@ contract CreateWithDeltas_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
 
         // Assert that the stream has been created.
         LockupDynamic.Stream memory actualStream = dynamic.getStream(streamId);
-        assertEq(actualStream.amounts, Lockup.Amounts({ deposit: vars.createAmounts.deposit, withdrawn: 0 }));
+        assertEq(actualStream.amounts, Lockup.Amounts({deposit: vars.createAmounts.deposit, withdrawn: 0}));
         assertEq(actualStream.asset, defaultStream.asset, "asset");
         assertEq(actualStream.endTime, range.end, "endTime");
         assertEq(actualStream.isCancelable, defaultStream.isCancelable, "isCancelable");
@@ -137,7 +137,7 @@ contract CreateWithDeltas_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
         assertEq(vars.actualProtocolRevenues, vars.expectedProtocolRevenues, "protocolRevenues");
 
         // Assert that the NFT has been minted.
-        vars.actualNFTOwner = dynamic.ownerOf({ tokenId: streamId });
+        vars.actualNFTOwner = dynamic.ownerOf({tokenId: streamId});
         vars.expectedNFTOwner = defaultParams.createWithDeltas.recipient;
         assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "NFT owner");
     }

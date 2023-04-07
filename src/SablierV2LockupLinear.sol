@@ -327,7 +327,7 @@ contract SablierV2LockupLinear is
                 recipient: params.recipient,
                 totalAmount: params.totalAmount,
                 asset: params.asset,
-                cancelable: params.cancelable,
+                isCancelable: params.isCancelable,
                 range: range,
                 broker: params.broker
             })
@@ -452,7 +452,7 @@ contract SablierV2LockupLinear is
             asset: params.asset,
             cliffTime: params.range.cliff,
             endTime: params.range.end,
-            isCancelable: params.cancelable,
+            isCancelable: params.isCancelable,
             sender: params.sender,
             status: Lockup.Status.ACTIVE,
             startTime: params.range.start
@@ -491,7 +491,7 @@ contract SablierV2LockupLinear is
             recipient: params.recipient,
             amounts: createAmounts,
             asset: params.asset,
-            cancelable: params.cancelable,
+            isCancelable: params.isCancelable,
             range: params.range,
             broker: params.broker.account
         });

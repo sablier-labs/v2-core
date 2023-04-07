@@ -320,7 +320,7 @@ contract CreateWithMilestones_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
             recipient: params.recipient,
             amounts: vars.createAmounts,
             asset: DEFAULT_ASSET,
-            cancelable: params.cancelable,
+            isCancelable: params.isCancelable,
             segments: params.segments,
             range: range,
             broker: params.broker.account
@@ -333,7 +333,7 @@ contract CreateWithMilestones_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
                 recipient: params.recipient,
                 totalAmount: vars.totalAmount,
                 asset: DEFAULT_ASSET,
-                cancelable: params.cancelable,
+                isCancelable: params.isCancelable,
                 segments: params.segments,
                 startTime: params.startTime,
                 broker: params.broker
@@ -345,7 +345,7 @@ contract CreateWithMilestones_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test {
         assertEq(actualStream.amounts, Lockup.Amounts({ deposit: vars.createAmounts.deposit, withdrawn: 0 }));
         assertEq(actualStream.asset, defaultStream.asset, "asset");
         assertEq(actualStream.endTime, range.end, "endTime");
-        assertEq(actualStream.isCancelable, params.cancelable, "isCancelable");
+        assertEq(actualStream.isCancelable, params.isCancelable, "isCancelable");
         assertEq(actualStream.sender, params.sender, "sender");
         assertEq(actualStream.segments, params.segments);
         assertEq(actualStream.startTime, range.start, "startTime");

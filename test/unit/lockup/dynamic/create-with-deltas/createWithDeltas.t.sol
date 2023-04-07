@@ -149,7 +149,7 @@ contract CreateWithDeltas_Dynamic_Unit_Test is Dynamic_Unit_Test {
             recipient: users.recipient,
             amounts: DEFAULT_LOCKUP_CREATE_AMOUNTS,
             asset: DEFAULT_ASSET,
-            cancelable: true,
+            isCancelable: true,
             segments: DEFAULT_SEGMENTS,
             range: DEFAULT_DYNAMIC_RANGE,
             broker: users.broker

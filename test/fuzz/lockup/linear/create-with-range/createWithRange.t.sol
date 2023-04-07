@@ -217,7 +217,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
             recipient: params.recipient,
             amounts: vars.createAmounts,
             asset: DEFAULT_ASSET,
-            cancelable: params.cancelable,
+            isCancelable: params.isCancelable,
             range: params.range,
             broker: params.broker.account
         });
@@ -229,7 +229,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
                 recipient: params.recipient,
                 totalAmount: params.totalAmount,
                 asset: DEFAULT_ASSET,
-                cancelable: params.cancelable,
+                isCancelable: params.isCancelable,
                 range: params.range,
                 broker: params.broker
             })
@@ -241,7 +241,7 @@ contract CreateWithRange_Linear_Fuzz_Test is Linear_Fuzz_Test {
         assertEq(actualStream.asset, defaultStream.asset, "asset");
         assertEq(actualStream.cliffTime, params.range.cliff);
         assertEq(actualStream.endTime, params.range.end);
-        assertEq(actualStream.isCancelable, params.cancelable, "isCancelable");
+        assertEq(actualStream.isCancelable, params.isCancelable, "isCancelable");
         assertEq(actualStream.sender, params.sender, "sender");
         assertEq(actualStream.startTime, params.range.start);
         assertEq(actualStream.status, defaultStream.status);

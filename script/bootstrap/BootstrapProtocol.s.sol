@@ -70,7 +70,7 @@ contract BootstrapProtocol is BaseScript {
                     recipient: recipient,
                     totalAmount: totalAmounts[i],
                     asset: asset,
-                    cancelable: true,
+                    isCancelable: true,
                     durations: LockupLinear.Durations({ cliff: cliffDurations[i], total: totalDurations[i] }),
                     broker: Broker(address(0), ud(0))
                 })
@@ -97,7 +97,7 @@ contract BootstrapProtocol is BaseScript {
                 recipient: recipient,
                 totalAmount: 10_000e18,
                 asset: asset,
-                cancelable: true,
+                isCancelable: true,
                 segments: segments,
                 broker: Broker(address(0), ud(0))
             })

@@ -40,7 +40,7 @@ abstract contract Linear_Shared_Test is Lockup_Shared_Test {
                 recipient: users.recipient,
                 totalAmount: DEFAULT_TOTAL_AMOUNT,
                 asset: DEFAULT_ASSET,
-                cancelable: true,
+                isCancelable: true,
                 durations: DEFAULT_DURATIONS,
                 broker: Broker({ account: users.broker, fee: DEFAULT_BROKER_FEE })
             }),
@@ -49,7 +49,7 @@ abstract contract Linear_Shared_Test is Lockup_Shared_Test {
                 recipient: users.recipient,
                 totalAmount: DEFAULT_TOTAL_AMOUNT,
                 asset: DEFAULT_ASSET,
-                cancelable: true,
+                isCancelable: true,
                 range: DEFAULT_LINEAR_RANGE,
                 broker: Broker({ account: users.broker, fee: DEFAULT_BROKER_FEE })
             })
@@ -60,7 +60,7 @@ abstract contract Linear_Shared_Test is Lockup_Shared_Test {
             amounts: DEFAULT_LOCKUP_AMOUNTS,
             cliffTime: defaultParams.createWithRange.range.cliff,
             endTime: defaultParams.createWithRange.range.end,
-            isCancelable: defaultParams.createWithRange.cancelable,
+            isCancelable: defaultParams.createWithRange.isCancelable,
             sender: defaultParams.createWithRange.sender,
             startTime: defaultParams.createWithRange.range.start,
             status: Lockup.Status.ACTIVE,
@@ -109,7 +109,7 @@ abstract contract Linear_Shared_Test is Lockup_Shared_Test {
     /// @dev Creates the default stream that is non-cancelable.
     function createDefaultStreamNonCancelable() internal override returns (uint256 streamId) {
         LockupLinear.CreateWithRange memory params = defaultParams.createWithRange;
-        params.cancelable = false;
+        params.isCancelable = false;
         streamId = linear.createWithRange(params);
     }
 

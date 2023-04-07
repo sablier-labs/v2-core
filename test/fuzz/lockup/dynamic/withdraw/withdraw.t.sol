@@ -74,7 +74,7 @@ contract Withdraw_Dynamic_Fuzz_Test is Dynamic_Fuzz_Test, Withdraw_Fuzz_Test {
                 recipient: users.recipient,
                 totalAmount: vars.totalAmount,
                 asset: DEFAULT_ASSET,
-                cancelable: true,
+                isCancelable: true,
                 segments: params.segments,
                 startTime: DEFAULT_START_TIME,
                 broker: Broker({ account: users.broker, fee: DEFAULT_BROKER_FEE })
