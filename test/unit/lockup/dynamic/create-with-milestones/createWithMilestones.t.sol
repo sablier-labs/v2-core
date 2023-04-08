@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
-import {MAX_UD60x18, UD60x18, ud, ZERO} from "@prb/math/UD60x18.sol";
-import {UD2x18} from "@prb/math/UD2x18.sol";
-import {stdError} from "forge-std/StdError.sol";
+import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
+import { MAX_UD60x18, UD60x18, ud, ZERO } from "@prb/math/UD60x18.sol";
+import { UD2x18 } from "@prb/math/UD2x18.sol";
+import { stdError } from "forge-std/StdError.sol";
 
-import {Errors} from "src/libraries/Errors.sol";
+import { Errors } from "src/libraries/Errors.sol";
 
-import {ISablierV2LockupDynamic} from "src/interfaces/ISablierV2LockupDynamic.sol";
-import {Broker, Lockup, LockupDynamic} from "src/types/DataTypes.sol";
+import { ISablierV2LockupDynamic } from "src/interfaces/ISablierV2LockupDynamic.sol";
+import { Broker, Lockup, LockupDynamic } from "src/types/DataTypes.sol";
 
-import {Dynamic_Unit_Test} from "../Dynamic.t.sol";
+import { Dynamic_Unit_Test } from "../Dynamic.t.sol";
 
 contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
     uint256 internal streamId;
@@ -244,8 +244,8 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
         whenEndTimeNotInThePast
     {
         // Disable both the protocol and the broker fee so that they don't interfere with the calculations.
-        changePrank({msgSender: users.admin});
-        comptroller.setProtocolFee({asset: DEFAULT_ASSET, newProtocolFee: ZERO});
+        changePrank({ msgSender: users.admin });
+        comptroller.setProtocolFee({ asset: DEFAULT_ASSET, newProtocolFee: ZERO });
         UD60x18 brokerFee = ZERO;
         changePrank(defaultParams.createWithMilestones.sender);
 
@@ -264,7 +264,7 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
         // Create the stream.
         LockupDynamic.CreateWithMilestones memory params = defaultParams.createWithMilestones;
         params.totalAmount = depositAmount;
-        params.broker = Broker({account: address(0), fee: brokerFee});
+        params.broker = Broker({ account: address(0), fee: brokerFee });
         dynamic.createWithMilestones(params);
     }
 
@@ -290,7 +290,7 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
         UD60x18 protocolFee = MAX_FEE.add(ud(1));
 
         // Set the protocol fee.
-        changePrank({msgSender: users.admin});
+        changePrank({ msgSender: users.admin });
         comptroller.setProtocolFee(defaultStream.asset, protocolFee);
 
         // Run the test.
@@ -322,7 +322,7 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
     {
         UD60x18 brokerFee = MAX_FEE.add(ud(1));
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_BrokerFeeTooHigh.selector, brokerFee, MAX_FEE));
-        createDefaultStreamWithBroker(Broker({account: users.broker, fee: brokerFee}));
+        createDefaultStreamWithBroker(Broker({ account: users.broker, fee: brokerFee }));
     }
 
     modifier whenBrokerFeeNotTooHigh() {
@@ -350,9 +350,9 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
 
         // Set the default protocol fee so that the test does not revert due to the deposit amount not being
         // equal to the segment amounts sum.
-        changePrank({msgSender: users.admin});
+        changePrank({ msgSender: users.admin });
         comptroller.setProtocolFee(IERC20(nonContract), DEFAULT_PROTOCOL_FEE);
-        changePrank({msgSender: users.sender});
+        changePrank({ msgSender: users.sender });
 
         // Run the test.
         vm.expectRevert("Address: call to non-contract");
@@ -426,10 +426,15 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
         });
 
         // Expect the broker fee to be paid to the broker.
-        expectTransferFromCall({asset: IERC20(asset), from: funder, to: users.broker, amount: DEFAULT_BROKER_FEE_AMOUNT});
+        expectTransferFromCall({
+            asset: IERC20(asset),
+            from: funder,
+            to: users.broker,
+            amount: DEFAULT_BROKER_FEE_AMOUNT
+        });
 
         // Expect a {CreateLockupDynamicStream} event to be emitted.
-        vm.expectEmit({emitter: address(dynamic)});
+        vm.expectEmit({ emitter: address(dynamic) });
         emit CreateLockupDynamicStream({
             streamId: streamId,
             funder: funder,
@@ -463,7 +468,7 @@ contract CreateWithMilestones_Dynamic_Unit_Test is Dynamic_Unit_Test {
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
 
         // Assert that the NFT has been minted.
-        address actualNFTOwner = dynamic.ownerOf({tokenId: streamId});
+        address actualNFTOwner = dynamic.ownerOf({ tokenId: streamId });
         address expectedNFTOwner = defaultParams.createWithMilestones.recipient;
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }
