@@ -54,9 +54,15 @@ abstract contract BaseHandler is Calculations, Fuzzers, StdCheats {
     }
 
     /// @dev Records a function call for instrumentation purposes.
-    modifier instrument(string memory func) {
-        calls[func]++;
+    modifier instrument(string memory functionName) {
+        calls[functionName]++;
         totalCalls++;
         _;
+    }
+
+    modifier useNewSender(address sender) {
+        vm.startPrank(sender);
+        _;
+        vm.stopPrank();
     }
 }
