@@ -208,14 +208,15 @@ interface ISablierV2Lockup is
     /// @dev Emits a {WithdrawFromLockupStream} and a {Transfer} event.
     ///
     /// Notes:
-    /// - This function will attempt to call a hook on the stream's recipient, if the recipient is a contract.
+    /// - This function will attempt to call a hook on the recipient of the stream, if the recipient is a contract,
+    /// and if the caller is either the sender or an approved operator.
     ///
     /// Requirements:
     /// - The call must not be a delegate call.
     /// - `streamId` must reference a stream that is either active or canceled.
-    /// - `msg.sender` must be the stream's sender, the stream's recipient (a.k.a the NFT owner) or an
+    /// - `msg.sender` must be the stream's sender, the stream's recipient or an
     /// approved third party.
-    /// - `to` must be the recipient if `msg.sender` is the stream's sender.
+    /// - `to` must be the recipient if `msg.sender` is the sender of the stream.
     /// - `to` must not be the zero address.
     /// - `amount` must be greater than zero and must not exceed the withdrawable amount.
     ///
@@ -243,7 +244,8 @@ interface ISablierV2Lockup is
     /// @dev Emits multiple {WithdrawFromLockupStream} and {Transfer} events.
     ///
     /// Notes:
-    /// - This function will attempt to call a hook on the recipient of each stream.
+    /// - This function will attempt to call a hook on the recipient of each stream,
+    /// unless the caller is the recipient.
     ///
     /// Requirements:
     /// - The call must not be a delegate call.
