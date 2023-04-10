@@ -122,11 +122,11 @@ abstract contract Lockup_Invariant_Test is Invariant_Test {
         }
     }
 
-    function invariant_NextStreamIdIncrement() external {
+    function invariant_NextStreamId() external {
         uint256 lastStreamId = lockupHandlerStorage.lastStreamId();
         for (uint256 i = 0; i < lastStreamId; ++i) {
             uint256 nextStreamId = lockup.nextStreamId();
-            assertEq(nextStreamId, lastStreamId + 1, "Invariant violated: the next stream id not bumped");
+            assertEq(nextStreamId, lastStreamId + 1, "Invariant violated: next stream id not incremented");
         }
     }
 

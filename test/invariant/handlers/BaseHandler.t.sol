@@ -60,6 +60,7 @@ abstract contract BaseHandler is Calculations, Fuzzers, StdCheats {
         _;
     }
 
+    /// @dev Makes the provided sender the caller.
     modifier useNewSender(address sender) {
         vm.startPrank(sender);
         _;
