@@ -380,28 +380,28 @@ contract SablierV2LockupDynamic is
             uint40 currentTime = uint40(block.timestamp);
             LockupDynamic.Stream memory stream = _streams[streamId];
 
-            // Sum the amounts in all preceding segments.
+            // Sum the amounts in all segments that precede the current time.
             uint128 previousSegmentAmounts;
             uint40 currentSegmentMilestone = stream.segments[0].milestone;
-            uint256 index = 1;
+            uint256 index = 0;
             while (currentSegmentMilestone < currentTime) {
-                previousSegmentAmounts += stream.segments[index - 1].amount;
-                currentSegmentMilestone = stream.segments[index].milestone;
+                previousSegmentAmounts += stream.segments[index].amount;
                 index += 1;
+                currentSegmentMilestone = stream.segments[index].milestone;
             }
 
-            // After exiting the loop, the current segment is at index `index - 1`, and the previous segment
-            // is at `index - 2` (when there are two or more segments).
-            SD59x18 currentSegmentAmount = stream.segments[index - 1].amount.intoSD59x18();
-            SD59x18 currentSegmentExponent = stream.segments[index - 1].exponent.intoSD59x18();
-            currentSegmentMilestone = stream.segments[index - 1].milestone;
+            // After exiting the loop, the current segment is at `index`.
+            SD59x18 currentSegmentAmount = stream.segments[index].amount.intoSD59x18();
+            SD59x18 currentSegmentExponent = stream.segments[index].exponent.intoSD59x18();
+            currentSegmentMilestone = stream.segments[index].milestone;
 
             uint40 previousMilestone;
-            if (index > 1) {
-                // If the current segment is at index >= 2, use the previous segment's milestone.
-                previousMilestone = stream.segments[index - 2].milestone;
+            if (index > 0) {
+                // When the current segment's index is greater than or equal to 1, it implies that the segment is not
+                // the first. In this case, use the previous segment's milestone.
+                previousMilestone = stream.segments[index - 1].milestone;
             } else {
-                // Otherwise, the current segment is the first, so consider the start time the previous milestone.
+                // Otherwise, the current segment is the first, so use the start time as the previous milestone.
                 previousMilestone = stream.startTime;
             }
 
@@ -508,12 +508,11 @@ contract SablierV2LockupDynamic is
             return amounts.deposited;
         }
 
-        // If there is more than one segment, it may be necessary to iterate over all of them.
         if (_streams[streamId].segments.length > 1) {
+            // If there is more than one segment, it may be necessary to iterate over all of them.
             streamedAmount = _calculateStreamedAmountForMultipleSegments(streamId);
-        }
-        // Otherwise, there is only one segment, and the calculation is simpler.
-        else {
+        } else {
+            // Otherwise, there is only one segment, and the calculation is simpler.
             streamedAmount = _calculateStreamedAmountForOneSegment(streamId);
         }
     }
