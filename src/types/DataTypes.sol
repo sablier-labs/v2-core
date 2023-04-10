@@ -115,7 +115,7 @@ library LockupDynamic {
 
     /// @notice Segment struct used in the lockup dynamic stream.
     /// @param amount The amount of assets to be streamed in this segment, denoted in units of the asset's decimals.
-    /// @param exponent The exponent of this segment, as a UD2x18 number.
+    /// @param exponent The exponent of this segment, as a fixed-point number.
     /// @param milestone The Unix timestamp indicating this segment's end.
     struct Segment {
         // slot 0
@@ -126,7 +126,7 @@ library LockupDynamic {
 
     /// @notice Segment struct used at runtime in {SablierV2LockupDynamic-createWithDeltas}.
     /// @param amount The amount of assets to be streamed in this segment, denoted in units of the asset's decimals.
-    /// @param exponent The exponent of this segment, as a UD2x18 number.
+    /// @param exponent The exponent of this segment, as a fixed-point number.
     /// @param delta The time difference in seconds between this segment and the previous one.
     struct SegmentWithDelta {
         uint128 amount;

@@ -37,10 +37,6 @@ interface ISablierV2Comptroller is IAdminable {
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Determines whether the provided ERC-20 asset can be flash loaned.
-    /// @param token The contract address of the ERC-20 asset to check.
-    function flashAssets(IERC20 token) external view returns (bool result);
-
     /// @notice Retrieves the global flash fee as a fixed-point number where 100% = 1e18.
     ///
     /// @dev Notes:
@@ -48,6 +44,10 @@ interface ISablierV2Comptroller is IAdminable {
     /// which calculates the fee amount for a specified flash loan amount.
     /// - Unlike the protocol fee, this is a global fee applied to all flash loans, not a per-asset fee.
     function flashFee() external view returns (UD60x18 fee);
+
+    /// @notice Retrieves a flag that indicates whether the provided ERC-20 asset can be flash loaned.
+    /// @param token The contract address of the ERC-20 asset to check.
+    function isFlashAsset(IERC20 token) external view returns (bool result);
 
     /// @notice Retrieves the protocol fee for all streams created with the provided ERC-20 asset.
     /// @param asset The contract address of the ERC-20 asset to query.
