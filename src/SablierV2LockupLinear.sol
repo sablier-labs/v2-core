@@ -387,7 +387,7 @@ contract SablierV2LockupLinear is
             return amounts.deposited - amounts.returned;
         }
 
-        // Return zero if the cliff time is greater than the block timestamp.
+        // Return zero if the cliff time is greater than the current time.
         uint256 currentTime = block.timestamp;
         uint256 cliffTime = uint256(_streams[streamId].cliffTime);
         if (cliffTime > currentTime) {
@@ -505,7 +505,7 @@ contract SablierV2LockupLinear is
             params.asset.safeTransferFrom({ from: msg.sender, to: params.broker.account, value: createAmounts.brokerFee });
         }
 
-        // Log the newly-created stream.
+        // Log the newly created stream.
         emit ISablierV2LockupLinear.CreateLockupLinearStream({
             streamId: streamId,
             funder: msg.sender,

@@ -214,9 +214,8 @@ interface ISablierV2Lockup is
     /// Requirements:
     /// - The call must not be a delegate call.
     /// - `streamId` must reference a stream that is either active or canceled.
-    /// - `msg.sender` must be the stream's sender, the stream's recipient or an
-    /// approved third party.
-    /// - `to` must be the recipient if `msg.sender` is the sender of the stream.
+    /// - `msg.sender` must be the stream's sender, the stream's recipient or an approved third party.
+    /// - `to` must be the recipient if `msg.sender` is the stream's sender.
     /// - `to` must not be the zero address.
     /// - `amount` must be greater than zero and must not exceed the withdrawable amount.
     ///
@@ -244,8 +243,7 @@ interface ISablierV2Lockup is
     /// @dev Emits multiple {WithdrawFromLockupStream} and {Transfer} events.
     ///
     /// Notes:
-    /// - This function will attempt to call a hook on the recipient of each stream,
-    /// unless the caller is the recipient.
+    /// - This function will attempt to call a hook on the recipient of each stream, unless the caller is the recipient.
     ///
     /// Requirements:
     /// - The call must not be a delegate call.

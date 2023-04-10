@@ -384,7 +384,6 @@ contract SablierV2LockupDynamic is
             uint128 previousSegmentAmounts;
             uint40 currentSegmentMilestone = stream.segments[0].milestone;
             uint256 index = 1;
-
             while (currentSegmentMilestone < currentTime) {
                 previousSegmentAmounts += stream.segments[index - 1].amount;
                 currentSegmentMilestone = stream.segments[index].milestone;
@@ -417,17 +416,14 @@ contract SablierV2LockupDynamic is
             SD59x18 multiplier = elapsedSegmentTimePercentage.pow(currentSegmentExponent);
             SD59x18 segmentStreamedAmount = multiplier.mul(currentSegmentAmount);
 
-            // The code block below has been added to avoid the Stack Too Deep error
-            {
-                // Although the segment streamed amount should never exceed the total segment amount, this condition is
-                // checked without asserting to avoid locking funds in case of a bug. If this situation occurs, the
-                // amount streamed in the segment is considered zero (except for past withdrawals), and the segment is
-                // effectively voided.
-                if (segmentStreamedAmount.gt(currentSegmentAmount)) {
-                    return previousSegmentAmounts > stream.amounts.withdrawn
-                        ? previousSegmentAmounts
-                        : stream.amounts.withdrawn;
-                }
+            // Although the segment streamed amount should never exceed the total segment amount, this condition is
+            // checked without asserting to avoid locking funds in case of a bug. If this situation occurs, the
+            // amount streamed in the segment is considered zero (except for past withdrawals), and the segment is
+            // effectively voided.
+            if (segmentStreamedAmount.gt(currentSegmentAmount)) {
+                return previousSegmentAmounts > stream.amounts.withdrawn
+                    ? previousSegmentAmounts
+                    : stream.amounts.withdrawn;
             }
 
             // Calculate the total streamed amount by adding the previous segment amounts and the amount streamed in
@@ -436,7 +432,7 @@ contract SablierV2LockupDynamic is
         }
     }
 
-    /// @dev Calculates the streamed amount for a stream with one segment. Normalization to 18 decimals is not
+    /// @dev Calculates the streamed amount for a a stream with one segment. Normalization to 18 decimals is not
     /// needed because there is no mix of amounts with different decimals.
     function _calculateStreamedAmountForOneSegment(uint256 streamId) internal view returns (uint128 streamedAmount) {
         unchecked {
@@ -512,11 +508,12 @@ contract SablierV2LockupDynamic is
             return amounts.deposited;
         }
 
+        // If there is more than one segment, it may be necessary to iterate over all of them.
         if (_streams[streamId].segments.length > 1) {
-            // If there's more than one segment, we may have to iterate over all of them.
             streamedAmount = _calculateStreamedAmountForMultipleSegments(streamId);
-        } else {
-            // Otherwise, there is only one segment, and the calculation is simple.
+        }
+        // Otherwise, there is only one segment, and the calculation is simpler.
+        else {
             streamedAmount = _calculateStreamedAmountForOneSegment(streamId);
         }
     }
