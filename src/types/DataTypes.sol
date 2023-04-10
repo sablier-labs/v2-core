@@ -8,7 +8,8 @@ import { UD60x18 } from "@prb/math/UD60x18.sol";
 /// @notice Basic struct that encapsulates the optional broker parameters that can be passed to the create
 /// functions.
 /// @param account The address of the broker the fee will be paid to.
-/// @param fee The percentage fee that the broker is paid from the total amount, as a UD60x18 number.
+/// @param fee The percentage fee that the broker is paid from the total amount, as a fixed-point number
+/// where 100% = 1e18.
 struct Broker {
     address account;
     UD60x18 fee;
@@ -65,7 +66,7 @@ library LockupDynamic {
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param broker Struct containing (i) the address of the broker assisting in stream creation, and (ii) the
-    /// percentage fee paid to the broker from `totalAmount`, as a UD60x18 number. Both of these values can be set
+    /// percentage fee paid to the broker from `totalAmount`, as a fixed-point number. Both of these values can be set
     /// to zero.
     /// @param segments Segments with deltas used to compose the custom streaming curve. Milestones are calculated by
     /// starting from `block.timestamp` and adding each delta to the previous milestone.
@@ -90,7 +91,7 @@ library LockupDynamic {
     /// fees, all denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param broker Struct containing (i) the address of the broker assisting in stream creation, and (ii) the
-    /// percentage fee paid to the broker from `totalAmount`, as a UD60x18 number. Both of these values can be set
+    /// percentage fee paid to the broker from `totalAmount`, as a fixed-point number. Both of these values can be set
     /// to zero.
     /// @param segments Segments used to compose the custom streaming curve.
     struct CreateWithMilestones {
@@ -172,7 +173,7 @@ library LockupLinear {
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param durations Struct containing (i) cliff period duration and (ii) total stream duration, both in seconds.
     /// @param broker Struct containing (i) the address of the broker assisting in stream creation, and (ii) the
-    /// percentage fee paid to the broker from `totalAmount`, as a UD60x18 number. Both of these values can be set
+    /// percentage fee paid to the broker from `totalAmount`, as a fixed-point number. Both of these values can be set
     /// to zero.
     struct CreateWithDurations {
         address sender;
@@ -195,7 +196,7 @@ library LockupLinear {
     /// @param range Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as Unix
     /// timestamps.
     /// @param broker Struct containing (i) the address of the broker assisting in stream creation, and (ii) the
-    /// percentage fee paid to the broker from `totalAmount`, as a UD60x18 number. Both of these values can be set
+    /// percentage fee paid to the broker from `totalAmount`, as a fixed-point number. Both of these values can be set
     /// to zero.
     struct CreateWithRange {
         address sender;
