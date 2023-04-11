@@ -253,7 +253,7 @@ jobs:
         with:
           submodules: "recursive"
 
-      - name: "Run Slither"
+      - name: "Run Slither analysis"
         uses: "crytic/slither-action@v0.3.0"
         id: slither
         with:
@@ -261,7 +261,12 @@ jobs:
           sarif: results.sarif
           slither-args: --filter-paths "./lib|./test" --exclude naming-convention
 
-      - name: "Upload SARIF file"
+      - name: "Upload SARIF file to GitHub code scanning"
         uses: "github/codeql-action/upload-sarif@v2"
         with:
           sarif_file: ${{ steps.slither.outputs.sarif }}
+
+      - name: "Add summary"
+        run: |
+          echo "## Slither result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Uploaded to GitHub code scanning" >> $GITHUB_STEP_SUMMARY
