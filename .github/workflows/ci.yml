@@ -246,6 +246,7 @@ jobs:
     needs: ["lint", "build"]
     runs-on: "ubuntu-latest"
     permissions:
+      contents: "read"
       security-events: "write"
     steps:
       - name: "Check out the repo"
