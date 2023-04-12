@@ -260,7 +260,9 @@ jobs:
         with:
           fail-on: none
           sarif: results.sarif
-          slither-args: --filter-paths "./lib|./test" --exclude naming-convention
+          slither-args: "--exclude naming-convention"
+          solc-version: "0.8.19"
+          target: "src/"
 
       - name: "Upload SARIF file to GitHub code scanning"
         uses: "github/codeql-action/upload-sarif@v2"
