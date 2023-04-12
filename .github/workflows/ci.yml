@@ -246,6 +246,7 @@ jobs:
     needs: ["lint", "build"]
     runs-on: "ubuntu-latest"
     permissions:
+      actions: read
       contents: "read"
       security-events: "write"
     steps:
@@ -260,7 +261,7 @@ jobs:
         with:
           fail-on: none
           sarif: results.sarif
-          slither-args: "--exclude naming-convention"
+          slither-args: "--exclude naming-convention,solc-version"
           solc-version: "0.8.19"
           target: "src/"
 
