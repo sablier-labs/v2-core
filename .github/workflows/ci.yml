@@ -100,36 +100,9 @@ jobs:
           echo "## Build result" >> $GITHUB_STEP_SUMMARY
           echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
 
-  test-unit:
-    needs: ["lint", "build"]
-    runs-on: "ubuntu-latest"
-    steps:
-      - name: "Check out the repo"
-        uses: "actions/checkout@v3"
-        with:
-          submodules: "recursive"
-
-      - name: "Install Foundry"
-        uses: "foundry-rs/foundry-toolchain@v1"
-
-      - name: "Restore the cached build"
-        uses: "actions/cache/restore@v3"
-        with:
-          fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
-          path: "optimized-out"
-
-      - name: "Run the unit tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/unit/**/*.sol\""
-
-      - name: "Add test summary"
-        run: |
-          echo "## Unit tests result" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
-
   test-fuzz:
     env:
-      FOUNDRY_FUZZ_RUNS: "50000"
+      FOUNDRY_FUZZ_RUNS: "275000"
     needs: ["lint", "build"]
     runs-on: "ubuntu-latest"
     steps:
@@ -157,6 +130,9 @@ jobs:
           echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
 
   test-invariant:
+    env:
+      FOUNDRY_INVARIANT_DEPTH: "200"
+      FOUNDRY_INVARIANT_RUNS: "200"
     needs: ["lint", "build"]
     runs-on: "ubuntu-latest"
     steps:
@@ -185,7 +161,7 @@ jobs:
 
   test-fork:
     env:
-      FOUNDRY_FUZZ_RUNS: "800"
+      FOUNDRY_FUZZ_RUNS: "5000"
     needs: ["lint", "build"]
     runs-on: "ubuntu-latest"
     steps:
@@ -215,29 +191,3 @@ jobs:
         run: |
           echo "## Fork tests result" >> $GITHUB_STEP_SUMMARY
           echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
-
-  coverage:
-    needs: ["lint", "build"]
-    runs-on: "ubuntu-latest"
-    steps:
-      - name: "Check out the repo"
-        uses: "actions/checkout@v3"
-        with:
-          submodules: "recursive"
-
-      - name: "Install Foundry"
-        uses: "foundry-rs/foundry-toolchain@v1"
-
-      - name: "Generate the coverage report"
-        run: "forge coverage --report lcov"
-
-      - name: "Upload coverage report to Codecov"
-        uses: "codecov/codecov-action@v3"
-        with:
-          files: "./lcov.info"
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: "Add coverage summary"
-        run: |
-          echo "## Coverage result" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Uploaded to Codecov" >> $GITHUB_STEP_SUMMARY

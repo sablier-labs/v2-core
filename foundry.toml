@@ -18,7 +18,7 @@
   test = "test"
 
 [profile.default.fuzz]
-  max_test_rejects = 1_000_000 # Number of times `vm.assume` can fail
+  max_test_rejects = 5_000_000 # Number of times `vm.assume` can fail
   runs = 50
 
 [profile.default.invariant]
