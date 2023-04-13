@@ -261,7 +261,7 @@ jobs:
         with:
           fail-on: none
           sarif: results.sarif
-          slither-args: "--exclude naming-convention,solc-version"
+          slither-args: "--config-file slither.config.json"
           solc-version: "0.8.19"
           target: "src/"
 
