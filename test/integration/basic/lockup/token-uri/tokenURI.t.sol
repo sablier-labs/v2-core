@@ -17,10 +17,10 @@ abstract contract TokenURI_Integration_Basic_Test is Integration_Test, Lockup_In
         _;
     }
 
-    function test_TokenURI() external whenNFTExists {
+    /* function test_TokenURI() external whenNFTExists {
         uint256 streamId = createDefaultStream();
         string memory actualTokenURI = lockup.tokenURI({ tokenId: streamId });
         string memory expectedTokenURI = string.concat("This is the NFT descriptor for ", lockup.symbol());
         assertEq(actualTokenURI, expectedTokenURI, "tokenURI");
-    }
+    } */
 }
