@@ -480,6 +480,7 @@ contract SablierV2LockupDynamic is
                 try ISablierV2LockupRecipient(recipient).onStreamCanceled({
                     lockup: this,
                     streamId: streamId,
+                    sender: sender,
                     senderAmount: senderAmount,
                     recipientAmount: recipientAmount
                 }) { } catch { }
@@ -493,6 +494,7 @@ contract SablierV2LockupDynamic is
                 try ISablierV2LockupSender(sender).onStreamCanceled({
                     lockup: this,
                     streamId: streamId,
+                    recipient: recipient,
                     senderAmount: senderAmount,
                     recipientAmount: recipientAmount
                 }) { } catch { }

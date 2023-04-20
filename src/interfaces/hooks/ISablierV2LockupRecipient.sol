@@ -15,6 +15,7 @@ interface ISablierV2LockupRecipient {
     ///
     /// @param lockup The lockup contract on which cancellation was triggered.
     /// @param streamId The id of the canceled stream.
+    /// @param sender The stream's sender, who canceled the stream.
     /// @param senderAmount The amount of assets refunded to the stream's sender, denoted in units of the asset's
     /// decimals.
     /// @param recipientAmount The amount of assets left for the stream's recipient to withdraw, denoted in units of
@@ -22,6 +23,7 @@ interface ISablierV2LockupRecipient {
     function onStreamCanceled(
         ISablierV2Lockup lockup,
         uint256 streamId,
+        address sender,
         uint128 senderAmount,
         uint128 recipientAmount
     )

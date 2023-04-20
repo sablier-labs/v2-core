@@ -8,6 +8,7 @@ contract RevertingRecipient is ISablierV2LockupRecipient {
     function onStreamCanceled(
         ISablierV2Lockup lockup,
         uint256 streamId,
+        address sender,
         uint128 senderAmount,
         uint128 recipientAmount
     )
@@ -16,6 +17,7 @@ contract RevertingRecipient is ISablierV2LockupRecipient {
     {
         lockup;
         streamId;
+        sender;
         senderAmount;
         recipientAmount;
         revert("You shall not pass");
