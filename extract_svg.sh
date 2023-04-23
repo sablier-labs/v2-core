@@ -5,8 +5,8 @@
 # 2. extract_svg "TestName"
 # Replace "TestName" with the desired test name.
 # Test cases can be found in the files:
-# 2. test/unit/lockup/dynamic/token-uri/tokenURI.t.sol
-# 1. test/unit/lockup/linear/token-uri/tokenURI.t.sol
+# 1. test/unit/lockup/dynamic/token-uri/tokenURI.t.sol
+# 2. test/unit/lockup/linear/token-uri/tokenURI.t.sol
 
 function extract_svg() {
     local TEST_NAME="$1"
