@@ -60,7 +60,8 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
                             INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Generates a unique color accent by hashing together the `streamId` and Sablier contract address.
+    /// @notice Generates a unique color accent by hashing together the `chainid`, the `streamId` and the Sablier
+    /// contract address.
     function getColorAccent(uint256 sablierContract, uint256 streamId) internal view returns (string memory) {
         uint256 chainID = block.chainid;
         string memory str = (uint256(keccak256(abi.encodePacked(chainID, sablierContract, streamId)))).toString();
