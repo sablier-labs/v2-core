@@ -7,6 +7,7 @@ import { Strings } from "@openzeppelin/utils/Strings.sol";
 
 import { ISablierV2Lockup } from "./interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "./interfaces/ISablierV2NFTDescriptor.sol";
+import { Lockup } from "./types/DataTypes.sol";
 
 import { NFTSVG } from "./libraries/NFTSVG.sol";
 
@@ -38,27 +39,31 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
 
         uri = NFTSVG.generate(
             NFTSVG.GenerateParams({
-                sablierContract: address(sablierContract).toHexString(),
-                asset: address(asset).toHexString(),
-                assetSymbol: asset.symbol(),
-                sablierContractType: getSablierContractType(sablierContract.symbol()),
+                colorAccent: getColorAccent(uint256(uint160(address(sablierContract))), streamId),
                 percentageStreamedUInt: percentageStreamedUint,
                 percentageStreamedString: percentageStreamedString,
+                streamedAbbreviation: getStreamedAbbreviation(streamedAmount, asset.decimals()),
                 durationInDays: getDurationInDays(startTime, endTime),
-                colorAccent: getColorAccent(streamId, uint256(uint160(address(sablierContract)))),
+                sablierContract: address(sablierContract).toHexString(),
+                sablierContractType: getSablierContractType(sablierContract.symbol()),
+                asset: address(asset).toHexString(),
+                assetSymbol: asset.symbol(),
                 recipient: uint256(uint160(lockup.ownerOf(streamId))).toString(),
-                sender: uint256(uint160(lockup.getSender(streamId))).toString()
+                sender: uint256(uint160(lockup.getSender(streamId))).toString(),
+                status: getStreamStatus(lockup.getStatus(streamId)),
+                isDepleted: lockup.getStatus(streamId) == Lockup.Status.DEPLETED
             })
         );
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                           INTERNAL CONSTANT FUNCTIONS
+                            INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Generates a unique color accent by hashing together the streamId and Sablier contract address.
-    function getColorAccent(uint256 streamId, uint256 sablierContract) internal pure returns (string memory) {
-        string memory str = (uint256(keccak256(abi.encode(streamId + sablierContract)))).toString();
+    /// @notice Generates a unique color accent by hashing together the `streamId` and Sablier contract address.
+    function getColorAccent(uint256 sablierContract, uint256 streamId) internal view returns (string memory) {
+        uint256 chainID = block.chainid;
+        string memory str = (uint256(keccak256(abi.encodePacked(chainID, sablierContract, streamId)))).toString();
         // Extract the first 6 characters.
         bytes memory firstSixCharacters = new bytes(6);
         for (uint256 i = 0; i < 6;) {
@@ -89,13 +94,13 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         // The percentage is represented with 4 decimal here to enable the accurate display of values such as 13.37%.
         percentageStreamedUInt = streamedAmount * 10_000 / depositedAmount;
         // Exctract the last two decimals.
-        uint256 lastTwoDecimals = percentageStreamedUInt % 100;
+        uint256 fractionalPart = percentageStreamedUInt % 100;
         // Remove the last two decimals.
         percentageStreamedUInt /= 100;
 
-        percentageStreamedString = lastTwoDecimals == 0
+        percentageStreamedString = fractionalPart == 0
             ? string.concat(percentageStreamedUInt.toString(), ("%"))
-            : string.concat(percentageStreamedUInt.toString(), ".", lastTwoDecimals.toString(), "%");
+            : string.concat(percentageStreamedUInt.toString(), ".", fractionalPart.toString(), "%");
     }
 
     /// @notice Returns the sablier contract type.
@@ -103,5 +108,62 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         return keccak256(abi.encodePacked(symbol)) == keccak256(abi.encodePacked("SAB-V2-LOCKUP-LIN"))
             ? "Lockup Linear"
             : "Lockup Dynamic";
+    }
+
+    /// @notice Returns the stream status.
+    function getStreamStatus(Lockup.Status status) internal pure returns (string memory) {
+        if (status == Lockup.Status.ACTIVE) {
+            return "Active";
+        } else if (status == Lockup.Status.CANCELED) {
+            return "Canceled";
+        } else if (status == Lockup.Status.DEPLETED) {
+            return "Depleted";
+        }
+        return "Null";
+    }
+
+    /// @notice Returns an abbreviated representation of a streamed amount with a prefix ">= ".
+    /// @dev The abbreviation uses metric suffixes such as "k" for thousands, "m" for millions, "b" for billions,
+    /// "t" for trillions, and "q" for quadrillions. For example, if the input is 1,234,567,
+    /// the output will be ">= 1.23m".
+    /// @param streamedAmount The streamed amount to be abbreviated, expressed in the asset's decimals.
+    /// @param decimals The number of decimals of the asset used for streaming.
+    /// @return The abbreviated representation of the streamed amount as a string.
+    function getStreamedAbbreviation(uint256 streamedAmount, uint256 decimals) internal pure returns (string memory) {
+        uint256 streamedAmountNoDecimals = streamedAmount / 10 ** decimals;
+
+        // If the streamed amount is greater than 999 quadrillions, return "> 999q", otherwise the function would revert
+        // due to `suffixIndex` greater than 5.
+        if (streamedAmountNoDecimals > 999e15) {
+            return "> 999.99q";
+        }
+
+        if (streamedAmountNoDecimals < 1) {
+            return " < 1";
+        }
+
+        string[] memory suffixes = new string[](6);
+        suffixes[0] = "";
+        suffixes[1] = "k";
+        suffixes[2] = "m";
+        suffixes[3] = "b";
+        suffixes[4] = "t";
+        suffixes[5] = "q";
+
+        uint256 suffixIndex = 0;
+        uint256 fractionalPart;
+
+        while (streamedAmountNoDecimals >= 1000) {
+            fractionalPart = streamedAmountNoDecimals % 100;
+            streamedAmountNoDecimals /= 1000;
+            suffixIndex++;
+        }
+
+        string memory prefix = ">= ";
+        string memory integerPart = streamedAmountNoDecimals.toString();
+        string memory decimalPart = fractionalPart == 0 ? "" : string.concat(".", fractionalPart.toString());
+        string memory suffix = suffixes[suffixIndex];
+
+        return string.concat(prefix, integerPart, decimalPart, suffix);
     }
 }
