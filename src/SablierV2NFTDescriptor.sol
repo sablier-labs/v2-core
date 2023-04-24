@@ -136,11 +136,11 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         // If the streamed amount is greater than 999 quadrillions, return "> 999q", otherwise the function would revert
         // due to `suffixIndex` greater than 5.
         if (streamedAmountNoDecimals > 999e15) {
-            return "> 999.99q";
+            return "&gt; 999.99q";
         }
 
         if (streamedAmountNoDecimals < 1) {
-            return " < 1";
+            return "&lt; 1";
         }
 
         string[] memory suffixes = new string[](6);
@@ -160,7 +160,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             suffixIndex++;
         }
 
-        string memory prefix = ">= ";
+        string memory prefix = "&gt;= ";
         string memory integerPart = streamedAmountNoDecimals.toString();
         string memory decimalPart = fractionalPart == 0 ? "" : string.concat(".", fractionalPart.toString());
         string memory suffix = suffixes[suffixIndex];
