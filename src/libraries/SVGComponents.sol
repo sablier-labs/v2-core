@@ -3,6 +3,7 @@ pragma solidity >=0.8.19;
 
 import { Strings } from "@openzeppelin/utils/Strings.sol";
 
+// solhint-disable max-line-length
 library SVGComponents {
     using Strings for uint256;
 
