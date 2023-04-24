@@ -48,8 +48,8 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
                 sablierContractType: getSablierContractType(sablierContract.symbol()),
                 asset: address(asset).toHexString(),
                 assetSymbol: asset.symbol(),
-                recipient: uint256(uint160(lockup.ownerOf(streamId))).toString(),
-                sender: uint256(uint160(lockup.getSender(streamId))).toString(),
+                recipient: lockup.ownerOf(streamId).toHexString(),
+                sender: lockup.getSender(streamId).toHexString(),
                 status: getStreamStatus(lockup.getStatus(streamId)),
                 isDepleted: lockup.getStatus(streamId) == Lockup.Status.DEPLETED
             })
