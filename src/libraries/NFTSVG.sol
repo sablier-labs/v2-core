@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19;
 
-import { Base64 } from "@openzeppelin/utils/base64.sol";
+import { Base64 } from "@openzeppelin/utils/Base64.sol";
 import { Strings } from "@openzeppelin/utils/Strings.sol";
 
 import { SVGComponents } from "./SVGComponents.sol";
