@@ -136,7 +136,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         // If the streamed amount is greater than 999 quadrillions, return "> 999q", otherwise the function would revert
         // due to `suffixIndex` greater than 5.
         if (streamedAmountNoDecimals > 999e15) {
-            return "&gt; 999.99q";
+            return "&gt; 999q";
         }
 
         if (streamedAmountNoDecimals < 1) {
