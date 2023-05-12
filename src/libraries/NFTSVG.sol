@@ -138,14 +138,14 @@ library NFTSVG {
         // TO DO: change name and description
         return string.concat(
             "{",
-            '"name": "Sablier V2 NFT",',
-            '"description": "This NFT represents a stream in SablierV2",',
-            '"image": "data:image/svg+xml;base64,',
+            '"name":"Sablier V2 NFT",',
+            '"description":"This NFT represents a stream in SablierV2",',
+            '"image":"data:image/svg+xml;base64,',
             Base64.encode(bytes(finalSVG)),
             '",',
-            '"attributes": { "recipient": "',
+            '"attributes":{"recipient":"',
             params.recipient,
-            '" , "sender": "',
+            '","sender":"',
             params.sender,
             '"}}'
         );
@@ -170,7 +170,7 @@ library NFTSVG {
 
     function generateSVG(SVGParams memory params) internal pure returns (string memory) {
         return string.concat(
-            '<svg height="1000" width="1000" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"> ',
+            '<svg height="1000" width="1000" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">',
             generateDefs(
                 params.colorAccent,
                 params.progressElement,
@@ -225,16 +225,16 @@ library NFTSVG {
         returns (string memory)
     {
         return string.concat(
-            '<use href="#hourglass" x="150" y="90" transform="rotate(10)" transform-origin="500 500" />',
+            '<use href="#hourglass" x="150" y="90" transform="rotate(10)" transform-origin="500 500"/>',
             '<use href="#Progress" x="',
             progressLeftOffset,
-            '" y="790" /> <use href="#Status" x="',
+            '" y="790"/><use href="#Status" x="',
             statusLeftOffset,
-            '" y="790" /> <use href="#Streamed" x="',
+            '" y="790"/><use href="#Streamed" x="',
             streamedLeftOffset,
-            '" y="790" /> <use href="#Duration" x="',
+            '" y="790"/><use href="#Duration" x="',
             durationLeftOffset,
-            '" y="790" />'
+            '" y="790"/>'
         );
     }
 
@@ -249,7 +249,7 @@ library NFTSVG {
         returns (string memory)
     {
         return string.concat(
-            '<text text-rendering="optimizeSpeed"> ',
+            '<text text-rendering="optimizeSpeed">',
             SVGComponents.words("-100%", string.concat(sablierContract, " - Sablier ", sablierContractType)),
             SVGComponents.words("0%", string.concat(sablierContract, " - Sablier ", sablierContractType)),
             SVGComponents.words("-50%", string.concat(asset, " - ", assetSymbol)),
