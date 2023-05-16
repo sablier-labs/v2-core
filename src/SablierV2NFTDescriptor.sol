@@ -34,6 +34,8 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         uint40 startTime = lockup.getStartTime(streamId);
         uint40 endTime = lockup.getEndTime(streamId);
 
+        Lockup.Status status = lockup.statusOf(streamId);
+
         (uint256 percentageStreamedUint, string memory percentageStreamedString) =
             getPercentageStreamed(lockup.getDepositedAmount(streamId), streamedAmount);
 
@@ -50,8 +52,8 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
                 assetSymbol: asset.symbol(),
                 recipient: lockup.ownerOf(streamId).toHexString(),
                 sender: lockup.getSender(streamId).toHexString(),
-                status: getStreamStatus(lockup.getStatus(streamId)),
-                isDepleted: lockup.getStatus(streamId) == Lockup.Status.DEPLETED
+                status: getSablierStatus(status),
+                isDepleted: status == Lockup.Status.DEPLETED
             })
         );
     }
@@ -64,23 +66,37 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     /// contract address.
     function getColorAccent(uint256 sablierContract, uint256 streamId) internal view returns (string memory) {
         uint256 chainID = block.chainid;
-        string memory str = (uint256(keccak256(abi.encodePacked(chainID, sablierContract, streamId)))).toString();
-        // Extract the first 6 characters.
-        bytes memory firstSixCharacters = new bytes(6);
-        for (uint256 i = 0; i < 6;) {
-            firstSixCharacters[i] = bytes(str)[i];
-            unchecked {
-                i += 1;
-            }
+
+        // Generate a color value.
+        uint256 color = uint256(keccak256(abi.encodePacked(chainID, sablierContract, streamId)));
+
+        // Extract hue, saturation, and lightness channels from color.
+        uint256 hue = (color >> 16) % 360; // to make it from 0 to 360 inclusive
+        uint256 saturation = ((color >> 8) & 0xFF) % 101; // to make it from 0 to 100 inclusive
+        uint256 lightness = (color & 0xFF) % 101; // to make it from 0 to 100 inclusive
+
+        // The start of the new lightness range (minimum value for the new lightness)
+        uint256 start = 20;
+
+        // The divisor for modulo calculation `100 - start`
+        uint256 clock = 80;
+
+        // Calculate the new lightness value.
+        // The new value would be in the range (start, 100), while the old value was in the range (0, 100).
+        // This is how very dark colors are excluded from the generated color set.
+        unchecked {
+            lightness = lightness % clock + start;
         }
-        return string.concat("#", string(firstSixCharacters));
+
+        // Represent the color value as HSL.
+        return string.concat("hsl(", hue.toString(), ", ", saturation.toString(), "%, ", lightness.toString(), "%)");
     }
 
     /// @notice Calculates the duration of the stream in days.
     function getDurationInDays(uint256 startTime, uint256 endTime) internal pure returns (string memory) {
         uint256 durationInSeconds = endTime - startTime;
         uint256 durationInDays = durationInSeconds / 86_400;
-        return string.concat(durationInDays.toString(), " days");
+        return durationInDays > 9999 ? "&gt 9999 days" : string.concat(durationInDays.toString(), " days");
     }
 
     /// @notice Computes the percentage of assets that have been streamed.
@@ -111,16 +127,19 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             : "Lockup Dynamic";
     }
 
-    /// @notice Returns the stream status.
-    function getStreamStatus(Lockup.Status status) internal pure returns (string memory) {
-        if (status == Lockup.Status.ACTIVE) {
-            return "Active";
+    /// @notice Returns the sablier status name represented as string.
+    function getSablierStatus(Lockup.Status status) internal pure returns (string memory) {
+        if (status == Lockup.Status.PENDING) {
+            return "Pending";
+        } else if (status == Lockup.Status.STREAMING) {
+            return "Streaming";
+        } else if (status == Lockup.Status.SETTLED) {
+            return "Settled";
         } else if (status == Lockup.Status.CANCELED) {
             return "Canceled";
-        } else if (status == Lockup.Status.DEPLETED) {
-            return "Depleted";
         }
-        return "Null";
+
+        return "Depleted";
     }
 
     /// @notice Returns an abbreviated representation of a streamed amount with a prefix ">= ".
@@ -131,7 +150,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     /// @param decimals The number of decimals of the asset used for streaming.
     /// @return The abbreviated representation of the streamed amount as a string.
     function getStreamedAbbreviation(uint256 streamedAmount, uint256 decimals) internal pure returns (string memory) {
-        uint256 streamedAmountNoDecimals = streamedAmount / 10 ** decimals;
+        uint256 streamedAmountNoDecimals = decimals == 0 ? streamedAmount : streamedAmount / 10 ** decimals;
 
         // If the streamed amount is greater than 999 quadrillions, return "> 999q", otherwise the function would revert
         // due to `suffixIndex` greater than 5.
