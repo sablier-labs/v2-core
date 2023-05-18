@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.19;
 
 import { Base64 } from "@openzeppelin/utils/Base64.sol";
@@ -62,10 +62,10 @@ library NFTSVG {
 
         vars.row = vars.streamedWidth + vars.durationWidth + vars.progressWidth + vars.statusWidth + 20 * 3;
 
-        vars.progressLeftOffset = (1000 - vars.row) / 2;
-        vars.statusLeftOffset = vars.progressLeftOffset + vars.progressWidth + 20;
-        vars.streamedLeftOffset = vars.statusLeftOffset + vars.statusWidth + 20;
-        vars.durationLeftOffset = vars.streamedLeftOffset + vars.streamedWidth + 20;
+        vars.progressLeftOffset = (1015 - vars.row) / 2;
+        vars.statusLeftOffset = vars.progressLeftOffset + vars.progressWidth + 16;
+        vars.streamedLeftOffset = vars.statusLeftOffset + vars.statusWidth + 16;
+        vars.durationLeftOffset = vars.streamedLeftOffset + vars.streamedWidth + 16;
 
         return Base64.encode(
             bytes(

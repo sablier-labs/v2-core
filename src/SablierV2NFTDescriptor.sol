@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.19;
 
 import { IERC20Metadata } from "@openzeppelin/token/ERC20/extensions/IERC20Metadata.sol";
@@ -33,7 +33,6 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         uint128 streamedAmount = lockup.streamedAmountOf(streamId);
         uint40 startTime = lockup.getStartTime(streamId);
         uint40 endTime = lockup.getEndTime(streamId);
-
         Lockup.Status status = lockup.statusOf(streamId);
 
         (uint256 percentageStreamedUint, string memory percentageStreamedString) =
@@ -93,10 +92,17 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     }
 
     /// @notice Calculates the duration of the stream in days.
-    function getDurationInDays(uint256 startTime, uint256 endTime) internal pure returns (string memory) {
+    function getDurationInDays(uint256 startTime, uint256 endTime) internal pure returns (string memory duration) {
         uint256 durationInSeconds = endTime - startTime;
         uint256 durationInDays = durationInSeconds / 86_400;
-        return durationInDays > 9999 ? "&gt 9999 days" : string.concat(durationInDays.toString(), " days");
+
+        if (durationInDays == 0) {
+            return "< 1 days";
+        } else if (durationInDays > 9999) {
+            return "> 9999 days";
+        }
+
+        duration = string.concat(durationInDays.toString(), " days");
     }
 
     /// @notice Computes the percentage of assets that have been streamed.
@@ -144,42 +150,40 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
 
     /// @notice Returns an abbreviated representation of a streamed amount with a prefix ">= ".
     /// @dev The abbreviation uses metric suffixes such as "k" for thousands, "m" for millions, "b" for billions,
-    /// "t" for trillions, and "q" for quadrillions. For example, if the input is 1,234,567,
-    /// the output will be ">= 1.23m".
+    /// "t" for trillions. For example, if the input is 1,234,567, the output will be ">= 1.23m".
     /// @param streamedAmount The streamed amount to be abbreviated, expressed in the asset's decimals.
     /// @param decimals The number of decimals of the asset used for streaming.
     /// @return The abbreviated representation of the streamed amount as a string.
     function getStreamedAbbreviation(uint256 streamedAmount, uint256 decimals) internal pure returns (string memory) {
         uint256 streamedAmountNoDecimals = decimals == 0 ? streamedAmount : streamedAmount / 10 ** decimals;
 
-        // If the streamed amount is greater than 999 quadrillions, return "> 999q", otherwise the function would revert
-        // due to `suffixIndex` greater than 5.
-        if (streamedAmountNoDecimals > 999e15) {
-            return "&gt; 999q";
+        // If the streamed amount is greater than 999 trillions, return "> 999t", otherwise the function would revert
+        // due to `suffixIndex` greater than 4.
+        if (streamedAmountNoDecimals > 999e12) {
+            return "> 999t";
         }
 
         if (streamedAmountNoDecimals < 1) {
-            return "&lt; 1";
+            return "< 1";
         }
 
-        string[] memory suffixes = new string[](6);
+        string[] memory suffixes = new string[](5);
         suffixes[0] = "";
         suffixes[1] = "k";
         suffixes[2] = "m";
         suffixes[3] = "b";
         suffixes[4] = "t";
-        suffixes[5] = "q";
 
         uint256 suffixIndex = 0;
         uint256 fractionalPart;
 
         while (streamedAmountNoDecimals >= 1000) {
-            fractionalPart = streamedAmountNoDecimals % 100;
+            fractionalPart = (streamedAmountNoDecimals / 10) % 100; // gets the first two digits after decimal
             streamedAmountNoDecimals /= 1000;
             suffixIndex++;
         }
 
-        string memory prefix = "&gt;= ";
+        string memory prefix = ">= ";
         string memory integerPart = streamedAmountNoDecimals.toString();
         string memory decimalPart = fractionalPart == 0 ? "" : string.concat(".", fractionalPart.toString());
         string memory suffix = suffixes[suffixIndex];

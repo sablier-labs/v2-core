@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.19;
 
 import { Strings } from "@openzeppelin/utils/Strings.sol";
@@ -8,7 +8,7 @@ library SVGComponents {
     using Strings for uint256;
 
     string internal constant BACKGROUND =
-        '<rect width="100%"height="100%"filter="url(#noise)"/><use href="#light"fill-opacity="0.9"/><use href="#light" x="1000" y="1000" fill-opacity="0.9"/><rect x="70" y="70" width="860" height="860"rx="45"ry="45"fill="white"fill-opacity="0.03"stroke="white"stroke-opacity="0.1"stroke-width="4"/><path d="M 200,450 a 300,300 0 1,1 600,0 a 300,300 0 1,1 -600,0" fill="white" fill-opacity="0.02" stroke="url(#fillOutline)" stroke-width="4"/><use href="#logo" x="170" y="170" transform="scale(0.6)"/><path id="boxOutline" fill="none" d="M125 45h750s80 0 80 80v750s0 80 -80 80h-750s-80 0 -80 -80v-750s0 -80 80 -80"/>';
+        '<rect width="100%" height="100%" filter="url(#noise)"/><use href="#light" fill-opacity="0.9"/><use href="#light" x="1000" y="1000" fill-opacity="0.9"/><rect x="70" y="70" width="860" height="860" rx="45" ry="45" fill="white" fill-opacity="0.03" stroke="white" stroke-opacity="0.1" stroke-width="4"/><path d="M 200,450 a 300,300 0 1,1 600,0 a 300,300 0 1,1 -600,0" fill="white" fill-opacity="0.02" stroke="url(#fillOutline)" stroke-width="4"/><use href="#logo" x="170" y="170" transform="scale(0.6)"/><path id="boxOutline" fill="none" d="M125 45h750s80 0 80 80v750s0 80 -80 80h-750s-80 0 -80 -80v-750s0 -80 80 -80"/>';
 
     string internal constant COLOR_BACKGROUND = "hsl(230, 21%, 11%)";
 
@@ -55,8 +55,8 @@ library SVGComponents {
 
         vars.words = vars.textLength > vars.labelLength ? vars.textLength : vars.labelLength;
 
-        vars.progressCircleLeftOffset = vars.words + 45;
-        vars.boxWidth = vars.isProgress ? vars.progressCircleLeftOffset + 45 : vars.progressCircleLeftOffset;
+        vars.progressCircleLeftOffset = vars.words + 40;
+        vars.boxWidth = vars.isProgress ? vars.progressCircleLeftOffset + 40 : vars.progressCircleLeftOffset;
 
         vars.progressCircle = vars.isProgress
             ? string.concat(
@@ -66,11 +66,11 @@ library SVGComponents {
                 COLOR_BACKGROUND,
                 '"stroke-width="10"/><circle transform="rotate(-95)" transform-origin="',
                 vars.progressCircleLeftOffset.toString(),
-                '50"cx="',
+                ' 50" cx="',
                 vars.progressCircleLeftOffset.toString(),
-                '" cy="50" r="22" stroke="',
+                '"cy="50" r="22" stroke="',
                 colorAccent,
-                '" stroke-width="5" stroke-linecap="round" stroke-dasharray="',
+                '"stroke-width="5" stroke-linecap="round" stroke-dasharray="',
                 ((progress * 138) / 100).toString(),
                 ', 138"/></g>'
             )
@@ -79,9 +79,9 @@ library SVGComponents {
         vars.element = string.concat(
             '<g id="',
             vars.label,
-            '"fill="white"><rect height="100" width="',
+            '" fill="white"><rect height="100" width="',
             vars.boxWidth.toString(),
-            '"rx="15" ry="15" fill-opacity="0.03" stroke="white" stroke-opacity="0.1" stroke-width="4"/>',
+            '" rx="15" ry="15" fill-opacity="0.03" stroke="white" stroke-opacity="0.1" stroke-width="4"/>',
             vars.progressCircle,
             '<text x="20" y="34" font-size="22px" font-family="\'Courier New\', \'Arial\', \'monospace\'">',
             vars.label,
