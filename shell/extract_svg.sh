@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # To run this script, execute the following commands in the terminal:
-# 1. source extract_svg.sh
+# 1. source shell/extract_svg.sh
 # 2. extract_svg "TestName"
 # Replace "TestName" with the desired test name.
 # Test cases can be found in the files:
