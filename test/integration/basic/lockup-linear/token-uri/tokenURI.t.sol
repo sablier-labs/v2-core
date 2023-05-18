@@ -35,7 +35,7 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
     }
 
     function test_TokenURI_Linear_ProgressBoxQuarter() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
+        vm.warp({ timestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
         console2.log("URI: ", linear.tokenURI(defaultStreamId));
     }
 
@@ -55,7 +55,7 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
     }
 
     function test_TokenURI_Linear_StatusBoxStreaming() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
+        vm.warp({ timestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
         console2.log("URI: ", linear.tokenURI(defaultStreamId));
     }
 
@@ -65,7 +65,7 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
     }
 
     function test_TokenURI_Linear_StatusBoxCanceled() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
+        vm.warp({ timestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
         linear.cancel(defaultStreamId);
         console2.log("URI: ", linear.tokenURI(defaultStreamId));
     }
@@ -81,28 +81,28 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
     }
 
     function test_TokenURI_Linear_StreamedBoxLessThanTen() external whenNFTExists {
-        uint40 startTime = defaults.START_TIME();
-        uint256 streamId = createDefaultStreamWithCliffTime(startTime);
-        vm.warp({ timestamp: startTime + 1 });
+        uint40 cliffTime = defaults.START_TIME();
+        uint256 streamId = createDefaultStreamWithCliffTime(cliffTime);
+        vm.warp({ timestamp: cliffTime + 5 });
         console2.log("URI: ", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_StreamedBoxTens() external whenNFTExists {
-        uint40 startTime = defaults.START_TIME();
-        uint256 streamId = createDefaultStreamWithCliffTime(startTime);
-        vm.warp({ timestamp: startTime + 15 });
+        uint40 cliffTime = defaults.START_TIME();
+        uint256 streamId = createDefaultStreamWithCliffTime(cliffTime);
+        vm.warp({ timestamp: cliffTime + 15 });
         console2.log("URI: ", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_StreamedBoxHundreds() external whenNFTExists {
-        uint40 startTime = defaults.START_TIME();
-        uint256 streamId = createDefaultStreamWithCliffTime(startTime);
-        vm.warp({ timestamp: startTime + 200 });
+        uint40 cliffTime = defaults.START_TIME();
+        uint256 streamId = createDefaultStreamWithCliffTime(cliffTime);
+        vm.warp({ timestamp: cliffTime + 200 });
         console2.log("URI: ", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_StreamedBoxThousands() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
+        vm.warp({ timestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
         console2.log("URI: ", linear.tokenURI(defaultStreamId));
     }
 

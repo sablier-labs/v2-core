@@ -83,22 +83,22 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
     }
 
     function test_TokenURI_Dynamic_StreamedBoxLessThanTen() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + 1 });
+        vm.warp({ timestamp: defaults.START_TIME() + 400 });
         console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxTens() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + 15 });
+        vm.warp({ timestamp: defaults.START_TIME() + 800 });
         console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxHundreds() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + 200 });
+        vm.warp({ timestamp: defaults.START_TIME() + 1000 });
         console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxThousands() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
+        vm.warp({ timestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
         console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
     }
 
@@ -176,7 +176,7 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
         console2.log("URI: ", dynamic.tokenURI(streamId));
     }
 
-    function test_TokenURI_Dynamic_DifferentColorAccent() external whenNFTExists setProtocolFeeToZero {
+    function test_TokenURI_Dynamic_DifferentColorAccent() external whenNFTExists {
         for (uint256 i = 0; i < 7; ++i) {
             createStreamWithTotalAmount(10_000e18);
         }
@@ -187,7 +187,11 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
 
     /// @dev We are not using the create default function because it would be harder to calculate the segments amount
     /// and the total amount with the protocol fee set to 0.1% and a broker fee set to 0.3%.
-    function createStreamWithTotalAmount(uint128 totalAmount) internal returns (uint256 streamId) {
+    function createStreamWithTotalAmount(uint128 totalAmount)
+        internal
+        setProtocolFeeToZero
+        returns (uint256 streamId)
+    {
         LockupDynamic.CreateWithMilestones memory params = defaults.createWithMilestones();
         params.broker = broker;
         params.totalAmount = totalAmount;
