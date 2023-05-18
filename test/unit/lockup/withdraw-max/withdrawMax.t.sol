@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { Lockup } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
 
 import { WithdrawMax_Shared_Test } from "../../../shared/lockup/withdraw-max/withdrawMax.t.sol";
 import { Unit_Test } from "../../Unit.t.sol";

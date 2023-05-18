@@ -3,7 +3,9 @@ pragma solidity >=0.8.19;
 
 import { UD60x18, ud } from "@prb/math/UD60x18.sol";
 
-import { Lockup, LockupDynamic, LockupLinear } from "../types/DataTypes.sol";
+import { Lockup } from "../types/Lockup.sol";
+import { LockupDynamic } from "../types/LockupDynamic.sol";
+import { LockupLinear } from "../types/LockupLinear.sol";
 import { Errors } from "./Errors.sol";
 
 /// @title Helpers

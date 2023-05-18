@@ -6,7 +6,8 @@ import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { ISablierV2Comptroller } from "src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2LockupDynamic } from "src/interfaces/ISablierV2LockupDynamic.sol";
-import { Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
+import { LockupDynamic } from "src/types/LockupDynamic.sol";
 
 import { LockupStore } from "../stores/LockupStore.sol";
 import { TimestampStore } from "../stores/TimestampStore.sol";

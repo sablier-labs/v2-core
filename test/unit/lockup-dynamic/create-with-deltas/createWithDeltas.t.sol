@@ -5,7 +5,8 @@ import { ud2x18 } from "@prb/math/UD2x18.sol";
 
 import { ISablierV2LockupDynamic } from "src/interfaces/ISablierV2LockupDynamic.sol";
 import { Errors } from "src/libraries/Errors.sol";
-import { Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
+import { LockupDynamic } from "src/types/LockupDynamic.sol";
 
 import { CreateWithDeltas_Dynamic_Shared_Test } from
     "../../../shared/lockup-dynamic/create-with-deltas/createWithDeltas.t.sol";

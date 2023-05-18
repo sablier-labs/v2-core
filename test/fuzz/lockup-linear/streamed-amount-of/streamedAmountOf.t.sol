@@ -3,7 +3,8 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { ZERO } from "@prb/math/UD60x18.sol";
 
-import { Broker, LockupLinear } from "src/types/DataTypes.sol";
+import { Broker } from "src/types/Generics.sol";
+import { LockupLinear } from "src/types/LockupLinear.sol";
 
 import { StreamedAmountOf_Shared_Test } from "../../../shared/lockup/streamed-amount-of/streamedAmountOf.t.sol";
 import { Linear_Fuzz_Test } from "../Linear.t.sol";

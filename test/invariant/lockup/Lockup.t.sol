@@ -2,7 +2,7 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
-import { Lockup } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
 
 import { Invariant_Test } from "../Invariant.t.sol";
 import { LockupHandler } from "../handlers/LockupHandler.sol";

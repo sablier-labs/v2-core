@@ -5,7 +5,7 @@ import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
 import { ISablierV2LockupRecipient } from "src/interfaces/hooks/ISablierV2LockupRecipient.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
-import { Lockup } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
 
 import { Withdraw_Shared_Test } from "../../../shared/lockup/withdraw/withdraw.t.sol";
 import { Unit_Test } from "../../Unit.t.sol";

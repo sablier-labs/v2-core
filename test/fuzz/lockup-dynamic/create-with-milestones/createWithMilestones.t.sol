@@ -6,7 +6,9 @@ import { stdError } from "forge-std/StdError.sol";
 
 import { ISablierV2LockupDynamic } from "src/interfaces/ISablierV2LockupDynamic.sol";
 import { Errors } from "src/libraries/Errors.sol";
-import { Broker, Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import { Broker } from "src/types/Generics.sol";
+import { Lockup } from "src/types/Lockup.sol";
+import { LockupDynamic } from "src/types/LockupDynamic.sol";
 
 import { CreateWithMilestones_Dynamic_Shared_Test } from
     "../../../shared/lockup-dynamic/create-with-milestones/createWithMilestones.t.sol";

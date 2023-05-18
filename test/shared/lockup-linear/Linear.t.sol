@@ -3,7 +3,8 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 
-import { Broker, LockupLinear } from "../../../src/types/DataTypes.sol";
+import { Broker } from "../../../src/types/Generics.sol";
+import { LockupLinear } from "../../../src/types/LockupLinear.sol";
 
 import { Lockup_Shared_Test } from "../lockup/Lockup.t.sol";
 

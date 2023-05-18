@@ -4,7 +4,9 @@ pragma solidity >=0.8.19 <0.9.0;
 import { MAX_UD60x18, UD60x18, ud } from "@prb/math/UD60x18.sol";
 
 import { Errors } from "src/libraries/Errors.sol";
-import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
+import { Broker } from "src/types/Generics.sol";
+import { Lockup } from "src/types/Lockup.sol";
+import { LockupLinear } from "src/types/LockupLinear.sol";
 
 import { CreateWithRange_Linear_Shared_Test } from
     "../../../shared/lockup-linear/create-with-range/createWithRange.t.sol";

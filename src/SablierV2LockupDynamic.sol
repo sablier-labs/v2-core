@@ -18,7 +18,8 @@ import { ISablierV2LockupSender } from "./interfaces/hooks/ISablierV2LockupSende
 import { ISablierV2NFTDescriptor } from "./interfaces/ISablierV2NFTDescriptor.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { Helpers } from "./libraries/Helpers.sol";
-import { Lockup, LockupDynamic } from "./types/DataTypes.sol";
+import { Lockup } from "./types/Lockup.sol";
+import { LockupDynamic } from "./types/LockupDynamic.sol";
 
 /*
 

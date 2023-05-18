@@ -2,7 +2,8 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import { SablierV2LockupLinear } from "src/SablierV2LockupLinear.sol";
-import { Lockup, LockupLinear } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
+import { LockupLinear } from "src/types/LockupLinear.sol";
 
 import { Lockup_Invariant_Test } from "../lockup/Lockup.t.sol";
 import { LockupLinearHandler } from "../handlers/LockupLinearHandler.sol";

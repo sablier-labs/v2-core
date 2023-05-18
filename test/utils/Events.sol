@@ -7,7 +7,9 @@ import { UD60x18 } from "@prb/math/UD60x18.sol";
 import { IERC3156FlashBorrower } from "../../src/interfaces/erc3156/IERC3156FlashBorrower.sol";
 import { ISablierV2Comptroller } from "../../src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2NFTDescriptor } from "../../src/interfaces/ISablierV2NFTDescriptor.sol";
-import { Lockup, LockupDynamic, LockupLinear } from "../../src/types/DataTypes.sol";
+import { Lockup } from "../../src/types/Lockup.sol";
+import { LockupDynamic } from "../../src/types/LockupDynamic.sol";
+import { LockupLinear } from "../../src/types/LockupLinear.sol";
 
 /// @title Events
 /// @notice Abstract contract containing all the events emitted by the protocol.

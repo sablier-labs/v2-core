@@ -5,7 +5,7 @@ import { Solarray } from "solarray/Solarray.sol";
 
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
 import { Errors } from "src/libraries/Errors.sol";
-import { Lockup } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
 
 import { Unit_Test } from "../../Unit.t.sol";
 import { CancelMultiple_Shared_Test } from "../../../shared/lockup/cancel-multiple/cancelMultiple.t.sol";

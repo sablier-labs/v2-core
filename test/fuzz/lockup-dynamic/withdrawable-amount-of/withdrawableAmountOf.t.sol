@@ -3,7 +3,8 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { ZERO } from "@prb/math/UD60x18.sol";
 
-import { Broker, LockupDynamic } from "src/types/DataTypes.sol";
+import { Broker } from "src/types/Generics.sol";
+import { LockupDynamic } from "src/types/LockupDynamic.sol";
 
 import { Dynamic_Fuzz_Test } from "../Dynamic.t.sol";
 import { WithdrawableAmountOf_Shared_Test } from

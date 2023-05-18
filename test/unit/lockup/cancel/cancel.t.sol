@@ -6,7 +6,7 @@ import { ISablierV2LockupRecipient } from "src/interfaces/hooks/ISablierV2Lockup
 import { ISablierV2LockupSender } from "src/interfaces/hooks/ISablierV2LockupSender.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
-import { Lockup } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
 
 import { Cancel_Shared_Test } from "../../../shared/lockup/cancel/cancel.t.sol";
 import { Unit_Test } from "../../Unit.t.sol";

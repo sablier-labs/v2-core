@@ -3,7 +3,8 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { ISablierV2LockupLinear } from "src/interfaces/ISablierV2LockupLinear.sol";
 import { Errors } from "src/libraries/Errors.sol";
-import { Lockup, LockupLinear } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
+import { LockupLinear } from "src/types/LockupLinear.sol";
 
 import { CreateWithDurations_Linear_Shared_Test } from
     "../../../shared/lockup-linear/create-with-durations/createWithDurations.t.sol";

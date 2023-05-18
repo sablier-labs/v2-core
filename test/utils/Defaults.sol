@@ -5,7 +5,10 @@ import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { UD2x18, ud2x18 } from "@prb/math/UD2x18.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
-import { Broker, Lockup, LockupDynamic, LockupLinear } from "../../src/types/DataTypes.sol";
+import { Broker } from "../../src/types/Generics.sol";
+import { Lockup } from "../../src/types/Lockup.sol";
+import { LockupDynamic } from "../../src/types/LockupDynamic.sol";
+import { LockupLinear } from "../../src/types/LockupLinear.sol";
 
 import { Constants } from "./Constants.sol";
 import { Users } from "./Types.sol";

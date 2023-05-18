@@ -15,7 +15,8 @@ import { ISablierV2LockupRecipient } from "./interfaces/hooks/ISablierV2LockupRe
 import { ISablierV2LockupSender } from "./interfaces/hooks/ISablierV2LockupSender.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { Helpers } from "./libraries/Helpers.sol";
-import { Lockup, LockupLinear } from "./types/DataTypes.sol";
+import { Lockup } from "./types/Lockup.sol";
+import { LockupLinear } from "./types/LockupLinear.sol";
 
 /*
 

@@ -9,7 +9,11 @@ import { Solarray } from "solarray/Solarray.sol";
 import { ISablierV2Comptroller } from "../../src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2LockupDynamic } from "../../src/interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupLinear } from "../../src/interfaces/ISablierV2LockupLinear.sol";
-import { Broker, LockupLinear, LockupDynamic } from "../../src/types/DataTypes.sol";
+import { Broker } from "../../src/types/Generics.sol";
+import { Lockup } from "../../src/types/Lockup.sol";
+import { LockupDynamic } from "../../src/types/LockupDynamic.sol";
+import { LockupLinear } from "../../src/types/LockupLinear.sol";
+
 import { ud2x18, ud60x18 } from "../../src/types/Math.sol";
 
 import { BaseScript } from "../shared/Base.s.sol";

@@ -2,7 +2,7 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import { Errors } from "src/libraries/Errors.sol";
-import { LockupLinear } from "src/types/DataTypes.sol";
+import { LockupLinear } from "src/types/LockupLinear.sol";
 
 import { Linear_Unit_Test } from "../Linear.t.sol";
 

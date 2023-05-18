@@ -5,7 +5,9 @@ import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { UD60x18, ud } from "@prb/math/UD60x18.sol";
 import { Solarray } from "solarray/Solarray.sol";
 
-import { Broker, Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import { Broker } from "src/types/Generics.sol";
+import { Lockup } from "src/types/Lockup.sol";
+import { LockupDynamic } from "src/types/LockupDynamic.sol";
 
 import { Fork_Test } from "../Fork.t.sol";
 

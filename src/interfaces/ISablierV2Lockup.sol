@@ -4,7 +4,7 @@ pragma solidity >=0.8.19;
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { IERC721Metadata } from "@openzeppelin/token/ERC721/extensions/IERC721Metadata.sol";
 
-import { Lockup } from "../types/DataTypes.sol";
+import { Lockup } from "../types/Lockup.sol";
 import { ISablierV2Base } from "./ISablierV2Base.sol";
 import { ISablierV2NFTDescriptor } from "./ISablierV2NFTDescriptor.sol";
 

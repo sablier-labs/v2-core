@@ -5,7 +5,8 @@ import { Math } from "@openzeppelin/utils/math/Math.sol";
 import { PRBMathCastingUint128 as CastingUint128 } from "@prb/math/casting/Uint128.sol";
 import { UD60x18, ud, uUNIT } from "@prb/math/UD60x18.sol";
 
-import { Lockup, LockupDynamic } from "../../src/types/DataTypes.sol";
+import { Lockup } from "../../src/types/Lockup.sol";
+import { LockupDynamic } from "../../src/types/LockupDynamic.sol";
 
 import { Constants } from "./Constants.sol";
 import { Defaults } from "./Defaults.sol";

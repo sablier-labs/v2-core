@@ -8,7 +8,7 @@ import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
 import { Errors } from "../libraries/Errors.sol";
-import { Lockup } from "../types/DataTypes.sol";
+import { Lockup } from "../types/Lockup.sol";
 import { SablierV2Base } from "./SablierV2Base.sol";
 
 /// @title SablierV2Lockup

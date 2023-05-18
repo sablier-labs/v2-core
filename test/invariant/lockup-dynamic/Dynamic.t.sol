@@ -2,7 +2,8 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import { SablierV2LockupDynamic } from "src/SablierV2LockupDynamic.sol";
-import { Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import { Lockup } from "src/types/Lockup.sol";
+import { LockupDynamic } from "src/types/LockupDynamic.sol";
 
 import { Lockup_Invariant_Test } from "../lockup/Lockup.t.sol";
 import { LockupDynamicCreateHandler } from "../handlers/LockupDynamicCreateHandler.sol";
