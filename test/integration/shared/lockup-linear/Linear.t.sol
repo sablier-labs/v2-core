@@ -66,6 +66,13 @@ abstract contract Linear_Integration_Shared_Test is Lockup_Integration_Shared_Te
         streamId = linear.createWithRange(params);
     }
 
+    /// @dev Creates the default stream with the provided cliff time.
+    function createDefaultStreamWithCliffTime(uint40 cliffTime) internal returns (uint256 streamId) {
+        LockupLinear.CreateWithRange memory params = _params.createWithRange;
+        params.range.cliff = cliffTime;
+        streamId = linear.createWithRange(params);
+    }
+
     /// @dev Creates the default stream with the provided end time.
     function createDefaultStreamWithEndTime(uint40 endTime) internal override returns (uint256 streamId) {
         LockupLinear.CreateWithRange memory params = _params.createWithRange;
