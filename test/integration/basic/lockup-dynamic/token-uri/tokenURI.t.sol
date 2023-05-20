@@ -35,121 +35,121 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
     }
 
     function test_TokenURI_Dynamic_ProgressBoxZero() external view whenNFTExists {
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_ProgressBoxQuarter() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_ProgressBoxWithDecimals() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 2 - 1 });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_ProgressBoxFull() external whenNFTExists {
         vm.warp({ timestamp: defaults.END_TIME() });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StatusBoxPending() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() - 1 });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StatusBoxStreaming() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StatusBoxSettled() external whenNFTExists {
         vm.warp({ timestamp: defaults.END_TIME() });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StatusBoxCanceled() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
         dynamic.cancel(defaultStreamId);
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StatusBoxDepleted() external whenNFTExists {
         vm.warp({ timestamp: defaults.END_TIME() });
         dynamic.withdraw(defaultStreamId, users.recipient, defaults.DEPOSIT_AMOUNT());
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxLessThanOne() external view whenNFTExists {
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxLessThanTen() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + 400 });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxTens() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + 800 });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxHundreds() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + 1000 });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxThousands() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxMillions() external whenNFTExists {
         uint256 streamId = createStreamWithTotalAmount(1_234_566 * 1e18);
         vm.warp({ timestamp: defaults.END_TIME() });
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxBillions() external whenNFTExists {
         uint256 streamId = createStreamWithTotalAmount(100e9 * 1e18);
         vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 2 });
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxTrillions() external whenNFTExists {
         uint256 streamId = createStreamWithTotalAmount(100e12 * 1e18);
         vm.warp({ timestamp: defaults.END_TIME() });
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxQuadrillions() external whenNFTExists {
         uint256 streamId = createStreamWithTotalAmount(10e15 * 1e18);
         vm.warp({ timestamp: defaults.END_TIME() });
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_DurationBoxLessThanOne() external view whenNFTExists {
-        console2.log("URI: ", dynamic.tokenURI(defaultStreamId));
+        console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_DurationBoxTenDays() external whenNFTExists {
         uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 864_000);
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_DurationBoxOneHundredDays() external whenNFTExists {
         uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 8_640_000);
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_DurationBoxOneThousandDays() external whenNFTExists {
         uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 86_400_000);
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_DurationBoxTenThousandsDays() external whenNFTExists {
         uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 864_000_000);
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     modifier setProtocolFeeToZero() {
@@ -175,7 +175,7 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
         uint256 streamId = dynamic.createWithMilestones(params);
 
         vm.warp({ timestamp: endTime - (864_000_000 / 2) - 1 });
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_DifferentColorAccent() external whenNFTExists {
@@ -184,7 +184,7 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
         }
 
         uint256 streamId = createStreamWithTotalAmount(10_000e18);
-        console2.log("URI: ", dynamic.tokenURI(streamId));
+        console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     /// @dev We are not using the create default function because it would be harder to calculate the segments amount
