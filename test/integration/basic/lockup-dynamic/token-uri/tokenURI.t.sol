@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
+// solhint-disable no-console
 pragma solidity >=0.8.19 <0.9.0;
-
-// solhint-disable
 
 import { ud } from "@prb/math/UD60x18.sol";
 import { console2 } from "forge-std/console2.sol";

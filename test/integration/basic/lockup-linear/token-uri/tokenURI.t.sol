@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
+// solhint-disable no-console
 pragma solidity >=0.8.19 <0.9.0;
 
-// solhint-disable
 import { console2 } from "forge-std/console2.sol";
 
 import { LockupLinear } from "src/types/DataTypes.sol";

@@ -97,9 +97,9 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         uint256 durationInDays = durationInSeconds / 86_400;
 
         if (durationInDays == 0) {
-            return "< 1 days";
+            return "&lt; 1 days";
         } else if (durationInDays > 9999) {
-            return "> 9999 days";
+            return "&gt; 9999 days";
         }
 
         duration = string.concat(durationInDays.toString(), " days");
@@ -116,7 +116,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     {
         // The percentage is represented with 4 decimal here to enable the accurate display of values such as 13.37%.
         percentageStreamedUInt = streamedAmount * 10_000 / depositedAmount;
-        // Exctract the last two decimals.
+        // Extract the last two decimals.
         uint256 fractionalPart = percentageStreamedUInt % 100;
         // Remove the last two decimals.
         percentageStreamedUInt /= 100;
@@ -160,11 +160,11 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         // If the streamed amount is greater than 999 trillions, return "> 999t", otherwise the function would revert
         // due to `suffixIndex` greater than 4.
         if (streamedAmountNoDecimals > 999e12) {
-            return "> 999t";
+            return "&gt; 999t";
         }
 
         if (streamedAmountNoDecimals < 1) {
-            return "< 1";
+            return "&lt; 1";
         }
 
         string[] memory suffixes = new string[](5);
@@ -183,7 +183,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             suffixIndex++;
         }
 
-        string memory prefix = ">= ";
+        string memory prefix = "&gt;= ";
         string memory integerPart = streamedAmountNoDecimals.toString();
         string memory decimalPart = fractionalPart == 0 ? "" : string.concat(".", fractionalPart.toString());
         string memory suffix = suffixes[suffixIndex];

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// solhint-disable quotes
 pragma solidity >=0.8.19;
 
 import { Strings } from "@openzeppelin/utils/Strings.sol";
@@ -62,15 +63,15 @@ library SVGComponents {
             ? string.concat(
                 '<g fill="none"><circle cx="',
                 vars.progressCircleLeftOffset.toString(),
-                '"cy="50" r="22" stroke="',
+                '" cy="50" r="22" stroke="',
                 COLOR_BACKGROUND,
-                '"stroke-width="10"/><circle transform="rotate(-95)" transform-origin="',
+                '" stroke-width="10"/><circle transform="rotate(-95)" transform-origin="',
                 vars.progressCircleLeftOffset.toString(),
                 ' 50" cx="',
                 vars.progressCircleLeftOffset.toString(),
-                '"cy="50" r="22" stroke="',
+                '" cy="50" r="22" stroke="',
                 colorAccent,
-                '"stroke-width="5" stroke-linecap="round" stroke-dasharray="',
+                '" stroke-width="5" stroke-linecap="round" stroke-dasharray="',
                 ((progress * 138) / 100).toString(),
                 ', 138"/></g>'
             )

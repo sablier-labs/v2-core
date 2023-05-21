@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// solhint-disable quotes
 pragma solidity >=0.8.19;
 
 import { Base64 } from "@openzeppelin/utils/Base64.sol";
@@ -225,16 +226,19 @@ library NFTSVG {
         returns (string memory)
     {
         return string.concat(
-            '<use href="#hourglass"x="150" y="90" transform="rotate(10)" transform-origin="500 500"/>',
-            '<use href="#Progress"x="',
+            '<use href="#hourglass" x="150" y="90" transform="rotate(10)" transform-origin="500 500"/>',
+            '<use href="#Progress" x="',
             progressLeftOffset,
-            '"y="790"/><use href="#Status"x="',
+            '" y="790"/>',
+            '<use href="#Status" x="',
             statusLeftOffset,
-            '"y="790"/><use href="#Streamed"x="',
+            '" y="790"/>',
+            '<use href="#Streamed" x="',
             streamedLeftOffset,
-            '"y="790"/><use href="#Duration"x="',
+            '" y="790"/>',
+            '<use href="#Duration" x="',
             durationLeftOffset,
-            '"y="790"/>'
+            '" y="790"/>'
         );
     }
 
