@@ -84,17 +84,17 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
     }
 
     function test_TokenURI_Dynamic_StreamedBoxLessThanTen() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + 400 });
+        vm.warp({ timestamp: defaults.START_TIME() + 400 seconds });
         console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxTens() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + 800 });
+        vm.warp({ timestamp: defaults.START_TIME() + 800 seconds });
         console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 
     function test_TokenURI_Dynamic_StreamedBoxHundreds() external whenNFTExists {
-        vm.warp({ timestamp: defaults.START_TIME() + 1000 });
+        vm.warp({ timestamp: defaults.START_TIME() + 1000 seconds });
         console2.log("URI:", dynamic.tokenURI(defaultStreamId));
     }
 

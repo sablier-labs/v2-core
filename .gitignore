@@ -15,5 +15,5 @@ out
 .pnp.*
 lcov.info
 package-lock.json
-tokenURI.svg
+token-uri.svg
 yarn.lock

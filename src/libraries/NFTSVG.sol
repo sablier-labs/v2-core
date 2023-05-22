@@ -171,7 +171,7 @@ library NFTSVG {
 
     function generateSVG(SVGParams memory params) internal pure returns (string memory) {
         return string.concat(
-            '<svg height="1000" width="1000" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">',
+            '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">',
             generateDefs(
                 params.colorAccent,
                 params.progressElement,
@@ -227,16 +227,16 @@ library NFTSVG {
     {
         return string.concat(
             '<use href="#hourglass" x="150" y="90" transform="rotate(10)" transform-origin="500 500"/>',
-            '<use href="#Progress" x="',
+            '<use href="#progress" x="',
             progressLeftOffset,
             '" y="790"/>',
-            '<use href="#Status" x="',
+            '<use href="#status" x="',
             statusLeftOffset,
             '" y="790"/>',
-            '<use href="#Streamed" x="',
+            '<use href="#streamed" x="',
             streamedLeftOffset,
             '" y="790"/>',
-            '<use href="#Duration" x="',
+            '<use href="#duration" x="',
             durationLeftOffset,
             '" y="790"/>'
         );

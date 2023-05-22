@@ -17,7 +17,7 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
         changePrank({ msgSender: users.sender });
         defaultStreamId = createDefaultStream();
 
-        // Fund the sender with 10 quadrillions DAI.
+        // Fund the sender with 10 quadrillion DAI.
         deal({ token: address(dai), to: users.sender, give: 10e15 * 1e18 });
     }
 
@@ -82,23 +82,26 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
     }
 
     function test_TokenURI_Linear_StreamedBoxLessThanTen() external whenNFTExists {
-        uint40 cliffTime = defaults.START_TIME();
-        uint256 streamId = createDefaultStreamWithCliffTime(cliffTime);
-        vm.warp({ timestamp: cliffTime + 5 });
+        LockupLinear.CreateWithRange memory params = defaults.createWithRange();
+        params.range.cliff = defaults.START_TIME();
+        uint256 streamId = linear.createWithRange(params);
+        vm.warp({ timestamp: params.range.cliff + 5 seconds });
         console2.log("URI:", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_StreamedBoxTens() external whenNFTExists {
-        uint40 cliffTime = defaults.START_TIME();
-        uint256 streamId = createDefaultStreamWithCliffTime(cliffTime);
-        vm.warp({ timestamp: cliffTime + 15 });
+        LockupLinear.CreateWithRange memory params = defaults.createWithRange();
+        params.range.cliff = defaults.START_TIME();
+        uint256 streamId = linear.createWithRange(params);
+        vm.warp({ timestamp: params.range.cliff + 15 seconds });
         console2.log("URI:", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_StreamedBoxHundreds() external whenNFTExists {
-        uint40 cliffTime = defaults.START_TIME();
-        uint256 streamId = createDefaultStreamWithCliffTime(cliffTime);
-        vm.warp({ timestamp: cliffTime + 200 });
+        LockupLinear.CreateWithRange memory params = defaults.createWithRange();
+        params.range.cliff = defaults.START_TIME();
+        uint256 streamId = linear.createWithRange(params);
+        vm.warp({ timestamp: params.range.cliff + 200 seconds });
         console2.log("URI:", linear.tokenURI(streamId));
     }
 

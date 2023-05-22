@@ -28,4 +28,4 @@ decoded=$(echo "$onlyData" | base64 --decode)
 split=$(echo "$decoded" | awk -F "data:application/json;base64," '{print $2}')
 clean=$(echo "$split" | jq -r .image | awk -F ',' '{print $2}' | base64 --decode)
 
-echo "$clean" > tokenURI.svg
+echo "$clean" > token-uri.svg
