@@ -129,4 +129,11 @@ library Errors {
 
     /// @notice Thrown when trying to create a linear stream with a start time greater than the cliff time.
     error SablierV2LockupLinear_StartTimeGreaterThanCliffTime(uint40 startTime, uint40 cliffTime);
+
+    /*//////////////////////////////////////////////////////////////////////////
+                             SABLIER-V2-NFT-DESCRIPTOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when trying to generate the token URI for an invalid contract.
+    error SablierV2NFTDescriptor_InvalidContract(address invalidContract);
 }

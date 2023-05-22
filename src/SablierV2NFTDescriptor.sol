@@ -9,13 +9,20 @@ import { ISablierV2Lockup } from "./interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "./interfaces/ISablierV2NFTDescriptor.sol";
 import { Lockup } from "./types/DataTypes.sol";
 
+import { Errors } from "./libraries/Errors.sol";
 import { NFTSVG } from "./libraries/NFTSVG.sol";
+import { SVGComponents } from "./libraries/SVGComponents.sol";
 
 /// @title SablierV2NFTDescriptor
 /// @notice See the documentation in {ISablierV2NFTDescriptor}.
 contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     using Strings for address;
+    using Strings for string;
     using Strings for uint256;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                           USER-FACING CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2NFTDescriptor
     function tokenURI(
@@ -30,29 +37,31 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         ISablierV2Lockup lockup = ISablierV2Lockup(address(sablierContract));
         IERC20Metadata asset = IERC20Metadata(address(lockup.getAsset(streamId)));
 
+        // Retrieve the stream's data.
         uint128 streamedAmount = lockup.streamedAmountOf(streamId);
         uint40 startTime = lockup.getStartTime(streamId);
         uint40 endTime = lockup.getEndTime(streamId);
         Lockup.Status status = lockup.statusOf(streamId);
 
-        (uint256 percentageStreamedUint, string memory percentageStreamedString) =
+        // Calculate how much of the deposit amount has been streamed so far, as a percentage.
+        (uint256 percentageStreamedUint, string memory percentageStreamedText) =
             getPercentageStreamed(lockup.getDepositedAmount(streamId), streamedAmount);
 
         uri = NFTSVG.generate(
             NFTSVG.GenerateParams({
-                colorAccent: getColorAccent(uint256(uint160(address(sablierContract))), streamId),
-                percentageStreamedUInt: percentageStreamedUint,
-                percentageStreamedString: percentageStreamedString,
-                streamedAbbreviation: getStreamedAbbreviation(streamedAmount, asset.decimals()),
-                durationInDays: getDurationInDays(startTime, endTime),
-                sablierContract: address(sablierContract).toHexString(),
-                sablierContractType: getSablierContractType(sablierContract.symbol()),
-                asset: address(asset).toHexString(),
+                assetAddress: address(asset).toHexString(),
                 assetSymbol: asset.symbol(),
+                accentColor: getAccentColor(address(sablierContract), streamId),
+                durationInDays: getDurationInDays(startTime, endTime),
+                isDepleted: status == Lockup.Status.DEPLETED,
+                percentageStreamed: percentageStreamedUint,
+                percentageStreamedText: percentageStreamedText,
                 recipient: lockup.ownerOf(streamId).toHexString(),
+                sablierAddress: address(sablierContract).toHexString(),
+                streamingModel: getStreamingModel(sablierContract),
                 sender: lockup.getSender(streamId).toHexString(),
-                status: getSablierStatus(status),
-                isDepleted: status == Lockup.Status.DEPLETED
+                streamedAmountAbbreviated: abbreviateStreamedAmount(streamedAmount, asset.decimals()),
+                status: getStatus(status)
             })
         );
     }
@@ -61,133 +70,158 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
                             INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Generates a unique color accent by hashing together the `chainid`, the `streamId` and the Sablier
-    /// contract address.
-    function getColorAccent(uint256 sablierContract, uint256 streamId) internal view returns (string memory) {
-        uint256 chainID = block.chainid;
+    /// @notice Returns an abbreviated representation of a streamed amount with a prefix ">= ".
+    /// @dev The abbreviation uses metric suffixes:
+    /// - "K" for thousands
+    /// - "M" for millions
+    /// - "B" for billions,
+    /// - "T" for trillions
+    /// For example, if the input is 1,234,567, the output is ">= 1.23M"..
+    /// @param streamedAmount The streamed amount to abbreviate, denoted in units of the asset's decimals.
+    /// @param decimals The number of decimals of the streaming asset.
+    /// @return abbreviation The abbreviated representation of the streamed amount, as a string.
+    function abbreviateStreamedAmount(
+        uint256 streamedAmount,
+        uint256 decimals
+    )
+        internal
+        pure
+        returns (string memory abbreviation)
+    {
+        uint256 truncatedAmount;
+        unchecked {
+            truncatedAmount = decimals == 0 ? streamedAmount : streamedAmount / 10 ** decimals;
+        }
 
-        // Generate a color value.
-        uint256 color = uint256(keccak256(abi.encodePacked(chainID, sablierContract, streamId)));
+        // Return dummy texts when the amount is either too small or too large to fit in the layout of the SVG.
+        if (truncatedAmount < 1) {
+            return string.concat(SVGComponents.SIGN_LT, " 1");
+        } else if (truncatedAmount > 999e12) {
+            return string.concat(SVGComponents.SIGN_GT, " 999T");
+        }
 
-        // Extract hue, saturation, and lightness channels from color.
-        uint256 hue = (color >> 16) % 360; // to make it from 0 to 360 inclusive
-        uint256 saturation = ((color >> 8) & 0xFF) % 101; // to make it from 0 to 100 inclusive
-        uint256 lightness = (color & 0xFF) % 101; // to make it from 0 to 100 inclusive
+        string[] memory suffixes = new string[](5);
+        suffixes[0] = "";
+        suffixes[1] = "K"; // thousands
+        suffixes[2] = "M"; // millions
+        suffixes[3] = "B"; // billions
+        suffixes[4] = "T"; // trillions
 
-        // The start of the new lightness range (minimum value for the new lightness)
+        uint256 fractionalAmount;
+        uint256 suffixIndex = 0;
+
+        // Truncate repeatedly until the amount is less than 1000.
+        unchecked {
+            while (truncatedAmount >= 1000) {
+                fractionalAmount = (truncatedAmount / 10) % 100; // get the first two digits after decimal
+                truncatedAmount /= 1000;
+                suffixIndex += 1;
+            }
+        }
+
+        string memory prefix = string.concat(SVGComponents.SIGN_GTE, " ");
+        string memory wholePart = truncatedAmount.toString();
+        string memory fractionalPart = fractionalAmount == 0 ? "" : string.concat(".", fractionalAmount.toString());
+        string memory suffix = suffixes[suffixIndex];
+
+        abbreviation = string.concat(prefix, wholePart, fractionalPart, suffix);
+    }
+
+    /// @notice Generates a pseudo-random color accent by hashing together the `chainid`, the Sablier contract address,
+    /// and the `streamId`.
+    function getAccentColor(address sablierContract, uint256 streamId) internal view returns (string memory) {
+        uint256 chainId = block.chainid;
+
+        // Generate a pseudo-random color.
+        uint256 color = uint256(keccak256(abi.encodePacked(chainId, sablierContract, streamId)));
+
+        // Extract hue, saturation, and lightness channels from the color.
+        uint256 hue = (color >> 16) % 360; // from 0 to 360 inclusive
+        uint256 saturation = ((color >> 8) & 0xFF) % 101; // from 0 to 100 inclusive
+        uint256 lightness = (color & 0xFF) % 101; // from 0 to 100 inclusive
+
+        // The start of the new lightness range (minimum value for the new lightness).
         uint256 start = 20;
 
-        // The divisor for modulo calculation `100 - start`
+        // The divisor for modulo calculation `100 - start`.
         uint256 clock = 80;
 
         // Calculate the new lightness value.
-        // The new value would be in the range (start, 100), while the old value was in the range (0, 100).
+        // While the initial value was in the range (0, 100), the new value is in the range (start, 100).
         // This is how very dark colors are excluded from the generated color set.
         unchecked {
             lightness = lightness % clock + start;
         }
 
-        // Represent the color value as HSL.
+        // Represent the colors using HSL mode (Hue, Saturation, and Lightness).
         return string.concat("hsl(", hue.toString(), ", ", saturation.toString(), "%, ", lightness.toString(), "%)");
     }
 
     /// @notice Calculates the duration of the stream in days.
     function getDurationInDays(uint256 startTime, uint256 endTime) internal pure returns (string memory duration) {
-        uint256 durationInSeconds = endTime - startTime;
-        uint256 durationInDays = durationInSeconds / 86_400;
-
-        if (durationInDays == 0) {
-            return "&lt; 1 days";
-        } else if (durationInDays > 9999) {
-            return "&gt; 9999 days";
+        uint256 durationInDays;
+        unchecked {
+            durationInDays = (endTime - startTime) / 86_400;
         }
 
-        duration = string.concat(durationInDays.toString(), " days");
+        if (durationInDays == 0) {
+            return string.concat(SVGComponents.SIGN_LT, " 1 day");
+        } else if (durationInDays > 9999) {
+            return string.concat(SVGComponents.SIGN_GT, " 9999 days");
+        }
+
+        string memory suffix = durationInDays == 1 ? " day" : " days";
+        duration = string.concat(durationInDays.toString(), suffix);
     }
 
-    /// @notice Computes the percentage of assets that have been streamed.
+    /// @notice Calculates how much of the deposit amount has been streamed so far, as a percentage.
     function getPercentageStreamed(
         uint256 depositedAmount,
         uint256 streamedAmount
     )
         internal
         pure
-        returns (uint256 percentageStreamedUInt, string memory percentageStreamedString)
+        returns (uint256 percentageStreamed, string memory percentageStreamedText)
     {
-        // The percentage is represented with 4 decimal here to enable the accurate display of values such as 13.37%.
-        percentageStreamedUInt = streamedAmount * 10_000 / depositedAmount;
+        // The percentage is represented with 4 decimals to enable the rendering of values like 13.37%.
+        percentageStreamed = streamedAmount * 10_000 / depositedAmount;
+
         // Extract the last two decimals.
-        uint256 fractionalPart = percentageStreamedUInt % 100;
+        uint256 fractionalPart = percentageStreamed % 100;
+
         // Remove the last two decimals.
-        percentageStreamedUInt /= 100;
+        percentageStreamed /= 100;
 
-        percentageStreamedString = fractionalPart == 0
-            ? string.concat(percentageStreamedUInt.toString(), ("%"))
-            : string.concat(percentageStreamedUInt.toString(), ".", fractionalPart.toString(), "%");
+        percentageStreamedText = fractionalPart == 0
+            ? string.concat(percentageStreamed.toString(), ("%"))
+            : string.concat(percentageStreamed.toString(), ".", fractionalPart.toString(), "%");
     }
 
-    /// @notice Returns the sablier contract type.
-    function getSablierContractType(string memory symbol) internal pure returns (string memory) {
-        return keccak256(abi.encodePacked(symbol)) == keccak256(abi.encodePacked("SAB-V2-LOCKUP-LIN"))
-            ? "Lockup Linear"
-            : "Lockup Dynamic";
-    }
-
-    /// @notice Returns the sablier status name represented as string.
-    function getSablierStatus(Lockup.Status status) internal pure returns (string memory) {
-        if (status == Lockup.Status.PENDING) {
-            return "Pending";
-        } else if (status == Lockup.Status.STREAMING) {
-            return "Streaming";
-        } else if (status == Lockup.Status.SETTLED) {
-            return "Settled";
+    /// @notice Retrieves the stream's status as a string.
+    function getStatus(Lockup.Status status) internal pure returns (string memory) {
+        if (status == Lockup.Status.DEPLETED) {
+            return "Depleted";
         } else if (status == Lockup.Status.CANCELED) {
             return "Canceled";
+        } else if (status == Lockup.Status.SETTLED) {
+            return "Settled";
+        } else if (status == Lockup.Status.STREAMING) {
+            return "Streaming";
+        } else {
+            return "Pending";
         }
-
-        return "Depleted";
     }
 
-    /// @notice Returns an abbreviated representation of a streamed amount with a prefix ">= ".
-    /// @dev The abbreviation uses metric suffixes such as "k" for thousands, "m" for millions, "b" for billions,
-    /// "t" for trillions. For example, if the input is 1,234,567, the output will be ">= 1.23m".
-    /// @param streamedAmount The streamed amount to be abbreviated, expressed in the asset's decimals.
-    /// @param decimals The number of decimals of the asset used for streaming.
-    /// @return The abbreviated representation of the streamed amount as a string.
-    function getStreamedAbbreviation(uint256 streamedAmount, uint256 decimals) internal pure returns (string memory) {
-        uint256 streamedAmountNoDecimals = decimals == 0 ? streamedAmount : streamedAmount / 10 ** decimals;
-
-        // If the streamed amount is greater than 999 trillions, return "> 999t", otherwise the function would revert
-        // due to `suffixIndex` greater than 4.
-        if (streamedAmountNoDecimals > 999e12) {
-            return "&gt; 999t";
+    /// @notice Retrieves the streaming model as a string.
+    /// @dev Reverts on unknown symbols.
+    function getStreamingModel(IERC721Metadata sablierContract) internal view returns (string memory model) {
+        string memory symbol = sablierContract.symbol();
+        if (symbol.equal("SAB-V2-LOCKUP-LIN")) {
+            model = "Lockup Linear";
+        } else if (symbol.equal("SAB-V2-LOCKUP-DYN")) {
+            model = "Lockup Dynamic";
+        } else {
+            revert Errors.SablierV2NFTDescriptor_InvalidContract(address(sablierContract));
         }
-
-        if (streamedAmountNoDecimals < 1) {
-            return "&lt; 1";
-        }
-
-        string[] memory suffixes = new string[](5);
-        suffixes[0] = "";
-        suffixes[1] = "k";
-        suffixes[2] = "m";
-        suffixes[3] = "b";
-        suffixes[4] = "t";
-
-        uint256 suffixIndex = 0;
-        uint256 fractionalPart;
-
-        while (streamedAmountNoDecimals >= 1000) {
-            fractionalPart = (streamedAmountNoDecimals / 10) % 100; // gets the first two digits after decimal
-            streamedAmountNoDecimals /= 1000;
-            suffixIndex++;
-        }
-
-        string memory prefix = "&gt;= ";
-        string memory integerPart = streamedAmountNoDecimals.toString();
-        string memory decimalPart = fractionalPart == 0 ? "" : string.concat(".", fractionalPart.toString());
-        string memory suffix = suffixes[suffixIndex];
-
-        return string.concat(prefix, integerPart, decimalPart, suffix);
     }
 }

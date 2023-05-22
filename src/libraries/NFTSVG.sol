@@ -10,242 +10,91 @@ import { SVGComponents } from "./SVGComponents.sol";
 library NFTSVG {
     using Strings for uint256;
 
+    uint256 internal constant CARD_MARGIN = 16;
+
     struct GenerateParams {
-        string colorAccent;
-        string percentageStreamedString;
-        uint256 percentageStreamedUInt;
-        string streamedAbbreviation;
+        string accentColor;
+        string assetAddress;
+        string assetSymbol;
         string durationInDays;
-        string sablierContract;
-        string sablierContractType;
-        string asset;
-        string assetSymbol;
+        bool isDepleted;
+        uint256 percentageStreamed;
+        string percentageStreamedText;
         string recipient;
+        string sablierAddress;
         string sender;
+        string streamedAmountAbbreviated;
         string status;
-        bool isDepleted;
+        string streamingModel;
     }
 
-    struct GenerateVars {
-        string progressElement;
-        uint256 progressWidth;
-        uint256 progressLeftOffset;
-        string statusElement;
-        uint256 statusLeftOffset;
-        uint256 statusWidth;
-        string streamedElement;
-        uint256 streamedLeftOffset;
-        uint256 streamedWidth;
-        string durationElement;
-        uint256 durationWidth;
-        uint256 durationLeftOffset;
-        uint256 row;
-    }
-
-    function generate(GenerateParams memory params) internal pure returns (string memory) {
-        GenerateVars memory vars;
-
-        (vars.progressElement, vars.progressWidth) = SVGComponents.box(
-            SVGComponents.BoxType.PROGRESS,
-            params.colorAccent,
-            params.percentageStreamedString,
-            params.percentageStreamedUInt
-        );
-
-        (vars.statusElement, vars.statusWidth) =
-            SVGComponents.box(SVGComponents.BoxType.STATUS, params.colorAccent, params.status, 0);
-
-        (vars.streamedElement, vars.streamedWidth) =
-            SVGComponents.box(SVGComponents.BoxType.STREAMED, params.colorAccent, params.streamedAbbreviation, 0);
-
-        (vars.durationElement, vars.durationWidth) =
-            SVGComponents.box(SVGComponents.BoxType.DURATION, params.colorAccent, params.durationInDays, 0);
-
-        vars.row = vars.streamedWidth + vars.durationWidth + vars.progressWidth + vars.statusWidth + 20 * 3;
-
-        vars.progressLeftOffset = (1015 - vars.row) / 2;
-        vars.statusLeftOffset = vars.progressLeftOffset + vars.progressWidth + 16;
-        vars.streamedLeftOffset = vars.statusLeftOffset + vars.statusWidth + 16;
-        vars.durationLeftOffset = vars.streamedLeftOffset + vars.streamedWidth + 16;
-
-        return Base64.encode(
-            bytes(
-                string.concat(
-                    "data:application/json;base64,",
-                    generateJSON(
-                        JSONParams({
-                            colorAccent: params.colorAccent,
-                            progressElement: vars.progressElement,
-                            progressLeftOffset: vars.progressLeftOffset.toString(),
-                            statusElement: vars.statusElement,
-                            statusLeftOffset: vars.statusLeftOffset.toString(),
-                            streamedElement: vars.streamedElement,
-                            streamedLeftOffset: vars.streamedLeftOffset.toString(),
-                            durationElement: vars.durationElement,
-                            durationLeftOffset: vars.durationLeftOffset.toString(),
-                            sablierContract: params.sablierContract,
-                            sablierContractType: params.sablierContractType,
-                            asset: params.asset,
-                            assetSymbol: params.assetSymbol,
-                            recipient: params.recipient,
-                            sender: params.sender,
-                            isDepleted: params.isDepleted
-                        })
-                    )
-                )
-            )
-        );
-    }
-
-    struct JSONParams {
-        string colorAccent;
-        string progressElement;
-        string progressLeftOffset;
-        string statusElement;
-        string statusLeftOffset;
-        string streamedElement;
-        string streamedLeftOffset;
-        string durationElement;
-        string durationLeftOffset;
-        string sablierContract;
-        string sablierContractType;
-        string asset;
-        string assetSymbol;
-        string recipient;
-        string sender;
-        bool isDepleted;
-    }
-
-    function generateJSON(JSONParams memory params) internal pure returns (string memory) {
-        string memory finalSVG = generateSVG(
+    function generate(GenerateParams memory params) internal pure returns (string memory encodedSVG) {
+        string memory SVG = generateSVG(
             SVGParams({
-                colorAccent: params.colorAccent,
-                progressElement: params.progressElement,
-                progressLeftOffset: params.progressLeftOffset,
-                statusElement: params.statusElement,
-                statusLeftOffset: params.statusLeftOffset,
-                streamedElement: params.streamedElement,
-                streamedLeftOffset: params.streamedLeftOffset,
-                durationElement: params.durationElement,
-                durationLeftOffset: params.durationLeftOffset,
-                sablierContract: params.sablierContract,
-                sablierContractType: params.sablierContractType,
-                asset: params.asset,
+                accentColor: params.accentColor,
+                assetAddress: params.assetAddress,
                 assetSymbol: params.assetSymbol,
-                isDepleted: params.isDepleted
+                durationInDays: params.durationInDays,
+                isDepleted: params.isDepleted,
+                percentageStreamed: params.percentageStreamed,
+                percentageStreamedText: params.percentageStreamedText,
+                sablierAddress: params.sablierAddress,
+                status: params.status,
+                streamedAmountAbbreviated: params.streamedAmountAbbreviated,
+                streamingModel: params.streamingModel
             })
         );
 
         // TODO: change name and description
-        return string.concat(
+        string memory json = string.concat(
             "{",
-            '"name": "Sablier V2 NFT",',
-            '"description": "This NFT represents a stream in SablierV2",',
-            '"image": "data:image/svg+xml;base64,',
-            Base64.encode(bytes(finalSVG)),
+            '"name":"Sablier V2 NFT",',
+            '"description":"This NFT represents a Sablier V2 stream",',
+            '"image":"data:image/svg+xml;base64,',
+            Base64.encode(bytes(SVG)),
             '",',
-            '"attributes": { "recipient": "',
+            '"attributes":{"recipient":"',
             params.recipient,
-            '", "sender": "',
+            '","sender": "',
             params.sender,
             '"}}'
         );
-    }
 
-    struct SVGParams {
-        string colorAccent;
-        string progressElement;
-        string progressLeftOffset;
-        string statusElement;
-        string statusLeftOffset;
-        string streamedElement;
-        string streamedLeftOffset;
-        string durationElement;
-        string durationLeftOffset;
-        string sablierContract;
-        string sablierContractType;
-        string asset;
-        string assetSymbol;
-        bool isDepleted;
-    }
-
-    function generateSVG(SVGParams memory params) internal pure returns (string memory) {
-        return string.concat(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">',
-            generateDefs(
-                params.colorAccent,
-                params.progressElement,
-                params.statusElement,
-                params.streamedElement,
-                params.durationElement,
-                params.isDepleted
-            ),
-            SVGComponents.BACKGROUND,
-            generateText(params.sablierContract, params.sablierContractType, params.asset, params.assetSymbol),
-            generateHref(
-                params.progressLeftOffset, params.statusLeftOffset, params.streamedLeftOffset, params.durationLeftOffset
-            ),
-            "</svg>"
-        );
+        encodedSVG = Base64.encode(bytes(string.concat("data:application/json;base64,", json)));
     }
 
     function generateDefs(
-        string memory colorAccent,
-        string memory progressElement,
-        string memory statusElement,
-        string memory streamedElement,
-        string memory durationElement,
-        bool isDepleted
+        string memory accentColor,
+        bool isDepleted,
+        string memory progressCard,
+        string memory statusCard,
+        string memory streamedCard,
+        string memory durationCard
     )
         internal
         pure
-        returns (string memory)
+        returns (string memory defs)
     {
-        return string.concat(
+        defs = string.concat(
             "<defs>",
-            SVGComponents.styles(colorAccent),
-            SVGComponents.LIGHT,
-            SVGComponents.hourglass(isDepleted),
+            SVGComponents.GLOW,
+            SVGComponents.NOISE,
             SVGComponents.LOGO,
-            progressElement,
-            statusElement,
-            streamedElement,
-            durationElement,
+            SVGComponents.FLOATING_TEXT,
+            SVGComponents.gradients(accentColor),
+            SVGComponents.hourglass(isDepleted),
+            progressCard,
+            statusCard,
+            streamedCard,
+            durationCard,
             "</defs>"
         );
     }
 
-    function generateHref(
-        string memory progressLeftOffset,
-        string memory statusLeftOffset,
-        string memory streamedLeftOffset,
-        string memory durationLeftOffset
-    )
-        internal
-        pure
-        returns (string memory)
-    {
-        return string.concat(
-            '<use href="#hourglass" x="150" y="90" transform="rotate(10)" transform-origin="500 500"/>',
-            '<use href="#progress" x="',
-            progressLeftOffset,
-            '" y="790"/>',
-            '<use href="#status" x="',
-            statusLeftOffset,
-            '" y="790"/>',
-            '<use href="#streamed" x="',
-            streamedLeftOffset,
-            '" y="790"/>',
-            '<use href="#duration" x="',
-            durationLeftOffset,
-            '" y="790"/>'
-        );
-    }
-
-    function generateText(
-        string memory sablierContract,
-        string memory sablierContractType,
-        string memory asset,
+    function generateFloatingText(
+        string memory sablierAddress,
+        string memory streamingModel,
+        string memory assetAddress,
         string memory assetSymbol
     )
         internal
@@ -254,11 +103,133 @@ library NFTSVG {
     {
         return string.concat(
             '<text text-rendering="optimizeSpeed">',
-            SVGComponents.words("-100%", string.concat(sablierContract, " - Sablier ", sablierContractType)),
-            SVGComponents.words("0%", string.concat(sablierContract, " - Sablier ", sablierContractType)),
-            SVGComponents.words("-50%", string.concat(asset, " - ", assetSymbol)),
-            SVGComponents.words("50%", string.concat(asset, " - ", assetSymbol)),
+            SVGComponents.floatingText({
+                offset: "-100%",
+                text: string.concat(sablierAddress, " - Sablier V2 ", streamingModel)
+            }),
+            SVGComponents.floatingText({
+                offset: "0%",
+                text: string.concat(sablierAddress, " - Sablier V2 ", streamingModel)
+            }),
+            SVGComponents.floatingText({ offset: "-50%", text: string.concat(assetAddress, " - ", assetSymbol) }),
+            SVGComponents.floatingText({ offset: "50%", text: string.concat(assetAddress, " - ", assetSymbol) }),
             "</text>"
+        );
+    }
+
+    function generateHrefs(
+        uint256 progressXOffset,
+        uint256 statusXOffset,
+        uint256 streamedXOffset,
+        uint256 durationXOffset
+    )
+        internal
+        pure
+        returns (string memory hrefs)
+    {
+        hrefs = string.concat(
+            '<use href="#Glow" fill-opacity=".9"/>',
+            '<use href="#Glow" x="1000" y="1000" fill-opacity=".9"/>',
+            '<use href="#Logo" x="170" y="170" transform="scale(.6)" />'
+            '<use href="#Hourglass" x="150" y="90" transform="rotate(10)" transform-origin="500 500"/>',
+            '<use href="#Progress" x="',
+            progressXOffset.toString(),
+            '" y="790"/>',
+            '<use href="#Status" x="',
+            statusXOffset.toString(),
+            '" y="790"/>',
+            '<use href="#Streamed" x="',
+            streamedXOffset.toString(),
+            '" y="790"/>',
+            '<use href="#Duration" x="',
+            durationXOffset.toString(),
+            '" y="790"/>'
+        );
+    }
+
+    struct SVGParams {
+        string accentColor;
+        string assetAddress;
+        string assetSymbol;
+        string durationInDays;
+        bool isDepleted;
+        uint256 percentageStreamed;
+        string percentageStreamedText;
+        string sablierAddress;
+        string status;
+        string streamedAmountAbbreviated;
+        string streamingModel;
+    }
+
+    struct SVGVars {
+        string durationCard;
+        uint256 durationXOffset;
+        uint256 durationWidth;
+        uint256 progressXOffset;
+        string progressCard;
+        uint256 progressWidth;
+        uint256 rowWidth;
+        string statusCard;
+        uint256 statusXOffset;
+        uint256 statusWidth;
+        string streamedCard;
+        uint256 streamedXOffset;
+        uint256 streamedWidth;
+    }
+
+    function generateSVG(SVGParams memory params) internal pure returns (string memory) {
+        SVGVars memory vars;
+
+        // Generate the cards.
+        (vars.progressWidth, vars.progressCard) = SVGComponents.card({
+            cardType: SVGComponents.CardType.PROGRESS,
+            accentColor: params.accentColor,
+            value: params.percentageStreamedText,
+            progress: params.percentageStreamed
+        });
+        (vars.statusWidth, vars.statusCard) = SVGComponents.card({
+            cardType: SVGComponents.CardType.STATUS,
+            accentColor: params.accentColor,
+            value: params.status,
+            progress: 0
+        });
+        (vars.streamedWidth, vars.streamedCard) = SVGComponents.card({
+            cardType: SVGComponents.CardType.STREAMED,
+            accentColor: params.accentColor,
+            value: params.streamedAmountAbbreviated,
+            progress: 0
+        });
+        (vars.durationWidth, vars.durationCard) = SVGComponents.card({
+            cardType: SVGComponents.CardType.DURATION,
+            accentColor: params.accentColor,
+            value: params.durationInDays,
+            progress: 0
+        });
+
+        // Calculate the width of the row with all cards.
+        vars.rowWidth = vars.streamedWidth + vars.durationWidth + vars.progressWidth + vars.statusWidth + 20 * 3;
+
+        // Calculate the horizontal offsets for each card.
+        vars.progressXOffset = (1015 - vars.rowWidth) / 2;
+        vars.statusXOffset = vars.progressXOffset + vars.progressWidth + CARD_MARGIN;
+        vars.streamedXOffset = vars.statusXOffset + vars.statusWidth + CARD_MARGIN;
+        vars.durationXOffset = vars.streamedXOffset + vars.streamedWidth + CARD_MARGIN;
+
+        return string.concat(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">',
+            SVGComponents.STYLE,
+            SVGComponents.BACKGROUND,
+            generateDefs(
+                params.accentColor,
+                params.isDepleted,
+                vars.progressCard,
+                vars.statusCard,
+                vars.streamedCard,
+                vars.durationCard
+            ),
+            generateFloatingText(params.sablierAddress, params.streamingModel, params.assetAddress, params.assetSymbol),
+            generateHrefs(vars.progressXOffset, vars.statusXOffset, vars.streamedXOffset, vars.durationXOffset),
+            "</svg>"
         );
     }
 }
