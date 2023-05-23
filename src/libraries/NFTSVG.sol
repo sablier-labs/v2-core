@@ -5,7 +5,7 @@ pragma solidity >=0.8.19;
 import { Base64 } from "@openzeppelin/utils/Base64.sol";
 import { Strings } from "@openzeppelin/utils/Strings.sol";
 
-import { SVGComponents } from "./SVGComponents.sol";
+import { SVGElements } from "./SVGElements.sol";
 
 library NFTSVG {
     using Strings for uint256;
@@ -16,14 +16,13 @@ library NFTSVG {
         string accentColor;
         string assetAddress;
         string assetSymbol;
-        string durationInDays;
-        bool isDepleted;
-        uint256 percentageStreamed;
-        string percentageStreamedText;
+        string duration;
+        string nftAddress;
+        string progress;
+        uint256 progressNumerical;
         string recipient;
-        string sablierAddress;
         string sender;
-        string streamedAmountAbbreviated;
+        string streamed;
         string status;
         string streamingModel;
     }
@@ -34,13 +33,12 @@ library NFTSVG {
                 accentColor: params.accentColor,
                 assetAddress: params.assetAddress,
                 assetSymbol: params.assetSymbol,
-                durationInDays: params.durationInDays,
-                isDepleted: params.isDepleted,
-                percentageStreamed: params.percentageStreamed,
-                percentageStreamedText: params.percentageStreamedText,
-                sablierAddress: params.sablierAddress,
+                duration: params.duration,
+                nftAddress: params.nftAddress,
+                progress: params.progress,
+                progressNumerical: params.progressNumerical,
                 status: params.status,
-                streamedAmountAbbreviated: params.streamedAmountAbbreviated,
+                streamed: params.streamed,
                 streamingModel: params.streamingModel
             })
         );
@@ -63,9 +61,97 @@ library NFTSVG {
         encodedSVG = Base64.encode(bytes(string.concat("data:application/json;base64,", json)));
     }
 
+    struct SVGParams {
+        string accentColor;
+        string assetAddress;
+        string assetSymbol;
+        string duration;
+        string nftAddress;
+        string progress;
+        uint256 progressNumerical;
+        string status;
+        string streamed;
+        string streamingModel;
+    }
+
+    struct SVGVars {
+        string durationCard;
+        uint256 durationWidth;
+        uint256 durationXPosition;
+        string progressCard;
+        uint256 progressWidth;
+        uint256 progressXPosition;
+        uint256 rowWidth;
+        string statusCard;
+        uint256 statusWidth;
+        uint256 statusXPosition;
+        string streamedCard;
+        uint256 streamedWidth;
+        uint256 streamedXPosition;
+    }
+
+    function generateSVG(SVGParams memory params) internal pure returns (string memory SVG) {
+        SVGVars memory vars;
+
+        // Generate the progress card.
+        (vars.progressWidth, vars.progressCard) = SVGElements.card({
+            cardType: SVGElements.CardType.PROGRESS,
+            content: params.progress,
+            circle: SVGElements.progressCircle({
+                accentColor: params.accentColor,
+                progressNumerical: params.progressNumerical
+            })
+        });
+
+        // Generate the status card.
+        (vars.statusWidth, vars.statusCard) =
+            SVGElements.card({ cardType: SVGElements.CardType.STATUS, content: params.status });
+
+        // Generate the streamed card.
+        (vars.streamedWidth, vars.streamedCard) =
+            SVGElements.card({ cardType: SVGElements.CardType.STREAMED, content: params.streamed });
+
+        // Generate the duration card.
+        (vars.durationWidth, vars.durationCard) =
+            SVGElements.card({ cardType: SVGElements.CardType.DURATION, content: params.duration });
+
+        unchecked {
+            // Calculate the width of the row containing the cards and the margins between them.
+            vars.rowWidth =
+                vars.streamedWidth + vars.durationWidth + vars.progressWidth + vars.statusWidth + CARD_MARGIN * 3;
+
+            // Calculate the positions on the X axis based on the following layout:
+            //
+            // ___________________________ SVG Width (1000px) _____________________________
+            // |     |          |      |        |      |          |      |          |     |
+            // | <-> | Progress | 16px | Status | 16px | Streamed | 16px | Duration | <-> |
+            vars.progressXPosition = (1000 - vars.rowWidth) / 2;
+            vars.statusXPosition = vars.progressXPosition + vars.progressWidth + CARD_MARGIN;
+            vars.streamedXPosition = vars.statusXPosition + vars.statusWidth + CARD_MARGIN;
+            vars.durationXPosition = vars.streamedXPosition + vars.streamedWidth + CARD_MARGIN;
+        }
+
+        SVG = string.concat(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">',
+            SVGElements.STYLE,
+            SVGElements.BACKGROUND,
+            generateDefs(
+                params.accentColor,
+                params.status,
+                vars.progressCard,
+                vars.statusCard,
+                vars.streamedCard,
+                vars.durationCard
+            ),
+            generateFloatingText(params.nftAddress, params.streamingModel, params.assetAddress, params.assetSymbol),
+            generateHrefs(vars.progressXPosition, vars.statusXPosition, vars.streamedXPosition, vars.durationXPosition),
+            "</svg>"
+        );
+    }
+
     function generateDefs(
         string memory accentColor,
-        bool isDepleted,
+        string memory status,
         string memory progressCard,
         string memory statusCard,
         string memory streamedCard,
@@ -77,12 +163,12 @@ library NFTSVG {
     {
         defs = string.concat(
             "<defs>",
-            SVGComponents.GLOW,
-            SVGComponents.NOISE,
-            SVGComponents.LOGO,
-            SVGComponents.FLOATING_TEXT,
-            SVGComponents.gradients(accentColor),
-            SVGComponents.hourglass(isDepleted),
+            SVGElements.GLOW,
+            SVGElements.NOISE,
+            SVGElements.LOGO,
+            SVGElements.FLOATING_TEXT,
+            SVGElements.gradients(accentColor),
+            SVGElements.hourglass(status),
             progressCard,
             statusCard,
             streamedCard,
@@ -92,36 +178,36 @@ library NFTSVG {
     }
 
     function generateFloatingText(
-        string memory sablierAddress,
+        string memory nftAddress,
         string memory streamingModel,
         string memory assetAddress,
         string memory assetSymbol
     )
         internal
         pure
-        returns (string memory)
+        returns (string memory floatingText)
     {
-        return string.concat(
+        floatingText = string.concat(
             '<text text-rendering="optimizeSpeed">',
-            SVGComponents.floatingText({
+            SVGElements.floatingText({
                 offset: "-100%",
-                text: string.concat(sablierAddress, " - Sablier V2 ", streamingModel)
+                text: string.concat(nftAddress, unicode" • ", "Sablier V2 ", streamingModel)
             }),
-            SVGComponents.floatingText({
+            SVGElements.floatingText({
                 offset: "0%",
-                text: string.concat(sablierAddress, " - Sablier V2 ", streamingModel)
+                text: string.concat(nftAddress, unicode" • ", "Sablier V2 ", streamingModel)
             }),
-            SVGComponents.floatingText({ offset: "-50%", text: string.concat(assetAddress, " - ", assetSymbol) }),
-            SVGComponents.floatingText({ offset: "50%", text: string.concat(assetAddress, " - ", assetSymbol) }),
+            SVGElements.floatingText({ offset: "-50%", text: string.concat(assetAddress, unicode" • ", assetSymbol) }),
+            SVGElements.floatingText({ offset: "50%", text: string.concat(assetAddress, unicode" • ", assetSymbol) }),
             "</text>"
         );
     }
 
     function generateHrefs(
-        uint256 progressXOffset,
-        uint256 statusXOffset,
-        uint256 streamedXOffset,
-        uint256 durationXOffset
+        uint256 progressXPosition,
+        uint256 statusXPosition,
+        uint256 streamedXPosition,
+        uint256 durationXPosition
     )
         internal
         pure
@@ -133,103 +219,17 @@ library NFTSVG {
             '<use href="#Logo" x="170" y="170" transform="scale(.6)" />'
             '<use href="#Hourglass" x="150" y="90" transform="rotate(10)" transform-origin="500 500"/>',
             '<use href="#Progress" x="',
-            progressXOffset.toString(),
+            progressXPosition.toString(),
             '" y="790"/>',
             '<use href="#Status" x="',
-            statusXOffset.toString(),
+            statusXPosition.toString(),
             '" y="790"/>',
             '<use href="#Streamed" x="',
-            streamedXOffset.toString(),
+            streamedXPosition.toString(),
             '" y="790"/>',
             '<use href="#Duration" x="',
-            durationXOffset.toString(),
+            durationXPosition.toString(),
             '" y="790"/>'
-        );
-    }
-
-    struct SVGParams {
-        string accentColor;
-        string assetAddress;
-        string assetSymbol;
-        string durationInDays;
-        bool isDepleted;
-        uint256 percentageStreamed;
-        string percentageStreamedText;
-        string sablierAddress;
-        string status;
-        string streamedAmountAbbreviated;
-        string streamingModel;
-    }
-
-    struct SVGVars {
-        string durationCard;
-        uint256 durationXOffset;
-        uint256 durationWidth;
-        uint256 progressXOffset;
-        string progressCard;
-        uint256 progressWidth;
-        uint256 rowWidth;
-        string statusCard;
-        uint256 statusXOffset;
-        uint256 statusWidth;
-        string streamedCard;
-        uint256 streamedXOffset;
-        uint256 streamedWidth;
-    }
-
-    function generateSVG(SVGParams memory params) internal pure returns (string memory) {
-        SVGVars memory vars;
-
-        // Generate the cards.
-        (vars.progressWidth, vars.progressCard) = SVGComponents.card({
-            cardType: SVGComponents.CardType.PROGRESS,
-            accentColor: params.accentColor,
-            value: params.percentageStreamedText,
-            progress: params.percentageStreamed
-        });
-        (vars.statusWidth, vars.statusCard) = SVGComponents.card({
-            cardType: SVGComponents.CardType.STATUS,
-            accentColor: params.accentColor,
-            value: params.status,
-            progress: 0
-        });
-        (vars.streamedWidth, vars.streamedCard) = SVGComponents.card({
-            cardType: SVGComponents.CardType.STREAMED,
-            accentColor: params.accentColor,
-            value: params.streamedAmountAbbreviated,
-            progress: 0
-        });
-        (vars.durationWidth, vars.durationCard) = SVGComponents.card({
-            cardType: SVGComponents.CardType.DURATION,
-            accentColor: params.accentColor,
-            value: params.durationInDays,
-            progress: 0
-        });
-
-        // Calculate the width of the row with all cards.
-        vars.rowWidth = vars.streamedWidth + vars.durationWidth + vars.progressWidth + vars.statusWidth + 20 * 3;
-
-        // Calculate the horizontal offsets for each card.
-        vars.progressXOffset = (1015 - vars.rowWidth) / 2;
-        vars.statusXOffset = vars.progressXOffset + vars.progressWidth + CARD_MARGIN;
-        vars.streamedXOffset = vars.statusXOffset + vars.statusWidth + CARD_MARGIN;
-        vars.durationXOffset = vars.streamedXOffset + vars.streamedWidth + CARD_MARGIN;
-
-        return string.concat(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">',
-            SVGComponents.STYLE,
-            SVGComponents.BACKGROUND,
-            generateDefs(
-                params.accentColor,
-                params.isDepleted,
-                vars.progressCard,
-                vars.statusCard,
-                vars.streamedCard,
-                vars.durationCard
-            ),
-            generateFloatingText(params.sablierAddress, params.streamingModel, params.assetAddress, params.assetSymbol),
-            generateHrefs(vars.progressXOffset, vars.statusXOffset, vars.streamedXOffset, vars.durationXOffset),
-            "</svg>"
         );
     }
 }

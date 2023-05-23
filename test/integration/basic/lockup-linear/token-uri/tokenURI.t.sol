@@ -107,6 +107,7 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
 
     function test_TokenURI_Linear_StreamedBoxThousands() external whenNFTExists {
         vm.warp({ timestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
+        linear.tokenURI(defaultStreamId);
         console2.log("URI:", linear.tokenURI(defaultStreamId));
     }
 

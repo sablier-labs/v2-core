@@ -2,6 +2,7 @@
 pragma solidity >=0.8.19;
 
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
+import { IERC721Metadata } from "@openzeppelin/token/ERC721/extensions/IERC721Metadata.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 /// @title Errors
@@ -134,6 +135,6 @@ library Errors {
                              SABLIER-V2-NFT-DESCRIPTOR
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Thrown when trying to generate the token URI for an invalid contract.
-    error SablierV2NFTDescriptor_InvalidContract(address invalidContract);
+    /// @notice Thrown when trying to generate the token URI for an unknown ERC-721 NFT contract.
+    error SablierV2NFTDescriptor_UnknownNFT(IERC721Metadata nft, string symbol);
 }

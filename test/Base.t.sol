@@ -15,6 +15,8 @@ import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
 import { GoodFlashLoanReceiver } from "./mocks/flash-loan/GoodFlashLoanReceiver.sol";
+import { NFTDescriptorMock } from "./mocks/NFTDescriptorMock.sol";
+import { Noop } from "./mocks/Noop.sol";
 import { GoodRecipient } from "./mocks/hooks/GoodRecipient.sol";
 import { GoodSender } from "./mocks/hooks/GoodSender.sol";
 import { Assertions } from "./utils/Assertions.sol";
@@ -39,14 +41,15 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
     //////////////////////////////////////////////////////////////////////////*/
 
     ISablierV2Comptroller internal comptroller;
-    IERC20 internal dai;
+    ERC20 internal dai;
     Defaults internal defaults;
     ISablierV2LockupDynamic internal dynamic;
     GoodFlashLoanReceiver internal goodFlashLoanReceiver;
     GoodRecipient internal goodRecipient;
     GoodSender internal goodSender;
     ISablierV2LockupLinear internal linear;
-    SablierV2NFTDescriptor internal nftDescriptor;
+    NFTDescriptorMock internal nftDescriptor;
+    Noop internal noop;
     ERC20MissingReturn internal usdt;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -59,7 +62,8 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         goodFlashLoanReceiver = new GoodFlashLoanReceiver();
         goodRecipient = new GoodRecipient();
         goodSender = new GoodSender();
-        nftDescriptor = new SablierV2NFTDescriptor();
+        nftDescriptor = new NFTDescriptorMock();
+        noop = new Noop();
         usdt = new ERC20MissingReturn("Tether USD", "USDT", 6);
 
         // Label the base test contracts.
@@ -68,6 +72,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         vm.label({ account: address(goodRecipient), newLabel: "Good Recipient" });
         vm.label({ account: address(goodSender), newLabel: "Good Sender" });
         vm.label({ account: address(nftDescriptor), newLabel: "NFT Descriptor" });
+        vm.label({ account: address(noop), newLabel: "Noop" });
         vm.label({ account: address(usdt), newLabel: "USDT" });
 
         // Create users for testing.
