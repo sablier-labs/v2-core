@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// solhint-disable max-line-length,quotes
 pragma solidity >=0.8.19;
 
 import { IERC20Metadata } from "@openzeppelin/token/ERC20/extensions/IERC20Metadata.sol";
 import { IERC721Metadata } from "@openzeppelin/token/ERC721/extensions/IERC721Metadata.sol";
+import { Base64 } from "@openzeppelin/utils/Base64.sol";
 import { Strings } from "@openzeppelin/utils/Strings.sol";
 
 import { ISablierV2Lockup } from "./interfaces/ISablierV2Lockup.sol";
@@ -24,45 +26,96 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
                            USER-FACING CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @dev Needed to avoid Stack Too Deep.
+    struct TokenURIVars {
+        IERC20Metadata asset;
+        string assetSymbol;
+        string json;
+        ISablierV2Lockup sablier;
+        string sablierAddress;
+        string status;
+        string svg;
+        uint128 streamedAmount;
+        uint256 streamedPercentage;
+        string streamingModel;
+    }
+
     /// @inheritdoc ISablierV2NFTDescriptor
-    function tokenURI(IERC721Metadata nft, uint256 streamId) external view override returns (string memory uri) {
-        ISablierV2Lockup lockup = ISablierV2Lockup(address(nft));
-        IERC20Metadata asset = IERC20Metadata(address(lockup.getAsset(streamId)));
+    function tokenURI(IERC721Metadata sablier, uint256 streamId) external view override returns (string memory uri) {
+        TokenURIVars memory vars;
 
-        // Retrieve the stream's data.
-        uint128 streamedAmount = lockup.streamedAmountOf(streamId);
-        Lockup.Status status = lockup.statusOf(streamId);
+        // Load the contracts.
+        vars.sablier = ISablierV2Lockup(address(sablier));
+        vars.sablierAddress = address(sablier).toHexString();
+        vars.asset = IERC20Metadata(address(vars.sablier.getAsset(streamId)));
+        vars.assetSymbol = safeAssetSymbol(address(vars.asset));
 
-        // Calculate how much of the deposit amount has been streamed so far, as a percentage.
-        uint256 streamedPercentage = calculateStreamedPercentage(streamedAmount, lockup.getDepositedAmount(streamId));
+        // Load the stream's data.
+        vars.status = stringifyStatus(vars.sablier.statusOf(streamId));
+        vars.streamedAmount = vars.sablier.streamedAmountOf(streamId);
+        vars.streamedPercentage = calculateStreamedPercentage({
+            streamedAmount: vars.streamedAmount,
+            depositedAmount: vars.sablier.getDepositedAmount(streamId)
+        });
+        vars.streamingModel = mapSymbol(sablier);
 
-        uri = NFTSVG.generate(
-            NFTSVG.GenerateParams({
-                accentColor: generateAccentColor(address(nft), streamId),
-                assetAddress: address(asset).toHexString(),
-                assetSymbol: safeAssetSymbol(address(asset)),
-                duration: calculateDurationInDays(lockup.getStartTime(streamId), lockup.getEndTime(streamId)),
-                nftAddress: address(nft).toHexString(),
-                progress: stringifyPercentage(streamedPercentage),
-                progressNumerical: streamedPercentage,
-                recipient: lockup.getRecipient(streamId).toHexString(),
-                sender: lockup.getSender(streamId).toHexString(),
-                streamed: abbreviateAmount(streamedAmount, safeAssetDecimals(address(asset))),
-                streamingModel: mapSymbol(nft),
-                status: stringifyStatus(status)
+        // Generate the SVG.
+        vars.svg = NFTSVG.generateSVG(
+            NFTSVG.SVGParams({
+                accentColor: generateAccentColor(address(sablier), streamId),
+                assetAddress: address(vars.asset).toHexString(),
+                assetSymbol: vars.assetSymbol,
+                duration: calculateDurationInDays({
+                    startTime: vars.sablier.getStartTime(streamId),
+                    endTime: vars.sablier.getEndTime(streamId)
+                }),
+                sablierAddress: address(sablier).toHexString(),
+                progress: stringifyPercentage(vars.streamedPercentage),
+                progressNumerical: vars.streamedPercentage,
+                status: vars.status,
+                streamed: abbreviateAmount({ amount: vars.streamedAmount, decimals: safeAssetDecimals(address(vars.asset)) }),
+                streamingModel: vars.streamingModel
             })
         );
+
+        // Generate the JSON metadata.
+        vars.json = string.concat(
+            "{",
+            '"attributes":',
+            generateAttributes({
+                assetSymbol: vars.assetSymbol,
+                sender: vars.sablier.getSender(streamId).toHexString(),
+                status: vars.status
+            }),
+            ',"description":"',
+            generateDescription({
+                streamingModel: vars.streamingModel,
+                assetSymbol: vars.assetSymbol,
+                streamId: streamId.toString(),
+                sablierAddress: address(sablier).toHexString(),
+                assetAddress: address(vars.asset).toHexString()
+            }),
+            '","external_url":"https://sablier.com"',
+            ',"name":"',
+            generateName({ streamingModel: vars.streamingModel, streamId: streamId.toString() }),
+            '","image":"data:image/svg+xml;base64,',
+            Base64.encode(bytes(vars.svg)),
+            '"}'
+        );
+
+        // Encode the JSON metadata in base64.
+        uri = Base64.encode(bytes(string.concat("data:application/json;base64,", vars.json)));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                             INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Produces an abbreviated representation of the provided amount, rounded down and prefixed with ">= ".
+    /// @notice Creates an abbreviated representation of the provided amount, rounded down and prefixed with ">= ".
     /// @dev The abbreviation uses these suffixes:
     /// - "K" for thousands
     /// - "M" for millions
-    /// - "B" for billions,
+    /// - "B" for billions
     /// - "T" for trillions
     /// For example, if the input is 1,234,567, the output is ">= 1.23M".
     /// @param amount The amount to abbreviate, denoted in units of `decimals`.
@@ -135,16 +188,16 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         }
     }
 
-    /// @notice Generates a pseudo-random HSL color by hashing together the `chainid`, the `nft` contract address,
+    /// @notice Generates a pseudo-random HSL color by hashing together the `chainid`, the `sablier` address,
     /// and the `streamId`. This will be used as the accent color for the SVG.
-    function generateAccentColor(address nft, uint256 streamId) internal view returns (string memory) {
+    function generateAccentColor(address sablier, uint256 streamId) internal view returns (string memory) {
         // The chain id is part of the hash so that the generated color is different across chains.
         uint256 chainId = block.chainid;
 
         // Hash the parameters to generate a pseudo-random bit field, which will be used as entropy.
         // | Hue     | Saturation | Lightness | -> Roles
         // | [31:16] | [15:8]     | [7:0]     | -> Bit positions
-        uint32 bitField = uint32(uint256(keccak256(abi.encodePacked(chainId, nft, streamId))));
+        uint32 bitField = uint32(uint256(keccak256(abi.encodePacked(chainId, sablier, streamId))));
 
         unchecked {
             // The hue is a degree on a color wheel, so its range is [0, 360).
@@ -165,16 +218,81 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         }
     }
 
-    /// @notice Maps ERC-721 symbol to human-readable streaming models.
+    /// @notice Generates an array of JSON objects that represent the stream's attributes:
+    /// - Asset symbol
+    /// - Sender address
+    /// - Status
+    /// @dev These attributes are useful for filtering and sorting the NFTs.
+    function generateAttributes(
+        string memory assetSymbol,
+        string memory sender,
+        string memory status
+    )
+        internal
+        pure
+        returns (string memory)
+    {
+        return string.concat(
+            "[{",
+            '"trait_type":"Asset","value":"',
+            assetSymbol,
+            '"},{"trait_type":"Sender","value":"',
+            sender,
+            '"},{"trait_type":"Status","value":"',
+            status,
+            '"}]'
+        );
+    }
+
+    /// @notice Generates a string with the NFT's metadata description, which provides a high-level overview.
+    function generateDescription(
+        string memory streamingModel,
+        string memory assetSymbol,
+        string memory streamId,
+        string memory sablierAddress,
+        string memory assetAddress
+    )
+        internal
+        pure
+        returns (string memory)
+    {
+        return string.concat(
+            "This NFT represents a payment stream in a Sablier V2 ",
+            streamingModel,
+            " contract. The owner of this NFT can withdraw the streamed assets, which are denominated in ",
+            assetSymbol,
+            ".\\n\\n",
+            "- Stream ID: ",
+            streamId,
+            "\\n- ",
+            streamingModel,
+            " Address: ",
+            sablierAddress,
+            "\\n- ",
+            assetSymbol,
+            " Address: ",
+            assetAddress,
+            "\\n\\n",
+            unicode"⚠️ DISCLAIMER: Due diligence is critical when assessing this NFT. Make sure the asset addresses match the genuine ERC-20 contracts, as symbols may be imitated."
+        );
+    }
+
+    /// @notice Generates a string with the NFT's metadata name, which is unique for each stream.
+    /// @dev The `streamId` is equivalent to the ERC-721 `tokenId`.
+    function generateName(string memory streamingModel, string memory streamId) internal pure returns (string memory) {
+        return string.concat("Sablier V2 ", streamingModel, " #", streamId);
+    }
+
+    /// @notice Maps ERC-721 symbols to human-readable streaming models.
     /// @dev Reverts if the symbol is unknown.
-    function mapSymbol(IERC721Metadata nft) internal view returns (string memory) {
-        string memory symbol = nft.symbol();
+    function mapSymbol(IERC721Metadata sablier) internal view returns (string memory) {
+        string memory symbol = sablier.symbol();
         if (symbol.equal("SAB-V2-LOCKUP-LIN")) {
             return "Lockup Linear";
         } else if (symbol.equal("SAB-V2-LOCKUP-DYN")) {
             return "Lockup Dynamic";
         } else {
-            revert Errors.SablierV2NFTDescriptor_UnknownNFT(nft, symbol);
+            revert Errors.SablierV2NFTDescriptor_UnknownNFT(sablier, symbol);
         }
     }
 
@@ -203,6 +321,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     }
 
     /// @notice Converts the provided percentage to a string.
+    /// @param percentage A numerical value with 4 implied decimals.
     function stringifyPercentage(uint256 percentage) internal pure returns (string memory) {
         // Extract the last two decimals.
         uint256 fractionalAmount = percentage % 100;

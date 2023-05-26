@@ -50,7 +50,7 @@ abstract contract Dynamic_Integration_Basic_Test is Integration_Test, Dynamic_In
         Integration_Test.setUp();
         Dynamic_Integration_Shared_Test.setUp();
 
-        // Cast the linear contract as {ISablierV2Base} and {ISablierV2Lockup}.
+        // Cast the dynamic contract as {ISablierV2Base} and {ISablierV2Lockup}.
         base = ISablierV2Lockup(dynamic);
         lockup = ISablierV2Lockup(dynamic);
     }

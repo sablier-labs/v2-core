@@ -4,7 +4,7 @@ pragma solidity >=0.8.19 <0.9.0;
 import { ERC20Bytes32 } from "../../../../mocks/erc20/ERC20Bytes32.sol";
 import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
 
-contract SafeAssetSymbol_Integration_Test is NFTDescriptor_Integration_Basic_Test {
+contract SafeAssetSymbol_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
     function setUp() public virtual override {
         NFTDescriptor_Integration_Basic_Test.setUp();
     }

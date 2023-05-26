@@ -12,63 +12,14 @@ library NFTSVG {
 
     uint256 internal constant CARD_MARGIN = 16;
 
-    struct GenerateParams {
-        string accentColor;
-        string assetAddress;
-        string assetSymbol;
-        string duration;
-        string nftAddress;
-        string progress;
-        uint256 progressNumerical;
-        string recipient;
-        string sender;
-        string streamed;
-        string status;
-        string streamingModel;
-    }
-
-    function generate(GenerateParams memory params) internal pure returns (string memory encodedSVG) {
-        string memory SVG = generateSVG(
-            SVGParams({
-                accentColor: params.accentColor,
-                assetAddress: params.assetAddress,
-                assetSymbol: params.assetSymbol,
-                duration: params.duration,
-                nftAddress: params.nftAddress,
-                progress: params.progress,
-                progressNumerical: params.progressNumerical,
-                status: params.status,
-                streamed: params.streamed,
-                streamingModel: params.streamingModel
-            })
-        );
-
-        // TODO: change name and description
-        string memory json = string.concat(
-            "{",
-            '"name":"Sablier V2 NFT",',
-            '"description":"This NFT represents a Sablier V2 stream",',
-            '"image":"data:image/svg+xml;base64,',
-            Base64.encode(bytes(SVG)),
-            '",',
-            '"attributes":{"recipient":"',
-            params.recipient,
-            '","sender": "',
-            params.sender,
-            '"}}'
-        );
-
-        encodedSVG = Base64.encode(bytes(string.concat("data:application/json;base64,", json)));
-    }
-
     struct SVGParams {
         string accentColor;
         string assetAddress;
         string assetSymbol;
         string duration;
-        string nftAddress;
         string progress;
         uint256 progressNumerical;
+        string sablierAddress;
         string status;
         string streamed;
         string streamingModel;
@@ -139,7 +90,7 @@ library NFTSVG {
             '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">',
             SVGElements.BACKGROUND,
             generateDefs(params.accentColor, params.status, vars.cards),
-            generateFloatingText(params.nftAddress, params.streamingModel, params.assetAddress, params.assetSymbol),
+            generateFloatingText(params.sablierAddress, params.streamingModel, params.assetAddress, params.assetSymbol),
             generateHrefs(vars.progressXPosition, vars.statusXPosition, vars.streamedXPosition, vars.durationXPosition),
             "</svg>"
         );
@@ -168,7 +119,7 @@ library NFTSVG {
     }
 
     function generateFloatingText(
-        string memory nftAddress,
+        string memory sablierAddress,
         string memory streamingModel,
         string memory assetAddress,
         string memory assetSymbol
@@ -181,11 +132,11 @@ library NFTSVG {
             '<text text-rendering="optimizeSpeed">',
             SVGElements.floatingText({
                 offset: "-100%",
-                text: string.concat(nftAddress, unicode" • ", "Sablier V2 ", streamingModel)
+                text: string.concat(sablierAddress, unicode" • ", "Sablier V2 ", streamingModel)
             }),
             SVGElements.floatingText({
                 offset: "0%",
-                text: string.concat(nftAddress, unicode" • ", "Sablier V2 ", streamingModel)
+                text: string.concat(sablierAddress, unicode" • ", "Sablier V2 ", streamingModel)
             }),
             SVGElements.floatingText({ offset: "-50%", text: string.concat(assetAddress, unicode" • ", assetSymbol) }),
             SVGElements.floatingText({ offset: "50%", text: string.concat(assetAddress, unicode" • ", assetSymbol) }),

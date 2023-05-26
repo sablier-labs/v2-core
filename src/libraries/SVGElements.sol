@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// solhint-disable max-line-length, quotes
+// solhint-disable max-line-length,quotes
 pragma solidity >=0.8.19;
 
 import { Math } from "@openzeppelin/utils/math/Math.sol";
@@ -230,8 +230,8 @@ library SVGElements {
                 i += 1;
             }
 
-            // Account for escaped characters (such as &gt;). 0x26 is "&" in ASCII.
-            if (bytes(text)[0] == "\x26") {
+            // Account for escaped characters (such as &gt;).
+            if (bytes(text)[0] == "&") {
                 width -= charWidth * 3;
             }
         }

@@ -5,7 +5,7 @@ import { SVGElements } from "src/libraries/SVGElements.sol";
 
 import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
 
-contract CalculateDurationInDays_Integration_Test is NFTDescriptor_Integration_Basic_Test {
+contract CalculateDurationInDays_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
     function setUp() public virtual override {
         NFTDescriptor_Integration_Basic_Test.setUp();
     }

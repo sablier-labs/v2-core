@@ -5,7 +5,7 @@ import { SVGElements } from "src/libraries/SVGElements.sol";
 
 import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
 
-contract CalculatePixelWidth_Integration_Test is NFTDescriptor_Integration_Basic_Test {
+contract CalculatePixelWidth_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
     uint256 internal constant CHAR_WIDTH_LARGE = 16;
     uint256 internal constant CHAR_WIDTH_SMALL = 14;
 
