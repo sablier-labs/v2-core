@@ -75,13 +75,14 @@ library NFTSVG {
     }
 
     struct SVGVars {
+        string cards;
+        uint256 cardsWidth;
         string durationCard;
         uint256 durationWidth;
         uint256 durationXPosition;
         string progressCard;
         uint256 progressWidth;
         uint256 progressXPosition;
-        uint256 rowWidth;
         string statusCard;
         uint256 statusWidth;
         uint256 statusXPosition;
@@ -90,7 +91,7 @@ library NFTSVG {
         uint256 streamedXPosition;
     }
 
-    function generateSVG(SVGParams memory params) internal pure returns (string memory SVG) {
+    function generateSVG(SVGParams memory params) internal pure returns (string memory) {
         SVGVars memory vars;
 
         // Generate the progress card.
@@ -117,7 +118,7 @@ library NFTSVG {
 
         unchecked {
             // Calculate the width of the row containing the cards and the margins between them.
-            vars.rowWidth =
+            vars.cardsWidth =
                 vars.streamedWidth + vars.durationWidth + vars.progressWidth + vars.statusWidth + CARD_MARGIN * 3;
 
             // Calculate the positions on the X axis based on the following layout:
@@ -125,23 +126,19 @@ library NFTSVG {
             // ___________________________ SVG Width (1000px) _____________________________
             // |     |          |      |        |      |          |      |          |     |
             // | <-> | Progress | 16px | Status | 16px | Streamed | 16px | Duration | <-> |
-            vars.progressXPosition = (1000 - vars.rowWidth) / 2;
+            vars.progressXPosition = (1000 - vars.cardsWidth) / 2;
             vars.statusXPosition = vars.progressXPosition + vars.progressWidth + CARD_MARGIN;
             vars.streamedXPosition = vars.statusXPosition + vars.statusWidth + CARD_MARGIN;
             vars.durationXPosition = vars.streamedXPosition + vars.streamedWidth + CARD_MARGIN;
         }
 
-        SVG = string.concat(
+        // Concatenate all cards.
+        vars.cards = string.concat(vars.progressCard, vars.statusCard, vars.streamedCard, vars.durationCard);
+
+        return string.concat(
             '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">',
             SVGElements.BACKGROUND,
-            generateDefs(
-                params.accentColor,
-                params.status,
-                vars.progressCard,
-                vars.statusCard,
-                vars.streamedCard,
-                vars.durationCard
-            ),
+            generateDefs(params.accentColor, params.status, vars.cards),
             generateFloatingText(params.nftAddress, params.streamingModel, params.assetAddress, params.assetSymbol),
             generateHrefs(vars.progressXPosition, vars.statusXPosition, vars.streamedXPosition, vars.durationXPosition),
             "</svg>"
@@ -151,16 +148,13 @@ library NFTSVG {
     function generateDefs(
         string memory accentColor,
         string memory status,
-        string memory progressCard,
-        string memory statusCard,
-        string memory streamedCard,
-        string memory durationCard
+        string memory cards
     )
         internal
         pure
-        returns (string memory defs)
+        returns (string memory)
     {
-        defs = string.concat(
+        return string.concat(
             "<defs>",
             SVGElements.GLOW,
             SVGElements.NOISE,
@@ -168,10 +162,7 @@ library NFTSVG {
             SVGElements.FLOATING_TEXT,
             SVGElements.gradients(accentColor),
             SVGElements.hourglass(status),
-            progressCard,
-            statusCard,
-            streamedCard,
-            durationCard,
+            cards,
             "</defs>"
         );
     }
@@ -184,9 +175,9 @@ library NFTSVG {
     )
         internal
         pure
-        returns (string memory floatingText)
+        returns (string memory)
     {
-        floatingText = string.concat(
+        return string.concat(
             '<text text-rendering="optimizeSpeed">',
             SVGElements.floatingText({
                 offset: "-100%",
@@ -210,9 +201,9 @@ library NFTSVG {
     )
         internal
         pure
-        returns (string memory hrefs)
+        returns (string memory)
     {
-        hrefs = string.concat(
+        return string.concat(
             '<use href="#Glow" fill-opacity=".9"/>',
             '<use href="#Glow" x="1000" y="1000" fill-opacity=".9"/>',
             '<use href="#Logo" x="170" y="170" transform="scale(.6)" />'

@@ -149,7 +149,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         unchecked {
             // The hue is a degree on a color wheel, so its range is [0, 360).
             // Shifting 16 bits to the right means using the bits at positions [31:16].
-            uint256 hue = (bitField >> 16) % 361;
+            uint256 hue = (bitField >> 16) % 360;
 
             // The saturation is a percentage where 0% is grayscale and 100% is the full color.
             // Shifting 8 bits to the risk and applying an 8-bit mask means using the bits at positions [15:8].
