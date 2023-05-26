@@ -207,8 +207,7 @@ library SVGElements {
             accentColor,
             '" stroke-dasharray="10000" stroke-dashoffset="',
             (10_000 - progressNumerical).toString(),
-            '" stroke-linecap="round" stroke-width="5" transform="rotate(-90)"',
-            'transform-origin="166 50"/>',
+            '" stroke-linecap="round" stroke-width="5" transform="rotate(-90)" transform-origin="166 50"/>',
             "</g>"
         );
     }
