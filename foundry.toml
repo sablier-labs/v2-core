@@ -9,6 +9,7 @@
     "SablierV2Comptroller",
     "SablierV2LockupDynamic",
     "SablierV2LockupLinear",
+    "SablierV2NFTDescriptor",
   ]
   optimizer = true
   optimizer_runs = 5_000
