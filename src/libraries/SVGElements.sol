@@ -48,8 +48,6 @@ library SVGElements {
     string internal constant SIGN_GE = "&ge;";
     string internal constant SIGN_LT = "&lt;";
 
-    string internal constant STYLE = '<style>text{font-family:"Courier New",Arial,monospace;}</style>';
-
     /*//////////////////////////////////////////////////////////////////////////
                                      DATA TYPES
     //////////////////////////////////////////////////////////////////////////*/
@@ -110,10 +108,10 @@ library SVGElements {
             '<rect width="',
             width.toString(),
             '" height="100" fill-opacity=".03" rx="15" ry="15" stroke="#fff" stroke-opacity=".1" stroke-width="4"/>',
-            '<text x="20" y="34" font-size="22px">',
+            '<text x="20" y="34" font-family="\'Courier New\',Arial,monospace" font-size="22px">',
             caption,
             "</text>",
-            '<text x="20" y="72" font-size="26px">',
+            '<text x="20" y="72" font-family="\'Courier New\',Arial,monospace" font-size="26px">',
             content,
             "</text>",
             cardType == CardType.PROGRESS ? circle : "",
@@ -125,7 +123,7 @@ library SVGElements {
         return string.concat(
             '<textPath startOffset="',
             offset,
-            '" href="#FloatingText" fill="#fff" fill-opacity=".8" font-size="26px" >',
+            '" href="#FloatingText" fill="#fff" font-family="\'Courier New\',Arial,monospace" fill-opacity=".8" font-size="26px" >',
             '<animate additive="sum" attributeName="startOffset" begin="0s" dur="50s" from="0%" repeatCount="indefinite" to="100%"/>',
             text,
             "</textPath>"
