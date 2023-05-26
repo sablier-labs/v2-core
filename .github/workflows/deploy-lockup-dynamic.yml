@@ -45,7 +45,7 @@ jobs:
 
       - name: "Deploy the SablierV2LockupDynamic contract"
         run: >-
-          forge script script/deploy/DeployLockupDynamic.s.sol
+          forge script script/DeployLockupDynamic.s.sol
           --broadcast
           --rpc-url "${{ inputs.chain }}"
           --sig "run(address,address,address,uint256)"

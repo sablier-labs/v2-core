@@ -28,7 +28,7 @@ jobs:
 
       - name: "Deploy the dummy NFT Descriptor"
         run: >-
-          forge script script/deploy/DeployNFTDescriptor.s.sol
+          forge script script/DeployNFTDescriptor.s.sol
           --broadcast
           --rpc-url "${{ inputs.chain }}"
           -vvvv

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <=0.9.0;
 
-import { SablierV2Comptroller } from "../../src/SablierV2Comptroller.sol";
+import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
 
-import { BaseScript } from "../shared/Base.s.sol";
+import { BaseScript } from "./Base.s.sol";
 
 /// @notice Deploys {SablierV2Comptroller} at a deterministic address across chains.
 /// @dev Reverts if the contract has already been deployed.

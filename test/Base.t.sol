@@ -6,7 +6,7 @@ import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { eqString } from "@prb/test/Helpers.sol";
 import { StdCheats } from "forge-std/StdCheats.sol";
 
-import { DeployProtocol } from "../script/deploy/DeployProtocol.s.sol";
+import { DeployProtocol } from "../script/DeployProtocol.s.sol";
 import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";

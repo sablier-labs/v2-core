@@ -3,10 +3,10 @@ pragma solidity >=0.8.19 <=0.9.0;
 
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
-import { ISablierV2NFTDescriptor } from "../../src/interfaces/ISablierV2NFTDescriptor.sol";
-import { SablierV2Comptroller } from "../../src/SablierV2Comptroller.sol";
-import { SablierV2LockupDynamic } from "../../src/SablierV2LockupDynamic.sol";
-import { SablierV2LockupLinear } from "../../src/SablierV2LockupLinear.sol";
+import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescriptor.sol";
+import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
+import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
+import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
 
 import { DeployComptroller } from "./DeployComptroller.s.sol";
 import { DeployLockupDynamic } from "./DeployLockupDynamic.s.sol";

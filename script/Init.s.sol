@@ -3,23 +3,22 @@ pragma solidity >=0.8.19 <=0.9.0;
 
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 
-import { Script } from "forge-std/Script.sol";
 import { Solarray } from "solarray/Solarray.sol";
 
-import { ISablierV2Comptroller } from "../../src/interfaces/ISablierV2Comptroller.sol";
-import { ISablierV2LockupDynamic } from "../../src/interfaces/ISablierV2LockupDynamic.sol";
-import { ISablierV2LockupLinear } from "../../src/interfaces/ISablierV2LockupLinear.sol";
-import { Broker, LockupLinear, LockupDynamic } from "../../src/types/DataTypes.sol";
-import { ud2x18, ud60x18 } from "../../src/types/Math.sol";
+import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
+import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";
+import { Broker, LockupDynamic, LockupLinear } from "../src/types/DataTypes.sol";
+import { ud2x18, ud60x18 } from "../src/types/Math.sol";
 
-import { BaseScript } from "../shared/Base.s.sol";
+import { BaseScript } from "./Base.s.sol";
 
 interface IERC20Mint {
     function mint(address beneficiary, uint256 amount) external;
 }
 
-/// @notice Bootstraps the protocol by setting up the comptroller and creating some streams.
-contract BootstrapProtocol is BaseScript {
+/// @notice Initializes the protocol by setting up the comptroller and creating some streams.
+contract Init is BaseScript {
     function run(
         ISablierV2Comptroller comptroller,
         ISablierV2LockupLinear linear,
@@ -30,7 +29,7 @@ contract BootstrapProtocol is BaseScript {
         broadcaster
     {
         address sender = deployer;
-        address recipient = vm.addr(vm.deriveKey(mnemonic, 1));
+        address recipient = vm.addr(vm.deriveKey({ mnemonic: mnemonic, index: 1 }));
 
         /*//////////////////////////////////////////////////////////////////////////
                                         COMPTROLLER
@@ -45,7 +44,7 @@ contract BootstrapProtocol is BaseScript {
         comptroller.setFlashFee({ newFlashFee: ud60x18(0.0005e18) });
 
         /*//////////////////////////////////////////////////////////////////////////
-                                          LINEAR
+                                       LOCKUP-LINEAR
         //////////////////////////////////////////////////////////////////////////*/
 
         // Mint enough assets to the sender.
@@ -58,7 +57,7 @@ contract BootstrapProtocol is BaseScript {
         // Create 7 linear streams with various amounts and durations.
         //
         // - 1st stream: meant to be depleted.
-        // - 2th to 4th streams: warm.
+        // - 2th to 4th streams: pending or streaming.
         // - 5th stream: meant to be renounced.
         // - 6th stream: meant to canceled.
         // - 7th stream: meant to be transferred to a third party.
@@ -87,7 +86,7 @@ contract BootstrapProtocol is BaseScript {
         linear.cancel({ streamId: 6 });
 
         /*//////////////////////////////////////////////////////////////////////////
-                                          DYNAMIC
+                                       LOCKUP-DYNAMIC
         //////////////////////////////////////////////////////////////////////////*/
 
         // Create the default dynamic stream.
