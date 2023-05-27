@@ -132,22 +132,22 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
     }
 
     function test_TokenURI_Dynamic_DurationBoxTenDays() external whenNFTExists {
-        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 864_000);
+        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 10 days);
         console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_DurationBoxOneHundredDays() external whenNFTExists {
-        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 8_640_000);
+        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 100 days);
         console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_DurationBoxOneThousandDays() external whenNFTExists {
-        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 86_400_000);
+        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 1000 days);
         console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
     function test_TokenURI_Dynamic_DurationBoxTenThousandsDays() external whenNFTExists {
-        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 864_000_000);
+        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 10_000 days);
         console2.log("URI:", dynamic.tokenURI(streamId));
     }
 
@@ -159,7 +159,7 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
     }
 
     function test_TokenURI_Dynamic_WideBoxes() external whenNFTExists setProtocolFeeToZero {
-        uint40 endTime = defaults.START_TIME() + 864_000_000;
+        uint40 endTime = defaults.START_TIME() + 10_000 days;
         uint128 totalAmount = 123_456_789_123e18 * 2;
 
         LockupDynamic.CreateWithMilestones memory params = defaults.createWithMilestones();
@@ -173,7 +173,7 @@ contract TokenURI_Integration_Test is Dynamic_Integration_Basic_Test {
 
         uint256 streamId = dynamic.createWithMilestones(params);
 
-        vm.warp({ timestamp: endTime - (864_000_000 / 2) - 1 });
+        vm.warp({ timestamp: endTime - (10_000 days / 2) - 1 });
         console2.log("URI:", dynamic.tokenURI(streamId));
     }
 

@@ -140,27 +140,27 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
     }
 
     function test_TokenURI_Linear_DurationBoxTenDays() external whenNFTExists {
-        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 864_000);
+        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 10 days);
         console2.log("URI:", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_DurationBoxOneHundredDays() external whenNFTExists {
-        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 8_640_000);
+        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 100 days);
         console2.log("URI:", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_DurationBoxOneThousandDays() external whenNFTExists {
-        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 86_400_000);
+        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 1000 days);
         console2.log("URI:", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_DurationBoxTenThousandsDays() external whenNFTExists {
-        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 864_000_000);
+        uint256 streamId = createDefaultStreamWithEndTime(defaults.START_TIME() + 10_000 days);
         console2.log("URI:", linear.tokenURI(streamId));
     }
 
     function test_TokenURI_Linear_WideBoxes() external whenNFTExists {
-        uint40 endTime = defaults.START_TIME() + 864_000_000;
+        uint40 endTime = defaults.START_TIME() + 10_000 days;
         uint128 totalAmount = 123_456_789_123e18 * 2;
 
         LockupLinear.CreateWithRange memory params = defaults.createWithRange();
@@ -168,7 +168,7 @@ contract TokenURI_Linear_Integration_Basic_Test is Linear_Integration_Basic_Test
         params.totalAmount = totalAmount;
         uint256 streamId = linear.createWithRange(params);
 
-        vm.warp({ timestamp: endTime - (864_000_000 / 2) - 1 });
+        vm.warp({ timestamp: endTime - (10_000 days / 2) - 1 });
         console2.log("URI:", linear.tokenURI(streamId));
     }
 
