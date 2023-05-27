@@ -34,7 +34,7 @@ abstract contract Integration_Test is Base_Test {
         Base_Test.setUp();
 
         // Deploy V2 Core.
-        deployProtocolConditionally();
+        deployCoreConditionally();
 
         // Label the contracts.
         labelContracts();

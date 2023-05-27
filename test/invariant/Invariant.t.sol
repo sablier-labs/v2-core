@@ -36,7 +36,7 @@ abstract contract Invariant_Test is Base_Test, StdInvariant {
         Base_Test.setUp();
 
         // Deploy V2 Core.
-        deployProtocolConditionally();
+        deployCoreConditionally();
 
         // Deploy the handlers.
         timestampStore = new TimestampStore();

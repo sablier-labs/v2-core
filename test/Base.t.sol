@@ -6,7 +6,7 @@ import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { eqString } from "@prb/test/Helpers.sol";
 import { StdCheats } from "forge-std/StdCheats.sol";
 
-import { DeployProtocol } from "../script/DeployProtocol.s.sol";
+import { DeployCore } from "../script/DeployCore.s.sol";
 import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";
@@ -179,7 +179,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
     }
 
     /// @dev Conditionally deploy V2 Core normally or from a source precompiled with via IR.
-    function deployProtocolConditionally() internal {
+    function deployCoreConditionally() internal {
         // We deploy from precompiled source if the profile is "test-optimized".
         if (isTestOptimizedProfile()) {
             comptroller = deployPrecompiledComptroller(users.admin);
@@ -188,7 +188,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         }
         // We deploy normally for all other profiles.
         else {
-            (comptroller, dynamic, linear) = new DeployProtocol().run({
+            (comptroller, dynamic, linear) = new DeployCore().run({
                 initialAdmin: users.admin,
                 initialNFTDescriptor: nftDescriptor,
                 maxSegmentCount: defaults.MAX_SEGMENT_COUNT()

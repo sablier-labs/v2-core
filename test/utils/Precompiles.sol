@@ -132,12 +132,12 @@ contract Precompiles {
         }
     }
 
-    /// @notice Deploys V2 Core in the following order:
+    /// @notice Deploys all V2 Core contract in the following order:
     ///
     /// 1. {SablierV2Comptroller}
     /// 2. {SablierV2LockupDynamic}
     /// 3. {SablierV2LockupLinear}
-    function deployProtocol(address initialAdmin)
+    function deployCore(address initialAdmin)
         public
         returns (ISablierV2Comptroller comptroller, ISablierV2LockupDynamic dynamic, ISablierV2LockupLinear linear)
     {

@@ -12,12 +12,12 @@ import { DeployComptroller } from "./DeployComptroller.s.sol";
 import { DeployLockupDynamic } from "./DeployLockupDynamic.s.sol";
 import { DeployLockupLinear } from "./DeployLockupLinear.s.sol";
 
-/// @notice Deploys V2 Core in the following order:
+/// @notice Deploys all V2 Core contract in the following order:
 ///
 /// 1. {SablierV2Comptroller}
 /// 2. {SablierV2LockupDynamic}
 /// 3. {SablierV2LockupLinear}
-contract DeployProtocol is DeployComptroller, DeployLockupDynamic, DeployLockupLinear {
+contract DeployCore is DeployComptroller, DeployLockupDynamic, DeployLockupLinear {
     function run(
         address initialAdmin,
         ISablierV2NFTDescriptor initialNFTDescriptor,

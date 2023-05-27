@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <=0.9.0;
 
-import { UD60x18 } from "@prb/math/UD60x18.sol";
-
 import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescriptor.sol";
 import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
 import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
@@ -12,14 +10,14 @@ import { DeployDeterministicComptroller } from "./DeployDeterministicComptroller
 import { DeployDeterministicLockupDynamic } from "./DeployDeterministicLockupDynamic.s.sol";
 import { DeployDeterministicLockupLinear } from "./DeployDeterministicLockupLinear.s.sol";
 
-/// @notice Deploys V2 Core at deterministic addresses across chains. The contracts are deployed in the following order:
+/// @notice Deploys all V2 Core contracts at deterministic addresses across chains, in the following order:
 ///
 /// 1. {SablierV2Comptroller}
 /// 2. {SablierV2LockupDynamic}
 /// 3. {SablierV2LockupLinear}
 ///
 /// @dev Reverts if any contract has already been deployed.
-contract DeployDeterministicProtocol is
+contract DeployDeterministicCore is
     DeployDeterministicComptroller,
     DeployDeterministicLockupDynamic,
     DeployDeterministicLockupLinear

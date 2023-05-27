@@ -52,10 +52,10 @@ forge script script/DeployLockupLinear.s.sol \
   NFT_DESCRIPTOR_ADDRESS
 ```
 
-### Deploy Protocol
+### Deploy All Contracts
 
 ```shell
-forge script script/DeployProtocol.s.sol \
+forge script script/DeployCore.s.sol \
   --broadcast \
   --rpc-url goerli \
   --sig "run(address,address,uint256)" \
