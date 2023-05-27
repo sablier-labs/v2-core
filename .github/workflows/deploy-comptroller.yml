@@ -11,11 +11,11 @@ on:
     inputs:
       admin:
         default: "0x0E109f35926575FC64Ec73735101966d434Ed591"
-        description: 'Contract admin. Defaults to 0x0E10...d591'
+        description: "Initial contract admin."
         required: false
       chain:
         default: "goerli"
-        description: 'Chain name. Defaults to "goerli" if unspecified'
+        description: "Chain name as defined in the Foundry config."
         required: false
 
 jobs:

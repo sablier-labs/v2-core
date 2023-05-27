@@ -11,21 +11,18 @@ on:
     inputs:
       admin:
         default: "0x0E109f35926575FC64Ec73735101966d434Ed591"
-        description: 'Contract admin. Defaults to 0x0E10...d591'
+        description: "Initial protocol admin."
         required: false
       chain:
         default: "goerli"
-        description: 'Chain name. Defaults to "goerli" if unspecified'
+        description: "Chain name as defined in the Foundry config."
         required: false
       nft-descriptor:
-        description: "The address of the contract that generates the NFT descriptor"
+        description: "Address of an NFT descriptor contract"
         required: true
       max-segment-count:
         default: "300"
-        description: |
-          The maximum number of segments permitted in a stream.
-
-          Defaults to 300
+        description: "Maximum number of segments allowed in a stream."
         required: false
 
 jobs:

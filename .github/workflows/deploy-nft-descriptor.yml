@@ -11,7 +11,7 @@ on:
     inputs:
       chain:
         default: "goerli"
-        description: 'Chain name. Defaults to "goerli" if unspecified'
+        description: "Chain name as defined in the Foundry config."
         required: false
 
 jobs:
