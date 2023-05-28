@@ -6,8 +6,9 @@ coverage
 docs
 lib
 node_modules
-out-optimized
 out
+out-optimized
+out-svg
 script
 src
 test

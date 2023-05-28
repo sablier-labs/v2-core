@@ -25,8 +25,8 @@ function generate(){
   local name="nft-${arg_progress}-${arg_status}-${arg_amount}-${arg_duration}.svg"
   local sanitized="$(echo "$name" | sed "s/ //g" )"
 
-  mkdir -p "./out/@assets"
-  echo $svg > "./out/@assets/"$sanitized
+  mkdir -p "./out-svg"
+  echo $svg > "./out-svg/"$sanitized
   return 0
 }
 
