@@ -23,7 +23,7 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
         uint256 progress,
         string memory status,
         string memory streamed,
-        uint16 duration
+        uint256 duration
     )
         public
         virtual
@@ -34,7 +34,7 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
                 accentColor: generateAccentColor({ sablier: SABLIER, streamId: uint256(keccak256(msg.data)) }),
                 assetAddress: DAI.toHexString(),
                 assetSymbol: "DAI",
-                duration: calculateDurationInDays({ startTime: 0, endTime: duration }),
+                duration: calculateDurationInDays({ startTime: 0, endTime: duration * 1 days }),
                 sablierAddress: SABLIER.toHexString(),
                 progress: stringifyPercentage(progress),
                 progressNumerical: progress,

@@ -17,7 +17,7 @@ function generate(){
   local arg_amount=${3:-">= 1.23M"}
   local arg_duration=${4:-91}
 
-  local signature="run(uint256,string,string,uint16)"
+  local signature="run(uint256,string,string,uint256)"
   local script="./script/GenerateSVG.s.sol"
   local output="$(forge script $script --sig $signature $arg_progress $arg_status $arg_amount $arg_duration)"
   local svg=$(echo "$output" | awk -F "svg: string " '{print $2}' | awk 'NF > 0')

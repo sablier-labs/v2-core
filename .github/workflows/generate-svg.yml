@@ -32,7 +32,7 @@ jobs:
       - name: "Generate an NFT SVG using the user-provided parameters"
         run: >-
           forge script script/GenerateSVG.s.sol
-          --sig "run(uint256,string,string,uint16)"
+          --sig "run(uint256,string,string,uint256)"
           "${{ inputs.progress }}",
           "${{ inputs.status }}"
           "${{ inputs.streamed }}"
