@@ -3,14 +3,14 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { SVGElements } from "src/libraries/SVGElements.sol";
 
-import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
+import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
 
 contract CalculateDurationInDays_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
     function setUp() public virtual override {
         NFTDescriptor_Integration_Basic_Test.setUp();
     }
 
-    function test_CalculateDurationInDays_ZeroDays() external {
+    function test_CalculateDurationInDays_Zero() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 1 days - 1 seconds;
         string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
@@ -18,7 +18,7 @@ contract CalculateDurationInDays_Integration_Basic_Test is NFTDescriptor_Integra
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }
 
-    function test_CalculateDurationInDays_OneDay() external {
+    function test_CalculateDurationInDays_One() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 1 days;
         string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
@@ -26,7 +26,15 @@ contract CalculateDurationInDays_Integration_Basic_Test is NFTDescriptor_Integra
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }
 
-    function test_CalculateDurationInDays_LeetDays() external {
+    function test_CalculateDurationInDays_FortyTwo() external {
+        uint256 startTime = block.timestamp;
+        uint256 endTime = startTime + 42 days;
+        string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
+        string memory expectedDurationInDays = "42 Days";
+        assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
+    }
+
+    function test_CalculateDurationInDays_Leet() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 1337 days;
         string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
@@ -34,7 +42,7 @@ contract CalculateDurationInDays_Integration_Basic_Test is NFTDescriptor_Integra
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }
 
-    function test_CalculateDurationInDays_TenThousandDays() external {
+    function test_CalculateDurationInDays_TenThousand() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 10_000 days;
         string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);

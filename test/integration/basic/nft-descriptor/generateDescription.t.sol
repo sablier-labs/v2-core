@@ -2,7 +2,7 @@
 // solhint-disable max-line-length,quotes
 pragma solidity >=0.8.19 <0.9.0;
 
-import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
+import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
 
 contract GenerateDescription_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
     string internal constant DISCLAIMER =

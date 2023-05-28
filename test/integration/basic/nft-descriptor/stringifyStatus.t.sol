@@ -3,7 +3,7 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { Lockup } from "src/types/DataTypes.sol";
 
-import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
+import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
 
 contract StringifyStatus_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
     function setUp() public virtual override {
