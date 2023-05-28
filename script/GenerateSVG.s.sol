@@ -4,6 +4,7 @@ pragma solidity >=0.8.19 <=0.9.0;
 import { Strings } from "@openzeppelin/utils/Strings.sol";
 
 import { NFTSVG } from "../src/libraries/NFTSVG.sol";
+import { SVGElements } from "../src/libraries/SVGElements.sol";
 import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
 import { BaseScript } from "./Base.s.sol";
@@ -39,7 +40,7 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
                 progress: stringifyPercentage(progress),
                 progressNumerical: progress,
                 status: status,
-                streamed: streamed,
+                streamed: string.concat(SVGElements.SIGN_GE, " ", streamed),
                 streamingModel: "Lockup Linear"
             })
         );

@@ -8,14 +8,11 @@ lib
 node_modules
 out
 out-optimized
-out-svg
-script
-src
-test
 
 # files
 *.env
 *.log
+*.sol
 .DS_Store
 .pnp.*
 lcov.info
