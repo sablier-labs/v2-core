@@ -3,18 +3,16 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { Errors } from "src/libraries/Errors.sol";
 
-import { Adminable_Integration_Shared_Test } from "../../../shared/adminable/Adminable.t.sol";
+import { Adminable_Unit_Shared_Test } from "../../../shared/adminable/Adminable.t.sol";
 
-contract TransferAdmin_Integration_Basic_Test is Adminable_Integration_Shared_Test {
-    function testFuzz_RevertWhen_CallerNotAdmin(address eve) external {
-        vm.assume(eve != address(0) && eve != users.admin);
-
+contract TransferAdmin_Unit_Basic_Test is Adminable_Unit_Shared_Test {
+    function test_RevertWhen_CallerNotAdmin() external {
         // Make Eve the caller in this test.
-        changePrank(eve);
+        changePrank(users.eve);
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, eve));
-        adminable.transferAdmin(eve);
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
+        adminable.transferAdmin(users.eve);
     }
 
     modifier whenCallerAdmin() {

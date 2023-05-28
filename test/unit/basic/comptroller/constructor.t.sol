@@ -3,9 +3,9 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { SablierV2Comptroller } from "src/SablierV2Comptroller.sol";
 
-import { Comptroller_Integration_Basic_Test } from "../Comptroller.t.sol";
+import { Base_Test } from "../../../Base.t.sol";
 
-contract Constructor_Comptroller_Integration_Basic_Test is Comptroller_Integration_Basic_Test {
+contract Constructor_Comptroller_Unit_Basic_Test is Base_Test {
     function test_Constructor() external {
         // Expect a {TransferAdmin} to be emitted.
         vm.expectEmit();

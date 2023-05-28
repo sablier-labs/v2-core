@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
+import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
-contract GenerateName_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
-
+contract GenerateName_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     function gn(string memory streamingModel, string memory streamId) internal pure returns (string memory) {
         return generateName(streamingModel, streamId);
     }

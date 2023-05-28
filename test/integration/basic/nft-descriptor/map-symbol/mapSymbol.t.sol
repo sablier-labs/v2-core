@@ -8,10 +8,6 @@ import { Errors } from "src/libraries/Errors.sol";
 import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
 
 contract MapSymbol_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
-
     function test_RevertWhen_UnknownNFT() external {
         ERC721 nft = new ERC721("Foo NFT", "FOO");
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2NFTDescriptor_UnknownNFT.selector, nft, "FOO"));

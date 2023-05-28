@@ -2,13 +2,9 @@
 // solhint-disable max-line-length,quotes
 pragma solidity >=0.8.19 <0.9.0;
 
-import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
+import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
-contract GenerateAttributes_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
-
+contract GenerateAttributes_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     function test_GenerateAttributes_Empty() external {
         string memory actualAttributes = generateAttributes("", "", "");
         string memory expectedAttributes =

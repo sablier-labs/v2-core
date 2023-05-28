@@ -3,13 +3,9 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { Lockup } from "src/types/DataTypes.sol";
 
-import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
+import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
-contract StringifyStatus_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
-
+contract StringifyStatus_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     function test_StringifyStatus() external {
         assertEq(stringifyStatus(Lockup.Status.DEPLETED), "Depleted", "depleted status mismatch");
         assertEq(stringifyStatus(Lockup.Status.CANCELED), "Canceled", "canceled status mismatch");

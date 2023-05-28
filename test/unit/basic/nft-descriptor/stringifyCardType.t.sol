@@ -3,13 +3,9 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { SVGElements } from "src/libraries/SVGElements.sol";
 
-import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
+import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
-contract StringifyCardType_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
-
+contract StringifyCardType_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     function test_StringifyCardType() external {
         assertEq(SVGElements.stringifyCardType(SVGElements.CardType.PROGRESS), "Progress");
         assertEq(SVGElements.stringifyCardType(SVGElements.CardType.STATUS), "Status");

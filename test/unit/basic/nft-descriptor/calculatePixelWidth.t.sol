@@ -3,15 +3,11 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { SVGElements } from "src/libraries/SVGElements.sol";
 
-import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
+import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
-contract CalculatePixelWidth_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
+contract CalculatePixelWidth_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     uint256 internal constant CHAR_WIDTH_LARGE = 16;
     uint256 internal constant CHAR_WIDTH_SMALL = 14;
-
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
 
     function cpw(string memory text, bool largeFont) internal pure returns (uint256) {
         return SVGElements.calculatePixelWidth(text, largeFont);

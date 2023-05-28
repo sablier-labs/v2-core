@@ -2,15 +2,11 @@
 // solhint-disable max-line-length,quotes
 pragma solidity >=0.8.19 <0.9.0;
 
-import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
+import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
-contract GenerateDescription_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
+contract GenerateDescription_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     string internal constant DISCLAIMER =
         unicode"⚠️ DISCLAIMER: Due diligence is critical when assessing this NFT. Make sure the asset addresses match the genuine ERC-20 contracts, as symbols may be imitated.";
-
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
 
     function test_GenerateDescription_Empty() external {
         string memory actualDescription = generateDescription("", "", "", "", "");

@@ -4,10 +4,6 @@ pragma solidity >=0.8.19 <0.9.0;
 import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
 
 contract SafeAssetDecimals_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
-
     function test_SafeAssetDecimals_EOA() external {
         address eoa = vm.addr({ privateKey: 1 });
         uint8 actualDecimals = safeAssetDecimals(address(eoa));

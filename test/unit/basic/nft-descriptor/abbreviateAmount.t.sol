@@ -3,13 +3,9 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { SVGElements } from "src/libraries/SVGElements.sol";
 
-import { NFTDescriptor_Integration_Basic_Test } from "./NFTDescriptor.t.sol";
+import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
-contract AbbreviateAmount_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Test {
-    function setUp() public virtual override {
-        NFTDescriptor_Integration_Basic_Test.setUp();
-    }
-
+contract AbbreviateAmount_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     function ge(string memory abbreviation) internal pure returns (string memory) {
         return string.concat(SVGElements.SIGN_GE, " ", abbreviation);
     }
