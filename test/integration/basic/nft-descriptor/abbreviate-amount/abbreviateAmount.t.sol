@@ -47,29 +47,33 @@ contract AbbreviateAmount_Integration_Basic_Test is NFTDescriptor_Integration_Ba
 
     function test_AbbreviateAmount_Thousands() external {
         assertEq(abbreviateAmount({ amount: 1337, decimals: 0 }), ge("1.33K"), "abbreviation");
+        assertEq(abbreviateAmount({ amount: 1080, decimals: 0 }), ge("1.08K"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 1800, decimals: 0 }), ge("1.80K"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 37_184, decimals: 1 }), ge("3.71K"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 49_137, decimals: 1 }), ge("4.91K"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 600_555, decimals: 2 }), ge("6K"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 8211e18, decimals: 18 }), ge("8.21K"), "abbreviation");
+        assertEq(abbreviateAmount({ amount: 201_287e18, decimals: 18 }), ge("201.28K"), "abbreviation");
     }
 
     function test_AbbreviateAmount_Millions() external {
         assertEq(abbreviateAmount({ amount: 1_337_081, decimals: 0 }), ge("1.33M"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 2_194_000, decimals: 0 }), ge("2.19M"), "abbreviation");
-        assertEq(abbreviateAmount({ amount: 32_448_842, decimals: 1 }), ge("3.24M"), "abbreviation");
+        assertEq(abbreviateAmount({ amount: 30_448_842, decimals: 1 }), ge("3.04M"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 50_077_231, decimals: 1 }), ge("5M"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 681_408_920, decimals: 2 }), ge("6.81M"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 8_882_108e18, decimals: 18 }), ge("8.88M"), "abbreviation");
+        assertEq(abbreviateAmount({ amount: 577_308_003e18, decimals: 18 }), ge("577.30M"), "abbreviation");
     }
 
     function test_AbbreviateAmount_Billions() external {
         assertEq(abbreviateAmount({ amount: 1_337_081_132, decimals: 0 }), ge("1.33B"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 2_763_455_030, decimals: 0 }), ge("2.76B"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 30_008_011_215, decimals: 1 }), ge("3B"), "abbreviation");
-        assertEq(abbreviateAmount({ amount: 54_050_772_867, decimals: 1 }), ge("5.40B"), "abbreviation");
+        assertEq(abbreviateAmount({ amount: 50_450_772_867, decimals: 1 }), ge("5.04B"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 734_730_810_730, decimals: 2 }), ge("7.34B"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 9_927_800_422e18, decimals: 18 }), ge("9.92B"), "abbreviation");
+        assertEq(abbreviateAmount({ amount: 699_881_672_021e18, decimals: 18 }), ge("699.88B"), "abbreviation");
     }
 
     function test_AbbreviateAmount_Trillions() external {
@@ -79,5 +83,6 @@ contract AbbreviateAmount_Integration_Basic_Test is NFTDescriptor_Integration_Ba
         assertEq(abbreviateAmount({ amount: 61_236_342_018_965, decimals: 1 }), ge("6.12T"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 734_730_810_730_992, decimals: 2 }), ge("7.34T"), "abbreviation");
         assertEq(abbreviateAmount({ amount: 9_621_312_102_753e18, decimals: 18 }), ge("9.62T"), "abbreviation");
+        assertEq(abbreviateAmount({ amount: 101_076_479_280_188e18, decimals: 18 }), ge("101.07T"), "abbreviation");
     }
 }

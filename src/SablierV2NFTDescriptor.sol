@@ -150,7 +150,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         // Concatenate the calculated parts to form the final string.
         string memory prefix = string.concat(SVGElements.SIGN_GE, " ");
         string memory wholePart = truncatedAmount.toString();
-        string memory fractionalPart = fractionalAmount == 0 ? "" : string.concat(".", fractionalAmount.toString());
+        string memory fractionalPart = stringifyFractionalAmount(fractionalAmount);
         return string.concat(prefix, wholePart, fractionalPart, suffixes[suffixIndex]);
     }
 
@@ -320,27 +320,34 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         return abi.decode(symbol, (string));
     }
 
+    /// @notice Converts the provided fractional amount to a string prefixed by a dot.
+    /// @param fractionalAmount A numerical value with 2 implied decimals.
+    function stringifyFractionalAmount(uint256 fractionalAmount) internal pure returns (string memory) {
+        // Return the empty string if the fractional amount is zero.
+        if (fractionalAmount == 0) {
+            return "";
+        }
+        // Add a leading zero if the fractional part is less than 10, e.g. for "1", this function returns ".01%".
+        else if (fractionalAmount < 10) {
+            return string.concat(".0", fractionalAmount.toString());
+        }
+        // Otherwise, stringify the fractional amount simply.
+        else {
+            return string.concat(".", fractionalAmount.toString());
+        }
+    }
+
     /// @notice Converts the provided percentage to a string.
     /// @param percentage A numerical value with 4 implied decimals.
     function stringifyPercentage(uint256 percentage) internal pure returns (string memory) {
         // Extract the last two decimals.
-        uint256 fractionalAmount = percentage % 100;
+        string memory fractionalPart = stringifyFractionalAmount(percentage % 100);
 
         // Remove the last two decimals.
         string memory wholePart = (percentage / 100).toString();
 
-        // Omit the fractional part if it is zero.
-        if (fractionalAmount == 0) {
-            return string.concat(wholePart, ("%"));
-        }
-        // Add a leading zero if the fractional part is less than 10, e.g. 0.01%.
-        else if (fractionalAmount < 10) {
-            return string.concat(wholePart, ".0", fractionalAmount.toString(), "%");
-        }
         // Concatenate the whole and fractional parts.
-        else {
-            return string.concat(wholePart, ".", fractionalAmount.toString(), "%");
-        }
+        return string.concat(wholePart, fractionalPart, "%");
     }
 
     /// @notice Retrieves the stream's status as a string.
