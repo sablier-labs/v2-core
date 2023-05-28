@@ -33,7 +33,7 @@ jobs:
           --rpc-url "${{ inputs.chain }}"
           -vvvv
 
-      - name: "Add summary"
+      - name: "Add workflow summary"
         run: |
-          echo "## Deployment result" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
+          echo "## Result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Done" >> $GITHUB_STEP_SUMMARY

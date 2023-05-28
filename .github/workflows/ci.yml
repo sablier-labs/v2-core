@@ -150,7 +150,7 @@ jobs:
 
       - name: "Add test summary"
         run: |
-          echo "## Integration tests result" >> $GITHUB_STEP_SUMMARY
+          echo "## Utils tests result" >> $GITHUB_STEP_SUMMARY
           echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
 
   test-invariant:
