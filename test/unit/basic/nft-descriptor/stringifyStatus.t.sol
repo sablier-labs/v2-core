@@ -7,10 +7,10 @@ import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
 contract StringifyStatus_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     function test_StringifyStatus() external {
-        assertEq(stringifyStatus(Lockup.Status.DEPLETED), "Depleted", "depleted status mismatch");
-        assertEq(stringifyStatus(Lockup.Status.CANCELED), "Canceled", "canceled status mismatch");
-        assertEq(stringifyStatus(Lockup.Status.STREAMING), "Streaming", "streaming status mismatch");
-        assertEq(stringifyStatus(Lockup.Status.SETTLED), "Settled", "settled status mismatch");
-        assertEq(stringifyStatus(Lockup.Status.PENDING), "Pending", "pending status mismatch");
+        assertEq(nftDescriptorMock.stringifyStatus_(Lockup.Status.DEPLETED), "Depleted", "depleted status mismatch");
+        assertEq(nftDescriptorMock.stringifyStatus_(Lockup.Status.CANCELED), "Canceled", "canceled status mismatch");
+        assertEq(nftDescriptorMock.stringifyStatus_(Lockup.Status.STREAMING), "Streaming", "streaming status mismatch");
+        assertEq(nftDescriptorMock.stringifyStatus_(Lockup.Status.SETTLED), "Settled", "settled status mismatch");
+        assertEq(nftDescriptorMock.stringifyStatus_(Lockup.Status.PENDING), "Pending", "pending status mismatch");
     }
 }

@@ -5,6 +5,7 @@ import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescript
 import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
 import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
 import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
+import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
 import { DeployDeterministicComptroller } from "./DeployDeterministicComptroller.s.sol";
 import { DeployDeterministicLockupDynamic } from "./DeployDeterministicLockupDynamic.s.sol";
@@ -13,8 +14,9 @@ import { DeployDeterministicLockupLinear } from "./DeployDeterministicLockupLine
 /// @notice Deploys all V2 Core contracts at deterministic addresses across chains, in the following order:
 ///
 /// 1. {SablierV2Comptroller}
-/// 2. {SablierV2LockupDynamic}
-/// 3. {SablierV2LockupLinear}
+/// 2. {SablierV2NFTDescriptor}
+/// 3. {SablierV2LockupDynamic}
+/// 4. {SablierV2LockupLinear}
 ///
 /// @dev Reverts if any contract has already been deployed.
 contract DeployDeterministicCore is
@@ -31,10 +33,17 @@ contract DeployDeterministicCore is
     )
         public
         virtual
-        returns (SablierV2Comptroller comptroller, SablierV2LockupDynamic dynamic, SablierV2LockupLinear linear)
+        returns (
+            SablierV2Comptroller comptroller,
+            SablierV2LockupDynamic dynamic,
+            SablierV2LockupLinear linear,
+            SablierV2NFTDescriptor nftDescriptor
+        )
     {
-        comptroller = DeployDeterministicComptroller.run(initialAdmin);
-        dynamic = DeployDeterministicLockupDynamic.run(initialAdmin, comptroller, initialNFTDescriptor, maxSegmentCount);
-        linear = DeployDeterministicLockupLinear.run(initialAdmin, comptroller, initialNFTDescriptor);
+        comptroller = new SablierV2Comptroller{ salt: ZERO_SALT}(initialAdmin);
+        nftDescriptor = new SablierV2NFTDescriptor{ salt: ZERO_SALT}();
+        dynamic =
+        new SablierV2LockupDynamic{ salt: ZERO_SALT}(initialAdmin, comptroller, initialNFTDescriptor, maxSegmentCount);
+        linear = new SablierV2LockupLinear{ salt: ZERO_SALT}(initialAdmin, comptroller, initialNFTDescriptor);
     }
 }

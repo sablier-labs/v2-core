@@ -7,28 +7,31 @@ import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescript
 import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
 import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
 import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
-
-import { DeployComptroller } from "./DeployComptroller.s.sol";
-import { DeployLockupDynamic } from "./DeployLockupDynamic.s.sol";
-import { DeployLockupLinear } from "./DeployLockupLinear.s.sol";
+import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
 /// @notice Deploys all V2 Core contract in the following order:
 ///
 /// 1. {SablierV2Comptroller}
-/// 2. {SablierV2LockupDynamic}
-/// 3. {SablierV2LockupLinear}
-contract DeployCore is DeployComptroller, DeployLockupDynamic, DeployLockupLinear {
+/// 2. {SablierV2NFTDescriptor}
+/// 3. {SablierV2LockupDynamic}
+/// 4. {SablierV2LockupLinear}
+contract DeployCore {
     function run(
         address initialAdmin,
-        ISablierV2NFTDescriptor initialNFTDescriptor,
         uint256 maxSegmentCount
     )
         public
         virtual
-        returns (SablierV2Comptroller comptroller, SablierV2LockupDynamic dynamic, SablierV2LockupLinear linear)
+        returns (
+            SablierV2Comptroller comptroller,
+            SablierV2LockupDynamic dynamic,
+            SablierV2LockupLinear linear,
+            SablierV2NFTDescriptor nftDescriptor
+        )
     {
-        comptroller = DeployComptroller.run(initialAdmin);
-        dynamic = DeployLockupDynamic.run(initialAdmin, comptroller, initialNFTDescriptor, maxSegmentCount);
-        linear = DeployLockupLinear.run(initialAdmin, comptroller, initialNFTDescriptor);
+        comptroller = new SablierV2Comptroller(initialAdmin);
+        nftDescriptor = new SablierV2NFTDescriptor();
+        dynamic = new SablierV2LockupDynamic(initialAdmin, comptroller, nftDescriptor, maxSegmentCount);
+        linear = new SablierV2LockupLinear(initialAdmin, comptroller, nftDescriptor);
     }
 }

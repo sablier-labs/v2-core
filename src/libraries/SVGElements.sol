@@ -237,6 +237,7 @@ library SVGElements {
         }
     }
 
+    /// @notice Retrieves the card type as a string.
     function stringifyCardType(CardType cardType) internal pure returns (string memory) {
         if (cardType == CardType.PROGRESS) {
             return "Progress";

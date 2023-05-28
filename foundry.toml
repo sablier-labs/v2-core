@@ -36,7 +36,7 @@
 # Compile only the production code with IR
 [profile.optimized]
   out = "out-optimized"
-  test = "src"
+  test = "test/mocks"
   via_ir = true
 
 # See "SMTChecker and Formal Verification" in the Solidity docs

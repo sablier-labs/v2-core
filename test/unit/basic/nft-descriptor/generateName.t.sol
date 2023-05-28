@@ -4,8 +4,8 @@ pragma solidity >=0.8.19 <0.9.0;
 import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
 contract GenerateName_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
-    function gn(string memory streamingModel, string memory streamId) internal pure returns (string memory) {
-        return generateName(streamingModel, streamId);
+    function gn(string memory streamingModel, string memory streamId) internal view returns (string memory) {
+        return nftDescriptorMock.generateName_(streamingModel, streamId);
     }
 
     function dyn(string memory streamId) internal pure returns (string memory) {

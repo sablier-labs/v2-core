@@ -11,7 +11,6 @@ import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.s
 import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";
 import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescriptor.sol";
-import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
 import { GoodFlashLoanReceiver } from "./mocks/flash-loan/GoodFlashLoanReceiver.sol";
@@ -48,7 +47,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
     GoodRecipient internal goodRecipient;
     GoodSender internal goodSender;
     ISablierV2LockupLinear internal linear;
-    NFTDescriptorMock internal nftDescriptor;
+    ISablierV2NFTDescriptor internal nftDescriptor;
     Noop internal noop;
     ERC20MissingReturn internal usdt;
 
@@ -62,7 +61,6 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         goodFlashLoanReceiver = new GoodFlashLoanReceiver();
         goodRecipient = new GoodRecipient();
         goodSender = new GoodSender();
-        nftDescriptor = new NFTDescriptorMock();
         noop = new Noop();
         usdt = new ERC20MissingReturn("Tether USD", "USDT", 6);
 
@@ -137,6 +135,26 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         deal({ token: address(usdt), to: addr, give: 1_000_000e18 });
     }
 
+    /// @dev Conditionally deploys V2 Core normally or from a source precompiled with `--via-ir`.
+    function deployCoreConditionally() internal {
+        if (!isTestOptimizedProfile()) {
+            (comptroller, dynamic, linear, nftDescriptor) = new DeployCore().run({
+                initialAdmin: users.admin,
+                maxSegmentCount: defaults.MAX_SEGMENT_COUNT()
+            });
+        } else {
+            comptroller = deployPrecompiledComptroller(users.admin);
+            nftDescriptor = deployPrecompiledNFTDescriptor();
+            dynamic = deployPrecompiledDynamic(users.admin, comptroller, nftDescriptor);
+            linear = deployPrecompiledLinear(users.admin, comptroller, nftDescriptor);
+        }
+
+        vm.label({ account: address(comptroller), newLabel: "Comptroller" });
+        vm.label({ account: address(dynamic), newLabel: "LockupDynamic" });
+        vm.label({ account: address(linear), newLabel: "LockupLinear" });
+        vm.label({ account: address(nftDescriptor), newLabel: "NFTDescriptor" });
+    }
+
     /// @dev Deploys {SablierV2Comptroller} from a source precompiled with `--via-ir`.
     function deployPrecompiledComptroller(address initialAdmin) internal returns (ISablierV2Comptroller comptroller_) {
         comptroller_ = ISablierV2Comptroller(
@@ -161,7 +179,13 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         );
     }
 
-    /// @dev Deploys {SablierV2LockupLinear} from a source precompiled with via IR.
+    /// @dev Deploys {SablierV2NFTDescriptor} from a source precompiled with `--via-ir`.
+    function deployPrecompiledNFTDescriptor() internal returns (ISablierV2NFTDescriptor nftDescriptor_) {
+        nftDescriptor_ =
+            ISablierV2NFTDescriptor(deployCode("out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json"));
+    }
+
+    /// @dev Deploys {SablierV2LockupLinear} from a source precompiled with `--via-ir`.
     function deployPrecompiledLinear(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
@@ -176,29 +200,6 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
                 abi.encode(initialAdmin, address(comptroller_), address(nftDescriptor_))
             )
         );
-    }
-
-    /// @dev Conditionally deploy V2 Core normally or from a source precompiled with via IR.
-    function deployCoreConditionally() internal {
-        // We deploy from precompiled source if the profile is "test-optimized".
-        if (isTestOptimizedProfile()) {
-            comptroller = deployPrecompiledComptroller(users.admin);
-            dynamic = deployPrecompiledDynamic(users.admin, comptroller, nftDescriptor);
-            linear = deployPrecompiledLinear(users.admin, comptroller, nftDescriptor);
-        }
-        // We deploy normally for all other profiles.
-        else {
-            (comptroller, dynamic, linear) = new DeployCore().run({
-                initialAdmin: users.admin,
-                initialNFTDescriptor: nftDescriptor,
-                maxSegmentCount: defaults.MAX_SEGMENT_COUNT()
-            });
-        }
-
-        // Finally, label all the contracts just deployed.
-        vm.label({ account: address(comptroller), newLabel: "Comptroller" });
-        vm.label({ account: address(dynamic), newLabel: "LockupDynamic" });
-        vm.label({ account: address(linear), newLabel: "LockupLinear" });
     }
 
     /// @dev Checks if the Foundry profile is "test-optimized".

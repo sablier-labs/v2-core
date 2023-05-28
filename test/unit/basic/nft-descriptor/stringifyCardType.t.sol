@@ -7,9 +7,9 @@ import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
 contract StringifyCardType_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     function test_StringifyCardType() external {
-        assertEq(SVGElements.stringifyCardType(SVGElements.CardType.PROGRESS), "Progress");
-        assertEq(SVGElements.stringifyCardType(SVGElements.CardType.STATUS), "Status");
-        assertEq(SVGElements.stringifyCardType(SVGElements.CardType.STREAMED), "Streamed");
-        assertEq(SVGElements.stringifyCardType(SVGElements.CardType.DURATION), "Duration");
+        assertEq(nftDescriptorMock.stringifyCardType_(SVGElements.CardType.PROGRESS), "Progress");
+        assertEq(nftDescriptorMock.stringifyCardType_(SVGElements.CardType.STATUS), "Status");
+        assertEq(nftDescriptorMock.stringifyCardType_(SVGElements.CardType.STREAMED), "Streamed");
+        assertEq(nftDescriptorMock.stringifyCardType_(SVGElements.CardType.DURATION), "Duration");
     }
 }

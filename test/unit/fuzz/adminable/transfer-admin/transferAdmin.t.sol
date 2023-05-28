@@ -14,7 +14,7 @@ contract TransferAdmin_Unit_Fuzz_Test is Adminable_Unit_Shared_Test {
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, eve));
-        adminable.transferAdmin(eve);
+        adminableMock.transferAdmin(eve);
     }
 
     modifier whenCallerAdmin() {
@@ -25,14 +25,14 @@ contract TransferAdmin_Unit_Fuzz_Test is Adminable_Unit_Shared_Test {
         vm.assume(newAdmin != address(0));
 
         // Expect a {TransferAdmin} event to be emitted.
-        vm.expectEmit({ emitter: address(adminable) });
+        vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: newAdmin });
 
         // Transfer the admin.
-        adminable.transferAdmin(newAdmin);
+        adminableMock.transferAdmin(newAdmin);
 
         // Assert that the admin has been transferred.
-        address actualAdmin = adminable.admin();
+        address actualAdmin = adminableMock.admin();
         address expectedAdmin = newAdmin;
         assertEq(actualAdmin, expectedAdmin, "admin");
     }

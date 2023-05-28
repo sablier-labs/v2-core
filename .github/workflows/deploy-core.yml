@@ -17,9 +17,6 @@ on:
         default: "goerli"
         description: "Chain name as defined in the Foundry config."
         required: false
-      nft-descriptor:
-        description: "Address of an NFT descriptor contract"
-        required: true
       max-segment-count:
         default: "300"
         description: "Maximum number of segments allowed in a stream."
@@ -44,7 +41,6 @@ jobs:
           --rpc-url "${{ inputs.chain }}"
           --sig "run(address,address,uint256)"
           "${{ inputs.admin }}"
-          "${{ inputs.nft-descriptor }}"
           "${{ inputs.max-segment-count }}"
           -vvvv
 

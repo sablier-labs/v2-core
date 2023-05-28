@@ -11,7 +11,7 @@ contract MapSymbol_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Tes
     function test_RevertWhen_UnknownNFT() external {
         ERC721 nft = new ERC721("Foo NFT", "FOO");
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2NFTDescriptor_UnknownNFT.selector, nft, "FOO"));
-        nftDescriptor.mapSymbol_(nft);
+        nftDescriptorMock.mapSymbol_(nft);
     }
 
     modifier whenKnownNFT() {
@@ -19,13 +19,13 @@ contract MapSymbol_Integration_Basic_Test is NFTDescriptor_Integration_Basic_Tes
     }
 
     function test_MapSymbol_LockupDynamic() external {
-        string memory actualStreamingModel = mapSymbol(dynamic);
+        string memory actualStreamingModel = nftDescriptorMock.mapSymbol_(dynamic);
         string memory expectedStreamingModel = "Lockup Dynamic";
         assertEq(actualStreamingModel, expectedStreamingModel, "streamingModel");
     }
 
     function test_MapSymbol_LockupLinear() external {
-        string memory actualStreamingModel = mapSymbol(linear);
+        string memory actualStreamingModel = nftDescriptorMock.mapSymbol_(linear);
         string memory expectedStreamingModel = "Lockup Linear";
         assertEq(actualStreamingModel, expectedStreamingModel, "streamingModel");
     }

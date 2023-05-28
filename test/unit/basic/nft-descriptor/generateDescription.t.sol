@@ -9,7 +9,7 @@ contract GenerateDescription_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
         unicode"⚠️ DISCLAIMER: Due diligence is critical when assessing this NFT. Make sure the asset addresses match the genuine ERC-20 contracts, as symbols may be imitated.";
 
     function test_GenerateDescription_Empty() external {
-        string memory actualDescription = generateDescription("", "", "", "", "");
+        string memory actualDescription = nftDescriptorMock.generateDescription_("", "", "", "", "");
         string memory expectedAttributes = string.concat(
             "This NFT represents a payment stream in a Sablier V2 ",
             " contract. The owner of this NFT can withdraw the streamed assets, which are denominated in ",
@@ -26,7 +26,7 @@ contract GenerateDescription_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     }
 
     function test_GenerateDescription() external {
-        string memory actualDescription = generateDescription(
+        string memory actualDescription = nftDescriptorMock.generateDescription_(
             "Lockup Linear",
             dai.symbol(),
             "42",

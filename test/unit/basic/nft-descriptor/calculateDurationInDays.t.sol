@@ -9,7 +9,7 @@ contract CalculateDurationInDays_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Tes
     function test_CalculateDurationInDays_Zero() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 1 days - 1 seconds;
-        string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
+        string memory actualDurationInDays = nftDescriptorMock.calculateDurationInDays_(startTime, endTime);
         string memory expectedDurationInDays = string.concat(SVGElements.SIGN_LT, " 1 Day");
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }
@@ -17,7 +17,7 @@ contract CalculateDurationInDays_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Tes
     function test_CalculateDurationInDays_One() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 1 days;
-        string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
+        string memory actualDurationInDays = nftDescriptorMock.calculateDurationInDays_(startTime, endTime);
         string memory expectedDurationInDays = "1 Day";
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }
@@ -25,7 +25,7 @@ contract CalculateDurationInDays_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Tes
     function test_CalculateDurationInDays_FortyTwo() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 42 days;
-        string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
+        string memory actualDurationInDays = nftDescriptorMock.calculateDurationInDays_(startTime, endTime);
         string memory expectedDurationInDays = "42 Days";
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }
@@ -33,7 +33,7 @@ contract CalculateDurationInDays_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Tes
     function test_CalculateDurationInDays_Leet() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 1337 days;
-        string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
+        string memory actualDurationInDays = nftDescriptorMock.calculateDurationInDays_(startTime, endTime);
         string memory expectedDurationInDays = "1337 Days";
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }
@@ -41,7 +41,7 @@ contract CalculateDurationInDays_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Tes
     function test_CalculateDurationInDays_TenThousand() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime + 10_000 days;
-        string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
+        string memory actualDurationInDays = nftDescriptorMock.calculateDurationInDays_(startTime, endTime);
         string memory expectedDurationInDays = string.concat(SVGElements.SIGN_GT, " 9999 Days");
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }
@@ -49,7 +49,7 @@ contract CalculateDurationInDays_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Tes
     function test_CalculateDurationInDays_Overflow() external {
         uint256 startTime = block.timestamp;
         uint256 endTime = startTime - 1 seconds;
-        string memory actualDurationInDays = calculateDurationInDays(startTime, endTime);
+        string memory actualDurationInDays = nftDescriptorMock.calculateDurationInDays_(startTime, endTime);
         string memory expectedDurationInDays = string.concat(SVGElements.SIGN_GT, " 9999 Days");
         assertEq(actualDurationInDays, expectedDurationInDays, "durationInDays");
     }

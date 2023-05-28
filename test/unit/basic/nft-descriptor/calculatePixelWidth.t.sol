@@ -9,8 +9,8 @@ contract CalculatePixelWidth_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     uint256 internal constant CHAR_WIDTH_LARGE = 16;
     uint256 internal constant CHAR_WIDTH_SMALL = 14;
 
-    function cpw(string memory text, bool largeFont) internal pure returns (uint256) {
-        return SVGElements.calculatePixelWidth(text, largeFont);
+    function cpw(string memory text, bool largeFont) internal view returns (uint256) {
+        return nftDescriptorMock.calculatePixelWidth_(text, largeFont);
     }
 
     function large(string memory text) internal pure returns (uint256) {

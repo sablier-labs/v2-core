@@ -27,7 +27,7 @@ contract Precompiles_Test is Base_Test {
     function test_DeployComptroller() external onlyTestOptimizedProfile {
         address actualComptroller = address(precompiles.deployComptroller(users.admin));
         address expectedComptroller = address(deployPrecompiledComptroller(users.admin));
-        assertEq(actualComptroller.code, expectedComptroller.code, "bytecodes don't match");
+        assertEq(actualComptroller.code, expectedComptroller.code, "bytecodes mismatch");
     }
 
     function test_DeployLockupDynamic() external onlyTestOptimizedProfile {
@@ -35,7 +35,7 @@ contract Precompiles_Test is Base_Test {
         address actualDynamic = address(precompiles.deployLockupDynamic(users.admin, comptroller, nftDescriptor));
         address expectedDynamic = address(deployPrecompiledDynamic(users.admin, comptroller, nftDescriptor));
         bytes memory expectedDynamicCode = adjustBytecode(expectedDynamic.code, expectedDynamic, actualDynamic);
-        assertEq(actualDynamic.code, expectedDynamicCode, "bytecodes don't match");
+        assertEq(actualDynamic.code, expectedDynamicCode, "bytecodes mismatch");
     }
 
     function test_DeployLockupLinear() external onlyTestOptimizedProfile {
@@ -43,28 +43,38 @@ contract Precompiles_Test is Base_Test {
         address actualLinear = address(precompiles.deployLockupLinear(users.admin, comptroller, nftDescriptor));
         address expectedLinear = address(deployPrecompiledLinear(users.admin, comptroller, nftDescriptor));
         bytes memory expectedLinearCode = adjustBytecode(expectedLinear.code, expectedLinear, actualLinear);
-        assertEq(actualLinear.code, expectedLinearCode, "bytecodes don't match");
+        assertEq(actualLinear.code, expectedLinearCode, "bytecodes mismatch");
+    }
+
+    function test_DeployNFTDescriptor() external onlyTestOptimizedProfile {
+        address actualNFTDescriptor = address(precompiles.deployNFTDescriptor());
+        address expectedNFTDescriptor = address(deployPrecompiledNFTDescriptor());
+        assertEq(actualNFTDescriptor.code, expectedNFTDescriptor.code, "bytecodes mismatch");
     }
 
     function test_DeployCore() external onlyTestOptimizedProfile {
         (
             ISablierV2Comptroller actualComptroller,
             ISablierV2LockupDynamic actualDynamic,
-            ISablierV2LockupLinear actualLinear
+            ISablierV2LockupLinear actualLinear,
+            ISablierV2NFTDescriptor actualNFTDescriptor
         ) = precompiles.deployCore(users.admin);
 
         address expectedComptroller = address(deployPrecompiledComptroller(users.admin));
-        assertEq(address(actualComptroller).code, expectedComptroller.code, "bytecodes don't match");
+        assertEq(address(actualComptroller).code, expectedComptroller.code, "bytecodes mismatch");
 
         address expectedDynamic = address(deployPrecompiledDynamic(users.admin, comptroller, nftDescriptor));
         bytes memory expectedDynamicCode =
             adjustBytecode(address(expectedDynamic).code, address(expectedDynamic), address(actualDynamic));
-        assertEq(address(actualDynamic).code, expectedDynamicCode, "bytecodes don't match");
+        assertEq(address(actualDynamic).code, expectedDynamicCode, "bytecodes mismatch");
 
         address expectedLinear = address(deployPrecompiledLinear(users.admin, comptroller, nftDescriptor));
         bytes memory expectedLinearCode =
             adjustBytecode(address(expectedLinear).code, address(expectedLinear), address(actualLinear));
-        assertEq(address(actualLinear).code, expectedLinearCode, "bytecodes don't match");
+        assertEq(address(actualLinear).code, expectedLinearCode, "bytecodes mismatch");
+
+        address expectedNFTDescriptor = address(deployPrecompiledNFTDescriptor());
+        assertEq(address(actualNFTDescriptor).code, expectedNFTDescriptor.code, "bytecodes mismatch");
     }
 
     /// @dev The expected bytecode has to be adjusted because {SablierV2Lockup} inherits from {NoDelegateCall}, which
