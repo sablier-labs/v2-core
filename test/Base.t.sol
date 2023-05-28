@@ -3,7 +3,7 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { ERC20 } from "@openzeppelin/token/ERC20/ERC20.sol";
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
-import { eqString } from "@prb/test/Helpers.sol";
+import { Strings } from "@openzeppelin/utils/Strings.sol";
 import { StdCheats } from "forge-std/StdCheats.sol";
 
 import { DeployCore } from "../script/DeployCore.s.sol";
@@ -204,7 +204,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
     /// @dev Checks if the Foundry profile is "test-optimized".
     function isTestOptimizedProfile() internal returns (bool result) {
         string memory profile = vm.envOr("FOUNDRY_PROFILE", string(""));
-        result = eqString(profile, "test-optimized");
+        result = Strings.equal(profile, "test-optimized");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
