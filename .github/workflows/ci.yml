@@ -118,7 +118,7 @@ jobs:
           path: "optimized-out"
 
       - name: "Run the integration tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\""
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration\""
 
       - name: "Add test summary"
         run: |
@@ -146,7 +146,7 @@ jobs:
           path: "optimized-out"
 
       - name: "Run the utils tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/utils/**/*.sol\""
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/utils\""
 
       - name: "Add test summary"
         run: |
@@ -173,7 +173,7 @@ jobs:
           path: "optimized-out"
 
       - name: "Run the invariant tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant/**/*.sol\""
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant\""
 
       - name: "Add test summary"
         run: |
@@ -206,7 +206,7 @@ jobs:
           echo "FOUNDRY_FUZZ_SEED=$(echo $(($EPOCHSECONDS / 604800)))" >> $GITHUB_ENV
 
       - name: "Run the fork tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/fork/**/*.sol\""
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/fork\""
 
       - name: "Add test summary"
         run: |
@@ -226,7 +226,7 @@ jobs:
         uses: "foundry-rs/foundry-toolchain@v1"
 
       - name: "Run the integration tests and generate the coverage report"
-        run: "forge coverage --match-path \"test/integration/**/*.sol\" --report lcov"
+        run: "forge coverage --match-path \"test/integration\" --report lcov"
 
       - name: "Upload coverage report to Codecov"
         uses: "codecov/codecov-action@v3"

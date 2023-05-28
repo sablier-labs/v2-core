@@ -109,7 +109,7 @@ jobs:
           path: "optimized-out"
 
       - name: "Run the integration tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\""
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration\""
 
       - name: "Add test summary"
         run: |
@@ -139,7 +139,7 @@ jobs:
           path: "optimized-out"
 
       - name: "Run the invariant tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant/**/*.sol\""
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant\""
 
       - name: "Add test summary"
         run: |
@@ -168,7 +168,7 @@ jobs:
           path: "optimized-out"
 
       - name: "Run the fork tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/fork/**/*.sol\""
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/fork\""
 
       - name: "Add test summary"
         run: |
