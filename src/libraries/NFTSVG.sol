@@ -50,8 +50,8 @@ library NFTSVG {
             cardType: SVGElements.CardType.PROGRESS,
             content: params.progress,
             circle: SVGElements.progressCircle({
-                accentColor: params.accentColor,
-                progressNumerical: params.progressNumerical
+                progressNumerical: params.progressNumerical,
+                accentColor: params.accentColor
             })
         });
 

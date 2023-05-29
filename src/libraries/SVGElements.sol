@@ -44,8 +44,8 @@ library SVGElements {
     string internal constant NOISE =
         '<filter id="Noise"><feFlood x="0" y="0" width="100%" height="100%" flood-color="hsl(230,21%,11%)" flood-opacity="1" result="floodFill"/><feTurbulence baseFrequency=".4" numOctaves="3" result="Noise" type="fractalNoise"/><feBlend in="Noise" in2="floodFill" mode="soft-light"/></filter>';
 
-    string internal constant SIGN_GT = "&gt;";
     string internal constant SIGN_GE = "&ge;";
+    string internal constant SIGN_GT = "&gt;";
     string internal constant SIGN_LT = "&lt;";
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,12 @@ library SVGElements {
         // The progress card can have a fixed width because the content is never longer than the caption. The former
         // has 6 characters (at most, e.g. "42.09%"), whereas the latter has 8 characters ("Progress").
         if (cardType == CardType.PROGRESS) {
-            width = 208;
+            // The progress can be 0%, in which case the circle is not rendered.
+            if (circle.equal("")) {
+                width = 144; // 2 * 20 (margins) + 8 * 13 (charWidth)
+            } else {
+                width = 208; // 3 * 20 (margins) + 8 * 13 (charWidth) + 44 (diameter)
+            }
         }
         // For the other cards, the width is calculated dynamically based on the number of characters.
         else {
@@ -114,7 +119,7 @@ library SVGElements {
             '<text x="20" y="72" font-family="\'Courier New\',Arial,monospace" font-size="26px">',
             content,
             "</text>",
-            cardType == CardType.PROGRESS ? circle : "",
+            circle,
             "</g>"
         );
     }
@@ -189,13 +194,16 @@ library SVGElements {
     }
 
     function progressCircle(
-        string memory accentColor,
-        uint256 progressNumerical
+        uint256 progressNumerical,
+        string memory accentColor
     )
         internal
         pure
         returns (string memory)
     {
+        if (progressNumerical == 0) {
+            return "";
+        }
         return string.concat(
             '<g fill="none">',
             '<circle cx="166" cy="50" r="22" stroke="',
@@ -224,7 +232,7 @@ library SVGElements {
         }
 
         unchecked {
-            uint256 charWidth = largeFont ? 16 : 14;
+            uint256 charWidth = largeFont ? 16 : 13;
             for (uint256 i = 0; i < length;) {
                 width += charWidth;
                 i += 1;
