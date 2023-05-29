@@ -217,7 +217,7 @@ library LockupLinear {
         uint40 total;
     }
 
-    /// @notice Struct encapsulating the time range of a lockup linear stream.
+    /// @notice Struct encapsulating the time range.
     /// @param start The Unix timestamp for the stream's start.
     /// @param cliff The Unix timestamp for the cliff period's end.
     /// @param end The Unix timestamp for the stream's end.
@@ -227,7 +227,7 @@ library LockupLinear {
         uint40 end;
     }
 
-    /// @notice Lockup linear stream.
+    /// @notice Lockup Linear stream.
     /// @dev The fields are arranged like this to save gas via tight variable packing.
     /// @param sender The address streaming the assets, with the ability to cancel the stream.
     /// @param startTime The Unix timestamp indicating the stream's start.
