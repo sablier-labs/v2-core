@@ -147,7 +147,7 @@ jobs:
           path: "out-optimized"
 
       - name: "Run the integration tests against the optimized build"
-        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\""
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\" -vvvv"
 
       - name: "Add test summary"
         run: |
