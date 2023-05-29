@@ -44,8 +44,13 @@ library SVGElements {
     string internal constant NOISE =
         '<filter id="Noise"><feFlood x="0" y="0" width="100%" height="100%" flood-color="hsl(230,21%,11%)" flood-opacity="1" result="floodFill"/><feTurbulence baseFrequency=".4" numOctaves="3" result="Noise" type="fractalNoise"/><feBlend in="Noise" in2="floodFill" mode="soft-light"/></filter>';
 
-    string internal constant SIGN_GE = "&ge;";
+    /// @dev Escape character for "≥".
+    string internal constant SIGN_GE = "&#8805;";
+
+    /// @dev Escape character for ">".
     string internal constant SIGN_GT = "&gt;";
+
+    /// @dev Escape character for "<".
     string internal constant SIGN_LT = "&lt;";
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -223,8 +228,11 @@ library SVGElements {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Calculates the pixel width of the provided string.
-    /// @dev This function applies a factor of ~0.6 to the two font sizes used in the SVG (26px and 22px)
-    /// to approximate the average character width.
+    /// @dev Notes:
+    /// - A factor of ~0.6 is applied to the two font sizes used in the SVG (26px and 22px) to approximate the average
+    /// character width.
+    /// - It is assumed that escaped characters are placed at the beginning of `text`.
+    /// - It is further assumed that there is no other semicolon in `text`.
     function calculatePixelWidth(string memory text, bool largeFont) internal pure returns (uint256 width) {
         uint256 length = bytes(text).length;
         if (length == 0) {
@@ -233,15 +241,17 @@ library SVGElements {
 
         unchecked {
             uint256 charWidth = largeFont ? 16 : 13;
+            uint256 semicolonIndex;
             for (uint256 i = 0; i < length;) {
+                if (bytes(text)[i] == ";") {
+                    semicolonIndex = i;
+                }
                 width += charWidth;
                 i += 1;
             }
 
-            // Account for escaped characters (such as &gt;).
-            if (bytes(text)[0] == "&") {
-                width -= charWidth * 3;
-            }
+            // Account for escaped characters (such as &#8805;).
+            width -= charWidth * semicolonIndex;
         }
     }
 

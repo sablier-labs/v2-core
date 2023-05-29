@@ -10,7 +10,7 @@ contract GenerateDescription_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
 
     function test_GenerateDescription_Empty() external {
         string memory actualDescription = nftDescriptorMock.generateDescription_("", "", "", "", "");
-        string memory expectedAttributes = string.concat(
+        string memory expectedDescription = string.concat(
             "This NFT represents a payment stream in a Sablier V2 ",
             " contract. The owner of this NFT can withdraw the streamed assets, which are denominated in ",
             ".\\n\\n",
@@ -22,7 +22,7 @@ contract GenerateDescription_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
             "\\n\\n",
             DISCLAIMER
         );
-        assertEq(actualDescription, expectedAttributes, "metadata description");
+        assertEq(actualDescription, expectedDescription, "metadata description");
     }
 
     function test_GenerateDescription() external {
@@ -33,7 +33,7 @@ contract GenerateDescription_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
             "0x78B190C1E493752f85E02b00a0C98851A5638A30",
             "0xFEbD67A34821d1607a57DD31aae5f246D7dE2ca2"
         );
-        string memory expectedAttributes = string.concat(
+        string memory expectedDescription = string.concat(
             "This NFT represents a payment stream in a Sablier V2 ",
             "Lockup Linear",
             " contract. The owner of this NFT can withdraw the streamed assets, which are denominated in ",
@@ -52,6 +52,6 @@ contract GenerateDescription_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
             "\\n\\n",
             DISCLAIMER
         );
-        assertEq(actualDescription, expectedAttributes, "metadata description");
+        assertEq(actualDescription, expectedDescription, "metadata description");
     }
 }

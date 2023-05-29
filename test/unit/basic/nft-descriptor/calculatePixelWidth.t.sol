@@ -59,11 +59,11 @@ contract CalculatePixelWidth_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     function test_CalculatePixelWidth_Streamed() external {
         bool largeFont = true;
         assertEq(cpw("&lt; 1", largeFont), large("< 1"), "pixel width");
-        assertEq(cpw("&ge; 42.73K", largeFont), large(" 42.73K") + CHAR_WIDTH_LARGE, "pixel width");
-        assertEq(cpw("&ge; 1.23M", largeFont), large(" 1.23M") + CHAR_WIDTH_LARGE, "pixel width");
-        assertEq(cpw("&ge; 8.10B", largeFont), large(" 8.10B") + CHAR_WIDTH_LARGE, "pixel width");
-        assertEq(cpw("&ge; 4.91T", largeFont), large(" 4.91T") + CHAR_WIDTH_LARGE, "pixel width");
-        assertEq(cpw("&ge; 999.99T", largeFont), large(" 999.99T") + CHAR_WIDTH_LARGE, "pixel width");
+        assertEq(cpw("&#8805; 42.73K", largeFont), large(" 42.73K") + CHAR_WIDTH_LARGE, "pixel width");
+        assertEq(cpw("&#8805; 1.23M", largeFont), large(" 1.23M") + CHAR_WIDTH_LARGE, "pixel width");
+        assertEq(cpw("&#8805; 8.10B", largeFont), large(" 8.10B") + CHAR_WIDTH_LARGE, "pixel width");
+        assertEq(cpw("&#8805; 4.91T", largeFont), large(" 4.91T") + CHAR_WIDTH_LARGE, "pixel width");
+        assertEq(cpw("&#8805; 999.99T", largeFont), large(" 999.99T") + CHAR_WIDTH_LARGE, "pixel width");
     }
 
     function test_CalculatePixelWidth_Duration() external {

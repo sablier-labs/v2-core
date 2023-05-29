@@ -58,10 +58,10 @@ contract Precompiles {
         ISablierV2Comptroller initialComptroller
     )
         public
-        returns (ISablierV2LockupDynamic dynamic)
+        returns (ISablierV2LockupDynamic lockupDynamic)
     {
         uint256 maxSegmentCount = MAX_SEGMENT_COUNT;
-        return deployLockupDynamic(initialAdmin, initialComptroller, maxSegmentCount);
+        lockupDynamic = deployLockupDynamic(initialAdmin, initialComptroller, maxSegmentCount);
     }
 
     /// @notice Deploys {SablierV2LockupDynamic} from precompiled bytecode.
@@ -72,10 +72,10 @@ contract Precompiles {
         uint256 maxSegmentCount
     )
         public
-        returns (ISablierV2LockupDynamic dynamic)
+        returns (ISablierV2LockupDynamic lockupDynamic)
     {
         ISablierV2NFTDescriptor nftDescriptor = new SablierV2NFTDescriptor();
-        dynamic = deployLockupDynamic(initialAdmin, initialComptroller, nftDescriptor, maxSegmentCount);
+        lockupDynamic = deployLockupDynamic(initialAdmin, initialComptroller, nftDescriptor, maxSegmentCount);
     }
 
     /// @notice Deploys {SablierV2LockupDynamic} from precompiled bytecode.
@@ -86,9 +86,9 @@ contract Precompiles {
         ISablierV2NFTDescriptor nftDescriptor
     )
         public
-        returns (ISablierV2LockupDynamic dynamic)
+        returns (ISablierV2LockupDynamic lockupDynamic)
     {
-        dynamic = deployLockupDynamic(initialAdmin, initialComptroller, nftDescriptor, MAX_SEGMENT_COUNT);
+        lockupDynamic = deployLockupDynamic(initialAdmin, initialComptroller, nftDescriptor, MAX_SEGMENT_COUNT);
     }
 
     /// @notice Deploys {SablierV2LockupDynamic} from precompiled bytecode.
@@ -99,15 +99,17 @@ contract Precompiles {
         uint256 maxSegmentCount
     )
         public
-        returns (ISablierV2LockupDynamic dynamic)
+        returns (ISablierV2LockupDynamic lockupDynamic)
     {
         bytes memory creationBytecode = bytes.concat(
             BYTECODE_LOCKUP_DYNAMIC, abi.encode(initialAdmin, initialComptroller, nftDescriptor, maxSegmentCount)
         );
         assembly {
-            dynamic := create(0, add(creationBytecode, 0x20), mload(creationBytecode))
+            lockupDynamic := create(0, add(creationBytecode, 0x20), mload(creationBytecode))
         }
-        require(address(dynamic) != address(0), "Sablier V2 Precompiles: deployment failed for LockupDynamic contract");
+        require(
+            address(lockupDynamic) != address(0), "Sablier V2 Precompiles: deployment failed for LockupDynamic contract"
+        );
     }
 
     /// @notice Deploys {SablierV2LockupLinear} from precompiled bytecode.
@@ -117,10 +119,10 @@ contract Precompiles {
         ISablierV2Comptroller initialComptroller
     )
         public
-        returns (ISablierV2LockupLinear linear)
+        returns (ISablierV2LockupLinear lockupLinear)
     {
         ISablierV2NFTDescriptor nftDescriptor = new SablierV2NFTDescriptor();
-        linear = deployLockupLinear(initialAdmin, initialComptroller, nftDescriptor);
+        lockupLinear = deployLockupLinear(initialAdmin, initialComptroller, nftDescriptor);
     }
 
     /// @notice Deploys {SablierV2LockupLinear} from precompiled bytecode.
@@ -130,14 +132,16 @@ contract Precompiles {
         ISablierV2NFTDescriptor nftDescriptor
     )
         public
-        returns (ISablierV2LockupLinear linear)
+        returns (ISablierV2LockupLinear lockupLinear)
     {
         bytes memory creationBytecode =
             bytes.concat(BYTECODE_LOCKUP_LINEAR, abi.encode(initialAdmin, initialComptroller, nftDescriptor));
         assembly {
-            linear := create(0, add(creationBytecode, 0x20), mload(creationBytecode))
+            lockupLinear := create(0, add(creationBytecode, 0x20), mload(creationBytecode))
         }
-        require(address(linear) != address(0), "Sablier V2 Precompiles: deployment failed for LockupLinear contract");
+        require(
+            address(lockupLinear) != address(0), "Sablier V2 Precompiles: deployment failed for LockupLinear contract"
+        );
     }
 
     /// @notice Deploys {SablierV2NFTDescriptor} from precompiled bytecode.
@@ -161,14 +165,14 @@ contract Precompiles {
         public
         returns (
             ISablierV2Comptroller comptroller,
-            ISablierV2LockupDynamic dynamic,
-            ISablierV2LockupLinear linear,
+            ISablierV2LockupDynamic lockupDynamic,
+            ISablierV2LockupLinear lockupLinear,
             ISablierV2NFTDescriptor nftDescriptor
         )
     {
         comptroller = deployComptroller(initialAdmin);
         nftDescriptor = deployNFTDescriptor();
-        dynamic = deployLockupDynamic(initialAdmin, comptroller);
-        linear = deployLockupLinear(initialAdmin, comptroller);
+        lockupDynamic = deployLockupDynamic(initialAdmin, comptroller);
+        lockupLinear = deployLockupLinear(initialAdmin, comptroller);
     }
 }

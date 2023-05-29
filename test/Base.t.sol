@@ -135,7 +135,8 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         deal({ token: address(usdt), to: addr, give: 1_000_000e18 });
     }
 
-    /// @dev Conditionally deploys V2 Core normally or from a source precompiled with `--via-ir`.
+    /// @dev Conditionally deploys V2 Core normally or from a source precompiled with `--via-ir`, and labels the
+    /// addresses.
     function deployCoreConditionally() internal {
         if (!isTestOptimizedProfile()) {
             (comptroller, dynamic, linear, nftDescriptor) = new DeployCore().run({
@@ -155,23 +156,23 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         vm.label({ account: address(nftDescriptor), newLabel: "NFTDescriptor" });
     }
 
-    /// @dev Deploys {SablierV2Comptroller} from a source precompiled with `--via-ir`.
-    function deployPrecompiledComptroller(address initialAdmin) internal returns (ISablierV2Comptroller comptroller_) {
-        comptroller_ = ISablierV2Comptroller(
+    /// @dev Deploys {Comptroller} from a source precompiled with `--via-ir`.
+    function deployPrecompiledComptroller(address initialAdmin) internal returns (ISablierV2Comptroller) {
+        return ISablierV2Comptroller(
             deployCode("out-optimized/SablierV2Comptroller.sol/SablierV2Comptroller.json", abi.encode(initialAdmin))
         );
     }
 
-    /// @dev Deploys {SablierV2LockupDynamic} from a source precompiled with `--via-ir`.
+    /// @dev Deploys {LockupDynamic} from a source precompiled with `--via-ir`.
     function deployPrecompiledDynamic(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
         ISablierV2NFTDescriptor nftDescriptor_
     )
         internal
-        returns (ISablierV2LockupDynamic dynamic_)
+        returns (ISablierV2LockupDynamic)
     {
-        dynamic_ = ISablierV2LockupDynamic(
+        return ISablierV2LockupDynamic(
             deployCode(
                 "out-optimized/SablierV2LockupDynamic.sol/SablierV2LockupDynamic.json",
                 abi.encode(initialAdmin, address(comptroller_), address(nftDescriptor_), defaults.MAX_SEGMENT_COUNT())
@@ -179,13 +180,13 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         );
     }
 
-    /// @dev Deploys {SablierV2NFTDescriptor} from a source precompiled with `--via-ir`.
-    function deployPrecompiledNFTDescriptor() internal returns (ISablierV2NFTDescriptor nftDescriptor_) {
-        nftDescriptor_ =
+    /// @dev Deploys {NFTDescriptor} from a source precompiled with `--via-ir`.
+    function deployPrecompiledNFTDescriptor() internal returns (ISablierV2NFTDescriptor) {
+        return
             ISablierV2NFTDescriptor(deployCode("out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json"));
     }
 
-    /// @dev Deploys {SablierV2LockupLinear} from a source precompiled with `--via-ir`.
+    /// @dev Deploys {LockupLinear} from a source precompiled with `--via-ir`.
     function deployPrecompiledLinear(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
@@ -203,9 +204,9 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
     }
 
     /// @dev Checks if the Foundry profile is "test-optimized".
-    function isTestOptimizedProfile() internal returns (bool result) {
+    function isTestOptimizedProfile() internal returns (bool) {
         string memory profile = vm.envOr("FOUNDRY_PROFILE", string(""));
-        result = Strings.equal(profile, "test-optimized");
+        return Strings.equal(profile, "test-optimized");
     }
 
     /*//////////////////////////////////////////////////////////////////////////

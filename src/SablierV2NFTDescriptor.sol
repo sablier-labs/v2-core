@@ -218,7 +218,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         }
     }
 
-    /// @notice Generates an array of JSON objects that represent the stream's attributes:
+    /// @notice Generates an array of JSON objects that represent the NFT's attributes:
     /// - Asset symbol
     /// - Sender address
     /// - Status
@@ -244,7 +244,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         );
     }
 
-    /// @notice Generates a string with the NFT's metadata description, which provides a high-level overview.
+    /// @notice Generates a string with the NFT's JSON metadata description, which provides a high-level overview.
     function generateDescription(
         string memory streamingModel,
         string memory assetSymbol,
@@ -277,7 +277,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         );
     }
 
-    /// @notice Generates a string with the NFT's metadata name, which is unique for each stream.
+    /// @notice Generates a string with the NFT's JSON metadata name, which is unique for each stream.
     /// @dev The `streamId` is equivalent to the ERC-721 `tokenId`.
     function generateName(string memory streamingModel, string memory streamId) internal pure returns (string memory) {
         return string.concat("Sablier V2 ", streamingModel, " #", streamId);

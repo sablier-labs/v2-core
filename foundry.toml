@@ -15,6 +15,7 @@
   optimizer_runs = 5_000
   out = "out"
   script = "script"
+  sender = "0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38"
   solc = "0.8.19"
   src = "src"
   test = "test"

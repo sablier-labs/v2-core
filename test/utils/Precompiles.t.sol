@@ -78,17 +78,21 @@ contract Precompiles_Test is Base_Test {
     }
 
     /// @dev The expected bytecode has to be adjusted because {SablierV2Lockup} inherits from {NoDelegateCall}, which
-    /// saves the address of the contract itself in storage.
+    /// saves the contract's own address in storage.
     function adjustBytecode(
         bytes memory bytecode,
-        address expected,
-        address actual
+        address expectedAddress,
+        address actualAddress
     )
         internal
         pure
-        returns (bytes memory result)
+        returns (bytes memory)
     {
-        result =
-            vm.parseBytes(vm.toString(bytecode).replace(expected.toHexStringNoPrefix(), actual.toHexStringNoPrefix()));
+        return vm.parseBytes(
+            vm.toString(bytecode).replace({
+                search: expectedAddress.toHexStringNoPrefix(),
+                replacement: actualAddress.toHexStringNoPrefix()
+            })
+        );
     }
 }

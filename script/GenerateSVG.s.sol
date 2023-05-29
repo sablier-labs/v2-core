@@ -14,7 +14,7 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
     using Strings for address;
 
     address internal constant DAI = address(uint160(uint256(keccak256("DAI"))));
-    address internal constant SABLIER = address(uint160(uint256(keccak256("SABLIER"))));
+    address internal constant LOCKUP_LINEAR = address(uint160(uint256(keccak256("SablierV2LockupLinear"))));
 
     /// @param progress The streamed amount as a numerical percentage with 4 implied decimals.
     /// @param status The status of the stream, as a string.
@@ -32,11 +32,11 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
     {
         svg = NFTSVG.generateSVG(
             NFTSVG.SVGParams({
-                accentColor: generateAccentColor({ sablier: SABLIER, streamId: uint256(keccak256(msg.data)) }),
+                accentColor: generateAccentColor({ sablier: LOCKUP_LINEAR, streamId: uint256(keccak256(msg.data)) }),
                 assetAddress: DAI.toHexString(),
                 assetSymbol: "DAI",
                 duration: calculateDurationInDays({ startTime: 0, endTime: duration * 1 days }),
-                sablierAddress: SABLIER.toHexString(),
+                sablierAddress: LOCKUP_LINEAR.toHexString(),
                 progress: stringifyPercentage(progress),
                 progressNumerical: progress,
                 status: status,
