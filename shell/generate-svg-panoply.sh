@@ -19,9 +19,9 @@ set -euo pipefail
 ./shell/generate-svg.sh 144 "Canceled" "29.81K" 24
 ./shell/generate-svg.sh 7231 "Canceled" "421.11K" 24
 
-./shell/generate-svg.sh 15 "Streaming" "§" 0
-./shell/generate-svg.sh 42 "Streaming" "200" 0
-./shell/generate-svg.sh 79 "Streaming" "200" 0
+./shell/generate-svg.sh 15 "Streaming" "86.1K" 0
+./shell/generate-svg.sh 42 "Streaming" "581" 0
+./shell/generate-svg.sh 79 "Streaming" "66.01K" 0
 ./shell/generate-svg.sh 399 "Streaming" "314K" 0
 ./shell/generate-svg.sh 800 "Streaming" "50.04K" 0
 ./shell/generate-svg.sh 1030 "Streaming" "48.93M" 1021
