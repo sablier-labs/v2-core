@@ -273,7 +273,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             " Address: ",
             assetAddress,
             "\\n\\n",
-            unicode"⚠️ DISCLAIMER: Due diligence is critical when assessing this NFT. Make sure the asset addresses match the genuine ERC-20 contracts, as symbols may be imitated."
+            unicode"⚠️ WARNING: Transferring the NFT makes the new owner the recipient of the stream. The funds are not automatically withdrawn for the previous recipient."
         );
     }
 

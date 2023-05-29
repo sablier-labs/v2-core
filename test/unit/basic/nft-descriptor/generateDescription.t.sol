@@ -6,7 +6,7 @@ import { NFTDescriptor_Unit_Basic_Test } from "./NFTDescriptor.t.sol";
 
 contract GenerateDescription_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
     string internal constant DISCLAIMER =
-        unicode"⚠️ DISCLAIMER: Due diligence is critical when assessing this NFT. Make sure the asset addresses match the genuine ERC-20 contracts, as symbols may be imitated.";
+        unicode"⚠️ WARNING: Transferring the NFT makes the new owner the recipient of the stream. The funds are not automatically withdrawn for the previous recipient.";
 
     function test_GenerateDescription_Empty() external {
         string memory actualDescription = nftDescriptorMock.generateDescription_("", "", "", "", "");
