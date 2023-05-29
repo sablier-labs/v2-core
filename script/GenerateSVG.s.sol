@@ -12,6 +12,7 @@ import { BaseScript } from "./Base.s.sol";
 /// @notice Generates an NFT SVG using the user-provided parameters.
 contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
     using Strings for address;
+    using Strings for string;
 
     address internal constant DAI = address(uint160(uint256(keccak256("DAI"))));
     address internal constant LOCKUP_LINEAR = address(uint160(uint256(keccak256("SablierV2LockupLinear"))));
@@ -40,7 +41,7 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
                 progress: stringifyPercentage(progress),
                 progressNumerical: progress,
                 status: status,
-                streamed: string.concat(SVGElements.SIGN_GE, " ", streamed),
+                streamed: streamed.equal("0") ? "0" : string.concat(SVGElements.SIGN_GE, " ", streamed),
                 streamingModel: "Lockup Linear"
             })
         );

@@ -122,12 +122,16 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     /// @param decimals The number of decimals to assume when abbreviating the amount.
     /// @return abbreviation The abbreviated representation of the provided amount, as a string.
     function abbreviateAmount(uint256 amount, uint256 decimals) internal pure returns (string memory) {
+        if (amount == 0) {
+            return "0";
+        }
+
         uint256 truncatedAmount;
         unchecked {
             truncatedAmount = decimals == 0 ? amount : amount / 10 ** decimals;
         }
 
-        // Return dummy values when the amount is either very small or very big.
+        // Return dummy values when the truncated amount is either very small or very big.
         if (truncatedAmount < 1) {
             return string.concat(SVGElements.SIGN_LT, " 1");
         } else if (truncatedAmount >= 1e15) {

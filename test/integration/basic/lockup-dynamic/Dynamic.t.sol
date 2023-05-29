@@ -41,7 +41,6 @@ import { WithdrawMultiple_Integration_Basic_Test } from "../lockup/withdraw-mult
                             NON-SHARED ABSTRACT TEST
 //////////////////////////////////////////////////////////////////////////*/
 
-/// @title Dynamic_Integration_Basic_Test
 /// @notice Common testing logic needed across {SablierV2LockupDynamic} integration basic tests.
 abstract contract Dynamic_Integration_Basic_Test is Integration_Test, Dynamic_Integration_Shared_Test {
     function setUp() public virtual override(Integration_Test, Dynamic_Integration_Shared_Test) {

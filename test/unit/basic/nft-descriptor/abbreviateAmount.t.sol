@@ -14,13 +14,21 @@ contract AbbreviateAmount_Unit_Basic_Test is NFTDescriptor_Unit_Basic_Test {
         return string.concat(SVGElements.SIGN_GE, " ", abbreviation);
     }
 
+    function test_AbbreviateAmount_Zero() external {
+        string memory expectedAbbreviation = "0";
+        assertEq(aa({ amount: 0, decimals: 0 }), expectedAbbreviation, "abbreviation");
+        assertEq(aa({ amount: 0, decimals: 1 }), expectedAbbreviation, "abbreviation");
+        assertEq(aa({ amount: 0, decimals: 2 }), expectedAbbreviation, "abbreviation");
+        assertEq(aa({ amount: 0, decimals: 18 }), expectedAbbreviation, "abbreviation");
+    }
+
     function test_AbbreviateAmount_Tiny() external {
         string memory expectedAbbreviation = string.concat(SVGElements.SIGN_LT, " 1");
-        assertEq(aa({ amount: 0, decimals: 0 }), expectedAbbreviation, "abbreviation");
         assertEq(aa({ amount: 5, decimals: 1 }), expectedAbbreviation, "abbreviation");
         assertEq(aa({ amount: 9, decimals: 1 }), expectedAbbreviation, "abbreviation");
         assertEq(aa({ amount: 42, decimals: 2 }), expectedAbbreviation, "abbreviation");
         assertEq(aa({ amount: 99, decimals: 2 }), expectedAbbreviation, "abbreviation");
+        assertEq(aa({ amount: 1e17 - 1, decimals: 18 }), expectedAbbreviation, "abbreviation");
         assertEq(aa({ amount: 1e18 - 1, decimals: 18 }), expectedAbbreviation, "abbreviation");
     }
 

@@ -26,7 +26,6 @@ import { Events } from "./utils/Events.sol";
 import { Fuzzers } from "./utils/Fuzzers.sol";
 import { Users } from "./utils/Types.sol";
 
-/// @title Base_Test
 /// @notice Base test contract with common logic needed by all tests.
 abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzzers, StdCheats {
     /*//////////////////////////////////////////////////////////////////////////
@@ -180,12 +179,6 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         );
     }
 
-    /// @dev Deploys {NFTDescriptor} from a source precompiled with `--via-ir`.
-    function deployPrecompiledNFTDescriptor() internal returns (ISablierV2NFTDescriptor) {
-        return
-            ISablierV2NFTDescriptor(deployCode("out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json"));
-    }
-
     /// @dev Deploys {LockupLinear} from a source precompiled with `--via-ir`.
     function deployPrecompiledLinear(
         address initialAdmin,
@@ -201,6 +194,12 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
                 abi.encode(initialAdmin, address(comptroller_), address(nftDescriptor_))
             )
         );
+    }
+
+    /// @dev Deploys {NFTDescriptor} from a source precompiled with `--via-ir`.
+    function deployPrecompiledNFTDescriptor() internal returns (ISablierV2NFTDescriptor) {
+        return
+            ISablierV2NFTDescriptor(deployCode("out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json"));
     }
 
     /// @dev Checks if the Foundry profile is "test-optimized".
