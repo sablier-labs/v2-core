@@ -3,7 +3,6 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { ERC20 } from "@openzeppelin/token/ERC20/ERC20.sol";
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
-import { Strings } from "@openzeppelin/utils/Strings.sol";
 import { StdCheats } from "forge-std/StdCheats.sol";
 
 import { DeployCore } from "../script/DeployCore.s.sol";
@@ -127,15 +126,15 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
     }
 
     /// @dev Generates a user, labels its address, and funds it with test assets.
-    function createUser(string memory name) internal returns (address payable addr) {
-        addr = payable(makeAddr(name));
-        vm.deal({ account: addr, newBalance: 100 ether });
-        deal({ token: address(dai), to: addr, give: 1_000_000e18 });
-        deal({ token: address(usdt), to: addr, give: 1_000_000e18 });
+    function createUser(string memory name) internal returns (address payable) {
+        address payable user = payable(makeAddr(name));
+        vm.deal({ account: user, newBalance: 100 ether });
+        deal({ token: address(dai), to: user, give: 1_000_000e18 });
+        deal({ token: address(usdt), to: user, give: 1_000_000e18 });
+        return user;
     }
 
-    /// @dev Conditionally deploys V2 Core normally or from a source precompiled with `--via-ir`, and labels the
-    /// addresses.
+    /// @dev Conditionally deploys V2 Core normally or from a source precompiled with `--via-ir`.
     function deployCoreConditionally() internal {
         if (!isTestOptimizedProfile()) {
             (comptroller, dynamic, linear, nftDescriptor) = new DeployCore().run({
@@ -186,9 +185,9 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         ISablierV2NFTDescriptor nftDescriptor_
     )
         internal
-        returns (ISablierV2LockupLinear linear_)
+        returns (ISablierV2LockupLinear)
     {
-        linear_ = ISablierV2LockupLinear(
+        return ISablierV2LockupLinear(
             deployCode(
                 "out-optimized/SablierV2LockupLinear.sol/SablierV2LockupLinear.json",
                 abi.encode(initialAdmin, address(comptroller_), address(nftDescriptor_))
@@ -200,12 +199,6 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
     function deployPrecompiledNFTDescriptor() internal returns (ISablierV2NFTDescriptor) {
         return
             ISablierV2NFTDescriptor(deployCode("out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json"));
-    }
-
-    /// @dev Checks if the Foundry profile is "test-optimized".
-    function isTestOptimizedProfile() internal returns (bool) {
-        string memory profile = vm.envOr("FOUNDRY_PROFILE", string(""));
-        return Strings.equal(profile, "test-optimized");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
