@@ -29,6 +29,7 @@ set -euo pipefail
 ./shell/generate-svg.sh 5000 "Streaming" "1.5K" 1
 ./shell/generate-svg.sh 7291 "Streaming" "756.12T" 7211
 ./shell/generate-svg.sh 9999 "Streaming" "3.32K" 88
+./shell/generate-svg.sh 4999 "Streaming" "999.45K" 10000
 
 ./shell/generate-svg.sh 10000 "Settled" "1" 892
 ./shell/generate-svg.sh 10000 "Settled" "14.94K" 892
