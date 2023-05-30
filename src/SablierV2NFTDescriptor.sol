@@ -214,7 +214,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             uint256 saturation = ((bitField >> 8) & 0xFF) % 80 + 20;
 
             // The lightness is typically a percentage between 0% (black) and 100% (white), but here the range
-            // is bounded to [30,100] to avoid very dark colors.
+            // is bounded to [30,100] to avoid dark colors.
             // Applying an 8-bit mask means using the bits at positions [7:0].
             uint256 lightness = (bitField & 0xFF) % 70 + 30;
 
