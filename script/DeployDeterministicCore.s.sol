@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.19 <=0.9.0;
 
-import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescriptor.sol";
 import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
 import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
 import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
@@ -29,11 +28,11 @@ contract DeployDeterministicCore is
     function run(
         uint256 create2Salt,
         address initialAdmin,
-        ISablierV2NFTDescriptor initialNFTDescriptor,
         uint256 maxSegmentCount
     )
         public
         virtual
+        broadcaster
         returns (
             SablierV2Comptroller comptroller,
             SablierV2LockupDynamic lockupDynamic,
