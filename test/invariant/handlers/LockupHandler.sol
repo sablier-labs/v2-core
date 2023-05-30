@@ -281,7 +281,7 @@ abstract contract LockupHandler is BaseHandler {
             return;
         }
 
-        // Only NFTs that still exist can be transferred (NFTs can be burned during the invariant test campaign).
+        // Skip burned NFTs.
         if (currentRecipient == address(0)) {
             return;
         }

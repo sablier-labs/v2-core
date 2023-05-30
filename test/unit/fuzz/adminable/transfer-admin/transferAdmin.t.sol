@@ -8,6 +8,7 @@ import { Adminable_Unit_Shared_Test } from "../../../shared/adminable/Adminable.
 contract TransferAdmin_Unit_Fuzz_Test is Adminable_Unit_Shared_Test {
     function testFuzz_RevertWhen_CallerNotAdmin(address eve) external {
         vm.assume(eve != address(0) && eve != users.admin);
+        assumeNoPrecompiles(eve);
 
         // Make Eve the caller in this test.
         changePrank(eve);
