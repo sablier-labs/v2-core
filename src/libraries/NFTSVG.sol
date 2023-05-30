@@ -86,7 +86,7 @@ library NFTSVG {
         vars.cards = string.concat(vars.progressCard, vars.statusCard, vars.streamedCard, vars.durationCard);
 
         return string.concat(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">',
+            '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">',
             SVGElements.BACKGROUND,
             generateDefs(params.accentColor, params.status, vars.cards),
             generateFloatingText(params.sablierAddress, params.streamingModel, params.assetAddress, params.assetSymbol),
