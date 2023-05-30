@@ -5,11 +5,14 @@ import { ERC20 } from "@openzeppelin/token/ERC20/ERC20.sol";
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { StdCheats } from "forge-std/StdCheats.sol";
 
-import { DeployCore } from "../script/DeployCore.s.sol";
 import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";
 import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescriptor.sol";
+import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
+import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
+import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
+import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
 import { GoodFlashLoanReceiver } from "./mocks/flash-loan/GoodFlashLoanReceiver.sol";
@@ -135,12 +138,16 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
     }
 
     /// @dev Conditionally deploys V2 Core normally or from a source precompiled with `--via-ir`.
+    /// We cannot use the {DeployCore} script because some tests rely on hard coded addresses for the
+    /// deployed contracts. Since the script itself would have to be deployed, using it would bump the
+    /// deployer's nonce, which would in turn lead to different addresses (recall that the addresses
+    /// for contracts deployed via `CREATE` are based on the sender-and-nonce-hash).
     function deployCoreConditionally() internal {
         if (!isTestOptimizedProfile()) {
-            (comptroller, dynamic, linear, nftDescriptor) = new DeployCore().run({
-                initialAdmin: users.admin,
-                maxSegmentCount: defaults.MAX_SEGMENT_COUNT()
-            });
+            comptroller = new SablierV2Comptroller(users.admin);
+            nftDescriptor = new SablierV2NFTDescriptor();
+            dynamic = new SablierV2LockupDynamic(users.admin, comptroller, nftDescriptor, defaults.MAX_SEGMENT_COUNT());
+            linear = new SablierV2LockupLinear(users.admin, comptroller, nftDescriptor);
         } else {
             comptroller = deployPrecompiledComptroller(users.admin);
             nftDescriptor = deployPrecompiledNFTDescriptor();
@@ -154,14 +161,14 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         vm.label({ account: address(nftDescriptor), newLabel: "NFTDescriptor" });
     }
 
-    /// @dev Deploys {Comptroller} from a source precompiled with `--via-ir`.
+    /// @dev Deploys {SablierV2Comptroller} from a source precompiled with `--via-ir`.
     function deployPrecompiledComptroller(address initialAdmin) internal returns (ISablierV2Comptroller) {
         return ISablierV2Comptroller(
             deployCode("out-optimized/SablierV2Comptroller.sol/SablierV2Comptroller.json", abi.encode(initialAdmin))
         );
     }
 
-    /// @dev Deploys {LockupDynamic} from a source precompiled with `--via-ir`.
+    /// @dev Deploys {SablierV2LockupDynamic} from a source precompiled with `--via-ir`.
     function deployPrecompiledDynamic(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
@@ -178,7 +185,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         );
     }
 
-    /// @dev Deploys {LockupLinear} from a source precompiled with `--via-ir`.
+    /// @dev Deploys {SablierV2LockupLinear} from a source precompiled with `--via-ir`.
     function deployPrecompiledLinear(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
@@ -195,7 +202,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, Events, Fuzz
         );
     }
 
-    /// @dev Deploys {NFTDescriptor} from a source precompiled with `--via-ir`.
+    /// @dev Deploys {SablierV2NFTDescriptor} from a source precompiled with `--via-ir`.
     function deployPrecompiledNFTDescriptor() internal returns (ISablierV2NFTDescriptor) {
         return
             ISablierV2NFTDescriptor(deployCode("out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json"));
