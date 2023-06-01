@@ -566,7 +566,7 @@ contract SablierV2LockupDynamic is
             Helpers.checkAndCalculateFees(params.totalAmount, protocolFee, params.broker.fee, MAX_FEE);
 
         // Checks: validate the user-provided parameters.
-        Helpers.checkCreateDynamicParams(createAmounts.deposit, params.segments, MAX_SEGMENT_COUNT, params.startTime);
+        Helpers.checkParams(createAmounts.deposit, params.segments, MAX_SEGMENT_COUNT, params.startTime);
 
         // Load the stream id in a variable.
         streamId = _nextStreamId;
