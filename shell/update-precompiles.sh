@@ -9,7 +9,7 @@
 set -euo pipefail
 
 # Compile the contracts with Forge
-# FOUNDRY_PROFILE=optimized forge build
+FOUNDRY_PROFILE=optimized forge build
 
 # Retrieve the raw bytecodes, removing the "0x" prefix
 comptroller=$(cat out-optimized/SablierV2Comptroller.sol/SablierV2Comptroller.json | jq -r '.bytecode.object' | cut -c 3-)
