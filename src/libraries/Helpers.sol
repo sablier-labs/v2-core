@@ -55,6 +55,60 @@ library Helpers {
         amounts.deposit = totalAmount - amounts.protocolFee - amounts.brokerFee;
     }
 
+    /// @dev Checks the parameters of the {SablierV2LockupDynamic-_createWithMilestones} function.
+    function checkCreateWithMilestones(
+        uint128 depositAmount,
+        LockupDynamic.Segment[] memory segments,
+        uint256 maxSegmentCount,
+        uint40 startTime
+    )
+        internal
+        view
+    {
+        // Checks: the deposit amount is not zero.
+        if (depositAmount == 0) {
+            revert Errors.SablierV2Lockup_DepositAmountZero();
+        }
+
+        // Checks: the segment count is not zero.
+        uint256 segmentCount = segments.length;
+        if (segmentCount == 0) {
+            revert Errors.SablierV2LockupDynamic_SegmentCountZero();
+        }
+
+        // Checks: the segment count is not greater than the maximum allowed.
+        if (segmentCount > maxSegmentCount) {
+            revert Errors.SablierV2LockupDynamic_SegmentCountTooHigh(segmentCount);
+        }
+
+        // Checks: requirements of segments variables.
+        _checkSegments(segments, depositAmount, startTime);
+    }
+
+    /// @dev Checks the parameters of the {SablierV2LockupLinear-_createWithRange} function.
+    function checkCreateWithRange(uint128 depositAmount, LockupLinear.Range memory range) internal view {
+        // Checks: the deposit amount is not zero.
+        if (depositAmount == 0) {
+            revert Errors.SablierV2Lockup_DepositAmountZero();
+        }
+
+        // Checks: the start time is less than or equal to the cliff time.
+        if (range.start > range.cliff) {
+            revert Errors.SablierV2LockupLinear_StartTimeGreaterThanCliffTime(range.start, range.cliff);
+        }
+
+        // Checks: the cliff time is strictly less than the end time.
+        if (range.cliff >= range.end) {
+            revert Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime(range.cliff, range.end);
+        }
+
+        // Checks: the end time is in the future.
+        uint40 currentTime = uint40(block.timestamp);
+        if (currentTime >= range.end) {
+            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, range.end);
+        }
+    }
+
     /// @dev Checks that the segment array counts match, and then adjusts the segments by calculating the milestones.
     function checkDeltasAndCalculateMilestones(LockupDynamic.SegmentWithDelta[] memory segments)
         internal
@@ -85,60 +139,6 @@ library Helpers {
                     milestone: segmentsWithMilestones[i - 1].milestone + segments[i].delta
                 });
             }
-        }
-    }
-
-    /// @dev Checks the parameters of the {SablierV2LockupDynamic-_createWithMilestones} function.
-    function checkParams(
-        uint128 depositAmount,
-        LockupDynamic.Segment[] memory segments,
-        uint256 maxSegmentCount,
-        uint40 startTime
-    )
-        internal
-        view
-    {
-        // Checks: the deposit amount is not zero.
-        if (depositAmount == 0) {
-            revert Errors.SablierV2Lockup_DepositAmountZero();
-        }
-
-        // Checks: the segment count is not zero.
-        uint256 segmentCount = segments.length;
-        if (segmentCount == 0) {
-            revert Errors.SablierV2LockupDynamic_SegmentCountZero();
-        }
-
-        // Checks: the segment count is not greater than the maximum allowed.
-        if (segmentCount > maxSegmentCount) {
-            revert Errors.SablierV2LockupDynamic_SegmentCountTooHigh(segmentCount);
-        }
-
-        // Checks: requirements of segments variables.
-        _checkSegments(segments, depositAmount, startTime);
-    }
-
-    /// @dev Checks the parameters of the {SablierV2LockupLinear-_createWithRange} function.
-    function checkParams(uint128 depositAmount, LockupLinear.Range memory range) internal view {
-        // Checks: the deposit amount is not zero.
-        if (depositAmount == 0) {
-            revert Errors.SablierV2Lockup_DepositAmountZero();
-        }
-
-        // Checks: the start time is less than or equal to the cliff time.
-        if (range.start > range.cliff) {
-            revert Errors.SablierV2LockupLinear_StartTimeGreaterThanCliffTime(range.start, range.cliff);
-        }
-
-        // Checks: the cliff time is strictly less than the end time.
-        if (range.cliff >= range.end) {
-            revert Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime(range.cliff, range.end);
-        }
-
-        // Checks: the end time is in the future.
-        uint40 currentTime = uint40(block.timestamp);
-        if (currentTime >= range.end) {
-            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, range.end);
         }
     }
 
