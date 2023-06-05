@@ -5,7 +5,7 @@ import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { SablierV2LockupDynamic } from "src/SablierV2LockupDynamic.sol";
 
-import { LockupDynamic_Integration_Basic_Test } from "../LockupDynamic.t.sol";
+import { LockupDynamic_Integration_Basic_Test } from "./LockupDynamic.t.sol";
 
 contract Constructor_LockupDynamic_Integration_Basic_Test is LockupDynamic_Integration_Basic_Test {
     function test_Constructor() external {
