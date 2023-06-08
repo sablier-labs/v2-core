@@ -470,7 +470,7 @@ contract SablierV2LockupDynamic is
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _withdrawableAmountOf(uint256 streamId) internal view override returns (uint128 withdrawableAmount) {
+    function withdrawableAmountOf(uint256 streamId) public view override(ISablierV2Lockup, SablierV2Lockup) notNull(streamId) returns (uint128 withdrawableAmount) {
         withdrawableAmount = _streamedAmountOf(streamId) - _streams[streamId].amounts.withdrawn;
     }
 
@@ -654,7 +654,7 @@ contract SablierV2LockupDynamic is
     /// @dev See the documentation for the user-facing functions that call this internal function.
     function _withdraw(uint256 streamId, address to, uint128 amount) internal override {
         // Checks: the withdraw amount is not greater than the withdrawable amount.
-        uint128 withdrawableAmount = _withdrawableAmountOf(streamId);
+        uint128 withdrawableAmount = withdrawableAmountOf(streamId);
         if (amount > withdrawableAmount) {
             revert Errors.SablierV2Lockup_Overdraw(streamId, amount, withdrawableAmount);
         }

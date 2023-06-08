@@ -85,17 +85,6 @@ abstract contract SablierV2Lockup is
     /// @inheritdoc ISablierV2Lockup
     function wasCanceled(uint256 streamId) public view virtual override returns (bool result);
 
-    /// @inheritdoc ISablierV2Lockup
-    function withdrawableAmountOf(uint256 streamId)
-        external
-        view
-        override
-        notNull(streamId)
-        returns (uint128 withdrawableAmount)
-    {
-        withdrawableAmount = _withdrawableAmountOf(streamId);
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -217,9 +206,11 @@ abstract contract SablierV2Lockup is
         _withdraw(streamId, to, amount);
     }
 
+    function withdrawableAmountOf(uint256 streamId) public virtual view returns (uint128 withdrawableAmount);
+
     /// @inheritdoc ISablierV2Lockup
     function withdrawMax(uint256 streamId, address to) external override {
-        withdraw(streamId, to, _withdrawableAmountOf(streamId));
+        withdraw(streamId, to, withdrawableAmountOf(streamId));
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -271,9 +262,6 @@ abstract contract SablierV2Lockup is
 
     /// @dev Retrieves the stream's status without performing a null check.
     function _statusOf(uint256 streamId) internal view virtual returns (Lockup.Status status);
-
-    /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _withdrawableAmountOf(uint256 streamId) internal view virtual returns (uint128 withdrawableAmount);
 
     /*//////////////////////////////////////////////////////////////////////////
                            INTERNAL NON-CONSTANT FUNCTIONS
