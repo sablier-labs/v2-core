@@ -381,7 +381,13 @@ contract SablierV2LockupLinear is
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function withdrawableAmountOf(uint256 streamId) public view override(ISablierV2Lockup, SablierV2Lockup) notNull(streamId) returns (uint128 withdrawableAmount) {
+    function withdrawableAmountOf(uint256 streamId)
+        public
+        view
+        override(ISablierV2Lockup, SablierV2Lockup)
+        notNull(streamId)
+        returns (uint128 withdrawableAmount)
+    {
         withdrawableAmount = _streamedAmountOf(streamId) - _streams[streamId].amounts.withdrawn;
     }
 
