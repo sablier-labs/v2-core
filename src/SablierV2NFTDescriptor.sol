@@ -309,7 +309,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     /// @notice Retrieves the asset's symbol safely, defaulting to a hard-coded value if an error occurs.
     /// @dev Performs a low-level call to handle assets in which the symbol is not implemented or it is a bytes32
     /// instead of a string.
-    function safeAssetSymbol(address asset) internal view returns (string memory symbol) {
+    function safeAssetSymbol(address asset) internal view returns (string memory) {
         (bool success, bytes memory returnData) = asset.staticcall(abi.encodeCall(IERC20Metadata.symbol, ()));
 
         // Non-empty strings have a length greater than 64, and bytes32 has length 32.
@@ -317,12 +317,14 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             return "ERC20";
         }
 
-        symbol = abi.decode(returnData, (string));
+        string memory symbol = abi.decode(returnData, (string));
 
-        // Check if the length is greater than 30. This precautionary measure helps to mitigate potential
-        // security threats from malicious assets using script injection via the symbol field.
+        // The length check is a precautionary measure to help mitigate potential security threats from malicious assets
+        // injecting scripts in the symbol string.
         if (bytes(symbol).length > 30) {
-            return "Symbol too long";
+            return "Long Symbol";
+        } else {
+            return symbol;
         }
     }
 

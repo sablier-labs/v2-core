@@ -1,11 +1,8 @@
 safeAssetSymbol.t.sol
 ├── when the call reverts
-│  └── it should return the hard-coded value
+│  └── it should return a hard-coded value
 └── when the call does not revert
-   ├── when the asset contract does not implement the string function
-   │  └── it should return the hard-coded value
-   └── when the asset contract implements the string function
-      ├── when the symbol is greater than 30
-      │  └── it should return the hard-coded value
-      └── when the symbol is not greater than 30
-         └── it should return the correct value
+   ├── when the symbol is long
+   │  └── it should return a hard-coded value
+   └── when the symbol is not long
+      └── it should return the correct value

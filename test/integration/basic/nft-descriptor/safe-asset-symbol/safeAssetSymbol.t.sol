@@ -32,13 +32,18 @@ contract SafeAssetSymbol_Integration_Basic_Test is NFTDescriptor_Integration_Bas
     }
 
     function test_SafeAssetSymbol_LongSymbol() external whenNotReverted {
-        ERC20 asset = new ERC20("DAI", "This symbol is too long and it should be ignored");
+        ERC20 asset =
+        new ERC20({ name_: "Token", symbol_: "This symbol is has more than 30 characters and it should be ignored" });
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
-        string memory expectedSymbol = "Symbol too long";
+        string memory expectedSymbol = "Long Symbol";
         assertEq(actualSymbol, expectedSymbol, "symbol");
     }
 
-    function test_SafeAssetSymbol() external whenNotReverted {
+    modifier whenSymbolNotLong() {
+        _;
+    }
+
+    function test_SafeAssetSymbol() external whenNotReverted whenSymbolNotLong {
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(dai));
         string memory expectedSymbol = dai.symbol();
         assertEq(actualSymbol, expectedSymbol, "symbol");
