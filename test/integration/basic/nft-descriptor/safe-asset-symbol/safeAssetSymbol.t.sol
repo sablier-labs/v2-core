@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
+import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
 import { ERC20Bytes32 } from "../../../../mocks/erc20/ERC20Bytes32.sol";
 import { NFTDescriptor_Integration_Basic_Test } from "../NFTDescriptor.t.sol";
 
@@ -27,6 +29,13 @@ contract SafeAssetSymbol_Integration_Basic_Test is NFTDescriptor_Integration_Bas
 
     modifier whenNotReverted() {
         _;
+    }
+
+    function test_SafeAssetSymbol_LongSymbol() external whenNotReverted {
+        ERC20 asset = new ERC20("DAI", "This symbol is too long and it should be ignored");
+        string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
+        string memory expectedSymbol = "Symbol too long";
+        assertEq(actualSymbol, expectedSymbol, "symbol");
     }
 
     function test_SafeAssetSymbol() external whenNotReverted {

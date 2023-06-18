@@ -1,0 +1,8 @@
+safeAssetDecimals.t.sol
+├── when the call reverts
+│  └── it should return 0
+└── when the call does not revert
+   ├── when the asset contract does not implement the function
+   │  └── it should return 0
+   └── when the asset contract implements the function
+      └── it should return the correct value
