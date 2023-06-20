@@ -299,10 +299,12 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
 
     /// @notice Retrieves the asset's decimals safely, defaulting to "0" if an error occurs.
     /// @dev Performs a low-level call to handle assets in which the decimals are not implemented.
-    function safeAssetDecimals(address asset) internal view returns (uint8 decimals) {
+    function safeAssetDecimals(address asset) internal view returns (uint8) {
         (bool success, bytes memory returnData) = asset.staticcall(abi.encodeCall(IERC20Metadata.decimals, ()));
         if (success && returnData.length == 32) {
-            decimals = abi.decode(returnData, (uint8));
+            return abi.decode(returnData, (uint8));
+        } else {
+            return 0;
         }
     }
 
