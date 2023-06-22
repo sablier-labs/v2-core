@@ -190,14 +190,13 @@ library SVGElements {
     }
 
     function hourglass(string memory status) internal pure returns (string memory) {
+        bool settledOrDepleted = status.equal("Settled") || status.equal("Depleted");
         return string.concat(
             '<g id="Hourglass">',
             HOURGLASS_BACKGROUND_CIRCLE,
             HOURGLASS_FILL,
-            status.equal("Settled") || status.equal("Depleted") ? "" : HOURGLASS_UPPER_BULB, // empty or filled
-            status.equal("Settled") || status.equal("Depleted")
-                ? HOURGLASS_LOWER_BULB_LARGE
-                : HOURGLASS_LOWER_BULB_SMALL, // empty or filled
+            settledOrDepleted ? "" : HOURGLASS_UPPER_BULB, // empty or filled
+            settledOrDepleted ? HOURGLASS_LOWER_BULB_LARGE : HOURGLASS_LOWER_BULB_SMALL,
             HOURGLASS_STROKE, // needs to be declared last so that the stroke is painted on top of the sand
             "</g>"
         );
