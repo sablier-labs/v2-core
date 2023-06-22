@@ -1,8 +1,5 @@
 name: "Generate SVG"
 
-env:
-  FOUNDRY_PROFILE: "optimized"
-
 on:
   workflow_dispatch:
     inputs:
