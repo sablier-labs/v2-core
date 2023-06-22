@@ -247,11 +247,11 @@ interface ISablierV2Lockup is
     /// - `amount` must be greater than zero and must not exceed the withdrawable amount.
     ///
     /// @param streamId The id of the stream to withdraw from.
-    /// @param to The address that receives the withdrawn assets.
+    /// @param to The address receiving the withdrawn assets.
     /// @param amount The amount to withdraw, denoted in units of the asset's decimals.
     function withdraw(uint256 streamId, address to, uint128 amount) external;
 
-    /// @notice Withdraws the maximum withdrawable amount from the stream to the `to` address.
+    /// @notice Withdraws the maximum withdrawable amount from the stream to the provided address `to`.
     ///
     /// @dev Emits a {WithdrawFromLockupStream} and a {Transfer} event.
     ///
@@ -262,8 +262,25 @@ interface ISablierV2Lockup is
     /// - Refer to the requirements in {withdraw}.
     ///
     /// @param streamId The id of the stream to withdraw from.
-    /// @param to The address that receives the withdrawn assets.
+    /// @param to The address receiving the withdrawn assets.
     function withdrawMax(uint256 streamId, address to) external;
+
+    /// @notice Withdraws the maximum withdrawable amount from the stream to the current recipient, and transfers the
+    /// NFT to `newRecipient`.
+    ///
+    /// @dev Emits a {WithdrawFromLockupStream} and a {Transfer} event.
+    ///
+    /// Notes:
+    /// - Refer to the notes in {withdraw}.
+    ///
+    /// Requirements:
+    /// - `msg.sender` must be the stream's recipient.
+    /// - Refer to the requirements in {withdraw}.
+    /// - Refer to the requirements in {IERC721.transferFrom}.
+    ///
+    /// @param streamId The id of the stream NFT to transfer.
+    /// @param newRecipient The address of the new owner of the stream NFT.
+    function withdrawMaxAndTransfer(uint256 streamId, address newRecipient) external;
 
     /// @notice Withdraws assets from streams to the provided address `to`.
     ///
@@ -277,7 +294,7 @@ interface ISablierV2Lockup is
     /// - There must be an equal number of `streamIds` and `amounts`.
     ///
     /// @param streamIds The ids of the streams to withdraw from.
-    /// @param to The address that receives the withdrawn assets.
+    /// @param to The address receiving the withdrawn assets.
     /// @param amounts The amounts to withdraw, denoted in units of the asset's decimals.
     function withdrawMultiple(uint256[] calldata streamIds, address to, uint128[] calldata amounts) external;
 }
