@@ -310,7 +310,7 @@ contract SablierV2LockupDynamic is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Calculates the streamed amount without looking up the stream's status.
-    function _calculateStreamedAmount(uint256 streamId) internal view returns (uint128 streamedAmount) {
+    function _calculateStreamedAmount(uint256 streamId) internal view returns (uint128) {
         // If the start time is in the future, return zero.
         uint40 currentTime = uint40(block.timestamp);
         if (_streams[streamId].startTime >= currentTime) {
@@ -325,10 +325,10 @@ contract SablierV2LockupDynamic is
 
         if (_streams[streamId].segments.length > 1) {
             // If there is more than one segment, it may be necessary to iterate over all of them.
-            streamedAmount = _calculateStreamedAmountForMultipleSegments(streamId);
+            return _calculateStreamedAmountForMultipleSegments(streamId);
         } else {
             // Otherwise, there is only one segment, and the calculation is simpler.
-            streamedAmount = _calculateStreamedAmountForOneSegment(streamId);
+            return _calculateStreamedAmountForOneSegment(streamId);
         }
     }
 
