@@ -76,7 +76,10 @@ jobs:
       - name: "Show the Foundry config"
         run: "forge config"
 
-      - name: "Generate and prepare the contract artifacts"
+      - name: "Build the contracts and check that they are within the 24,576 kB limit"
+        run: "FOUNDRY_PROFILE=optimized forge build --sizes"
+
+      - name: "Prepare the contract artifacts"
         run: "./shell/prepare-artifacts.sh"
 
       - name: "Cache the build so that it can be re-used by the other jobs"
