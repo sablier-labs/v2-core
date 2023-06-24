@@ -223,15 +223,18 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function withdrawMaxAndTransfer(uint256 streamId, address newRecipient) external override {
-        // Checks: the caller is the current recipient. This also checks for burned NFTs.
+    function withdrawMaxAndTransfer(uint256 streamId, address newRecipient) external override notNull(streamId) {
+        // Checks: the caller is the current recipient. This also checks that the NFT was not burned.
         address currentRecipient = _ownerOf(streamId);
         if (msg.sender != currentRecipient) {
             revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);
         }
 
-        // Checks, Effects and Interactions: make the max withdrawal.
-        withdraw({ streamId: streamId, to: currentRecipient, amount: _withdrawableAmountOf(streamId) });
+        // Skip the withdrawal if the withdrawable amount is zero.
+        uint128 withdrawableAmount = _withdrawableAmountOf(streamId);
+        if (withdrawableAmount > 0) {
+            _withdraw({ streamId: streamId, to: currentRecipient, amount: withdrawableAmount });
+        }
 
         // Checks and Effects: transfer the NFT.
         _transfer({ from: currentRecipient, to: newRecipient, tokenId: streamId });

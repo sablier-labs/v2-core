@@ -240,7 +240,7 @@ interface ISablierV2Lockup is
     ///
     /// Requirements:
     /// - Must not be delegate called.
-    /// - `streamId` must not reference a null, pending, or depleted stream.
+    /// - `streamId` must not reference a null or depleted stream.
     /// - `msg.sender` must be the stream's sender, the stream's recipient or an approved third party.
     /// - `to` must be the recipient if `msg.sender` is the stream's sender.
     /// - `to` must not be the zero address.
@@ -271,6 +271,7 @@ interface ISablierV2Lockup is
     /// @dev Emits a {WithdrawFromLockupStream} and a {Transfer} event.
     ///
     /// Notes:
+    /// - If the withdrawable amount is zero, the withdrawal is skipped.
     /// - Refer to the notes in {withdraw}.
     ///
     /// Requirements:

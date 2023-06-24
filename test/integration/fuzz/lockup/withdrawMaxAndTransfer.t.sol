@@ -14,16 +14,21 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
         WithdrawMaxAndTransfer_Integration_Shared_Test.setUp();
     }
 
+    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    ///
+    /// - New recipient same and different from the current one
+    /// - Withdrawable amount zero and not zero
     function testFuzz_WithdrawMaxAndTransfer(
         uint256 timeJump,
         address newRecipient
     )
         external
+        whenNotNull
         whenCallerCurrentRecipient
         whenNFTNotBurned
     {
         vm.assume(newRecipient != address(0));
-        timeJump = _bound(timeJump, defaults.TOTAL_DURATION(), defaults.TOTAL_DURATION() * 2);
+        timeJump = _bound(timeJump, 0, defaults.TOTAL_DURATION() * 2);
 
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.START_TIME() + timeJump });
@@ -31,12 +36,14 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
         // Get the withdraw amount.
         uint128 withdrawAmount = lockup.withdrawableAmountOf(defaultStreamId);
 
-        // Expect the assets to be transferred to the fuzzed recipient.
-        expectCallToTransfer({ to: users.recipient, amount: withdrawAmount });
+        if (withdrawAmount > 0) {
+            // Expect the assets to be transferred to the fuzzed recipient.
+            expectCallToTransfer({ to: users.recipient, amount: withdrawAmount });
 
-        // Expect a {WithdrawFromLockupStream} event to be emitted.
-        vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
+            // Expect a {WithdrawFromLockupStream} event to be emitted.
+            vm.expectEmit({ emitter: address(lockup) });
+            emit WithdrawFromLockupStream({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
+        }
 
         // Expect a {Transfer} event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });

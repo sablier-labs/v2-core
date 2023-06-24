@@ -16,7 +16,13 @@ abstract contract WithdrawMaxAndTransfer_Integration_Basic_Test is
         WithdrawMaxAndTransfer_Integration_Shared_Test.setUp();
     }
 
-    function test_RevertWhen_CallerNotCurrentRecipient() external {
+    function test_RevertWhen_Null() external {
+        uint256 nullStreamId = 1729;
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
+        lockup.withdrawMaxAndTransfer({ streamId: nullStreamId, newRecipient: users.recipient });
+    }
+
+    function test_RevertWhen_CallerNotCurrentRecipient() external whenNotNull {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
 
@@ -27,7 +33,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Basic_Test is
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.eve });
     }
 
-    function test_RevertWhen_NFTBurned() external whenCallerCurrentRecipient {
+    function test_RevertWhen_NFTBurned() external whenNotNull whenCallerCurrentRecipient {
         // Deplete the stream.
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -39,10 +45,27 @@ abstract contract WithdrawMaxAndTransfer_Integration_Basic_Test is
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierV2Lockup_Unauthorized.selector, defaultStreamId, users.recipient)
         );
-        lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.recipient });
+        lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
     }
 
-    function test_WithdrawMaxAndTransfer() external whenCallerCurrentRecipient whenNFTNotBurned {
+    function test_WithdrawMaxAndTransfer_WithdrawableAmountZero()
+        external
+        whenNotNull
+        whenCallerCurrentRecipient
+        whenNFTNotBurned
+    {
+        vm.warp({ timestamp: defaults.END_TIME() });
+        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
+    }
+
+    function test_WithdrawMaxAndTransfer()
+        external
+        whenNotNull
+        whenCallerCurrentRecipient
+        whenNFTNotBurned
+        whenWithdrawableAmountNotZero
+    {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
 
