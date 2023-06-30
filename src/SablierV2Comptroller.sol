@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity >=0.8.18;
+pragma solidity >=0.8.19;
 
-import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { Adminable } from "./abstracts/Adminable.sol";
@@ -29,18 +29,18 @@ import { ISablierV2Comptroller } from "./interfaces/ISablierV2Comptroller.sol";
 /// @title SablierV2Comptroller
 /// @notice See the documentation in {ISablierV2Comptroller}.
 contract SablierV2Comptroller is
-    ISablierV2Comptroller, // one dependency
-    Adminable // one dependency
+    ISablierV2Comptroller, // 1 inherited component
+    Adminable // 1 inherited component
 {
     /*//////////////////////////////////////////////////////////////////////////
                                    PUBLIC STORAGE
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Comptroller
-    mapping(IERC20 asset => bool supported) public override flashAssets;
+    UD60x18 public override flashFee;
 
     /// @inheritdoc ISablierV2Comptroller
-    UD60x18 public override flashFee;
+    mapping(IERC20 asset => bool supported) public override isFlashAsset;
 
     /// @inheritdoc ISablierV2Comptroller
     mapping(IERC20 asset => UD60x18 fee) public override protocolFees;
@@ -88,8 +88,8 @@ contract SablierV2Comptroller is
     /// @inheritdoc ISablierV2Comptroller
     function toggleFlashAsset(IERC20 asset) external override onlyAdmin {
         // Effects: enable the ERC-20 asset for flash loaning.
-        bool oldFlag = flashAssets[asset];
-        flashAssets[asset] = !oldFlag;
+        bool oldFlag = isFlashAsset[asset];
+        isFlashAsset[asset] = !oldFlag;
 
         // Log the change of the flash asset flag.
         emit ISablierV2Comptroller.ToggleFlashAsset({ admin: msg.sender, asset: asset, newFlag: !oldFlag });

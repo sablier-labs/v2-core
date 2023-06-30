@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity >=0.8.18;
+pragma solidity >=0.8.19;
 
-import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
-import { SafeERC20 } from "@openzeppelin/token/ERC20/utils/SafeERC20.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { ud } from "@prb/math/UD60x18.sol";
-import { IERC3156FlashBorrower } from "erc3156/interfaces/IERC3156FlashBorrower.sol";
-import { IERC3156FlashLender } from "erc3156/interfaces/IERC3156FlashLender.sol";
 
+import { IERC3156FlashBorrower } from "../interfaces/erc3156/IERC3156FlashBorrower.sol";
+import { IERC3156FlashLender } from "../interfaces/erc3156/IERC3156FlashLender.sol";
 import { Errors } from "../libraries/Errors.sol";
 import { SablierV2Base } from "./SablierV2Base.sol";
 
@@ -14,8 +14,8 @@ import { SablierV2Base } from "./SablierV2Base.sol";
 /// @notice This contract implements the ERC-3156 standard to enable flash loans.
 /// @dev See https://eips.ethereum.org/EIPS/eip-3156.
 abstract contract SablierV2FlashLoan is
-    IERC3156FlashLender, // no dependencies
-    SablierV2Base // four dependencies
+    IERC3156FlashLender, // 0 inherited components
+    SablierV2Base // 4 inherited components
 {
     using SafeERC20 for IERC20;
 
@@ -64,7 +64,7 @@ abstract contract SablierV2FlashLoan is
     /// @return fee The amount of `asset` to charge for the loan on top of the returned principal.
     function flashFee(address asset, uint256 amount) public view override returns (uint256 fee) {
         // Checks: the ERC-20 asset is flash loanable.
-        if (!comptroller.flashAssets(IERC20(asset))) {
+        if (!comptroller.isFlashAsset(IERC20(asset))) {
             revert Errors.SablierV2FlashLoan_AssetNotFlashLoanable(IERC20(asset));
         }
 
@@ -78,7 +78,7 @@ abstract contract SablierV2FlashLoan is
     /// @return amount The amount of `asset` that can be flash loaned.
     function maxFlashLoan(address asset) external view override returns (uint256 amount) {
         // The default value is zero, so it doesn't have to be explicitly set.
-        if (comptroller.flashAssets(IERC20(asset))) {
+        if (comptroller.isFlashAsset(IERC20(asset))) {
             amount = IERC20(asset).balanceOf(address(this));
         }
     }
@@ -93,13 +93,13 @@ abstract contract SablierV2FlashLoan is
     /// @dev Emits a {FlashLoan} event.
     ///
     /// Requirements:
-    /// - The call must not be a delegate call.
-    /// - All from {flashFee}.
+    /// - Must not be delegate called.
+    /// - Refer to the requirements in {flashFee}.
     /// - `amount` must be less than 2^128.
     /// - `fee` must be less than 2^128.
     /// - `amount` must not exceed the liquidity available for `asset`.
     /// - `msg.sender` must allow this contract to spend at least `amount + fee` assets.
-    /// - `receiver` implementation of {IERC3156FlashBorrower-onFlashLoan} must return `CALLBACK_SUCCESS`.
+    /// - `receiver` implementation of {IERC3156FlashBorrower.onFlashLoan} must return `CALLBACK_SUCCESS`.
     ///
     /// @param receiver The receiver of the flash loaned assets, and the receiver of the callback.
     /// @param asset The address of the ERC-20 asset to use for flash borrowing.
@@ -131,22 +131,12 @@ abstract contract SablierV2FlashLoan is
             revert Errors.SablierV2FlashLoan_CalculatedFeeTooHigh(fee);
         }
 
-        // Checks: the amount flash loaned is not greater than the current asset balance of the contract.
-        uint256 initialBalance = IERC20(asset).balanceOf(address(this));
-        if (amount > initialBalance) {
-            revert Errors.SablierV2FlashLoan_InsufficientAssetLiquidity({
-                asset: IERC20(asset),
-                amountAvailable: initialBalance,
-                amountRequested: amount
-            });
-        }
-
         // Interactions: perform the ERC-20 transfer to flash loan the assets to the borrower.
         IERC20(asset).safeTransfer({ to: address(receiver), value: amount });
 
         // Interactions: perform the borrower callback.
         bytes32 response =
-            receiver.onFlashLoan({ initiator: msg.sender, token: asset, amount: amount, fee: fee, data: data });
+            receiver.onFlashLoan({ initiator: msg.sender, asset: asset, amount: amount, fee: fee, data: data });
 
         // Checks: the response matches the expected callback success hash.
         if (response != CALLBACK_SUCCESS) {
@@ -159,7 +149,7 @@ abstract contract SablierV2FlashLoan is
         unchecked {
             // Effects: record the flash fee amount in the protocol revenues. The casting to uint128 is safe due
             // to the check at the start of the function.
-            protocolRevenues[IERC20(asset)] += uint128(fee);
+            protocolRevenues[IERC20(asset)] = protocolRevenues[IERC20(asset)] + uint128(fee);
 
             // Calculate the amount that the borrower must return.
             returnAmount = amount + fee;

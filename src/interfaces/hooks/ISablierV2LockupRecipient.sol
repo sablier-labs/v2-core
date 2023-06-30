@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity >=0.8.13;
+pragma solidity >=0.8.19;
 
 /// @title ISablierV2LockupRecipient
 /// @notice Interface for recipient contracts capable of reacting to cancellations, renouncements, and withdrawals.
@@ -12,11 +12,18 @@ interface ISablierV2LockupRecipient {
     /// - This function may revert, but the Sablier contract will ignore the revert.
     ///
     /// @param streamId The id of the canceled stream.
+    /// @param sender The stream's sender, who canceled the stream.
     /// @param senderAmount The amount of assets refunded to the stream's sender, denoted in units of the asset's
     /// decimals.
-    /// @param recipientAmount The amount of assets left for the stream's recipient to withdraw, denoted in units of the
-    /// asset's decimals.
-    function onStreamCanceled(uint256 streamId, uint128 senderAmount, uint128 recipientAmount) external;
+    /// @param recipientAmount The amount of assets left for the stream's recipient to withdraw, denoted in units of
+    /// the asset's decimals.
+    function onStreamCanceled(
+        uint256 streamId,
+        address sender,
+        uint128 senderAmount,
+        uint128 recipientAmount
+    )
+        external;
 
     /// @notice Responds to renouncements.
     ///
@@ -26,7 +33,7 @@ interface ISablierV2LockupRecipient {
     /// @param streamId The id of the renounced stream.
     function onStreamRenounced(uint256 streamId) external;
 
-    /// @notice Responds to withdrawals from a stream, which were triggered by the sender or an approved third party.
+    /// @notice Responds to withdrawals triggered by either the stream's sender or an approved third party.
     ///
     /// @dev Notes:
     /// - This function may revert, but the Sablier contract will ignore the revert.

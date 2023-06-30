@@ -1,11 +1,13 @@
 # directories
+artifacts
 broadcast
 cache
 coverage
 docs
 node_modules
-optimized-out
 out
+out-optimized
+out-svg
 
 # files
 *.env

@@ -2,17 +2,20 @@
   auto_detect_solc = false
   bytecode_hash = "none"
   cbor_metadata = false
-  fs_permissions = [{ access = "read", path = "optimized-out" }]
+  emv_version = "paris"
+  fs_permissions = [{ access = "read", path = "out-optimized" }]
   libs = ["lib"]
   gas_reports = [
     "SablierV2Comptroller",
     "SablierV2LockupDynamic",
     "SablierV2LockupLinear",
+    "SablierV2NFTDescriptor",
   ]
   optimizer = true
-  optimizer_runs = 5_000
+  optimizer_runs = 1000
   out = "out"
   script = "script"
+  sender = "0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38"
   solc = "0.8.19"
   src = "src"
   test = "test"
@@ -23,18 +26,18 @@
 
 [profile.default.invariant]
   call_override = false # Override unsafe external calls to perform reentrancy checks
-  depth = 50            # Number of calls executed in one run
+  depth = 20            # Number of calls executed in one run
   fail_on_revert = true
-  runs = 50
+  runs = 20
 
 # Speed up compilation and tests during development
 [profile.lite]
   optimizer = false
 
-# Compile only the production code with IR
+# Compile only the production code and the test mocks with via IR
 [profile.optimized]
-  out = "optimized-out"
-  test = "src"
+  out = "out-optimized"
+  test = "test/mocks"
   via_ir = true
 
 # See "SMTChecker and Formal Verification" in the Solidity docs
@@ -42,7 +45,7 @@
   ignored_error_codes = [
     7737, # Disable inline assembly warnings
   ]
-  out = "optimized-out"
+  out = "out-optimized"
   script = "src"
   test = "src"
   via_ir = true
@@ -64,24 +67,22 @@
 [profile.smt.model_checker.contracts]
   "src/SablierV2LockupDynamic.sol" = ["SablierV2LockupDynamic"]
   "src/SablierV2LockupLinear.sol" = ["SablierV2LockupLinear"]
+  "src/SablierV2NFTDescriptor.sol" = ["SablierV2NFTDescriptor"]
 
 # Test the optimized contracts without re-compiling them
 [profile.test-optimized]
-  fuzz = { runs = 5_000 }
-  invariant = { depth = 150, runs = 100 }
   src = "test"
-  verbosity = 4
 
 [doc]
   ignore = ["**/*.t.sol"]
   out = "docs"
-  repository = "https://github.com/sablierhq/v2-core"
+  repository = "https://github.com/sablier-labs/v2-core"
 
 [etherscan]
-  arbitrum = { key = "${API_KEY_ARBISCAN}" }
+  arbitrum_one = { key = "${API_KEY_ARBISCAN}" }
   avalanche = { key = "${API_KEY_SNOWTRACE" }
-  bsc = { key = "${API_KEY_BSCSCAN}" }
-  gnosis = { key = "${API_KEY_GNOSISSCAN}" }
+  bnb_smart_chain = { key = "${API_KEY_BSCSCAN}" }
+  gnosis_chain = { key = "${API_KEY_GNOSISSCAN}" }
   goerli = { key = "${API_KEY_ETHERSCAN}" }
   mainnet = { key = "${API_KEY_ETHERSCAN}" }
   optimism = { key = "${API_KEY_OPTIMISTIC_ETHERSCAN}" }
@@ -99,10 +100,10 @@
   wrap_comments = true
 
 [rpc_endpoints]
-  arbitrum = "https://arbitrum-mainnet.infura.io/v3/${API_KEY_INFURA}"
+  arbitrum_one = "https://arbitrum-mainnet.infura.io/v3/${API_KEY_INFURA}"
   avalanche = "https://avalanche-mainnet.infura.io/v3/${API_KEY_INFURA}"
-  bsc = "https://bsc-dataseed.binance.org"
-  gnosis = "https://blockscout.com/xdai/mainnet/api/eth-rpc"
+  bnb_smart_chain = "https://bsc-dataseed.binance.org"
+  gnosis_chain = "https://blockscout.com/xdai/mainnet/api/eth-rpc"
   goerli = "https://goerli.infura.io/v3/${API_KEY_INFURA}"
   localhost = "http://localhost:8545"
   mainnet = "${RPC_URL_MAINNET}"

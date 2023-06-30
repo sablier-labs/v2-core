@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity >=0.8.13;
+pragma solidity >=0.8.19;
 
-import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { IAdminable } from "./IAdminable.sol";
 import { ISablierV2Comptroller } from "./ISablierV2Comptroller.sol";
 
 /// @title ISablierV2Base
-/// @notice Common base between all Sablier V2 streaming contracts.
+/// @notice Base logic for all Sablier V2 streaming contracts.
 interface ISablierV2Base is IAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Emitted when the admin claims all protocol revenues accrued for an ERC-20 asset.
+    /// @notice Emitted when the admin claims all protocol revenues accrued for a particular ERC-20 asset.
     /// @param admin The address of the contract admin.
     /// @param asset The contract address of the ERC-20 asset the protocol revenues have been claimed for.
     /// @param protocolRevenues The amount of protocol revenues claimed, denoted in units of the asset's decimals.
@@ -32,8 +32,8 @@ interface ISablierV2Base is IAdminable {
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Retrieves the maximum fee that can be charged by the protocol or a broker, as a UD60x18 number
-    /// where 100% = 1e18.
+    /// @notice Retrieves the maximum fee that can be charged by the protocol or a broker, denoted as a fixed-point
+    /// number where 1e18 is 100%.
     /// @dev This value is hard coded as a constant.
     function MAX_FEE() external view returns (UD60x18);
 
@@ -41,7 +41,7 @@ interface ISablierV2Base is IAdminable {
     /// configuration.
     function comptroller() external view returns (ISablierV2Comptroller);
 
-    /// @notice Retrieves the protocol revenues accrued for the specified ERC-20 asset, in units of the asset's
+    /// @notice Retrieves the protocol revenues accrued for the provided ERC-20 asset, in units of the asset's
     /// decimals.
     /// @param asset The contract address of the ERC-20 asset to query.
     function protocolRevenues(IERC20 asset) external view returns (uint128 revenues);

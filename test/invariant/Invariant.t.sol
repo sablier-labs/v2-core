@@ -3,19 +3,27 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { StdInvariant } from "forge-std/StdInvariant.sol";
 
-import { SablierV2Comptroller } from "src/SablierV2Comptroller.sol";
-
 import { Base_Test } from "../Base.t.sol";
-import { ComptrollerHandler } from "./handlers/ComptrollerHandler.t.sol";
+import { ComptrollerHandler } from "./handlers/ComptrollerHandler.sol";
+import { TimestampStore } from "./stores/TimestampStore.sol";
 
-/// @title Invariant_Test
-/// @notice Base test contract with common logic needed by all invariant test contracts.
+/// @notice Common logic needed by all invariant tests.
 abstract contract Invariant_Test is Base_Test, StdInvariant {
     /*//////////////////////////////////////////////////////////////////////////
                                    TEST CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
     ComptrollerHandler internal comptrollerHandler;
+    TimestampStore internal timestampStore;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                     MODIFIERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    modifier useCurrentTimestamp() {
+        vm.warp(timestampStore.currentTimestamp());
+        _;
+    }
 
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
@@ -24,26 +32,28 @@ abstract contract Invariant_Test is Base_Test, StdInvariant {
     function setUp() public virtual override {
         Base_Test.setUp();
 
-        // Deploy the entire protocol.
-        deployProtocol();
+        // Deploy V2 Core.
+        deployCoreConditionally();
 
-        // Deploy the comptroller handler.
-        comptrollerHandler = new ComptrollerHandler({ asset_: DEFAULT_ASSET, comptroller_: comptroller });
+        // Deploy the handlers.
+        timestampStore = new TimestampStore();
+        comptrollerHandler =
+            new ComptrollerHandler({ asset_: dai, comptroller_: comptroller, timestampStore_: timestampStore });
         vm.prank({ msgSender: users.admin });
         comptroller.transferAdmin(address(comptrollerHandler));
 
-        // Target only the comptroller handler for invariant testing (to avoid getting reverts).
+        // Label the handlers.
+        vm.label({ account: address(comptrollerHandler), newLabel: "ComptrollerHandler" });
+        vm.label({ account: address(timestampStore), newLabel: "TimestampStore" });
+
+        // Target only the handlers for invariant testing (to avoid getting reverts).
         targetContract(address(comptrollerHandler));
 
-        // Exclude the comptroller, linear and dynamic from being `msg.sender`.
+        // Prevent these contracts from being fuzzed as `msg.sender`.
         excludeSender(address(comptroller));
-        excludeSender(address(linear));
-        excludeSender(address(dynamic));
-
-        // Exclude the comptroller handler from being `msg.sender`.
         excludeSender(address(comptrollerHandler));
-
-        // Label the comptroller handler.
-        vm.label({ account: address(comptrollerHandler), newLabel: "ComptrollerHandler" });
+        excludeSender(address(lockupDynamic));
+        excludeSender(address(lockupLinear));
+        excludeSender(address(timestampStore));
     }
 }

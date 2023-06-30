@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity >=0.8.18;
+pragma solidity >=0.8.19;
 
-import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
-import { SafeERC20 } from "@openzeppelin/token/ERC20/utils/SafeERC20.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { UD60x18 } from "@prb/math/UD60x18.sol";
 
 import { IAdminable } from "../interfaces/IAdminable.sol";
@@ -15,9 +15,9 @@ import { NoDelegateCall } from "./NoDelegateCall.sol";
 /// @title SablierV2Base
 /// @notice See the documentation in {ISablierV2Base}.
 abstract contract SablierV2Base is
-    ISablierV2Base, // no dependencies
-    NoDelegateCall, // no dependencies
-    Adminable // one dependency
+    NoDelegateCall, // 0 inherited components
+    ISablierV2Base, // 1 inherited component
+    Adminable // 1 inherited component
 {
     using SafeERC20 for IERC20;
 

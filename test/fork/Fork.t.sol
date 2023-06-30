@@ -1,18 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
-
-import { SablierV2Comptroller } from "src/SablierV2Comptroller.sol";
-import { SablierV2LockupDynamic } from "src/SablierV2LockupDynamic.sol";
-import { SablierV2LockupLinear } from "src/SablierV2LockupLinear.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 import { Base_Test } from "../Base.t.sol";
-import { USDCLike } from "../shared/mockups/erc20/USDCLike.t.sol";
-import { USDTLike } from "../shared/mockups/erc20/USDTLike.t.sol";
 
-/// @title Fork_Test
-/// @notice Collections of tests that run against a fork of Ethereum Mainnet.
+/// @notice Common logic needed by all fork tests.
 abstract contract Fork_Test is Base_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTANTS
@@ -41,23 +35,27 @@ abstract contract Fork_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function setUp() public virtual override {
-        Base_Test.setUp();
-
-        // Fork Ethereum Mainnet.
+        // Fork Ethereum Mainnet at a block mined on Dec 6, 2022.
         vm.createSelectFork({ urlOrAlias: "mainnet", blockNumber: 16_126_000 });
 
-        // Deploy the entire protocol.
-        deployProtocol();
+        // The base is set up after the fork is selected so that the base test contracts are deployed on the fork.
+        Base_Test.setUp();
+
+        // Deploy V2 Core.
+        deployCoreConditionally();
+
+        // Label the contracts.
+        labelContracts();
 
         // Make the asset holder the caller in this test suite.
-        vm.startPrank(holder);
+        vm.startPrank({ msgSender: holder });
 
         // Query the initial balance of the asset holder.
         initialHolderBalance = asset.balanceOf(holder);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                  HELPER FUNCTIONS
+                                      HELPERS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Checks the user assumptions.
@@ -65,18 +63,20 @@ abstract contract Fork_Test is Base_Test {
         // The protocol does not allow the zero address to interact with it.
         vm.assume(sender != address(0) && recipient != address(0) && broker != address(0));
 
-        // The goal is to not have overlapping users because the token balance tests would fail otherwise.
+        // The goal is to not have overlapping users because the asset balance tests would fail otherwise.
         vm.assume(sender != recipient && sender != broker && recipient != broker);
         vm.assume(sender != holder && recipient != holder && broker != holder);
         vm.assume(sender != sablierContract && recipient != sablierContract && broker != sablierContract);
 
-        // Avoid blacklisted users in USDC and USDT.
-        if (address(asset) == 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48) {
-            USDCLike usdc = USDCLike(address(asset));
-            vm.assume(!usdc.isBlacklisted(sender) && !usdc.isBlacklisted(recipient) && !usdc.isBlacklisted(broker));
-        } else if (address(asset) == 0xdAC17F958D2ee523a2206206994597C13D831ec7) {
-            USDTLike usdt = USDTLike(address(asset));
-            vm.assume(!usdt.isBlackListed(sender) && !usdt.isBlackListed(recipient) && !usdt.isBlackListed(broker));
-        }
+        // Avoid users blacklisted by USDC or USDT.
+        assumeNoBlacklisted(address(asset), sender);
+        assumeNoBlacklisted(address(asset), recipient);
+        assumeNoBlacklisted(address(asset), broker);
+    }
+
+    /// @dev Labels the most relevant contracts.
+    function labelContracts() internal {
+        vm.label({ account: address(asset), newLabel: IERC20Metadata(address(asset)).symbol() });
+        vm.label({ account: holder, newLabel: "Holder" });
     }
 }

@@ -1,0 +1,209 @@
+name: "CI Deep"
+
+env:
+  API_KEY_ETHERSCAN: ${{ secrets.API_KEY_ETHERSCAN }}
+  API_KEY_INFURA: ${{ secrets.API_KEY_INFURA }}
+  RPC_URL_MAINNET: ${{ secrets.RPC_URL_MAINNET }}
+
+on:
+  schedule:
+    - cron: "0 3 * * 0" # at 3:00am UTC every Sunday
+  workflow_dispatch:
+    inputs:
+      unitFuzzRuns:
+        default: "100000"
+        description: "Unit: number of fuzz runs."
+        required: false
+      integrationFuzzRuns:
+        default: "100000"
+        description: "Integration: number of fuzz runs."
+        required: false
+      invariantRuns:
+        default: "100"
+        description: "Invariant runs: number of sequences of function calls generated and run."
+        required: false
+      invariantDepth:
+        default: "100"
+        description: "Invariant depth: number of function calls made in a given run."
+        required: false
+      forkFuzzRuns:
+        default: "1000"
+        description: "Fork: number of fuzz runs."
+        required: false
+
+jobs:
+  lint:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: "actions/checkout@v3"
+
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+
+      - name: "Install Pnpm"
+        uses: "pnpm/action-setup@v2"
+        with:
+          version: "8"
+
+      - name: "Install Node.js"
+        uses: "actions/setup-node@v3"
+        with:
+          cache: "pnpm"
+          node-version: "lts/*"
+
+      - name: "Install the Node.js dependencies"
+        run: "pnpm install"
+
+      - name: "Lint the contracts"
+        run: "pnpm lint"
+
+      - name: "Add lint summary"
+        run: |
+          echo "## Lint result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
+
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: "actions/checkout@v3"
+        with:
+          submodules: "recursive"
+
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+
+      - name: "Show the Foundry config"
+        run: "forge config"
+
+      - name: "Produce an optimized build with --via-ir"
+        run: "FOUNDRY_PROFILE=optimized forge build"
+
+      - name: "Cache the build so that it can be re-used by the other jobs"
+        uses: "actions/cache/save@v3"
+        with:
+          path: "out-optimized"
+          key: "foundry-build-${{ github.sha }}"
+
+      - name: "Add build summary"
+        run: |
+          echo "## Build result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
+
+  test-unit:
+    env:
+      FOUNDRY_FUZZ_RUNS: ${{ inputs.unitFuzzRuns || '100000' }}
+    needs: ["lint", "build"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: "actions/checkout@v3"
+        with:
+          submodules: "recursive"
+
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+
+      - name: "Restore the cached build"
+        uses: "actions/cache/restore@v3"
+        with:
+          fail-on-cache-miss: true
+          key: "foundry-build-${{ github.sha }}"
+          path: "out-optimized"
+
+      - name: "Run the unit tests against the optimized build"
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/unit\""
+
+      - name: "Add test summary"
+        run: |
+          echo "## Unit tests result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
+
+  test-integration:
+    env:
+      FOUNDRY_FUZZ_RUNS: ${{ inputs.integrationFuzzRuns || '100000' }}
+    needs: ["lint", "build"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: "actions/checkout@v3"
+        with:
+          submodules: "recursive"
+
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+
+      - name: "Restore the cached build"
+        uses: "actions/cache/restore@v3"
+        with:
+          fail-on-cache-miss: true
+          key: "foundry-build-${{ github.sha }}"
+          path: "out-optimized"
+
+      - name: "Run the integration tests against the optimized build"
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\""
+
+      - name: "Add test summary"
+        run: |
+          echo "## Integration tests result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
+
+  test-invariant:
+    env:
+      FOUNDRY_INVARIANT_DEPTH: ${{ inputs.invariantDepth || '100' }}
+      FOUNDRY_INVARIANT_RUNS: ${{ inputs.invariantRuns || '100' }}
+    needs: ["lint", "build"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: "actions/checkout@v3"
+        with:
+          submodules: "recursive"
+
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+
+      - name: "Restore the cached build"
+        uses: "actions/cache/restore@v3"
+        with:
+          fail-on-cache-miss: true
+          key: "foundry-build-${{ github.sha }}"
+          path: "out-optimized"
+
+      - name: "Run the invariant tests against the optimized build"
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant/**/*.sol\""
+
+      - name: "Add test summary"
+        run: |
+          echo "## Invariant tests result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
+
+  test-fork:
+    env:
+      FOUNDRY_FUZZ_RUNS: ${{ inputs.forkFuzzRuns || '1000' }}
+    needs: ["lint", "build"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: "actions/checkout@v3"
+        with:
+          submodules: "recursive"
+
+      - name: "Install Foundry"
+        uses: "foundry-rs/foundry-toolchain@v1"
+
+      - name: "Restore the cached build"
+        uses: "actions/cache/restore@v3"
+        with:
+          fail-on-cache-miss: true
+          key: "foundry-build-${{ github.sha }}"
+          path: "out-optimized"
+
+      - name: "Run the fork tests against the optimized build"
+        run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/fork/**/*.sol\""
+
+      - name: "Add test summary"
+        run: |
+          echo "## Fork tests result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
