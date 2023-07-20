@@ -84,7 +84,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Creates a stream by setting the start time to `block.timestamp`, and the end time to
-    /// the sum of `block.timestamp` and `params.durations.total. The stream is funded by `msg.sender` and is wrapped
+    /// the sum of `block.timestamp` and `params.durations.total`. The stream is funded by `msg.sender` and is wrapped
     /// in an ERC-721 NFT.
     ///
     /// @dev Emits a {Transfer} and {CreateLockupLinearStream} event.
