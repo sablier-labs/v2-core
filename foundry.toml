@@ -14,6 +14,14 @@
   optimizer = true
   optimizer_runs = 1000
   out = "out"
+  remappings = [
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "@prb/math/=lib/prb-math/src/",
+    "@prb/test/=lib/prb-test/src/",
+    "forge-std/=lib/forge-std/src/",
+    "solady/=lib/solady/src/",
+    "solarray/=lib/solarray/src/"
+  ]
   script = "script"
   sender = "0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38"
   solc = "0.8.19"
