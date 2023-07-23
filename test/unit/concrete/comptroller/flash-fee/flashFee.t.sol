@@ -3,9 +3,15 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { UD60x18, ZERO } from "@prb/math/UD60x18.sol";
 
-import { Integration_Test } from "../../../Integration.t.sol";
+import { Comptroller_Unit_Concrete_Test } from "../Comptroller.t.sol";
 
-contract FlashFee_Unit_Concrete_Test is Integration_Test {
+contract FlashFee_Unit_Concrete_Test is Comptroller_Unit_Concrete_Test {
+    function setUp() public virtual override {
+        Comptroller_Unit_Concrete_Test.setUp();
+        // Make the Admin the default caller in this test suite.
+        vm.startPrank({ msgSender: users.admin });
+    }
+
     function test_FlashFee_Zero() external {
         UD60x18 actualFlashFee = comptroller.flashFee();
         UD60x18 expectedFlashFee = ZERO;
