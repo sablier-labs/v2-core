@@ -1,18 +1,14 @@
 transferAdmin.t.sol
-Scenario: Transfer ownership from one admin to another
-
-├──  Given the caller is not the admin
-│  ├── When trying to transfer ownership(from old admin to new one)
+├── Given the caller is not the admin
 │  └── Then it should revert
 └── Given the caller is the admin
-   ├── Given the admin(new) is the same as the current admin (actual)
-   │   └── When the admin transfers ownership to a new admin
-   │     ├── Then it should re-set the admin
-   │     └── And the {TransferAdmin} event should be emitted
-   └── Given the admin(new) is not the same as the current admin(actual)
-      ├── And the admin(new) is the zero address (who deploys the contract)
+   ├── When the new admin is the same as the current admin
+   │   ├── Then it should re-set the admin
+   │   └── And it should emit a {TransferAdmin} event
+   └── When the new admin is not the same as the current admin
+      ├── When the new admin is the zero address
       │  ├── Then it should set the admin to the zero address
-      │  └── And it should emit a {TransferAdmin}
-      └── And the admin is not the zero address
-         ├── Then it sets the new admin
-         └── And it should emit a {TransferAdmin} event and set the new admin
+      │  └── And it should emit a {TransferAdmin} event
+      └── When the new admin is not the zero address
+         ├── Then it should set the new admin
+         └── And it should emit a {TransferAdmin} event
