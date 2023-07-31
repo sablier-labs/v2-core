@@ -27,58 +27,58 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    function test_RevertWhen_Null() external whenNotDelegateCalled {
+    function test_RevertGiven_Null() external whenNotDelegateCalled {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
         lockup.burn(nullStreamId);
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    modifier whenStreamHasNotBeenDepleted() {
+    modifier givenStreamHasNotBeenDepleted() {
         _;
     }
 
-    function test_RevertWhen_StreamHasNotBeenDepleted_StatusPending()
+    function test_RevertWhen_StatusPending()
         external
         whenNotDelegateCalled
-        whenNotNull
-        whenStreamHasNotBeenDepleted
+        givenNotNull
+        givenStreamHasNotBeenDepleted
     {
         vm.warp({ timestamp: getBlockTimestamp() - 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StreamHasNotBeenDepleted_StatusStreaming()
+    function test_RevertWhen_StatusStreaming()
         external
         whenNotDelegateCalled
-        whenNotNull
-        whenStreamHasNotBeenDepleted
+        givenNotNull
+        givenStreamHasNotBeenDepleted
     {
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StreamHasNotBeenDepleted_StatusSettled()
+    function test_RevertWhen_StatusSettled()
         external
         whenNotDelegateCalled
-        whenNotNull
-        whenStreamHasNotBeenDepleted
+        givenNotNull
+        givenStreamHasNotBeenDepleted
     {
         vm.warp({ timestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StreamHasNotBeenDepleted_StatusCanceled()
+    function test_RevertWhen_StatusCanceled()
         external
         whenNotDelegateCalled
-        whenNotNull
-        whenStreamHasNotBeenDepleted
+        givenNotNull
+        givenStreamHasNotBeenDepleted
     {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         lockup.cancel(streamId);
@@ -86,7 +86,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    modifier whenStreamHasBeenDepleted() {
+    modifier givenStreamHasBeenDepleted() {
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: streamId, to: users.recipient });
         _;
@@ -95,13 +95,10 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
     function test_RevertWhen_CallerUnauthorized()
         external
         whenNotDelegateCalled
-        whenNotNull
-        whenStreamHasBeenDepleted
+        givenNotNull
+        givenStreamHasBeenDepleted
     {
-        // Make Eve the caller in the rest of this test.
         changePrank({ msgSender: users.eve });
-
-        // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Unauthorized.selector, streamId, users.eve));
         lockup.burn(streamId);
     }
@@ -113,8 +110,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
     function test_RevertWhen_NFTDoesNotExist()
         external
         whenNotDelegateCalled
-        whenNotNull
-        whenStreamHasBeenDepleted
+        givenNotNull
+        givenStreamHasBeenDepleted
         whenCallerAuthorized
     {
         // Burn the NFT so that it no longer exists.
@@ -132,8 +129,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
     function test_Burn_CallerApprovedOperator()
         external
         whenNotDelegateCalled
-        whenNotNull
-        whenStreamHasBeenDepleted
+        givenNotNull
+        givenStreamHasBeenDepleted
         whenCallerAuthorized
         whenNFTExists
     {
@@ -154,8 +151,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
     function test_Burn_CallerNFTOwner()
         external
         whenNotDelegateCalled
-        whenNotNull
-        whenStreamHasBeenDepleted
+        givenNotNull
+        givenStreamHasBeenDepleted
         whenCallerAuthorized
         whenNFTExists
     {

@@ -20,44 +20,44 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Concrete_Test is
 
     function test_WithdrawableAmountOf_CliffTimeInTheFuture()
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenStatusStreaming
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenStatusStreaming
     {
         uint128 actualWithdrawableAmount = lockupLinear.withdrawableAmountOf(defaultStreamId);
         uint128 expectedWithdrawableAmount = 0;
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    modifier whenCliffTimeNotInTheFuture() {
+    modifier givenCliffTimeNotInTheFuture() {
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
     function test_WithdrawableAmountOf_NoPreviousWithdrawals()
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenStatusStreaming
-        whenCliffTimeNotInTheFuture
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenStatusStreaming
+        givenCliffTimeNotInTheFuture
     {
         uint128 actualWithdrawableAmount = lockupLinear.withdrawableAmountOf(defaultStreamId);
         uint128 expectedWithdrawableAmount = defaults.WITHDRAW_AMOUNT();
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    modifier whenPreviousWithdrawals() {
+    modifier givenPreviousWithdrawals() {
         lockupLinear.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.WITHDRAW_AMOUNT() });
         _;
     }
 
     function test_WithdrawableAmountOf_WithWithdrawals()
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenStatusStreaming
-        whenCliffTimeNotInTheFuture
-        whenPreviousWithdrawals
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenStatusStreaming
+        givenCliffTimeNotInTheFuture
+        givenPreviousWithdrawals
     {
         uint128 actualWithdrawableAmount = lockupLinear.withdrawableAmountOf(defaultStreamId);
         uint128 expectedWithdrawableAmount = 0;

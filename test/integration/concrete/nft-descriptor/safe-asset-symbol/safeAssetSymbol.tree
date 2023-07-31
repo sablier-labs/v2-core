@@ -1,8 +1,11 @@
 safeAssetSymbol.t.sol
-├── when the call reverts
+├── when not an ERC-20 contract
 │  └── it should return a hard-coded value
-└── when the call does not revert
-   ├── when the symbol is long
+└── when an ERC-20 contract
+   ├── when the symbol is returned as bytes32
    │  └── it should return a hard-coded value
-   └── when the symbol is not long
-      └── it should return the correct value
+   └── when the symbol is returned as string
+      ├── when the symbol is longer than 30 characters
+      │  └── it should return a hard-coded values
+      └── when the symbol is not longer than 30 characters
+         └── it should return the correct symbol value

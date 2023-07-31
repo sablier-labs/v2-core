@@ -41,13 +41,13 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(testStreamIds[0], nullStreamId) });
     }
 
-    function test_RevertWhen_AllStreamsCold() external whenNotDelegateCalled whenArrayCountNotZero whenNoNull {
+    function test_RevertWhen_AllStreamsCold() external whenNotDelegateCalled whenArrayCountNotZero givenNoNull {
         vm.warp({ timestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, testStreamIds[0]));
         lockup.cancelMultiple({ streamIds: testStreamIds });
     }
 
-    function test_RevertWhen_SomeStreamsCold() external whenNotDelegateCalled whenArrayCountNotZero whenNoNull {
+    function test_RevertWhen_SomeStreamsCold() external whenNotDelegateCalled whenArrayCountNotZero givenNoNull {
         uint256 earlyStreamId = createDefaultStreamWithEndTime({ endTime: defaults.CLIFF_TIME() + 1 seconds });
         vm.warp({ timestamp: defaults.CLIFF_TIME() + 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, earlyStreamId));
@@ -58,7 +58,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         external
         whenNotDelegateCalled
         whenArrayCountNotZero
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerUnauthorized
     {
@@ -76,7 +76,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         external
         whenNotDelegateCalled
         whenArrayCountNotZero
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerUnauthorized
     {
@@ -98,7 +98,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         external
         whenNotDelegateCalled
         whenArrayCountNotZero
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerUnauthorized
     {
@@ -118,7 +118,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         external
         whenNotDelegateCalled
         whenArrayCountNotZero
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerUnauthorized
     {
@@ -139,7 +139,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         external
         whenNotDelegateCalled
         whenArrayCountNotZero
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerUnauthorized
     {
@@ -161,7 +161,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         external
         whenNotDelegateCalled
         whenArrayCountNotZero
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerUnauthorized
     {
@@ -180,7 +180,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         external
         whenNotDelegateCalled
         whenArrayCountNotZero
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerAuthorizedAllStreams
     {
@@ -195,7 +195,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         external
         whenNotDelegateCalled
         whenArrayCountNotZero
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerAuthorizedAllStreams
     {
@@ -209,7 +209,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
     function test_CancelMultiple()
         external
         whenNotDelegateCalled
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerAuthorizedAllStreams
         whenAllStreamsCancelable

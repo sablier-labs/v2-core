@@ -96,7 +96,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
+        givenEndTimeInTheFuture
     {
         depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
 
@@ -138,7 +138,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
+        givenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
     {
         protocolFee = _bound(protocolFee, MAX_FEE + ud(1), MAX_UD60x18);
@@ -165,9 +165,9 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
+        givenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
-        whenProtocolFeeNotTooHigh
+        givenProtocolFeeNotTooHigh
     {
         vm.assume(broker.account != address(0));
         broker.fee = _bound(broker.fee, MAX_FEE + ud(1), MAX_UD60x18);
@@ -215,9 +215,9 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
+        givenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
-        whenProtocolFeeNotTooHigh
+        givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh
         whenAssetContract
         whenAssetERC20

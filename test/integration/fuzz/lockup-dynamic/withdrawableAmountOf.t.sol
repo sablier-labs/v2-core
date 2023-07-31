@@ -26,7 +26,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         changePrank({ msgSender: users.sender });
     }
 
-    modifier whenStartTimeInThePast() {
+    modifier givenStartTimeInThePast() {
         _;
     }
 
@@ -37,7 +37,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
     /// - End time in the future
     /// - Status streaming
     /// - Status settled
-    function testFuzz_WithdrawableAmountOf_NoPreviousWithdrawals(uint40 timeJump) external whenStartTimeInThePast {
+    function testFuzz_WithdrawableAmountOf_NoPreviousWithdrawals(uint40 timeJump) external givenStartTimeInThePast {
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
 
         // Create the stream with a custom total amount. The broker fee is disabled so that it doesn't interfere with
@@ -77,7 +77,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint128 withdrawAmount
     )
         external
-        whenStartTimeInThePast
+        givenStartTimeInThePast
         whenWithWithdrawals
     {
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);

@@ -7,13 +7,6 @@ import { ERC20Bytes32 } from "../../../../mocks/erc20/ERC20Bytes32.sol";
 import { NFTDescriptor_Integration_Concrete_Test } from "../NFTDescriptor.t.sol";
 
 contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_Concrete_Test {
-    function test_SafeAssetSymbol_Bytes32() external {
-        ERC20Bytes32 asset = new ERC20Bytes32();
-        string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
-        string memory expectedSymbol = "ERC20";
-        assertEq(actualSymbol, expectedSymbol, "symbol");
-    }
-
     function test_SafeAssetSymbol_EOA() external {
         address eoa = vm.addr({ privateKey: 1 });
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(eoa));
@@ -27,11 +20,22 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
         assertEq(actualSymbol, expectedSymbol, "symbol");
     }
 
-    modifier whenNotReverted() {
+    modifier whenERC20Contract() {
         _;
     }
 
-    function test_SafeAssetSymbol_LongSymbol() external whenNotReverted {
+    function test_SafeAssetSymbol_Bytes32() external whenERC20Contract {
+        ERC20Bytes32 asset = new ERC20Bytes32();
+        string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
+        string memory expectedSymbol = "ERC20";
+        assertEq(actualSymbol, expectedSymbol, "symbol");
+    }
+
+    modifier whenSymbolString() {
+        _;
+    }
+
+    function test_SafeAssetSymbol_LongSymbol() external whenERC20Contract whenSymbolString {
         ERC20 asset =
         new ERC20({ name_: "Token", symbol_: "This symbol is has more than 30 characters and it should be ignored" });
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
@@ -43,7 +47,7 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
         _;
     }
 
-    function test_SafeAssetSymbol() external whenNotReverted whenSymbolNotLong {
+    function test_SafeAssetSymbol() external whenERC20Contract whenSymbolString whenSymbolNotLong {
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(dai));
         string memory expectedSymbol = dai.symbol();
         assertEq(actualSymbol, expectedSymbol, "symbol");

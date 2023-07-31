@@ -29,8 +29,8 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_StreamedAmountOf_CliffTimeInTheFuture(uint40 timeJump)
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamHasNotBeenCanceled
     {
         timeJump = boundUint40(timeJump, 0, defaults.CLIFF_DURATION() - 1);
         vm.warp({ timestamp: defaults.START_TIME() + timeJump });
@@ -39,7 +39,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    modifier whenCliffTimeNotInTheFuture() {
+    modifier givenCliffTimeNotInTheFuture() {
         _;
     }
 
@@ -56,9 +56,9 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 depositAmount
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenCliffTimeNotInTheFuture
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenCliffTimeNotInTheFuture
     {
         vm.assume(depositAmount != 0);
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
@@ -89,9 +89,9 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 depositAmount
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenCliffTimeNotInTheFuture
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenCliffTimeNotInTheFuture
     {
         vm.assume(depositAmount != 0);
         timeWarp0 = boundUint40(timeWarp0, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1);

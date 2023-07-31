@@ -15,7 +15,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Shared_Test is Lockup_Integ
         _;
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
@@ -23,7 +23,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Shared_Test is Lockup_Integ
         _;
     }
 
-    modifier whenNFTNotBurned() {
+    modifier givenNFTNotBurned() {
         _;
     }
 

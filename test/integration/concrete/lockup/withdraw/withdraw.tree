@@ -2,12 +2,12 @@ withdraw.t.sol
 ├── when delegate called
 │  └── it should revert
 └── when not delegate called
-    ├── when the id references a null stream
+    ├── given the id references a null stream
     │  └── it should revert
-    └── when the id does not reference a null stream
-       ├── when the stream's status is "DEPLETED"
+    └── given the id does not reference a null stream
+       ├── given the stream's status is "DEPLETED"
        │  └── it should revert
-       └── when the stream's status is not "DEPLETED"
+       └── given the stream's status is not "DEPLETED"
           ├── when the caller is unauthorized
           │  ├── when the caller is the sender
           │  │  └── it should revert
@@ -32,19 +32,19 @@ withdraw.t.sol
                       │  ├── it should make the withdrawal
                       │  └── it should update the withdrawn amount
                       └── when the caller is the sender
-                         ├── when the end time is not in the future
+                         ├── given the end time is not in the future
                          │  ├── it should make the withdrawal
                          │  ├── it should mark the stream as depleted
                          │  └── it should make the stream not cancelable
-                         └── when the end time is in the future
-                            ├── when the stream has been canceled
+                         └── given the end time is in the future
+                            ├── given the stream has been canceled
                             │  ├── it should make the withdrawal
                             │  ├── it should mark the stream as depleted
                             │  ├── it should update the withdrawn amount
                             │  ├── it should call the recipient hook
                             │  ├── it should emit a {MetadataUpdate} event
                             │  └── it should emit a {WithdrawFromLockupStream} event
-                            └── when the stream has not been canceled
+                            └── given the stream has not been canceled
                                ├── when the recipient is not a contract
                                │  └── it should make the withdrawal
                                │  └── it should update the withdrawn amount

@@ -19,7 +19,7 @@ abstract contract CancelMultiple_Integration_Fuzz_Test is Integration_Test, Canc
     )
         external
         whenNotDelegateCalled
-        whenNoNull
+        givenNoNull
         whenAllStreamsWarm
         whenCallerAuthorizedAllStreams
         whenAllStreamsCancelable

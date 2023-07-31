@@ -66,7 +66,7 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
+        givenEndTimeInTheFuture
     {
         protocolFee = _bound(protocolFee, MAX_FEE + ud(1), MAX_UD60x18);
 
@@ -89,8 +89,8 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
+        givenEndTimeInTheFuture
+        givenProtocolFeeNotTooHigh
     {
         vm.assume(broker.account != address(0));
         broker.fee = _bound(broker.fee, MAX_FEE + ud(1), MAX_UD60x18);
@@ -133,8 +133,8 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
+        givenEndTimeInTheFuture
+        givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh
         whenAssetContract
         whenAssetERC20
