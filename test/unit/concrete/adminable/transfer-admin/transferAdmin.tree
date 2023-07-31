@@ -1,14 +1,14 @@
 transferAdmin.t.sol
 ├── given the caller is not the admin
-│  └── then should revert
+│  └── it should revert
 └── given the caller is the admin
    ├── when new admin is same as current admin
-   │  ├── then should re-set the admin
-   │  └── and should emit a {TransferAdmin} event
+   │  ├── it should re-set the admin
+   │  └── it should emit a {TransferAdmin} event
    └── when new admin is not same as current admin
       ├── when the new admin is the zero address
-      │  ├── then should set the admin to the zero address
-      │  └── and should emit a {TransferAdmin}
+      │  ├── it should set the admin to the zero address
+      │  └── it should emit a {TransferAdmin}
       └── when the new admin is not the zero address
-         ├── then should set the new admin
-         └── and should emit a {TransferAdmin} event and set the new admin
+         ├── it should set the new admin
+         └── it should emit a {TransferAdmin} event and set the new admin

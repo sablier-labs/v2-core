@@ -1,5 +1,5 @@
 protocolFees.t.sol
 ├── when the protocol fee has not been set
-│  └── then should return zero
+│  └── it should return zero
 └── when the protocol fee has been set
-   └── then should return the correct protocol fee
+   └── it should return the correct protocol fee

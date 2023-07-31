@@ -1,10 +1,10 @@
 toggleFlashAsset.t.sol
 ├── given the caller is not the admin
-│  └── then should revert
+│  └── it should revert
 └── given the caller is the admin
    ├── when the flag is not enabled
-   │  ├── then should toggle the flash asset
-   │  └── and should emit a {ToggleFlashAsset} event
+   │  ├── it should toggle the flash asset
+   │  └── it should emit a {ToggleFlashAsset} event
    └── when the flag is enabled
-      ├── then should toggle the flash asset
-      └── and should emit a {ToggleFlashAsset} event
+      ├── it should toggle the flash asset
+      └── it should emit a {ToggleFlashAsset} event

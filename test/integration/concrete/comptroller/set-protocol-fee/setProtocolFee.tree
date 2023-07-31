@@ -1,11 +1,11 @@
 setProtocolFee.t.sol
 ├── given the caller is not the admin
-│  └── then should revert
+│  └── it should revert
 └── given the caller is the admin
    ├── when the new protocol fee is the same as the current protocol fee
-   │  ├── then should re-set the protocol fee
-   │  └── and should emit a {SetProtocolFee} event
+   │  ├── it should re-set the protocol fee
+   │  └── it should emit a {SetProtocolFee} event
    └── when the new protocol fee is not the same as the current protocol fee
-      ├── then should set the new protocol fee
-      └── and should emit a {SetProtocolFee} event
+      ├── it should set the new protocol fee
+      └── it should emit a {SetProtocolFee} event
 
