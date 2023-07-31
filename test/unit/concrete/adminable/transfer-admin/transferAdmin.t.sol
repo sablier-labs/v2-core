@@ -15,11 +15,11 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         adminableMock.transferAdmin(users.eve);
     }
 
-    modifier whenCallerAdmin() {
+    modifier givenCallerAdmin() {
         _;
     }
 
-    function test_TransferAdmin_SameAdmin() external whenCallerAdmin {
+    function test_TransferAdmin_SameAdmin() external givenCallerAdmin {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.admin });
@@ -33,7 +33,7 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         assertEq(actualAdmin, expectedAdmin, "admin");
     }
 
-    function test_TransferAdmin_ZeroAddress() external whenCallerAdmin {
+    function test_TransferAdmin_ZeroAddress() external givenCallerAdmin {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: address(0) });
@@ -51,7 +51,7 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         _;
     }
 
-    function test_TransferAdmin_NewAdmin() external whenCallerAdmin whenNotZeroAddress {
+    function test_TransferAdmin_NewAdmin() external givenCallerAdmin whenNotZeroAddress {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.alice });

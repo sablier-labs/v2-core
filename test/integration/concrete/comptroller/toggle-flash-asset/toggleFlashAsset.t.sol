@@ -16,11 +16,11 @@ contract ToggleFlashAsset_Integration_Concrete_Test is Integration_Test {
     }
 
     /// @dev The admin is the default caller in the comptroller tests.
-    modifier whenCallerAdmin() {
+    modifier givenCallerAdmin() {
         _;
     }
 
-    function test_ToggleFlashAsset_FlagNotEnabled() external whenCallerAdmin {
+    function test_ToggleFlashAsset_FlagNotEnabled() external givenCallerAdmin {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(comptroller) });
         emit ToggleFlashAsset({ admin: users.admin, asset: dai, newFlag: true });
@@ -38,7 +38,7 @@ contract ToggleFlashAsset_Integration_Concrete_Test is Integration_Test {
         _;
     }
 
-    function test_ToggleFlashAsset() external whenCallerAdmin whenFlagEnabled {
+    function test_ToggleFlashAsset() external givenCallerAdmin whenFlagEnabled {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(comptroller) });
         emit ToggleFlashAsset({ admin: users.admin, asset: dai, newFlag: false });
