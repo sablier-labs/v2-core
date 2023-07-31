@@ -1,7 +1,7 @@
 isCold.t.sol
-├── when the id references a null stream
+├── given the id references a null stream
 │  └── it should revert
-└── when the id does not reference a null stream
+└── given the id does not reference a null stream
    ├── when the stream's status is pending
    │  └── it should return false
    ├── when the stream's status is streaming

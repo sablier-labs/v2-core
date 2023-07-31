@@ -12,11 +12,11 @@ contract GetCliffTime_LockupLinear_Integration_Concrete_Test is LockupLinear_Int
         lockupLinear.getCliffTime(nullStreamId);
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    function test_GetCliffTime() external whenNotNull {
+    function test_GetCliffTime() external givenNotNull {
         uint256 streamId = createDefaultStream();
         uint40 actualCliffTime = lockupLinear.getCliffTime(streamId);
         uint40 expectedCliffTime = defaults.CLIFF_TIME();

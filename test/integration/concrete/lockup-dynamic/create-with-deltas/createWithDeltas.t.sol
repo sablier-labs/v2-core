@@ -32,7 +32,7 @@ contract CreateWithDeltas_LockupDynamic_Integration_Concrete_Test is
     }
 
     /// @dev it should revert.
-    function test_RevertWhen_LoopCalculationOverflowsBlockGasLimit() external whenNotDelegateCalled {
+    function test_RevertWhen_LoopCalculationOverflowsBlockGasLimit() external givenNotDelegateCalled {
         LockupDynamic.SegmentWithDelta[] memory segments = new LockupDynamic.SegmentWithDelta[](250_000);
         vm.expectRevert(bytes(""));
         createDefaultStreamWithDeltas(segments);
@@ -40,8 +40,8 @@ contract CreateWithDeltas_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_DeltasZero()
         external
-        whenNotDelegateCalled
-        whenLoopCalculationsDoNotOverflowBlockGasLimit
+        givenNotDelegateCalled
+        givenLoopCalculationsDoNotOverflowBlockGasLimit
     {
         uint40 startTime = getBlockTimestamp();
         LockupDynamic.SegmentWithDelta[] memory segments = defaults.createWithDeltas().segments;
@@ -60,9 +60,9 @@ contract CreateWithDeltas_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_MilestonesCalculationsOverflows_StartTimeNotLessThanFirstSegmentMilestone()
         external
-        whenNotDelegateCalled
-        whenLoopCalculationsDoNotOverflowBlockGasLimit
-        whenDeltasNotZero
+        givenNotDelegateCalled
+        givenLoopCalculationsDoNotOverflowBlockGasLimit
+        givenDeltasNotZero
     {
         unchecked {
             uint40 startTime = getBlockTimestamp();
@@ -81,9 +81,9 @@ contract CreateWithDeltas_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_MilestonesCalculationsOverflows_SegmentMilestonesNotOrdered()
         external
-        whenNotDelegateCalled
-        whenLoopCalculationsDoNotOverflowBlockGasLimit
-        whenDeltasNotZero
+        givenNotDelegateCalled
+        givenLoopCalculationsDoNotOverflowBlockGasLimit
+        givenDeltasNotZero
     {
         unchecked {
             uint40 startTime = getBlockTimestamp();
@@ -113,10 +113,10 @@ contract CreateWithDeltas_LockupDynamic_Integration_Concrete_Test is
 
     function test_CreateWithDeltas()
         external
-        whenNotDelegateCalled
-        whenLoopCalculationsDoNotOverflowBlockGasLimit
-        whenDeltasNotZero
-        whenMilestonesCalculationsDoNotOverflow
+        givenNotDelegateCalled
+        givenLoopCalculationsDoNotOverflowBlockGasLimit
+        givenDeltasNotZero
+        givenMilestonesCalculationsDoNotOverflow
     {
         // Make the Sender the stream's funder
         address funder = users.sender;

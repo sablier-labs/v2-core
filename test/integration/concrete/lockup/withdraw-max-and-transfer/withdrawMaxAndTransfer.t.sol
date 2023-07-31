@@ -21,13 +21,13 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_Null() external whenNotDelegateCalled {
+    function test_RevertWhen_Null() external givenNotDelegateCalled {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
         lockup.withdrawMaxAndTransfer({ streamId: nullStreamId, newRecipient: users.recipient });
     }
 
-    function test_RevertWhen_CallerNotCurrentRecipient() external whenNotDelegateCalled whenNotNull {
+    function test_RevertWhen_CallerNotCurrentRecipient() external givenNotDelegateCalled givenNotNull {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
 
@@ -38,7 +38,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.eve });
     }
 
-    function test_RevertWhen_NFTBurned() external whenNotDelegateCalled whenNotNull whenCallerCurrentRecipient {
+    function test_RevertWhen_NFTBurned() external givenNotDelegateCalled givenNotNull givenCallerCurrentRecipient {
         // Deplete the stream.
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -55,10 +55,10 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
 
     function test_WithdrawMaxAndTransfer_WithdrawableAmountZero()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenCallerCurrentRecipient
-        whenNFTNotBurned
+        givenNotDelegateCalled
+        givenNotNull
+        givenCallerCurrentRecipient
+        givenNFTNotBurned
     {
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -67,11 +67,11 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
 
     function test_WithdrawMaxAndTransfer()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenCallerCurrentRecipient
-        whenNFTNotBurned
-        whenWithdrawableAmountNotZero
+        givenNotDelegateCalled
+        givenNotNull
+        givenCallerCurrentRecipient
+        givenNFTNotBurned
+        givenWithdrawableAmountNotZero
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });

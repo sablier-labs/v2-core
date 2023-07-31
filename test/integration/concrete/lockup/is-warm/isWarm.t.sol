@@ -17,37 +17,37 @@ abstract contract IsWarm_Integration_Concrete_Test is Integration_Test, Lockup_I
         lockup.isWarm(nullStreamId);
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         defaultStreamId = createDefaultStream();
         _;
     }
 
-    function test_IsWarm_StatusPending() external whenNotNull {
+    function test_IsWarm_StatusPending() external givenNotNull {
         vm.warp({ timestamp: getBlockTimestamp() - 1 seconds });
         bool isWarm = lockup.isWarm(defaultStreamId);
         assertTrue(isWarm, "isWarm");
     }
 
-    function test_IsWarm_StatusStreaming() external whenNotNull {
+    function test_IsWarm_StatusStreaming() external givenNotNull {
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
         bool isWarm = lockup.isWarm(defaultStreamId);
         assertTrue(isWarm, "isWarm");
     }
 
-    function test_IsWarm_StatusSettled() external whenNotNull {
+    function test_IsWarm_StatusSettled() external givenNotNull {
         vm.warp({ timestamp: defaults.END_TIME() });
         bool isWarm = lockup.isWarm(defaultStreamId);
         assertFalse(isWarm, "isWarm");
     }
 
-    function test_IsWarm_StatusCanceled() external whenNotNull {
+    function test_IsWarm_StatusCanceled() external givenNotNull {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         bool isWarm = lockup.isWarm(defaultStreamId);
         assertFalse(isWarm, "isWarm");
     }
 
-    function test_IsWarm_StatusDepleted() external whenNotNull {
+    function test_IsWarm_StatusDepleted() external givenNotNull {
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         bool isWarm = lockup.isWarm(defaultStreamId);

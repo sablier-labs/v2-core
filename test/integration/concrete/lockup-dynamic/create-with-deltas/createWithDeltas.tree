@@ -1,14 +1,14 @@
 createWithDeltas.t.sol
-├── when delegate called
+├── given delegate called
 │  └── it should revert
-└── when not delegate called
+└── given not delegate called
    ├── when the loop calculations overflow the block gas limit
    │  └── it should revert
-   └── when the loop calculations do not overflow the block gas limit
+   └── given the loop calculations do not overflow the block gas limit
        ├── when at least one of the deltas at index one or greater is zero
        │  └── it should revert
-       └── when none of the deltas is zero
-          ├── when the segment milestone calculations overflow uint256
+       └── given none of the deltas is zero
+          ├── given the segment milestone calculations overflow uint256
           │  ├── when the start time is not less than the first segment milestone
           │  │  └── it should revert
           │  └── when the segment milestones are not ordered

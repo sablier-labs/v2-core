@@ -32,13 +32,13 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_RecipientZeroAddress() external whenNotDelegateCalled {
+    function test_RevertWhen_RecipientZeroAddress() external givenNotDelegateCalled {
         vm.expectRevert("ERC721: mint to the zero address");
         address recipient = address(0);
         createDefaultStreamWithRecipient(recipient);
     }
 
-    function test_RevertWhen_DepositAmountZero() external whenNotDelegateCalled whenRecipientNonZeroAddress {
+    function test_RevertWhen_DepositAmountZero() external givenNotDelegateCalled givenRecipientNonZeroAddress {
         // It is not possible to obtain a zero deposit amount from a non-zero total amount, because the `MAX_FEE`
         // is hard coded to 10%.
         vm.expectRevert(Errors.SablierV2Lockup_DepositAmountZero.selector);
@@ -48,9 +48,9 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_SegmentCountZero()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
     {
         LockupDynamic.Segment[] memory segments;
         vm.expectRevert(Errors.SablierV2LockupDynamic_SegmentCountZero.selector);
@@ -59,10 +59,10 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_SegmentCountTooHigh()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
     {
         uint256 segmentCount = defaults.MAX_SEGMENT_COUNT() + 1;
         LockupDynamic.Segment[] memory segments = new LockupDynamic.Segment[](segmentCount);
@@ -74,11 +74,11 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_SegmentAmountsSumOverflows()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
     {
         LockupDynamic.Segment[] memory segments = defaults.segments();
         segments[0].amount = MAX_UINT128;
@@ -89,12 +89,12 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_StartTimeGreaterThanFirstSegmentMilestone()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
     {
         // Change the milestone of the first segment.
         LockupDynamic.Segment[] memory segments = defaults.segments();
@@ -115,12 +115,12 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_StartTimeEqualToFirstSegmentMilestone()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
     {
         // Change the milestone of the first segment.
         LockupDynamic.Segment[] memory segments = defaults.segments();
@@ -141,13 +141,13 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_SegmentMilestonesNotOrdered()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentMilestone
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
+        givenStartTimeLessThanFirstSegmentMilestone
     {
         // Swap the segment milestones.
         LockupDynamic.Segment[] memory segments = defaults.segments();
@@ -170,14 +170,14 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_EndTimeNotInTheFuture()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentMilestone
-        whenSegmentMilestonesOrdered
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
+        givenStartTimeLessThanFirstSegmentMilestone
+        givenSegmentMilestonesOrdered
     {
         uint40 endTime = defaults.END_TIME();
         vm.warp({ timestamp: endTime });
@@ -187,15 +187,15 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_DepositAmountNotEqualToSegmentAmountsSum()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentMilestone
-        whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
+        givenStartTimeLessThanFirstSegmentMilestone
+        givenSegmentMilestonesOrdered
+        givenEndTimeInTheFuture
     {
         // Disable both the protocol and the broker fee so that they don't interfere with the calculations.
         changePrank({ msgSender: users.admin });
@@ -227,16 +227,16 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_ProtocolFeeTooHigh()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentMilestone
-        whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
-        whenDepositAmountEqualToSegmentAmountsSum
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
+        givenStartTimeLessThanFirstSegmentMilestone
+        givenSegmentMilestonesOrdered
+        givenEndTimeInTheFuture
+        givenDepositAmountEqualToSegmentAmountsSum
     {
         UD60x18 protocolFee = MAX_FEE + ud(1);
 
@@ -254,17 +254,17 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_BrokerFeeTooHigh()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentMilestone
-        whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
-        whenDepositAmountEqualToSegmentAmountsSum
-        whenProtocolFeeNotTooHigh
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
+        givenStartTimeLessThanFirstSegmentMilestone
+        givenSegmentMilestonesOrdered
+        givenEndTimeInTheFuture
+        givenDepositAmountEqualToSegmentAmountsSum
+        givenProtocolFeeNotTooHigh
     {
         UD60x18 brokerFee = MAX_FEE + ud(1);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_BrokerFeeTooHigh.selector, brokerFee, MAX_FEE));
@@ -273,18 +273,18 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_RevertWhen_AssetNotContract()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentMilestone
-        whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
-        whenDepositAmountEqualToSegmentAmountsSum
-        whenProtocolFeeNotTooHigh
-        whenBrokerFeeNotTooHigh
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
+        givenStartTimeLessThanFirstSegmentMilestone
+        givenSegmentMilestonesOrdered
+        givenEndTimeInTheFuture
+        givenDepositAmountEqualToSegmentAmountsSum
+        givenProtocolFeeNotTooHigh
+        givenBrokerFeeNotTooHigh
     {
         address nonContract = address(8128);
 
@@ -301,39 +301,39 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
 
     function test_CreateWithMilestones_AssetMissingReturnValue()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentMilestone
-        whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
-        whenDepositAmountEqualToSegmentAmountsSum
-        whenProtocolFeeNotTooHigh
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
+        givenStartTimeLessThanFirstSegmentMilestone
+        givenSegmentMilestonesOrdered
+        givenEndTimeInTheFuture
+        givenDepositAmountEqualToSegmentAmountsSum
+        givenProtocolFeeNotTooHigh
+        givenBrokerFeeNotTooHigh
+        givenAssetContract
     {
         testCreateWithMilestones(address(usdt));
     }
 
     function test_CreateWithMilestones()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentMilestone
-        whenSegmentMilestonesOrdered
-        whenEndTimeInTheFuture
-        whenDepositAmountEqualToSegmentAmountsSum
-        whenProtocolFeeNotTooHigh
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
-        whenAssetERC20
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenSegmentCountNotZero
+        givenSegmentCountNotTooHigh
+        givenSegmentAmountsSumDoesNotOverflow
+        givenStartTimeLessThanFirstSegmentMilestone
+        givenSegmentMilestonesOrdered
+        givenEndTimeInTheFuture
+        givenDepositAmountEqualToSegmentAmountsSum
+        givenProtocolFeeNotTooHigh
+        givenBrokerFeeNotTooHigh
+        givenAssetContract
+        givenAssetERC20
     {
         testCreateWithMilestones(address(dai));
     }

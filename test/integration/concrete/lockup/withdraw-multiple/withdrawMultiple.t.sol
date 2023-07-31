@@ -25,7 +25,7 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_ArrayCountsNotEqual() external whenNotDelegateCalled {
+    function test_RevertWhen_ArrayCountsNotEqual() external givenNotDelegateCalled {
         uint256[] memory streamIds = new uint256[](2);
         uint128[] memory amounts = new uint128[](1);
         vm.expectRevert(
@@ -36,21 +36,26 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         lockup.withdrawMultiple({ streamIds: streamIds, to: users.recipient, amounts: amounts });
     }
 
-    modifier whenArrayCountsAreEqual() {
+    modifier givenArrayCountsAreEqual() {
         _;
     }
 
-    function test_WithdrawMultiple_ArrayCountsZero() external whenNotDelegateCalled whenArrayCountsAreEqual {
+    function test_WithdrawMultiple_ArrayCountsZero() external givenNotDelegateCalled givenArrayCountsAreEqual {
         uint256[] memory streamIds = new uint256[](0);
         uint128[] memory amounts = new uint128[](0);
         lockup.withdrawMultiple({ streamIds: streamIds, to: users.recipient, amounts: amounts });
     }
 
-    modifier whenArrayCountsNotZero() {
+    modifier givenArrayCountsNotZero() {
         _;
     }
 
-    function test_RevertWhen_OnlyNull() external whenNotDelegateCalled whenArrayCountsAreEqual whenArrayCountsNotZero {
+    function test_RevertWhen_OnlyNull()
+        external
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+    {
         uint256 nullStreamId = 1729;
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
@@ -61,7 +66,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         });
     }
 
-    function test_RevertWhen_SomeNull() external whenNotDelegateCalled whenArrayCountsAreEqual whenArrayCountsNotZero {
+    function test_RevertWhen_SomeNull()
+        external
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+    {
         uint256 nullStreamId = 1729;
         uint256[] memory streamIds = Solarray.uint256s(testStreamIds[0], testStreamIds[1], nullStreamId);
 
@@ -77,10 +87,10 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_AllStatusesDepleted()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
     {
         uint256[] memory streamIds = Solarray.uint256s(testStreamIds[0]);
         uint128[] memory amounts = Solarray.uint128s(defaults.WITHDRAW_AMOUNT());
@@ -100,10 +110,10 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_SomeStatusesDepleted()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.END_TIME() });
@@ -120,12 +130,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedAllStreams_MaliciousThirdParty()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerUnauthorized
     {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
@@ -139,12 +149,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedAllStreams_FormerRecipient()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerUnauthorized
     {
         // Transfer all streams to Alice.
         changePrank({ msgSender: users.recipient });
@@ -161,12 +171,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedSomeStreams_MaliciousThirdParty()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerUnauthorized
     {
         // Create a stream with Eve as the stream's recipient.
         uint256 eveStreamId = createDefaultStreamWithRecipient(users.eve);
@@ -187,12 +197,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedSomeStreams_FormerRecipient()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerUnauthorized
     {
         // Transfer one of the streams to Eve.
         changePrank({ msgSender: users.recipient });
@@ -210,12 +220,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_ToZeroAddress()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerAuthorizedAllStreams
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerAuthorizedAllStreams
     {
         if (caller == users.sender) {
             return;
@@ -226,13 +236,13 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_SomeAmountsZero()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerAuthorizedAllStreams
-        whenToNonZeroAddress
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerAuthorizedAllStreams
+        givenToNonZeroAddress
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
@@ -245,14 +255,14 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_SomeAmountsOverdraw()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerAuthorizedAllStreams
-        whenToNonZeroAddress
-        whenNoAmountZero
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerAuthorizedAllStreams
+        givenToNonZeroAddress
+        givenNoAmountZero
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
@@ -270,15 +280,15 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
 
     function test_WithdrawMultiple()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerAuthorizedAllStreams
-        whenToNonZeroAddress
-        whenNoAmountZero
-        whenNoAmountOverdraws
+        givenNotDelegateCalled
+        givenArrayCountsAreEqual
+        givenArrayCountsNotZero
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerAuthorizedAllStreams
+        givenToNonZeroAddress
+        givenNoAmountZero
+        givenNoAmountOverdraws
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: earlyStopTime });
@@ -287,7 +297,7 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         changePrank({ msgSender: users.recipient });
         lockup.cancel(testStreamIds[2]);
 
-        // Run the test with the caller provided in {whenCallerAuthorizedAllStreams}.
+        // Run the test with the caller provided in {givenCallerAuthorizedAllStreams}.
         changePrank({ msgSender: caller });
 
         // Expect the withdrawals to be made.

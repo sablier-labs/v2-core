@@ -17,7 +17,7 @@ abstract contract GetRecipient_Integration_Concrete_Test is Integration_Test, Lo
         lockup.getRecipient(nullStreamId);
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
@@ -39,11 +39,11 @@ abstract contract GetRecipient_Integration_Concrete_Test is Integration_Test, Lo
         lockup.getRecipient(defaultStreamId);
     }
 
-    modifier whenNFTNotBurned() {
+    modifier givenNFTNotBurned() {
         _;
     }
 
-    function test_GetRecipient() external whenNotNull whenNFTNotBurned {
+    function test_GetRecipient() external givenNotNull givenNFTNotBurned {
         address actualRecipient = lockup.getRecipient(defaultStreamId);
         address expectedRecipient = users.recipient;
         assertEq(actualRecipient, expectedRecipient, "recipient");

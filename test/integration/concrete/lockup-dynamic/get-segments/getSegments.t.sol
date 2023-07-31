@@ -13,11 +13,11 @@ contract GetSegments_LockupDynamic_Integration_Concrete_Test is LockupDynamic_In
         lockupDynamic.getSegments(nullStreamId);
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    function test_GetSegments() external whenNotNull {
+    function test_GetSegments() external givenNotNull {
         uint256 streamId = createDefaultStream();
         LockupDynamic.Segment[] memory actualSegments = lockupDynamic.getSegments(streamId);
         LockupDynamic.Segment[] memory expectedSegments = defaults.segments();

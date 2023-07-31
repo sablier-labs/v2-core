@@ -22,27 +22,27 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_Null() external whenNotDelegateCalled {
+    function test_RevertWhen_Null() external givenNotDelegateCalled {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
         lockup.cancel(nullStreamId);
     }
 
-    function test_RevertWhen_StreamCold_StatusDepleted() external whenNotDelegateCalled whenNotNull whenStreamCold {
+    function test_RevertWhen_StreamCold_StatusDepleted() external givenNotDelegateCalled givenNotNull givenStreamCold {
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamDepleted.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
-    function test_RevertWhen_StreamCold_StatusCanceled() external whenNotDelegateCalled whenNotNull whenStreamCold {
+    function test_RevertWhen_StreamCold_StatusCanceled() external givenNotDelegateCalled givenNotNull givenStreamCold {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamCanceled.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
-    function test_RevertWhen_StreamCold_StatusSettled() external whenNotDelegateCalled whenNotNull whenStreamCold {
+    function test_RevertWhen_StreamCold_StatusSettled() external givenNotDelegateCalled givenNotNull givenStreamCold {
         vm.warp({ timestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
@@ -50,10 +50,10 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_RevertWhen_CallerUnauthorized_MaliciousThirdParty()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerUnauthorized
     {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
@@ -67,10 +67,10 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_RevertWhen_CallerUnauthorized_ApprovedOperator()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerUnauthorized
     {
         // Approve Alice for the stream.
         changePrank({ msgSender: users.recipient });
@@ -88,10 +88,10 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_RevertWhen_CallerUnauthorized_FormerRecipient()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerUnauthorized
     {
         // Transfer the stream to Alice.
         changePrank({ msgSender: users.recipient });
@@ -106,10 +106,10 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_RevertWhen_StreamNotCancelable()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
     {
         uint256 streamId = createDefaultStreamNotCancelable();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotCancelable.selector, streamId));
@@ -135,13 +135,13 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerSender_RecipientNotContract()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerSender
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerSender
     {
         lockup.cancel(defaultStreamId);
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
@@ -151,14 +151,14 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerSender_RecipientDoesNotImplementHook()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerSender
-        whenRecipientContract
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerSender
+        givenRecipientContract
     {
         // Create the stream with a no-op contract as the recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(noop));
@@ -184,15 +184,15 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerSender_RecipientReverts()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerSender
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerSender
+        givenRecipientContract
+        givenRecipientImplementsHook
     {
         // Create the stream with a reverting contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(revertingRecipient));
@@ -218,16 +218,16 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerSender_RecipientReentrancy()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerSender
-        whenRecipientContract
-        whenRecipientImplementsHook
-        whenRecipientDoesNotRevert
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerSender
+        givenRecipientContract
+        givenRecipientImplementsHook
+        givenRecipientDoesNotRevert
     {
         // Create the stream with a reentrant contract as the recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(reentrantRecipient));
@@ -253,17 +253,17 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerSender()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerSender
-        whenRecipientContract
-        whenRecipientImplementsHook
-        whenRecipientDoesNotRevert
-        whenNoRecipientReentrancy
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerSender
+        givenRecipientContract
+        givenRecipientImplementsHook
+        givenRecipientDoesNotRevert
+        givenNoRecipientReentrancy
     {
         // Create the stream.
         uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
@@ -312,13 +312,13 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerRecipient_SenderNotContract()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerRecipient
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerRecipient
     {
         lockup.cancel(defaultStreamId);
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
@@ -328,14 +328,14 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerRecipient_SenderDoesNotImplementHook()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerRecipient
-        whenSenderContract
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerRecipient
+        givenSenderContract
     {
         // Create a stream with a no-op contract as the stream's sender.
         uint256 streamId = createDefaultStreamWithSender(address(noop));
@@ -361,15 +361,15 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerRecipient_SenderReverts()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerRecipient
-        whenSenderContract
-        whenSenderImplementsHook
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerRecipient
+        givenSenderContract
+        givenSenderImplementsHook
     {
         // Create a stream with a reverting contract as the stream's sender.
         uint256 streamId = createDefaultStreamWithSender(address(revertingSender));
@@ -395,16 +395,16 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerRecipient_SenderReentrancy()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerRecipient
-        whenSenderContract
-        whenSenderImplementsHook
-        whenSenderDoesNotRevert
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerRecipient
+        givenSenderContract
+        givenSenderImplementsHook
+        givenSenderDoesNotRevert
     {
         // Create a stream with a reentrant contract as the stream's sender.
         uint256 streamId = createDefaultStreamWithSender(address(reentrantSender));
@@ -430,17 +430,17 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_CallerRecipient()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamWarm
-        whenCallerAuthorized
-        whenStreamCancelable
-        whenStatusStreaming
-        whenCallerRecipient
-        whenSenderContract
-        whenSenderImplementsHook
-        whenSenderDoesNotRevert
-        whenNoSenderReentrancy
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        givenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenCallerRecipient
+        givenSenderContract
+        givenSenderImplementsHook
+        givenSenderDoesNotRevert
+        givenNoSenderReentrancy
     {
         // Create the stream.
         uint256 streamId = createDefaultStreamWithSender(address(goodSender));

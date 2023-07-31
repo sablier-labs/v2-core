@@ -13,11 +13,11 @@ contract GetRange_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Integ
         lockupDynamic.getRange(nullStreamId);
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    function test_GetRange() external whenNotNull {
+    function test_GetRange() external givenNotNull {
         uint256 streamId = createDefaultStream();
         LockupDynamic.Range memory actualRange = lockupDynamic.getRange(streamId);
         LockupDynamic.Range memory expectedRange = defaults.lockupDynamicRange();

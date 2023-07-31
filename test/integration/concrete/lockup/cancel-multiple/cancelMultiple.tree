@@ -1,40 +1,40 @@
 cancelMultiple.t.sol
-├── when delegate called
+├── given delegate called
 │  └── it should revert
-└── when not delegate called
+└── given not delegate called
    ├── when the array count is zero
    │  └── it should do nothing
-   └── when the array count is not zero
+   └── given the array count is not zero
       ├── when the stream ids array references only null streams
       │  └── it should revert
       ├── when the stream ids array references some null streams
       │  └── it should revert
-      └── when the stream ids array references only streams that are not null
+      └── given the stream ids array references only streams that are not null
          ├── when all streams are cold
          │  └── it should revert
          ├── when some streams are cold
          │  └── it should revert
-         └── when all streams are warm
-            ├── when the caller is unauthorized for all streams
+         └── given all streams are warm
+            ├── given the caller is unauthorized for all streams
             │  ├── when the caller is a malicious third party
             │  │  └── it should revert
             │  ├── when the caller is an approved third party
             │  │  └── it should revert
             │  └── when the caller is a former recipient
             │     └── it should revert
-            ├── when the caller is unauthorized for some streams
+            ├── given the caller is unauthorized for some streams
             │  ├── when the caller is a malicious third party
             │  │  └── it should revert
             │  ├── when the caller is an approved third party
             │  │  └── it should revert
             │  └── when the caller is a former recipient
             │     └── it should revert
-            └── when the caller is authorized for all streams
+            └── given the caller is authorized for all streams
                ├── when all streams are not cancelable
                │  └── it should revert
                ├── when some streams are not cancelable
                │  └── it should revert
-               └── when all streams are cancelable
+               └── given all streams are cancelable
                   ├── when the caller is the sender
                   │  ├── it should cancel the streams
                   │  ├── it should refund the sender

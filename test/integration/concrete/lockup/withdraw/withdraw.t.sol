@@ -23,14 +23,14 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_Null() external whenNotDelegateCalled {
+    function test_RevertWhen_Null() external givenNotDelegateCalled {
         uint256 nullStreamId = 1729;
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
         lockup.withdraw({ streamId: nullStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_StreamDepleted() external whenNotDelegateCalled whenNotNull {
+    function test_RevertWhen_StreamDepleted() external givenNotDelegateCalled givenNotNull {
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
@@ -41,10 +41,10 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_RevertWhen_CallerUnauthorized_Sender()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerUnauthorized
     {
         // Make the Sender the caller in this test.
         changePrank({ msgSender: users.sender });
@@ -61,10 +61,10 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_RevertWhen_CallerUnauthorized_MaliciousThirdParty()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerUnauthorized
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerUnauthorized
     {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
@@ -77,7 +77,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_FormerRecipient() external whenNotDelegateCalled whenNotNull whenStreamNotDepleted {
+    function test_RevertWhen_FormerRecipient() external givenNotDelegateCalled givenNotNull givenStreamNotDepleted {
         // Transfer the stream to Alice.
         lockup.transferFrom(users.recipient, users.alice, defaultStreamId);
 
@@ -91,10 +91,10 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_RevertWhen_ToZeroAddress()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
     {
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(Errors.SablierV2Lockup_WithdrawToZeroAddress.selector);
@@ -103,11 +103,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_RevertWhen_WithdrawAmountZero()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
     {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_WithdrawAmountZero.selector, defaultStreamId));
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: 0 });
@@ -115,12 +115,12 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_RevertWhen_Overdraw()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
     {
         uint128 withdrawableAmount = 0;
         vm.expectRevert(
@@ -131,19 +131,19 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: MAX_UINT128 });
     }
 
-    modifier whenNoOverdraw() {
+    modifier givenNoOverdraw() {
         _;
     }
 
     function test_Withdraw_CallerRecipient()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
@@ -162,13 +162,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_Withdraw_CallerApprovedOperator()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
     {
         // Approve the operator to handle the stream.
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });
@@ -188,21 +188,21 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    modifier whenCallerSender() {
+    modifier givenCallerSender() {
         changePrank({ msgSender: users.sender });
         _;
     }
 
     function test_Withdraw_EndTimeNotInTheFuture()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
-        whenCallerSender
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
+        givenCallerSender
     {
         // Warp to the stream's end.
         vm.warp({ timestamp: defaults.END_TIME() });
@@ -225,7 +225,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");
     }
 
-    modifier whenEndTimeInTheFuture() {
+    modifier givenEndTimeInTheFuture() {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
         _;
@@ -233,19 +233,19 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_Withdraw_StreamHasBeenCanceled()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
-        whenCallerSender
-        whenEndTimeInTheFuture
-        whenRecipientContract
-        whenRecipientImplementsHook
-        whenRecipientDoesNotRevert
-        whenNoRecipientReentrancy
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
+        givenCallerSender
+        givenEndTimeInTheFuture
+        givenRecipientContract
+        givenRecipientImplementsHook
+        givenRecipientDoesNotRevert
+        givenNoRecipientReentrancy
     {
         // Create the stream with a contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
@@ -277,16 +277,16 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_Withdraw_RecipientNotContract()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
-        whenCallerSender
-        whenEndTimeInTheFuture
-        whenStreamHasNotBeenCanceled
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
+        givenCallerSender
+        givenEndTimeInTheFuture
+        givenStreamHasNotBeenCanceled
     {
         // Set the withdraw amount to the streamed amount.
         uint128 withdrawAmount = lockup.streamedAmountOf(defaultStreamId);
@@ -312,23 +312,23 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    modifier whenRecipientContract() {
+    modifier givenRecipientContract() {
         _;
     }
 
     function test_Withdraw_RecipientDoesNotImplementHook()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
-        whenCallerSender
-        whenEndTimeInTheFuture
-        whenStreamHasNotBeenCanceled
-        whenRecipientContract
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
+        givenCallerSender
+        givenEndTimeInTheFuture
+        givenStreamHasNotBeenCanceled
+        givenRecipientContract
     {
         // Create the stream with a no-op contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(noop));
@@ -356,24 +356,24 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    modifier whenRecipientImplementsHook() {
+    modifier givenRecipientImplementsHook() {
         _;
     }
 
     function test_Withdraw_RecipientReverts()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
-        whenCallerSender
-        whenEndTimeInTheFuture
-        whenStreamHasNotBeenCanceled
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
+        givenCallerSender
+        givenEndTimeInTheFuture
+        givenStreamHasNotBeenCanceled
+        givenRecipientContract
+        givenRecipientImplementsHook
     {
         // Create the stream with a reverting contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(revertingRecipient));
@@ -401,25 +401,25 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    modifier whenRecipientDoesNotRevert() {
+    modifier givenRecipientDoesNotRevert() {
         _;
     }
 
     function test_Withdraw_RecipientReentrancy()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
-        whenCallerSender
-        whenEndTimeInTheFuture
-        whenStreamHasNotBeenCanceled
-        whenRecipientContract
-        whenRecipientImplementsHook
-        whenRecipientDoesNotRevert
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
+        givenCallerSender
+        givenEndTimeInTheFuture
+        givenStreamHasNotBeenCanceled
+        givenRecipientContract
+        givenRecipientImplementsHook
+        givenRecipientDoesNotRevert
     {
         // Create the stream with a reentrant contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(reentrantRecipient));
@@ -450,26 +450,26 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    modifier whenNoRecipientReentrancy() {
+    modifier givenNoRecipientReentrancy() {
         _;
     }
 
     function test_Withdraw()
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
-        whenCallerSender
-        whenEndTimeInTheFuture
-        whenStreamHasNotBeenCanceled
-        whenRecipientContract
-        whenRecipientImplementsHook
-        whenRecipientDoesNotRevert
-        whenNoRecipientReentrancy
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenNoOverdraw
+        givenCallerSender
+        givenEndTimeInTheFuture
+        givenStreamHasNotBeenCanceled
+        givenRecipientContract
+        givenRecipientImplementsHook
+        givenRecipientDoesNotRevert
+        givenNoRecipientReentrancy
     {
         // Create the stream with a contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));

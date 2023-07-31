@@ -17,12 +17,12 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         lockup.refundableAmountOf(nullStreamId);
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         defaultStreamId = createDefaultStream();
         _;
     }
 
-    function test_RefundableAmountOf_StreamNotCancelable() external whenNotNull {
+    function test_RefundableAmountOf_StreamNotCancelable() external givenNotNull {
         uint256 streamId = createDefaultStreamNotCancelable();
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(streamId);
@@ -30,19 +30,19 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         assertEq(actualRefundableAmount, expectedRefundableAmount, "refundableAmount");
     }
 
-    modifier whenStreamIsCancelable() {
+    modifier givenStreamIsCancelable() {
         _;
     }
 
-    modifier whenStreamHasBeenCanceled() {
+    modifier givenStreamHasBeenCanceled() {
         _;
     }
 
     function test_RefundableAmountOf_StreamHasBeenCanceled_StatusCanceled()
         external
-        whenNotNull
-        whenStreamIsCancelable
-        whenStreamHasBeenCanceled
+        givenNotNull
+        givenStreamIsCancelable
+        givenStreamHasBeenCanceled
     {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
@@ -54,9 +54,9 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
     /// @dev This test warps a second time to ensure that {refundableAmountOf} ignores the current time.
     function test_RefundableAmountOf_StreamHasBeenCanceled_StatusDepleted()
         external
-        whenNotNull
-        whenStreamIsCancelable
-        whenStreamHasBeenCanceled
+        givenNotNull
+        givenStreamIsCancelable
+        givenStreamHasBeenCanceled
     {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
@@ -67,15 +67,15 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         assertEq(actualRefundableAmount, expectedRefundableAmount, "refundableAmount");
     }
 
-    modifier whenStreamHasNotBeenCanceled() {
+    modifier givenStreamHasNotBeenCanceled() {
         _;
     }
 
     function test_RefundableAmountOf_StatusPending()
         external
-        whenNotNull
-        whenStreamIsCancelable
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamIsCancelable
+        givenStreamHasNotBeenCanceled
     {
         vm.warp({ timestamp: getBlockTimestamp() - 1 seconds });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
@@ -85,9 +85,9 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
 
     function test_RefundableAmountOf_StatusStreaming()
         external
-        whenNotNull
-        whenStreamIsCancelable
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamIsCancelable
+        givenStreamHasNotBeenCanceled
     {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
@@ -97,9 +97,9 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
 
     function test_RefundableAmountOf_StatusSettled()
         external
-        whenNotNull
-        whenStreamIsCancelable
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamIsCancelable
+        givenStreamHasNotBeenCanceled
     {
         vm.warp({ timestamp: defaults.END_TIME() });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
@@ -109,9 +109,9 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
 
     function test_RefundableAmountOf_StatusDepleted()
         external
-        whenNotNull
-        whenStreamIsCancelable
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamIsCancelable
+        givenStreamHasNotBeenCanceled
     {
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });

@@ -15,11 +15,11 @@ abstract contract GetStartTime_Integration_Concrete_Test is Integration_Test, Lo
         lockup.getStartTime(nullStreamId);
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    function test_GetStartTime() external whenNotNull {
+    function test_GetStartTime() external givenNotNull {
         uint256 streamId = createDefaultStream();
         uint40 actualStartTime = lockup.getStartTime(streamId);
         uint40 expectedStartTime = defaults.START_TIME();

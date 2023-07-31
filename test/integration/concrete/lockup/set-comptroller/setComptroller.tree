@@ -1,7 +1,7 @@
 setComptroller.t.sol
-├── when the caller is not the admin
+├── given the caller is not the admin
 │  └── it should revert
-└── when the caller is the admin
+└── given the caller is the admin
    ├── when the new comptroller is the same as the current comptroller
    │  ├── it should re-set the comptroller
    │  └── it should emit a {SetComptroller} event

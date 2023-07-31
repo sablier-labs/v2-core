@@ -21,18 +21,18 @@ abstract contract ClaimProtocolRevenues_Integration_Concrete_Test is
         base.claimProtocolRevenues(dai);
     }
 
-    modifier whenCallerAdmin() {
+    modifier givenCallerAdmin() {
         // Make the Admin the caller in the rest of this test suite.
         changePrank({ msgSender: users.admin });
         _;
     }
 
-    function test_RevertWhen_ProtocolRevenuesZero() external whenCallerAdmin {
+    function test_RevertWhen_ProtocolRevenuesZero() external givenCallerAdmin {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Base_NoProtocolRevenues.selector, dai));
         base.claimProtocolRevenues(dai);
     }
 
-    modifier whenProtocolRevenuesNotZero() {
+    modifier givenProtocolRevenuesNotZero() {
         // Create the default stream, which will accrue revenues for the protocol.
         changePrank({ msgSender: users.sender });
         createDefaultStream();
@@ -40,7 +40,7 @@ abstract contract ClaimProtocolRevenues_Integration_Concrete_Test is
         _;
     }
 
-    function test_ClaimProtocolRevenues() external whenCallerAdmin whenProtocolRevenuesNotZero {
+    function test_ClaimProtocolRevenues() external givenCallerAdmin givenProtocolRevenuesNotZero {
         // Expect the protocol revenues to be claimed.
         uint128 protocolRevenues = defaults.PROTOCOL_FEE_AMOUNT();
         expectCallToTransfer({ to: users.admin, amount: protocolRevenues });

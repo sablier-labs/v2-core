@@ -30,23 +30,23 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_RecipientZeroAddress() external whenNotDelegateCalled {
+    function test_RevertWhen_RecipientZeroAddress() external givenNotDelegateCalled {
         vm.expectRevert("ERC721: mint to the zero address");
         createDefaultStreamWithRecipient({ recipient: address(0) });
     }
 
     /// @dev It is not possible to obtain a zero deposit amount from a non-zero total amount, because the
     /// `MAX_FEE` is hard coded to 10%.
-    function test_RevertWhen_DepositAmountZero() external whenNotDelegateCalled whenRecipientNonZeroAddress {
+    function test_RevertWhen_DepositAmountZero() external givenNotDelegateCalled givenRecipientNonZeroAddress {
         vm.expectRevert(Errors.SablierV2Lockup_DepositAmountZero.selector);
         createDefaultStreamWithTotalAmount(0);
     }
 
     function test_RevertWhen_StartTimeGreaterThanCliffTime()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
     {
         uint40 startTime = defaults.CLIFF_TIME();
         uint40 cliffTime = defaults.START_TIME();
@@ -61,10 +61,10 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
 
     function test_RevertWhen_CliffTimeNotLessThanEndTime()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
     {
         uint40 startTime = defaults.START_TIME();
         uint40 cliffTime = defaults.END_TIME();
@@ -79,12 +79,12 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
 
     function test_RevertWhen_EndTimeNotInTheFuture()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
     {
         uint40 endTime = defaults.END_TIME();
         vm.warp({ timestamp: defaults.END_TIME() });
@@ -94,12 +94,12 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
 
     function test_RevertWhen_ProtocolFeeTooHigh()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
     {
         UD60x18 protocolFee = MAX_FEE + ud(1);
 
@@ -117,13 +117,13 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
 
     function test_RevertWhen_BrokerFeeTooHigh()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
+        givenProtocolFeeNotTooHigh
     {
         UD60x18 brokerFee = MAX_FEE + ud(1);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_BrokerFeeTooHigh.selector, brokerFee, MAX_FEE));
@@ -132,14 +132,14 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
 
     function test_RevertWhen_AssetNotContract()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
-        whenBrokerFeeNotTooHigh
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
+        givenProtocolFeeNotTooHigh
+        givenBrokerFeeNotTooHigh
     {
         address nonContract = address(8128);
         vm.expectRevert("Address: call to non-contract");
@@ -148,30 +148,30 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
 
     function test_CreateWithRange_AssetMissingReturnValue()
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
+        givenProtocolFeeNotTooHigh
+        givenBrokerFeeNotTooHigh
+        givenAssetContract
     {
         testCreateWithRange(address(usdt));
     }
 
     function test_CreateWithRange()
         external
-        whenNotDelegateCalled
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
-        whenAssetERC20
+        givenNotDelegateCalled
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
+        givenProtocolFeeNotTooHigh
+        givenBrokerFeeNotTooHigh
+        givenAssetContract
+        givenAssetERC20
     {
         testCreateWithRange(address(dai));
     }
