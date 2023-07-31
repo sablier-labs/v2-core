@@ -1,5 +1,8 @@
 safeAssetDecimals.t.sol
-├── when the call reverts
-│  └── it should return 0
-└── when the call does not revert
-   └── it should return the correct value
+├── given asset's decimal is not defined
+│   ├── when asset is an EOA
+│   │   └── it should return 0
+│   └── when asset is a non ERC20 compliant token
+│       └── it should return 0
+└── given asset's decimal is defined
+    └── it should return the correct decimal value

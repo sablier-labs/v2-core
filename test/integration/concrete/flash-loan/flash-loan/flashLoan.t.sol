@@ -20,22 +20,22 @@ contract FlashLoanFunction_Integration_Concrete_Test is FlashLoanFunction_Integr
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_AmountTooHigh() external whenNotDelegateCalled {
+    function test_RevertWhen_AmountTooHigh() external givenNotDelegateCalled {
         uint256 amount = uint256(MAX_UINT128) + 1;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2FlashLoan_AmountTooHigh.selector, amount));
         flashLoan.flashLoan({ receiver: goodFlashLoanReceiver, asset: address(dai), amount: amount, data: bytes("") });
     }
 
-    function test_RevertWhen_AssetNotFlashLoanable() external whenNotDelegateCalled whenAmountNotTooHigh {
+    function test_RevertWhen_AssetNotFlashLoanable() external givenNotDelegateCalled givenAmountNotTooHigh {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2FlashLoan_AssetNotFlashLoanable.selector, dai));
         flashLoan.flashLoan({ receiver: goodFlashLoanReceiver, asset: address(dai), amount: 0, data: bytes("") });
     }
 
     function test_RevertWhen_CalculatedFeeTooHigh()
         external
-        whenNotDelegateCalled
-        whenAmountNotTooHigh
-        whenAssetFlashLoanable
+        givenNotDelegateCalled
+        givenAmountNotTooHigh
+        givenAssetFlashLoanable
     {
         // Set the comptroller flash fee so that the calculated fee ends up being greater than 2^128.
         comptroller.setFlashFee({ newFlashFee: ud(1.1e18) });
@@ -52,10 +52,10 @@ contract FlashLoanFunction_Integration_Concrete_Test is FlashLoanFunction_Integr
 
     function test_RevertWhen_BorrowFailed()
         external
-        whenNotDelegateCalled
-        whenAmountNotTooHigh
-        whenAssetFlashLoanable
-        whenCalculatedFeeNotTooHigh
+        givenNotDelegateCalled
+        givenAmountNotTooHigh
+        givenAssetFlashLoanable
+        givenCalculatedFeeNotTooHigh
     {
         deal({ token: address(dai), to: address(flashLoan), give: LIQUIDITY_AMOUNT });
         vm.expectRevert(Errors.SablierV2FlashLoan_FlashBorrowFail.selector);
@@ -69,11 +69,11 @@ contract FlashLoanFunction_Integration_Concrete_Test is FlashLoanFunction_Integr
 
     function test_RevertWhen_Reentrancy()
         external
-        whenNotDelegateCalled
-        whenAmountNotTooHigh
-        whenAssetFlashLoanable
-        whenCalculatedFeeNotTooHigh
-        whenBorrowDoesNotFail
+        givenNotDelegateCalled
+        givenAmountNotTooHigh
+        givenAssetFlashLoanable
+        givenCalculatedFeeNotTooHigh
+        givenBorrowDoesNotFail
     {
         uint256 amount = 100e18;
         deal({ token: address(dai), to: address(flashLoan), give: amount * 2 });
@@ -88,11 +88,11 @@ contract FlashLoanFunction_Integration_Concrete_Test is FlashLoanFunction_Integr
 
     function test_FlashLoan()
         external
-        whenNotDelegateCalled
-        whenAmountNotTooHigh
-        whenAssetFlashLoanable
-        whenCalculatedFeeNotTooHigh
-        whenBorrowDoesNotFail
+        givenNotDelegateCalled
+        givenAmountNotTooHigh
+        givenAssetFlashLoanable
+        givenCalculatedFeeNotTooHigh
+        givenBorrowDoesNotFail
         whenNoReentrancy
     {
         // Mint the liquidity amount to the contract.
