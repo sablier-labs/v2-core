@@ -10,43 +10,43 @@ abstract contract CreateWithRange_Integration_Shared_Test is LockupLinear_Integr
         streamId = lockupLinear.nextStreamId();
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier givenNotDelegateCalled() {
         _;
     }
 
-    modifier whenRecipientNonZeroAddress() {
+    modifier givenRecipientNonZeroAddress() {
         _;
     }
 
-    modifier whenDepositAmountNotZero() {
+    modifier givenDepositAmountNotZero() {
         _;
     }
 
-    modifier whenStartTimeNotGreaterThanCliffTime() {
+    modifier givenStartTimeNotGreaterThanCliffTime() {
         _;
     }
 
-    modifier whenCliffTimeLessThanEndTime() {
+    modifier givenCliffTimeLessThanEndTime() {
         _;
     }
 
-    modifier whenEndTimeInTheFuture() {
+    modifier givenEndTimeInTheFuture() {
         _;
     }
 
-    modifier whenProtocolFeeNotTooHigh() {
+    modifier givenProtocolFeeNotTooHigh() {
         _;
     }
 
-    modifier whenBrokerFeeNotTooHigh() {
+    modifier givenBrokerFeeNotTooHigh() {
         _;
     }
 
-    modifier whenAssetContract() {
+    modifier givenAssetContract() {
         _;
     }
 
-    modifier whenAssetERC20() {
+    modifier givenAssetERC20() {
         _;
     }
 }

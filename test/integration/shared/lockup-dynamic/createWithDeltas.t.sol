@@ -10,19 +10,19 @@ contract CreateWithDeltas_Integration_Shared_Test is LockupDynamic_Integration_S
         streamId = lockupDynamic.nextStreamId();
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier givenNotDelegateCalled() {
         _;
     }
 
-    modifier whenLoopCalculationsDoNotOverflowBlockGasLimit() {
+    modifier givenLoopCalculationsDoNotOverflowBlockGasLimit() {
         _;
     }
 
-    modifier whenDeltasNotZero() {
+    modifier givenDeltasNotZero() {
         _;
     }
 
-    modifier whenMilestonesCalculationsDoNotOverflow() {
+    modifier givenMilestonesCalculationsDoNotOverflow() {
         _;
     }
 }

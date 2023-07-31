@@ -37,9 +37,9 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeJump
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenStartTimeInThePast
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenStartTimeInThePast
     {
         vm.assume(segment.amount != 0);
         segment.milestone = boundUint40(segment.milestone, defaults.CLIFF_TIME(), defaults.END_TIME());
@@ -69,11 +69,11 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    modifier whenMultipleSegments() {
+    modifier givenMultipleSegments() {
         _;
     }
 
-    modifier whenCurrentMilestoneNot1st() {
+    modifier givenCurrentMilestoneNot1st() {
         _;
     }
 
@@ -90,11 +90,11 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeJump
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenStartTimeInThePast
-        whenMultipleSegments
-        whenCurrentMilestoneNot1st
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenStartTimeInThePast
+        givenMultipleSegments
+        givenCurrentMilestoneNot1st
     {
         vm.assume(segments.length > 1);
 
@@ -141,11 +141,11 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeWarp1
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenStartTimeInThePast
-        whenMultipleSegments
-        whenCurrentMilestoneNot1st
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenStartTimeInThePast
+        givenMultipleSegments
+        givenCurrentMilestoneNot1st
     {
         vm.assume(segments.length > 1);
 

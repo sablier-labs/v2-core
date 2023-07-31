@@ -22,7 +22,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_CliffDurationCalculationOverflows(uint40 cliffDuration)
         external
-        whenNotDelegateCalled
+        givenNotDelegateCalled
     {
         uint40 startTime = getBlockTimestamp();
         cliffDuration = boundUint40(cliffDuration, MAX_UINT40 - startTime + 1 seconds, MAX_UINT40);
@@ -49,8 +49,8 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_TotalDurationCalculationOverflows(LockupLinear.Durations memory durations)
         external
-        whenNotDelegateCalled
-        whenCliffDurationCalculationDoesNotOverflow
+        givenNotDelegateCalled
+        givenCliffDurationCalculationDoesNotOverflow
     {
         uint40 startTime = getBlockTimestamp();
         durations.cliff = boundUint40(durations.cliff, 0, MAX_UINT40 - startTime);
@@ -77,9 +77,9 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_CreateWithDurations(LockupLinear.Durations memory durations)
         external
-        whenNotDelegateCalled
-        whenCliffDurationCalculationDoesNotOverflow
-        whenTotalDurationCalculationDoesNotOverflow
+        givenNotDelegateCalled
+        givenCliffDurationCalculationDoesNotOverflow
+        givenTotalDurationCalculationDoesNotOverflow
     {
         durations.total = boundUint40(durations.total, 0, MAX_UNIX_TIMESTAMP);
         vm.assume(durations.cliff < durations.total);

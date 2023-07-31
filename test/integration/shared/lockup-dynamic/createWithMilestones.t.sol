@@ -10,59 +10,59 @@ contract CreateWithMilestones_Integration_Shared_Test is LockupDynamic_Integrati
         streamId = lockupDynamic.nextStreamId();
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier givenNotDelegateCalled() {
         _;
     }
 
-    modifier whenRecipientNonZeroAddress() {
+    modifier givenRecipientNonZeroAddress() {
         _;
     }
 
-    modifier whenDepositAmountNotZero() {
+    modifier givenDepositAmountNotZero() {
         _;
     }
 
-    modifier whenSegmentCountNotZero() {
+    modifier givenSegmentCountNotZero() {
         _;
     }
 
-    modifier whenSegmentCountNotTooHigh() {
+    modifier givenSegmentCountNotTooHigh() {
         _;
     }
 
-    modifier whenSegmentAmountsSumDoesNotOverflow() {
+    modifier givenSegmentAmountsSumDoesNotOverflow() {
         _;
     }
 
-    modifier whenStartTimeLessThanFirstSegmentMilestone() {
+    modifier givenStartTimeLessThanFirstSegmentMilestone() {
         _;
     }
 
-    modifier whenSegmentMilestonesOrdered() {
+    modifier givenSegmentMilestonesOrdered() {
         _;
     }
 
-    modifier whenEndTimeInTheFuture() {
+    modifier givenEndTimeInTheFuture() {
         _;
     }
 
-    modifier whenDepositAmountEqualToSegmentAmountsSum() {
+    modifier givenDepositAmountEqualToSegmentAmountsSum() {
         _;
     }
 
-    modifier whenProtocolFeeNotTooHigh() {
+    modifier givenProtocolFeeNotTooHigh() {
         _;
     }
 
-    modifier whenBrokerFeeNotTooHigh() {
+    modifier givenBrokerFeeNotTooHigh() {
         _;
     }
 
-    modifier whenAssetContract() {
+    modifier givenAssetContract() {
         _;
     }
 
-    modifier whenAssetERC20() {
+    modifier givenAssetERC20() {
         _;
     }
 }

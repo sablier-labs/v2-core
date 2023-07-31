@@ -24,9 +24,9 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_StartTimeGreaterThanCliffTime(uint40 startTime)
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
     {
         startTime = boundUint40(startTime, defaults.CLIFF_TIME() + 1 seconds, MAX_UNIX_TIMESTAMP);
         vm.expectRevert(
@@ -42,10 +42,10 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         uint40 endTime
     )
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
     {
         uint40 startTime = defaults.START_TIME();
         endTime = boundUint40(endTime, startTime, startTime + 2 weeks);
@@ -61,12 +61,12 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_ProtocolFeeTooHigh(UD60x18 protocolFee)
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
     {
         protocolFee = _bound(protocolFee, MAX_FEE + ud(1), MAX_UD60x18);
 
@@ -84,13 +84,13 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_BrokerFeeTooHigh(Broker memory broker)
         external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
+        givenNotDelegateCalled
+        givenRecipientNonZeroAddress
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
+        givenProtocolFeeNotTooHigh
     {
         vm.assume(broker.account != address(0));
         broker.fee = _bound(broker.fee, MAX_FEE + ud(1), MAX_UD60x18);
@@ -129,15 +129,15 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         UD60x18 protocolFee
     )
         external
-        whenNotDelegateCalled
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
-        whenAssetERC20
+        givenNotDelegateCalled
+        givenDepositAmountNotZero
+        givenStartTimeNotGreaterThanCliffTime
+        givenCliffTimeLessThanEndTime
+        givenEndTimeInTheFuture
+        givenProtocolFeeNotTooHigh
+        givenBrokerFeeNotTooHigh
+        givenAssetContract
+        givenAssetERC20
     {
         vm.assume(funder != address(0) && params.recipient != address(0) && params.broker.account != address(0));
         vm.assume(params.totalAmount != 0);

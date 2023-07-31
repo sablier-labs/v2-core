@@ -24,27 +24,27 @@ abstract contract CancelMultiple_Integration_Shared_Test is Lockup_Integration_S
         testStreamIds[1] = createDefaultStreamWithEndTime(defaults.END_TIME() + defaults.TOTAL_DURATION());
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier givenNotDelegateCalled() {
         _;
     }
 
-    modifier whenArrayCountNotZero() {
+    modifier givenArrayCountNotZero() {
         _;
     }
 
-    modifier whenNoNull() {
+    modifier givenNoNull() {
         _;
     }
 
-    modifier whenAllStreamsWarm() {
+    modifier givenAllStreamsWarm() {
         _;
     }
 
-    modifier whenCallerUnauthorized() {
+    modifier givenCallerUnauthorized() {
         _;
     }
 
-    modifier whenCallerAuthorizedAllStreams() {
+    modifier givenCallerAuthorizedAllStreams() {
         _;
         vm.warp({ timestamp: originalTime });
         createTestStreams();
@@ -52,7 +52,7 @@ abstract contract CancelMultiple_Integration_Shared_Test is Lockup_Integration_S
         _;
     }
 
-    modifier whenAllStreamsCancelable() {
+    modifier givenAllStreamsCancelable() {
         _;
     }
 }

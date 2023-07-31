@@ -11,44 +11,44 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         changePrank({ msgSender: users.recipient });
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier givenNotDelegateCalled() {
         _;
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    modifier whenStreamNotDepleted() {
+    modifier givenStreamNotDepleted() {
         vm.warp({ timestamp: defaults.START_TIME() });
         _;
     }
 
-    modifier whenCallerUnauthorized() {
+    modifier givenCallerUnauthorized() {
         _;
     }
 
-    modifier whenCallerAuthorized() {
+    modifier givenCallerAuthorized() {
         _;
     }
 
-    modifier whenToNonZeroAddress() {
+    modifier givenToNonZeroAddress() {
         _;
     }
 
-    modifier whenWithdrawAmountNotZero() {
+    modifier givenWithdrawAmountNotZero() {
         _;
     }
 
-    modifier whenWithdrawAmountNotGreaterThanWithdrawableAmount() {
+    modifier givenWithdrawAmountNotGreaterThanWithdrawableAmount() {
         _;
     }
 
-    modifier whenCallerRecipient() {
+    modifier givenCallerRecipient() {
         _;
     }
 
-    modifier whenStreamHasNotBeenCanceled() {
+    modifier givenStreamHasNotBeenCanceled() {
         _;
     }
 }

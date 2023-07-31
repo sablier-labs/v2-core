@@ -16,13 +16,13 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
     /// - Multiple values for the withdrawal address.
     function testFuzz_Withdraw_CallerApprovedOperator(address to)
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenWithdrawAmountNotGreaterThanWithdrawableAmount
+        givenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenWithdrawAmountNotGreaterThanWithdrawableAmount
     {
         vm.assume(to != address(0));
 
@@ -60,13 +60,13 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         uint128 withdrawAmount
     )
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenWithdrawAmountNotGreaterThanWithdrawableAmount
-        whenCallerRecipient
+        givenNotDelegateCalled
+        givenNotNull
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenWithdrawAmountNotGreaterThanWithdrawableAmount
+        givenCallerRecipient
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
         vm.assume(to != address(0));
@@ -126,14 +126,14 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         uint128 withdrawAmount
     )
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenWithdrawAmountNotGreaterThanWithdrawableAmount
-        whenCallerRecipient
-        whenStreamHasNotBeenCanceled
+        givenNotDelegateCalled
+        givenNotNull
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenWithdrawAmountNotGreaterThanWithdrawableAmount
+        givenCallerRecipient
+        givenStreamHasNotBeenCanceled
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
         vm.assume(to != address(0));

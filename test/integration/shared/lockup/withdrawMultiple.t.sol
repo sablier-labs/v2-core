@@ -37,28 +37,28 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Lockup_Integration
         testStreamIds[2] = createDefaultStream();
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier givenNotDelegateCalled() {
         _;
     }
 
-    modifier whenToNonZeroAddress() {
+    modifier givenToNonZeroAddress() {
         _;
     }
 
-    modifier whenArraysEqual() {
+    modifier givenArraysEqual() {
         _;
     }
 
-    modifier whenNoNull() {
+    modifier givenNoNull() {
         _;
     }
 
-    modifier whenNoDepletedStream() {
+    modifier givenNoDepletedStream() {
         vm.warp({ timestamp: defaults.START_TIME() });
         _;
     }
 
-    modifier whenCallerUnauthorized() {
+    modifier givenCallerUnauthorized() {
         _;
     }
 
@@ -66,7 +66,7 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Lockup_Integration
     /// - Stream's sender as caller
     /// - Stream's recipient as caller
     /// - Approved NFT operator as caller
-    modifier whenCallerAuthorizedAllStreams() {
+    modifier givenCallerAuthorizedAllStreams() {
         caller = users.sender;
         _;
         createTestStreams();
@@ -82,11 +82,11 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Lockup_Integration
         _;
     }
 
-    modifier whenNoAmountZero() {
+    modifier givenNoAmountZero() {
         _;
     }
 
-    modifier whenNoAmountOverdraws() {
+    modifier givenNoAmountOverdraws() {
         _;
     }
 }

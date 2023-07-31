@@ -42,12 +42,12 @@ contract Withdraw_LockupDynamic_Integration_Fuzz_Test is
 
     function testFuzz_Withdraw_SegmentFuzing(Params memory params)
         external
-        whenNotDelegateCalled
-        whenNotNull
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenWithdrawAmountNotGreaterThanWithdrawableAmount
+        givenNotDelegateCalled
+        givenNotNull
+        givenCallerAuthorized
+        givenToNonZeroAddress
+        givenWithdrawAmountNotZero
+        givenWithdrawAmountNotGreaterThanWithdrawableAmount
     {
         vm.assume(params.segments.length != 0);
         vm.assume(params.to != address(0));

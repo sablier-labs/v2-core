@@ -10,23 +10,23 @@ abstract contract StreamedAmountOf_Integration_Shared_Test is Lockup_Integration
         defaultStreamId = createDefaultStream();
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    modifier whenStreamHasBeenCanceled() {
+    modifier givenStreamHasBeenCanceled() {
         _;
     }
 
-    modifier whenStreamHasNotBeenCanceled() {
+    modifier givenStreamHasNotBeenCanceled() {
         _;
     }
 
-    modifier whenStatusStreaming() {
+    modifier givenStatusStreaming() {
         _;
     }
 
-    modifier whenStartTimeInThePast() {
+    modifier givenStartTimeInThePast() {
         _;
     }
 }

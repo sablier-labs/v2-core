@@ -23,8 +23,8 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_WithdrawableAmountOf_CliffTimeInTheFuture(uint40 timeJump)
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamHasNotBeenCanceled
     {
         timeJump = boundUint40(timeJump, 0, defaults.CLIFF_DURATION() - 1);
         vm.warp({ timestamp: defaults.START_TIME() + timeJump });
@@ -33,7 +33,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    modifier whenCliffTimeNotInTheFuture() {
+    modifier givenCliffTimeNotInTheFuture() {
         // Disable the protocol fee so that it doesn't interfere with the calculations.
         changePrank({ msgSender: users.admin });
         comptroller.setProtocolFee({ asset: dai, newProtocolFee: ZERO });
@@ -53,9 +53,9 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 depositAmount
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenCliffTimeNotInTheFuture
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenCliffTimeNotInTheFuture
     {
         vm.assume(depositAmount != 0);
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
@@ -79,7 +79,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    modifier whenPreviousWithdrawals() {
+    modifier givenPreviousWithdrawals() {
         _;
     }
 
@@ -100,10 +100,10 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 withdrawAmount
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
-        whenCliffTimeNotInTheFuture
-        whenPreviousWithdrawals
+        givenNotNull
+        givenStreamHasNotBeenCanceled
+        givenCliffTimeNotInTheFuture
+        givenPreviousWithdrawals
     {
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
         depositAmount = boundUint128(depositAmount, 10_000, MAX_UINT128);

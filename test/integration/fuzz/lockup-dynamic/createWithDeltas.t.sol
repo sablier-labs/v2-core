@@ -39,10 +39,10 @@ contract CreateWithDeltas_LockupDynamic_Integration_Fuzz_Test is
 
     function testFuzz_CreateWithDeltas(LockupDynamic.SegmentWithDelta[] memory segments)
         external
-        whenNotDelegateCalled
-        whenLoopCalculationsDoNotOverflowBlockGasLimit
-        whenDeltasNotZero
-        whenMilestonesCalculationsDoNotOverflow
+        givenNotDelegateCalled
+        givenLoopCalculationsDoNotOverflowBlockGasLimit
+        givenDeltasNotZero
+        givenMilestonesCalculationsDoNotOverflow
     {
         vm.assume(segments.length != 0);
 

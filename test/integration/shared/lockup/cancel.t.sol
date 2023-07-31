@@ -11,81 +11,81 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         changePrank({ msgSender: users.recipient });
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier givenNotDelegateCalled() {
         _;
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    modifier whenStreamCold() {
+    modifier givenStreamCold() {
         _;
     }
 
-    modifier whenStreamWarm() {
+    modifier givenStreamWarm() {
         _;
     }
 
-    modifier whenCallerUnauthorized() {
+    modifier givenCallerUnauthorized() {
         _;
     }
 
-    modifier whenCallerAuthorized() {
+    modifier givenCallerAuthorized() {
         _;
     }
 
-    modifier whenStreamCancelable() {
+    modifier givenStreamCancelable() {
         _;
     }
 
     /// @dev In the LockupLinear contract, the streaming starts after the cliff time, whereas in the LockupDynamic
     /// contract, the streaming starts after the start time.
-    modifier whenStatusStreaming() {
+    modifier givenStatusStreaming() {
         // Warp to the future, after the stream's start time but before the stream's end time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
-    modifier whenCallerSender() {
+    modifier givenCallerSender() {
         changePrank({ msgSender: users.sender });
         _;
     }
 
-    modifier whenRecipientContract() {
+    modifier givenRecipientContract() {
         _;
     }
 
-    modifier whenRecipientImplementsHook() {
+    modifier givenRecipientImplementsHook() {
         _;
     }
 
-    modifier whenRecipientDoesNotRevert() {
+    modifier givenRecipientDoesNotRevert() {
         _;
     }
 
-    modifier whenNoRecipientReentrancy() {
+    modifier givenNoRecipientReentrancy() {
         _;
     }
 
-    modifier whenCallerRecipient() {
+    modifier givenCallerRecipient() {
         changePrank({ msgSender: users.recipient });
         _;
     }
 
-    modifier whenSenderContract() {
+    modifier givenSenderContract() {
         _;
     }
 
-    modifier whenSenderImplementsHook() {
+    modifier givenSenderImplementsHook() {
         _;
     }
 
-    modifier whenSenderDoesNotRevert() {
+    modifier givenSenderDoesNotRevert() {
         _;
     }
 
-    modifier whenNoSenderReentrancy() {
+    modifier givenNoSenderReentrancy() {
         _;
     }
 }

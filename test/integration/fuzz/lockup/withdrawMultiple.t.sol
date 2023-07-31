@@ -22,14 +22,14 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         uint128 ongoingWithdrawAmount
     )
         external
-        whenNotDelegateCalled
-        whenArraysEqual
-        whenNoNull
-        whenNoDepletedStream
-        whenCallerAuthorizedAllStreams
-        whenToNonZeroAddress
-        whenNoAmountZero
-        whenNoAmountOverdraws
+        givenNotDelegateCalled
+        givenArraysEqual
+        givenNoNull
+        givenNoDepletedStream
+        givenCallerAuthorizedAllStreams
+        givenToNonZeroAddress
+        givenNoAmountZero
+        givenNoAmountOverdraws
     {
         vm.assume(to != address(0));
         timeJump = _bound(timeJump, defaults.TOTAL_DURATION(), defaults.TOTAL_DURATION() * 2 - 1 seconds);
@@ -48,7 +48,7 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         uint256 settledStreamId = createDefaultStream();
         uint128 settledWithdrawAmount = defaults.DEPOSIT_AMOUNT();
 
-        // Run the test with the caller provided in {whenCallerAuthorizedAllStreams}.
+        // Run the test with the caller provided in {givenCallerAuthorizedAllStreams}.
         changePrank({ msgSender: caller });
 
         // Simulate the passage of time.
