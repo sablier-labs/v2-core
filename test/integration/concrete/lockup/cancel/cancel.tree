@@ -5,14 +5,14 @@ cancel.t.sol
    ├── when the id references a null stream
    │  └── it should revert
    └── when the id does not reference a null stream
-      ├── when the stream is cold
+      ├── given the stream is cold
       │  ├── when the stream's status is "DEPLETED"
       │  │  └── it should revert
       │  ├── when the stream's status is "CANCELED"
       │  │  └── it should revert
       │  └── when the stream's status is "SETTLED"
       │     └── it should revert
-      └── when the stream is warm
+      └── given the stream is warm
          ├── when the caller is unauthorized
          │  ├── when the caller is a malicious third party
          │  │  └── it should revert

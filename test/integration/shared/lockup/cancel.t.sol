@@ -19,11 +19,11 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         _;
     }
 
-    modifier whenStreamCold() {
+    modifier givenStreamCold() {
         _;
     }
 
-    modifier whenStreamWarm() {
+    modifier givenStreamWarm() {
         _;
     }
 

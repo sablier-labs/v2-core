@@ -28,21 +28,21 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         lockup.cancel(nullStreamId);
     }
 
-    function test_RevertWhen_StreamCold_StatusDepleted() external whenNotDelegateCalled whenNotNull whenStreamCold {
+    function test_RevertWhen_StreamCold_StatusDepleted() external whenNotDelegateCalled whenNotNull givenStreamCold {
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamDepleted.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
-    function test_RevertWhen_StreamCold_StatusCanceled() external whenNotDelegateCalled whenNotNull whenStreamCold {
+    function test_RevertWhen_StreamCold_StatusCanceled() external whenNotDelegateCalled whenNotNull givenStreamCold {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamCanceled.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
-    function test_RevertWhen_StreamCold_StatusSettled() external whenNotDelegateCalled whenNotNull whenStreamCold {
+    function test_RevertWhen_StreamCold_StatusSettled() external whenNotDelegateCalled whenNotNull givenStreamCold {
         vm.warp({ timestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
@@ -52,7 +52,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerUnauthorized
     {
         // Make Eve the caller in this test.
@@ -69,7 +69,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerUnauthorized
     {
         // Approve Alice for the stream.
@@ -90,7 +90,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerUnauthorized
     {
         // Transfer the stream to Alice.
@@ -108,7 +108,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
     {
         uint256 streamId = createDefaultStreamNotCancelable();
@@ -137,7 +137,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -153,7 +153,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -186,7 +186,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -220,7 +220,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -255,7 +255,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -314,7 +314,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -330,7 +330,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -363,7 +363,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -397,7 +397,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -432,7 +432,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming

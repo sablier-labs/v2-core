@@ -15,7 +15,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
     {
@@ -48,7 +48,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming
@@ -115,7 +115,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         external
         whenNotDelegateCalled
         whenNotNull
-        whenStreamWarm
+        givenStreamWarm
         whenCallerAuthorized
         givenStreamCancelable
         whenStatusStreaming

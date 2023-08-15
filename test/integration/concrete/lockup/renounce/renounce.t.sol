@@ -15,7 +15,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         defaultStreamId = createDefaultStream();
     }
 
-    function test_RevertWhen_DelegateCalled() external whenStreamWarm {
+    function test_RevertWhen_DelegateCalled() external givenStreamWarm {
         bytes memory callData = abi.encodeCall(ISablierV2Lockup.renounce, defaultStreamId);
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
@@ -60,7 +60,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
     }
 
     /// @dev This modifier runs the test twice: once with a "PENDING" status, and once with a "STREAMING" status.
-    modifier whenStreamWarm() {
+    modifier givenStreamWarm() {
         vm.warp({ timestamp: getBlockTimestamp() - 1 seconds });
         _;
         vm.warp({ timestamp: defaults.START_TIME() });
@@ -68,7 +68,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_RevertWhen_CallerNotSender() external whenNotDelegateCalled whenStreamWarm {
+    function test_RevertWhen_CallerNotSender() external whenNotDelegateCalled givenStreamWarm {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
 
@@ -83,7 +83,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_RevertWhen_StreamNotCancelable() external whenNotDelegateCalled whenStreamWarm whenCallerSender {
+    function test_RevertWhen_StreamNotCancelable() external whenNotDelegateCalled givenStreamWarm whenCallerSender {
         // Create the not cancelable stream.
         uint256 notCancelableStreamId = createDefaultStreamNotCancelable();
 
@@ -101,7 +101,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
     function test_Renounce_RecipientNotContract()
         external
         whenNotDelegateCalled
-        whenStreamWarm
+        givenStreamWarm
         whenCallerSender
         whenStreamCancelable
     {
@@ -117,7 +117,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
     function test_Renounce_RecipientDoesNotImplementHook()
         external
         whenNotDelegateCalled
-        whenStreamWarm
+        givenStreamWarm
         whenCallerSender
         whenStreamCancelable
         whenRecipientContract
@@ -143,7 +143,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
     function test_Renounce_RecipientReverts()
         external
         whenNotDelegateCalled
-        whenStreamWarm
+        givenStreamWarm
         whenCallerSender
         whenStreamCancelable
         whenRecipientContract
@@ -172,7 +172,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
     function test_Renounce_RecipientReentrancy()
         external
         whenNotDelegateCalled
-        whenStreamWarm
+        givenStreamWarm
         whenCallerSender
         whenStreamCancelable
         whenRecipientContract
@@ -202,7 +202,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
     function test_Renounce()
         external
         whenNotDelegateCalled
-        whenStreamWarm
+        givenStreamWarm
         whenCallerSender
         whenStreamCancelable
         whenRecipientContract
