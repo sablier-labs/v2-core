@@ -25,10 +25,10 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_SegmentCountTooHigh(uint256 segmentCount)
         external
-        givenNotDelegateCalled
-        givenRecipientNonZeroAddress
-        givenDepositAmountNotZero
-        givenSegmentCountNotZero
+        whenNotDelegateCalled
+        whenRecipientNonZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
     {
         segmentCount = _bound(segmentCount, defaults.MAX_SEGMENT_COUNT() + 1 seconds, defaults.MAX_SEGMENT_COUNT() * 10);
         LockupDynamic.Segment[] memory segments = new LockupDynamic.Segment[](segmentCount);
@@ -43,11 +43,11 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         uint128 amount1
     )
         external
-        givenNotDelegateCalled
-        givenRecipientNonZeroAddress
-        givenDepositAmountNotZero
-        givenSegmentCountNotZero
-        givenSegmentCountNotTooHigh
+        whenNotDelegateCalled
+        whenRecipientNonZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
+        whenSegmentCountNotTooHigh
     {
         amount0 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
         amount1 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
@@ -60,12 +60,12 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_StartTimeNotLessThanFirstSegmentMilestone(uint40 firstMilestone)
         external
-        givenNotDelegateCalled
-        givenRecipientNonZeroAddress
-        givenDepositAmountNotZero
-        givenSegmentCountNotZero
-        givenSegmentCountNotTooHigh
-        givenSegmentAmountsSumDoesNotOverflow
+        whenNotDelegateCalled
+        whenRecipientNonZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
+        whenSegmentCountNotTooHigh
+        whenSegmentAmountsSumDoesNotOverflow
     {
         firstMilestone = boundUint40(firstMilestone, 0, defaults.START_TIME());
 
@@ -88,14 +88,14 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_DepositAmountNotEqualToSegmentAmountsSum(uint128 depositDiff)
         external
-        givenNotDelegateCalled
-        givenRecipientNonZeroAddress
-        givenDepositAmountNotZero
-        givenSegmentCountNotZero
-        givenSegmentCountNotTooHigh
-        givenSegmentAmountsSumDoesNotOverflow
-        givenStartTimeLessThanFirstSegmentMilestone
-        givenSegmentMilestonesOrdered
+        whenNotDelegateCalled
+        whenRecipientNonZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
+        whenSegmentCountNotTooHigh
+        whenSegmentAmountsSumDoesNotOverflow
+        whenStartTimeLessThanFirstSegmentMilestone
+        whenSegmentMilestonesOrdered
         givenEndTimeInTheFuture
     {
         depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
@@ -130,16 +130,16 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_ProtocolFeeTooHigh(UD60x18 protocolFee)
         external
-        givenNotDelegateCalled
-        givenRecipientNonZeroAddress
-        givenDepositAmountNotZero
-        givenSegmentCountNotZero
-        givenSegmentCountNotTooHigh
-        givenSegmentAmountsSumDoesNotOverflow
-        givenStartTimeLessThanFirstSegmentMilestone
-        givenSegmentMilestonesOrdered
+        whenNotDelegateCalled
+        whenRecipientNonZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
+        whenSegmentCountNotTooHigh
+        whenSegmentAmountsSumDoesNotOverflow
+        whenStartTimeLessThanFirstSegmentMilestone
+        whenSegmentMilestonesOrdered
         givenEndTimeInTheFuture
-        givenDepositAmountEqualToSegmentAmountsSum
+        whenDepositAmountEqualToSegmentAmountsSum
     {
         protocolFee = _bound(protocolFee, MAX_FEE + ud(1), MAX_UD60x18);
 
@@ -157,16 +157,16 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
 
     function testFuzz_RevertWhen_BrokerFeeTooHigh(Broker memory broker)
         external
-        givenNotDelegateCalled
-        givenRecipientNonZeroAddress
-        givenDepositAmountNotZero
-        givenSegmentCountNotZero
-        givenSegmentCountNotTooHigh
-        givenSegmentAmountsSumDoesNotOverflow
-        givenStartTimeLessThanFirstSegmentMilestone
-        givenSegmentMilestonesOrdered
+        whenNotDelegateCalled
+        whenRecipientNonZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
+        whenSegmentCountNotTooHigh
+        whenSegmentAmountsSumDoesNotOverflow
+        whenStartTimeLessThanFirstSegmentMilestone
+        whenSegmentMilestonesOrdered
         givenEndTimeInTheFuture
-        givenDepositAmountEqualToSegmentAmountsSum
+        whenDepositAmountEqualToSegmentAmountsSum
         givenProtocolFeeNotTooHigh
     {
         vm.assume(broker.account != address(0));
@@ -190,7 +190,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         uint128 totalAmount;
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev when enough test runs, all of the following scenarios will be fuzzed:
     ///
     /// - All possible permutations for the funder, sender, recipient, and broker
     /// - Multiple values for the segment amounts, exponents, and milestones
@@ -207,20 +207,20 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         UD60x18 protocolFee
     )
         external
-        givenNotDelegateCalled
-        givenRecipientNonZeroAddress
-        givenDepositAmountNotZero
-        givenSegmentCountNotZero
-        givenSegmentCountNotTooHigh
-        givenSegmentAmountsSumDoesNotOverflow
-        givenStartTimeLessThanFirstSegmentMilestone
-        givenSegmentMilestonesOrdered
+        whenNotDelegateCalled
+        whenRecipientNonZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
+        whenSegmentCountNotTooHigh
+        whenSegmentAmountsSumDoesNotOverflow
+        whenStartTimeLessThanFirstSegmentMilestone
+        whenSegmentMilestonesOrdered
         givenEndTimeInTheFuture
-        givenDepositAmountEqualToSegmentAmountsSum
+        whenDepositAmountEqualToSegmentAmountsSum
         givenProtocolFeeNotTooHigh
-        givenBrokerFeeNotTooHigh
-        givenAssetContract
-        givenAssetERC20
+        whenBrokerFeeNotTooHigh
+        whenAssetContract
+        whenAssetERC20
     {
         vm.assume(funder != address(0) && params.recipient != address(0) && params.broker.account != address(0));
         vm.assume(params.segments.length != 0);

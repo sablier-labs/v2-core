@@ -23,7 +23,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_WithdrawableAmountOf_CliffTimeInTheFuture(uint40 timeJump)
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
     {
         timeJump = boundUint40(timeJump, 0, defaults.CLIFF_DURATION() - 1);
@@ -53,7 +53,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 depositAmount
     )
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
         givenCliffTimeNotInTheFuture
     {
@@ -100,7 +100,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 withdrawAmount
     )
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
         givenCliffTimeNotInTheFuture
         givenPreviousWithdrawals

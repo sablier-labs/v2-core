@@ -1,14 +1,14 @@
 withdrawMaxAndTransfer.t.sol
-├── given delegate called
+├── when delegate called
 │  └── it should revert
-└── given not delegate called
+└── when not delegate called
    ├── when the id references a null stream
    │  └── it should revert
-   └── given the id does not reference a null stream
+   └── when the id does not reference a null stream
       ├── when the caller is not the current recipient
       │  └── it should revert
-      └── given the caller is the current recipient
-         ├── when the NFT has been burned
+      └── when the caller is the current recipient
+         ├── given the NFT has been burned
          │  └── it should revert
          └── given the NFT has not been burned
             ├── when the withdrawable amount is zero

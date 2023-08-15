@@ -10,7 +10,7 @@ abstract contract GetWithdrawnAmount_Integration_Shared_Test is Lockup_Integrati
         changePrank({ msgSender: users.recipient });
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         defaultStreamId = createDefaultStream();
         _;
     }

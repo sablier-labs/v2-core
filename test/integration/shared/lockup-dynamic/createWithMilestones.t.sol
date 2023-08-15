@@ -10,35 +10,35 @@ contract CreateWithMilestones_Integration_Shared_Test is LockupDynamic_Integrati
         streamId = lockupDynamic.nextStreamId();
     }
 
-    modifier givenNotDelegateCalled() {
+    modifier whenNotDelegateCalled() {
         _;
     }
 
-    modifier givenRecipientNonZeroAddress() {
+    modifier whenRecipientNonZeroAddress() {
         _;
     }
 
-    modifier givenDepositAmountNotZero() {
+    modifier whenDepositAmountNotZero() {
         _;
     }
 
-    modifier givenSegmentCountNotZero() {
+    modifier whenSegmentCountNotZero() {
         _;
     }
 
-    modifier givenSegmentCountNotTooHigh() {
+    modifier whenSegmentCountNotTooHigh() {
         _;
     }
 
-    modifier givenSegmentAmountsSumDoesNotOverflow() {
+    modifier whenSegmentAmountsSumDoesNotOverflow() {
         _;
     }
 
-    modifier givenStartTimeLessThanFirstSegmentMilestone() {
+    modifier whenStartTimeLessThanFirstSegmentMilestone() {
         _;
     }
 
-    modifier givenSegmentMilestonesOrdered() {
+    modifier whenSegmentMilestonesOrdered() {
         _;
     }
 
@@ -46,7 +46,7 @@ contract CreateWithMilestones_Integration_Shared_Test is LockupDynamic_Integrati
         _;
     }
 
-    modifier givenDepositAmountEqualToSegmentAmountsSum() {
+    modifier whenDepositAmountEqualToSegmentAmountsSum() {
         _;
     }
 
@@ -54,15 +54,15 @@ contract CreateWithMilestones_Integration_Shared_Test is LockupDynamic_Integrati
         _;
     }
 
-    modifier givenBrokerFeeNotTooHigh() {
+    modifier whenBrokerFeeNotTooHigh() {
         _;
     }
 
-    modifier givenAssetContract() {
+    modifier whenAssetContract() {
         _;
     }
 
-    modifier givenAssetERC20() {
+    modifier whenAssetERC20() {
         _;
     }
 }

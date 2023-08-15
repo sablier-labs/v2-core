@@ -24,11 +24,11 @@ contract SetFlashFee_Unit_Concrete_Test is Comptroller_Unit_Concrete_Test {
     }
 
     /// @dev The admin is the default caller in the comptroller tests.
-    modifier givenCallerAdmin() {
+    modifier whenCallerAdmin() {
         _;
     }
 
-    function test_SetFlashFee_SameFee() external givenCallerAdmin {
+    function test_SetFlashFee_SameFee() external whenCallerAdmin {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(comptroller) });
         emit SetFlashFee({ admin: users.admin, oldFlashFee: ZERO, newFlashFee: ZERO });
@@ -47,7 +47,7 @@ contract SetFlashFee_Unit_Concrete_Test is Comptroller_Unit_Concrete_Test {
         _;
     }
 
-    function test_SetFlashFee() external givenCallerAdmin whenNewFee {
+    function test_SetFlashFee() external whenCallerAdmin whenNewFee {
         UD60x18 newFlashFee = defaults.FLASH_FEE();
 
         // Expect the relevant event to be emitted.

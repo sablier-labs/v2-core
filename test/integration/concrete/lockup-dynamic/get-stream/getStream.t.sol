@@ -20,11 +20,11 @@ contract GetStream_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Inte
         lockupDynamic.getStream(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
-    function test_GetStream_StatusSettled() external givenNotNull {
+    function test_GetStream_StatusSettled() external whenNotNull {
         vm.warp({ timestamp: defaults.END_TIME() });
         LockupDynamic.Stream memory actualStream = lockupDynamic.getStream(defaultStreamId);
         LockupDynamic.Stream memory expectedStream = defaults.lockupDynamicStream();
@@ -36,7 +36,7 @@ contract GetStream_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Inte
         _;
     }
 
-    function test_GetStream() external givenNotNull givenStatusNotSettled {
+    function test_GetStream() external whenNotNull givenStatusNotSettled {
         uint256 streamId = createDefaultStream();
         LockupDynamic.Stream memory actualStream = lockupDynamic.getStream(streamId);
         LockupDynamic.Stream memory expectedStream = defaults.lockupDynamicStream();

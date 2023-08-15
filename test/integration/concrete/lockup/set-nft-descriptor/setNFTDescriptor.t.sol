@@ -24,13 +24,13 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.setNFTDescriptor(ISablierV2NFTDescriptor(users.eve));
     }
 
-    modifier givenCallerAdmin() {
+    modifier whenCallerAdmin() {
         // Make the Admin the caller in the rest of this test suite.
         changePrank({ msgSender: users.admin });
         _;
     }
 
-    function test_SetNFTDescriptor_SameNFTDescriptor() external givenCallerAdmin {
+    function test_SetNFTDescriptor_SameNFTDescriptor() external whenCallerAdmin {
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
         emit SetNFTDescriptor(users.admin, nftDescriptor, nftDescriptor);
@@ -45,7 +45,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.tokenURI({ tokenId: defaultStreamId });
     }
 
-    function test_SetNFTDescriptor_NewNFTDescriptor() external givenCallerAdmin {
+    function test_SetNFTDescriptor_NewNFTDescriptor() external whenCallerAdmin {
         // Deploy another NFT descriptor.
         ISablierV2NFTDescriptor newNFTDescriptor = new SablierV2NFTDescriptor();
 

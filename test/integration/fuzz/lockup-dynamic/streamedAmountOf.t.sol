@@ -25,7 +25,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         changePrank({ msgSender: users.sender });
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev when enough test runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past
     /// - End time in the present
@@ -37,9 +37,9 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeJump
     )
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
-        givenStartTimeInThePast
+        whenStartTimeInThePast
     {
         vm.assume(segment.amount != 0);
         segment.milestone = boundUint40(segment.milestone, defaults.CLIFF_TIME(), defaults.END_TIME());
@@ -69,15 +69,15 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    modifier givenMultipleSegments() {
+    modifier whenMultipleSegments() {
         _;
     }
 
-    modifier givenCurrentMilestoneNot1st() {
+    modifier whenCurrentMilestoneNot1st() {
         _;
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev when enough test runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past
     /// - End time in the present
@@ -90,11 +90,11 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeJump
     )
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
-        givenStartTimeInThePast
-        givenMultipleSegments
-        givenCurrentMilestoneNot1st
+        whenStartTimeInThePast
+        whenMultipleSegments
+        whenCurrentMilestoneNot1st
     {
         vm.assume(segments.length > 1);
 
@@ -141,11 +141,11 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeWarp1
     )
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
-        givenStartTimeInThePast
-        givenMultipleSegments
-        givenCurrentMilestoneNot1st
+        whenStartTimeInThePast
+        whenMultipleSegments
+        whenCurrentMilestoneNot1st
     {
         vm.assume(segments.length > 1);
 

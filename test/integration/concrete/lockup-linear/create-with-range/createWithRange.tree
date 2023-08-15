@@ -1,31 +1,31 @@
 createWithRange.t.sol
-├── given delegate called
+├── when delegate called
 │  └── it should revert
-└── given not delegate called
+└── when not delegate called
    ├── when the recipient is the zero address
    │  └── it should revert
-   └── given the recipient is not the zero address
+   └── when the recipient is not the zero address
       ├── when the deposit amount is zero
       │  └── it should revert
-      └── given the deposit amount is not zero
+      └── when the deposit amount is not zero
          ├── when the start time is greater than the cliff time
          │  └── it should revert
-         └── given the start time is not greater than the cliff time
+         └── when the start time is not greater than the cliff time
             ├── when the cliff time is not less than the end time
             │  └── it should revert
-            └── given the cliff time is less than the end time
-               ├── when the end time is not in the future
+            └── when the cliff time is less than the end time
+               ├── given the end time is not in the future
                │  └── it should revert
                └── given the end time is in the future
-                  ├── when the protocol fee is too high
+                  ├── given the protocol fee is too high
                   │  └── it should revert
                   └── given the protocol fee is not too high
                      ├── when the broker fee is too high
                      │  └── it should revert
-                     └── given the broker fee is not too high
+                     └── when the broker fee is not too high
                         ├── when the asset is not a contract
                         │  └── it should revert
-                        └── given the asset is a contract
+                        └── when the asset is a contract
                            ├── when the asset misses the ERC-20 return value
                            │  ├── it should create the stream
                            │  ├── it should bump the next stream id

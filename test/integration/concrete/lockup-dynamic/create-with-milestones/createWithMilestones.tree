@@ -1,47 +1,47 @@
 createWithMilestones.t.sol
-├── given delegate called
+├── when delegate called
 │  └── it should revert
-└── given not delegate called
+└── when not delegate called
    ├── when the recipient is the zero address
    │  └── it should revert
-   └── given the recipient is not the zero address
+   └── when the recipient is not the zero address
       ├── when the deposit amount is zero
       │  └── it should revert
-      └── given the deposit amount is not zero
+      └── when the deposit amount is not zero
          ├── when the segment count is zero
          │  └── it should revert
-         └── given the segment count is not zero
+         └── when the segment count is not zero
             ├── when the segment count is too high
             │  └── it should revert
-            └── given the segment count is not too high
+            └── when the segment count is not too high
                ├── when the segment amounts sum overflows
                │  └── it should revert
-               └── given the segment amounts sum does not overflow
+               └── when the segment amounts sum does not overflow
                   ├── when the start time is greater than the first segment milestone
                   │  └── it should revert
                   ├── when the start time is equal to the first segment milestone
                   │  └── it should revert
-                  └── given the start time is less than the first segment milestone
+                  └── when the start time is less than the first segment milestone
                      ├── when the segment milestones are not ordered
                      │  └── it should revert
-                     └── given the segment milestones are ordered
-                        ├── when the end time is not in the future
+                     └── when the segment milestones are ordered
+                        ├── given the end time is not in the future
                         │  └── it should revert
                         └── given the end time is in the future
                            ├── when the deposit amount is not equal to the segment amounts sum
                            │  └── it should revert
-                           └── given the deposit amount is equal to the segment amounts sum
-                              ├── when the protocol fee is too high
+                           └── when the deposit amount is equal to the segment amounts sum
+                              ├── given the protocol fee is too high
                               │  └── it should revert
                               └── given the protocol fee is not too high
                                  ├── when the broker fee is too high
                                  │  └── it should revert
-                                 └── given the broker fee is not too high
+                                 └── when the broker fee is not too high
                                     ├── when the asset is not a contract
                                     │  └── it should revert
                                     ├── when the asset is not a contract
                                     │  └── it should revert
-                                    └── given the asset is a contract
+                                    └── when the asset is a contract
                                        ├── when the asset misses the ERC-20 return value
                                        │  ├── it should create the stream
                                        │  ├── it should bump the next stream id

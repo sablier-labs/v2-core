@@ -21,9 +21,9 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
         address newRecipient
     )
         external
-        givenNotDelegateCalled
-        givenNotNull
-        givenCallerCurrentRecipient
+        whenNotDelegateCalled
+        whenNotNull
+        whenCallerCurrentRecipient
         givenNFTNotBurned
     {
         vm.assume(newRecipient != address(0));

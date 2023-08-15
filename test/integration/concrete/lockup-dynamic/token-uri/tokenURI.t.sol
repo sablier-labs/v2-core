@@ -31,7 +31,7 @@ contract TokenURI_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Integ
         }
     }
 
-    function test_RevertWhen_NFTDoesNotExist() external {
+    function test_RevertGiven_NFTDoesNotExist() external {
         uint256 nullStreamId = 1729;
         vm.expectRevert("ERC721: invalid token ID");
         lockupDynamic.tokenURI({ tokenId: nullStreamId });

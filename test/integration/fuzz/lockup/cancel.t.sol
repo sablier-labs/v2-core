@@ -13,10 +13,10 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
 
     function testFuzz_Cancel_StatusPending(uint256 timeJump)
         external
-        givenNotDelegateCalled
-        givenNotNull
-        givenStreamWarm
-        givenCallerAuthorized
+        whenNotDelegateCalled
+        whenNotNull
+        whenStreamWarm
+        whenCallerAuthorized
         givenStreamCancelable
     {
         timeJump = _bound(timeJump, 1 seconds, 100 weeks);
@@ -37,7 +37,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         assertFalse(isCancelable, "isCancelable");
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev when enough test runs, all of the following scenarios will be fuzzed:
     ///
     /// - Multiple values for the current time
     /// - With and without withdrawals
@@ -46,17 +46,17 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         uint128 withdrawAmount
     )
         external
-        givenNotDelegateCalled
-        givenNotNull
-        givenStreamWarm
-        givenCallerAuthorized
+        whenNotDelegateCalled
+        whenNotNull
+        whenStreamWarm
+        whenCallerAuthorized
         givenStreamCancelable
-        givenStatusStreaming
-        givenCallerSender
-        givenRecipientContract
-        givenRecipientImplementsHook
-        givenRecipientDoesNotRevert
-        givenNoRecipientReentrancy
+        whenStatusStreaming
+        whenCallerSender
+        whenRecipientContract
+        whenRecipientImplementsHook
+        whenRecipientDoesNotRevert
+        whenNoRecipientReentrancy
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1);
 
@@ -104,7 +104,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev when enough test runs, all of the following scenarios will be fuzzed:
     ///
     /// - Multiple values for the current time
     /// - With and without withdrawals
@@ -113,17 +113,17 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         uint128 withdrawAmount
     )
         external
-        givenNotDelegateCalled
-        givenNotNull
-        givenStreamWarm
-        givenCallerAuthorized
+        whenNotDelegateCalled
+        whenNotNull
+        whenStreamWarm
+        whenCallerAuthorized
         givenStreamCancelable
-        givenStatusStreaming
-        givenCallerRecipient
-        givenSenderContract
-        givenSenderImplementsHook
-        givenSenderDoesNotRevert
-        givenNoSenderReentrancy
+        whenStatusStreaming
+        whenCallerRecipient
+        whenSenderContract
+        whenSenderImplementsHook
+        whenSenderDoesNotRevert
+        whenNoSenderReentrancy
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1);
 

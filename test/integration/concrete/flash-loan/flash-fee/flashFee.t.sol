@@ -8,7 +8,7 @@ import { Errors } from "src/libraries/Errors.sol";
 import { FlashLoan_Integration_Shared_Test } from "../../../shared/flash-loan/FlashLoan.t.sol";
 
 contract FlashFee_Integration_Concrete_Test is FlashLoan_Integration_Shared_Test {
-    function test_RevertWhen_AssetNotFlashLoanable() external {
+    function test_RevertGiven_AssetNotFlashLoanable() external {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2FlashLoan_AssetNotFlashLoanable.selector, dai));
         flashLoan.flashFee({ asset: address(dai), amount: 0 });
     }

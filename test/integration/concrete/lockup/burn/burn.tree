@@ -1,10 +1,10 @@
 burn.t.sol
-├── given delegate called
+├── when delegate called
 │  └── it should revert
-└── given not delegate called
+└── when not delegate called
    ├── when the id references a null stream
    │  └── it should revert
-   └── given the id does not reference a null stream
+   └── when the id does not reference a null stream
       ├── given the stream has not been depleted
       │  ├── when the stream's status is "PENDING"
       │  │  └── it should revert
@@ -17,10 +17,10 @@ burn.t.sol
       └── given the stream has been depleted
          ├── when the caller is unauthorized
          │  └── it should revert
-         └── given the caller is authorized
+         └── when the caller is authorized
             ├── when NFT does not exist
             │  └── it should revert
-            └── given NFT exists
+            └── when NFT exists
                ├── when the caller is an approved third party
                │  └── it should burn the NFT
                └── when the caller is the owner of the NFT

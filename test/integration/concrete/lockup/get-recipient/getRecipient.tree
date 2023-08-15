@@ -1,8 +1,8 @@
 getRecipient.t.sol
-├── given the id references a null stream
+├── when the id references a null stream
 │  └── it should revert
-└── given the id does not reference a null stream
-   ├── when the NFT has been burned
+└── when the id does not reference a null stream
+   ├── given the NFT has been burned
    │  └── it should revert
-   └── when the NFT exists
+   └── given the NFT exists
       └── it should return the correct recipient

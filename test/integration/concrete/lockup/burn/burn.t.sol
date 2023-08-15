@@ -23,17 +23,17 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    modifier givenNotDelegateCalled() {
+    modifier whenNotDelegateCalled() {
         _;
     }
 
-    function test_RevertWhen_Null() external givenNotDelegateCalled {
+    function test_RevertWhen_Null() external whenNotDelegateCalled {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
         lockup.burn(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
@@ -43,8 +43,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
 
     function test_RevertWhen_StreamHasNotBeenDepleted_StatusPending()
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamHasNotBeenDepleted
     {
         vm.warp({ timestamp: getBlockTimestamp() - 1 seconds });
@@ -54,8 +54,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
 
     function test_RevertWhen_StreamHasNotBeenDepleted_StatusStreaming()
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamHasNotBeenDepleted
     {
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
@@ -65,8 +65,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
 
     function test_RevertWhen_StreamHasNotBeenDepleted_StatusSettled()
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamHasNotBeenDepleted
     {
         vm.warp({ timestamp: defaults.END_TIME() });
@@ -76,8 +76,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
 
     function test_RevertWhen_StreamHasNotBeenDepleted_StatusCanceled()
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamHasNotBeenDepleted
     {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
@@ -94,8 +94,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
 
     function test_RevertWhen_CallerUnauthorized()
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamHasBeenDepleted
     {
         // Make Eve the caller in the rest of this test.
@@ -106,16 +106,16 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    modifier givenCallerAuthorized() {
+    modifier whenCallerAuthorized() {
         _;
     }
 
     function test_RevertWhen_NFTDoesNotExist()
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamHasBeenDepleted
-        givenCallerAuthorized
+        whenCallerAuthorized
     {
         // Burn the NFT so that it no longer exists.
         lockup.burn(streamId);
@@ -125,17 +125,17 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    modifier givenNFTExists() {
+    modifier whenNFTExists() {
         _;
     }
 
     function test_Burn_CallerApprovedOperator()
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamHasBeenDepleted
-        givenCallerAuthorized
-        givenNFTExists
+        whenCallerAuthorized
+        whenNFTExists
     {
         // Approve the operator to handle the stream.
         lockup.approve({ to: users.operator, tokenId: streamId });
@@ -153,11 +153,11 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
 
     function test_Burn_CallerNFTOwner()
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamHasBeenDepleted
-        givenCallerAuthorized
-        givenNFTExists
+        whenCallerAuthorized
+        whenNFTExists
     {
         lockup.burn(streamId);
         vm.expectRevert("ERC721: invalid token ID");

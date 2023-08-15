@@ -1,8 +1,8 @@
 isCancelable.t.sol
-├── given the id references a null stream
+├── when the id references a null stream
 │  └── it should revert
-└── given the id does not reference a null stream
-   ├── when the stream is cold
+└── when the id does not reference a null stream
+   ├── given the stream is cold
    │  └── it should return true
    └── given the stream is not cold
       ├── when the stream is cancelable

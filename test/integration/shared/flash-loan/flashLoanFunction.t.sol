@@ -10,11 +10,11 @@ contract FlashLoanFunction_Integration_Shared_Test is FlashLoan_Integration_Shar
         FlashLoan_Integration_Shared_Test.setUp();
     }
 
-    modifier givenNotDelegateCalled() {
+    modifier whenNotDelegateCalled() {
         _;
     }
 
-    modifier givenAmountNotTooHigh() {
+    modifier whenAmountNotTooHigh() {
         _;
     }
 
@@ -25,11 +25,11 @@ contract FlashLoanFunction_Integration_Shared_Test is FlashLoan_Integration_Shar
         _;
     }
 
-    modifier givenCalculatedFeeNotTooHigh() {
+    modifier whenCalculatedFeeNotTooHigh() {
         _;
     }
 
-    modifier givenBorrowDoesNotFail() {
+    modifier whenBorrowDoesNotFail() {
         _;
     }
 

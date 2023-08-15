@@ -18,36 +18,36 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         CancelMultiple_Integration_Shared_Test.setUp();
     }
 
-    function test_RevertWhen_DelegateCalled() external givenNotDelegateCalled {
+    function test_RevertWhen_DelegateCalled() external whenNotDelegateCalled {
         bytes memory callData = abi.encodeCall(ISablierV2Lockup.cancelMultiple, (testStreamIds));
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_CancelMultiple_ArrayCountZero() external givenNotDelegateCalled {
+    function test_CancelMultiple_ArrayCountZero() external whenNotDelegateCalled {
         uint256[] memory streamIds = new uint256[](0);
         lockup.cancelMultiple(streamIds);
     }
 
-    function test_RevertWhen_OnlyNull() external givenNotDelegateCalled givenArrayCountNotZero {
+    function test_RevertWhen_OnlyNull() external whenNotDelegateCalled whenArrayCountNotZero {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(nullStreamId) });
     }
 
-    function test_RevertWhen_SomeNull() external givenNotDelegateCalled givenArrayCountNotZero {
+    function test_RevertWhen_SomeNull() external whenNotDelegateCalled whenArrayCountNotZero {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_Null.selector, nullStreamId));
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(testStreamIds[0], nullStreamId) });
     }
 
-    function test_RevertWhen_AllStreamsCold() external givenNotDelegateCalled givenArrayCountNotZero givenNoNull {
+    function test_RevertWhen_AllStreamsCold() external whenNotDelegateCalled whenArrayCountNotZero whenNoNull {
         vm.warp({ timestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, testStreamIds[0]));
         lockup.cancelMultiple({ streamIds: testStreamIds });
     }
 
-    function test_RevertWhen_SomeStreamsCold() external givenNotDelegateCalled givenArrayCountNotZero givenNoNull {
+    function test_RevertWhen_SomeStreamsCold() external whenNotDelegateCalled whenArrayCountNotZero whenNoNull {
         uint256 earlyStreamId = createDefaultStreamWithEndTime({ endTime: defaults.CLIFF_TIME() + 1 seconds });
         vm.warp({ timestamp: defaults.CLIFF_TIME() + 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, earlyStreamId));
@@ -56,11 +56,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedAllStreams_MaliciousThirdParty()
         external
-        givenNotDelegateCalled
-        givenArrayCountNotZero
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerUnauthorized
+        whenNotDelegateCalled
+        whenArrayCountNotZero
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerUnauthorized
     {
         // Make Eve the caller in this test.
         changePrank({ msgSender: users.eve });
@@ -74,11 +74,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedAllStreams_ApprovedOperator()
         external
-        givenNotDelegateCalled
-        givenArrayCountNotZero
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerUnauthorized
+        whenNotDelegateCalled
+        whenArrayCountNotZero
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerUnauthorized
     {
         // Approve the operator for all streams.
         changePrank({ msgSender: users.recipient });
@@ -96,11 +96,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedAllStreams_FormerRecipient()
         external
-        givenNotDelegateCalled
-        givenArrayCountNotZero
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerUnauthorized
+        whenNotDelegateCalled
+        whenArrayCountNotZero
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerUnauthorized
     {
         // Transfer the streams to Alice.
         changePrank({ msgSender: users.recipient });
@@ -116,11 +116,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedSomeStreams_MaliciousThirdParty()
         external
-        givenNotDelegateCalled
-        givenArrayCountNotZero
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerUnauthorized
+        whenNotDelegateCalled
+        whenArrayCountNotZero
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerUnauthorized
     {
         changePrank({ msgSender: users.eve });
 
@@ -137,11 +137,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedSomeStreams_ApprovedOperator()
         external
-        givenNotDelegateCalled
-        givenArrayCountNotZero
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerUnauthorized
+        whenNotDelegateCalled
+        whenArrayCountNotZero
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerUnauthorized
     {
         // Approve the operator to handle the first stream.
         changePrank({ msgSender: users.recipient });
@@ -159,11 +159,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerUnauthorizedSomeStreams_FormerRecipient()
         external
-        givenNotDelegateCalled
-        givenArrayCountNotZero
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerUnauthorized
+        whenNotDelegateCalled
+        whenArrayCountNotZero
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerUnauthorized
     {
         // Transfer the first stream to Eve.
         changePrank({ msgSender: users.recipient });
@@ -178,11 +178,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_AllStreamsNotCancelable()
         external
-        givenNotDelegateCalled
-        givenArrayCountNotZero
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerAuthorizedAllStreams
+        whenNotDelegateCalled
+        whenArrayCountNotZero
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerAuthorizedAllStreams
     {
         uint256 notCancelableStreamId = createDefaultStreamNotCancelable();
         vm.expectRevert(
@@ -193,11 +193,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_RevertWhen_SomeStreamsNotCancelable()
         external
-        givenNotDelegateCalled
-        givenArrayCountNotZero
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerAuthorizedAllStreams
+        whenNotDelegateCalled
+        whenArrayCountNotZero
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerAuthorizedAllStreams
     {
         uint256 notCancelableStreamId = createDefaultStreamNotCancelable();
         vm.expectRevert(
@@ -208,11 +208,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
     function test_CancelMultiple()
         external
-        givenNotDelegateCalled
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerAuthorizedAllStreams
-        givenAllStreamsCancelable
+        whenNotDelegateCalled
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerAuthorizedAllStreams
+        whenAllStreamsCancelable
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });

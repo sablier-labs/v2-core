@@ -28,7 +28,7 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_CliffDurationCalculationOverflows() external givenNotDelegateCalled {
+    function test_RevertWhen_CliffDurationCalculationOverflows() external whenNotDelegateCalled {
         uint40 startTime = getBlockTimestamp();
         uint40 cliffDuration = MAX_UINT40 - startTime + 1 seconds;
 
@@ -54,8 +54,8 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
 
     function test_RevertWhen_TotalDurationCalculationOverflows()
         external
-        givenNotDelegateCalled
-        givenCliffDurationCalculationDoesNotOverflow
+        whenNotDelegateCalled
+        whenCliffDurationCalculationDoesNotOverflow
     {
         uint40 startTime = getBlockTimestamp();
         LockupLinear.Durations memory durations =
@@ -82,9 +82,9 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
 
     function test_CreateWithDurations()
         external
-        givenNotDelegateCalled
-        givenCliffDurationCalculationDoesNotOverflow
-        givenTotalDurationCalculationDoesNotOverflow
+        whenNotDelegateCalled
+        whenCliffDurationCalculationDoesNotOverflow
+        whenTotalDurationCalculationDoesNotOverflow
     {
         // Make the Sender the stream's funder
         address funder = users.sender;

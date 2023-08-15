@@ -20,11 +20,11 @@ contract GetStream_LockupLinear_Integration_Concrete_Test is LockupLinear_Integr
         lockupLinear.getStream(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
-    function test_GetStream_StatusSettled() external givenNotNull {
+    function test_GetStream_StatusSettled() external whenNotNull {
         vm.warp({ timestamp: defaults.END_TIME() });
         LockupLinear.Stream memory actualStream = lockupLinear.getStream(defaultStreamId);
         LockupLinear.Stream memory expectedStream = defaults.lockupLinearStream();
@@ -36,7 +36,7 @@ contract GetStream_LockupLinear_Integration_Concrete_Test is LockupLinear_Integr
         _;
     }
 
-    function test_GetStream() external givenNotNull givenStatusNotSettled {
+    function test_GetStream() external whenNotNull givenStatusNotSettled {
         LockupLinear.Stream memory actualStream = lockupLinear.getStream(defaultStreamId);
         LockupLinear.Stream memory expectedStream = defaults.lockupLinearStream();
         assertEq(actualStream, expectedStream);

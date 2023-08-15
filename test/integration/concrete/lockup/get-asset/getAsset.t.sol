@@ -17,11 +17,11 @@ abstract contract GetAsset_Integration_Concrete_Test is Integration_Test, Lockup
         lockup.getAsset(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
-    function test_GetAsset() external givenNotNull {
+    function test_GetAsset() external whenNotNull {
         uint256 streamId = createDefaultStream();
         IERC20 actualAsset = lockup.getAsset(streamId);
         IERC20 expectedAsset = dai;

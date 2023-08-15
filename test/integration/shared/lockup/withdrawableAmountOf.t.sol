@@ -8,7 +8,7 @@ abstract contract WithdrawableAmountOf_Integration_Shared_Test is Lockup_Integra
 
     function setUp() public virtual override { }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         defaultStreamId = createDefaultStream();
         _;
     }
@@ -21,7 +21,7 @@ abstract contract WithdrawableAmountOf_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier givenStatusStreaming() {
+    modifier whenStatusStreaming() {
         _;
     }
 }

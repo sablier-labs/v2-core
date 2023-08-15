@@ -18,11 +18,11 @@ contract SetProtocolFee_Integration_Concrete_Test is Integration_Test {
     }
 
     /// @dev The Admin is the default caller in the comptroller tests.
-    modifier givenCallerAdmin() {
+    modifier whenCallerAdmin() {
         _;
     }
 
-    function test_SetProtocolFee_SameFee() external givenCallerAdmin {
+    function test_SetProtocolFee_SameFee() external whenCallerAdmin {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(comptroller) });
         emit SetProtocolFee({ admin: users.admin, asset: dai, oldProtocolFee: ZERO, newProtocolFee: ZERO });
@@ -40,7 +40,7 @@ contract SetProtocolFee_Integration_Concrete_Test is Integration_Test {
         _;
     }
 
-    function test_SetProtocolFee() external givenCallerAdmin whenNewFee {
+    function test_SetProtocolFee() external whenCallerAdmin whenNewFee {
         UD60x18 newProtocolFee = defaults.FLASH_FEE();
 
         // Expect the relevant event to be emitted.

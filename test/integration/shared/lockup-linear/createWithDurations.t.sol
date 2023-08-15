@@ -10,15 +10,15 @@ contract CreateWithDurations_Integration_Shared_Test is LockupLinear_Integration
         streamId = lockupLinear.nextStreamId();
     }
 
-    modifier givenNotDelegateCalled() {
+    modifier whenNotDelegateCalled() {
         _;
     }
 
-    modifier givenCliffDurationCalculationDoesNotOverflow() {
+    modifier whenCliffDurationCalculationDoesNotOverflow() {
         _;
     }
 
-    modifier givenTotalDurationCalculationDoesNotOverflow() {
+    modifier whenTotalDurationCalculationDoesNotOverflow() {
         _;
     }
 }

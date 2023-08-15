@@ -13,11 +13,11 @@ contract GetRange_LockupLinear_Integration_Concrete_Test is LockupLinear_Integra
         lockupLinear.getRange(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
-    function test_GetRange() external givenNotNull {
+    function test_GetRange() external whenNotNull {
         uint256 streamId = createDefaultStream();
         LockupLinear.Range memory actualRange = lockupLinear.getRange(streamId);
         LockupLinear.Range memory expectedRange = defaults.lockupLinearRange();

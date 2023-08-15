@@ -17,12 +17,12 @@ abstract contract WasCanceled_Integration_Concrete_Test is Integration_Test, Loc
         lockup.wasCanceled(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         defaultStreamId = createDefaultStream();
         _;
     }
 
-    function test_WasCanceled_StreamNotCanceled() external givenNotNull {
+    function test_WasCanceled_StreamNotCanceled() external whenNotNull {
         bool wasCanceled = lockup.wasCanceled(defaultStreamId);
         assertFalse(wasCanceled, "wasCanceled");
     }
@@ -32,7 +32,7 @@ abstract contract WasCanceled_Integration_Concrete_Test is Integration_Test, Loc
         _;
     }
 
-    function test_WasCanceled() external givenNotNull givenStreamCanceled {
+    function test_WasCanceled() external whenNotNull givenStreamCanceled {
         bool wasCanceled = lockup.wasCanceled(defaultStreamId);
         assertTrue(wasCanceled, "wasCanceled");
     }

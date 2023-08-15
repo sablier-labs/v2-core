@@ -20,13 +20,13 @@ abstract contract SetComptroller_Integration_Concrete_Test is Integration_Test, 
         base.setComptroller(ISablierV2Comptroller(users.eve));
     }
 
-    modifier givenCallerAdmin() {
+    modifier whenCallerAdmin() {
         // Make the Admin the caller in the rest of this test suite.
         changePrank({ msgSender: users.admin });
         _;
     }
 
-    function test_SetComptroller_SameComptroller() external givenCallerAdmin {
+    function test_SetComptroller_SameComptroller() external whenCallerAdmin {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(base) });
         emit SetComptroller(users.admin, comptroller, comptroller);
@@ -40,7 +40,7 @@ abstract contract SetComptroller_Integration_Concrete_Test is Integration_Test, 
         assertEq(actualComptroller, expectedComptroller, "comptroller");
     }
 
-    function test_SetComptroller_NewComptroller() external givenCallerAdmin {
+    function test_SetComptroller_NewComptroller() external whenCallerAdmin {
         // Deploy the new comptroller.
         ISablierV2Comptroller newComptroller = new SablierV2Comptroller({ initialAdmin: users.admin });
 

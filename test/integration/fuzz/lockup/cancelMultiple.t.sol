@@ -18,11 +18,11 @@ abstract contract CancelMultiple_Integration_Fuzz_Test is Integration_Test, Canc
         uint40 endTime
     )
         external
-        givenNotDelegateCalled
-        givenNoNull
-        givenAllStreamsWarm
-        givenCallerAuthorizedAllStreams
-        givenAllStreamsCancelable
+        whenNotDelegateCalled
+        whenNoNull
+        whenAllStreamsWarm
+        whenCallerAuthorizedAllStreams
+        whenAllStreamsCancelable
     {
         timeJump = _bound(timeJump, 0 seconds, defaults.TOTAL_DURATION() - 1 seconds);
         endTime = boundUint40(endTime, defaults.END_TIME(), defaults.END_TIME() + defaults.TOTAL_DURATION());

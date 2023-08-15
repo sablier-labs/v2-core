@@ -15,12 +15,12 @@ abstract contract IsStream_Integration_Concrete_Test is Integration_Test, Lockup
         assertFalse(isStream, "isStream");
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         defaultStreamId = createDefaultStream();
         _;
     }
 
-    function test_IsStream() external givenNotNull {
+    function test_IsStream() external whenNotNull {
         bool isStream = lockup.isStream(defaultStreamId);
         assertTrue(isStream, "isStream");
     }

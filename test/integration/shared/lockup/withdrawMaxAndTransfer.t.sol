@@ -11,15 +11,15 @@ abstract contract WithdrawMaxAndTransfer_Integration_Shared_Test is Lockup_Integ
         changePrank({ msgSender: users.recipient });
     }
 
-    modifier givenNotDelegateCalled() {
+    modifier whenNotDelegateCalled() {
         _;
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
-    modifier givenCallerCurrentRecipient() {
+    modifier whenCallerCurrentRecipient() {
         _;
     }
 
@@ -27,7 +27,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Shared_Test is Lockup_Integ
         _;
     }
 
-    modifier givenWithdrawableAmountNotZero() {
+    modifier whenWithdrawableAmountNotZero() {
         _;
     }
 }

@@ -15,11 +15,11 @@ abstract contract GetEndTime_Integration_Concrete_Test is Integration_Test, Lock
         lockup.getEndTime(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
-    function test_GetEndTime() external givenNotNull {
+    function test_GetEndTime() external whenNotNull {
         uint256 streamId = createDefaultStream();
         uint40 actualEndTime = lockup.getEndTime(streamId);
         uint40 expectedEndTime = defaults.END_TIME();

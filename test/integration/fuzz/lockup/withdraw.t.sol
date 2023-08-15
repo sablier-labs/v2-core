@@ -11,18 +11,18 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         Withdraw_Integration_Shared_Test.setUp();
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev when enough test runs, all of the following scenarios will be fuzzed:
     ///
     /// - Multiple values for the withdrawal address.
     function testFuzz_Withdraw_CallerApprovedOperator(address to)
         external
-        givenNotDelegateCalled
-        givenNotNull
+        whenNotDelegateCalled
+        whenNotNull
         givenStreamNotDepleted
-        givenCallerAuthorized
-        givenToNonZeroAddress
-        givenWithdrawAmountNotZero
-        givenWithdrawAmountNotGreaterThanWithdrawableAmount
+        whenCallerAuthorized
+        whenToNonZeroAddress
+        whenWithdrawAmountNotZero
+        whenWithdrawAmountNotGreaterThanWithdrawableAmount
     {
         vm.assume(to != address(0));
 
@@ -49,7 +49,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev when enough test runs, all of the following scenarios will be fuzzed:
     ///
     /// - Multiple values for the current time.
     /// - Multiple values for the withdrawal address.
@@ -60,13 +60,13 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         uint128 withdrawAmount
     )
         external
-        givenNotDelegateCalled
-        givenNotNull
-        givenCallerAuthorized
-        givenToNonZeroAddress
-        givenWithdrawAmountNotZero
-        givenWithdrawAmountNotGreaterThanWithdrawableAmount
-        givenCallerRecipient
+        whenNotDelegateCalled
+        whenNotNull
+        whenCallerAuthorized
+        whenToNonZeroAddress
+        whenWithdrawAmountNotZero
+        whenWithdrawAmountNotGreaterThanWithdrawableAmount
+        whenCallerRecipient
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
         vm.assume(to != address(0));
@@ -113,7 +113,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev when enough test runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past
     /// - End time in the present
@@ -126,14 +126,14 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         uint128 withdrawAmount
     )
         external
-        givenNotDelegateCalled
-        givenNotNull
-        givenCallerAuthorized
-        givenToNonZeroAddress
-        givenWithdrawAmountNotZero
-        givenWithdrawAmountNotGreaterThanWithdrawableAmount
-        givenCallerRecipient
-        givenStreamHasNotBeenCanceled
+        whenNotDelegateCalled
+        whenNotNull
+        whenCallerAuthorized
+        whenToNonZeroAddress
+        whenWithdrawAmountNotZero
+        whenWithdrawAmountNotGreaterThanWithdrawableAmount
+        whenCallerRecipient
+        whenStreamHasNotBeenCanceled
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
         vm.assume(to != address(0));

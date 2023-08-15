@@ -10,7 +10,7 @@ abstract contract StreamedAmountOf_Integration_Shared_Test is Lockup_Integration
         defaultStreamId = createDefaultStream();
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
@@ -22,11 +22,11 @@ abstract contract StreamedAmountOf_Integration_Shared_Test is Lockup_Integration
         _;
     }
 
-    modifier givenStatusStreaming() {
+    modifier whenStatusStreaming() {
         _;
     }
 
-    modifier givenStartTimeInThePast() {
+    modifier whenStartTimeInThePast() {
         _;
     }
 }

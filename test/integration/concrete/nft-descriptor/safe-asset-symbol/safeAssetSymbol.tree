@@ -1,8 +1,8 @@
 safeAssetSymbol.t.sol
-├── given a non ERC20 compliant asset
+├── when a non ERC20 compliant asset
 │   └── it should return a hard-coded value: ERC20
-└── given an ERC20 asset
-    ├── given the symbol is longer than 30 characters
+└── when an ERC20 asset
+    ├── when the symbol is longer than 30 characters
     │   └── it should return a hard-coded value: Long Symbol
-    └── given the symbol is not longer than 30 characters
+    └── when the symbol is not longer than 30 characters
         └── it should return the correct symbol value

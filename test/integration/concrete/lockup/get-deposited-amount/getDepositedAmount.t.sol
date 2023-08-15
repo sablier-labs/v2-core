@@ -15,11 +15,11 @@ abstract contract GetDepositedAmount_Integration_Concrete_Test is Integration_Te
         lockup.getDepositedAmount(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         _;
     }
 
-    function test_GetDepositedAmount() external givenNotNull {
+    function test_GetDepositedAmount() external whenNotNull {
         uint256 streamId = createDefaultStream();
         uint128 actualDepositedAmount = lockup.getDepositedAmount(streamId);
         uint128 expectedDepositedAmount = defaults.DEPOSIT_AMOUNT();

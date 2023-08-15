@@ -1,8 +1,8 @@
 refundableAmountOf.t.sol
-├── given the id references a null stream
+├── when the id references a null stream
 │  └── it should revert
-└── given the id does not reference a null stream
-   ├── when the stream is not cancelable
+└── when the id does not reference a null stream
+   ├── given the stream is not cancelable
    │  └── it should return zero
    └── given the stream is cancelable
       ├── given the stream has been canceled

@@ -1,7 +1,7 @@
 setFlashFee.t.sol
-├── given the caller is not the admin
+├── when the caller is not the admin
 │  └── it should revert
-└── given the caller is the admin
+└── when the caller is the admin
    ├── when the new flash fee is the same as the current flash fee
    │  ├── it should re-set the flash fee
    │  └── it should emit a {SetFlashFee} event

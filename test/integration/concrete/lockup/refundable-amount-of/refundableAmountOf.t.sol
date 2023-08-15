@@ -17,12 +17,12 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         lockup.refundableAmountOf(nullStreamId);
     }
 
-    modifier givenNotNull() {
+    modifier whenNotNull() {
         defaultStreamId = createDefaultStream();
         _;
     }
 
-    function test_RefundableAmountOf_StreamNotCancelable() external givenNotNull {
+    function test_RefundableAmountOf_StreamNotCancelable() external whenNotNull {
         uint256 streamId = createDefaultStreamNotCancelable();
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(streamId);
@@ -40,7 +40,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
 
     function test_RefundableAmountOf_StreamHasBeenCanceled_StatusCanceled()
         external
-        givenNotNull
+        whenNotNull
         givenStreamIsCancelable
         givenStreamHasBeenCanceled
     {
@@ -54,7 +54,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
     /// @dev This test warps a second time to ensure that {refundableAmountOf} ignores the current time.
     function test_RefundableAmountOf_StreamHasBeenCanceled_StatusDepleted()
         external
-        givenNotNull
+        whenNotNull
         givenStreamIsCancelable
         givenStreamHasBeenCanceled
     {
@@ -73,7 +73,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
 
     function test_RefundableAmountOf_StatusPending()
         external
-        givenNotNull
+        whenNotNull
         givenStreamIsCancelable
         givenStreamHasNotBeenCanceled
     {
@@ -85,7 +85,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
 
     function test_RefundableAmountOf_StatusStreaming()
         external
-        givenNotNull
+        whenNotNull
         givenStreamIsCancelable
         givenStreamHasNotBeenCanceled
     {
@@ -97,7 +97,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
 
     function test_RefundableAmountOf_StatusSettled()
         external
-        givenNotNull
+        whenNotNull
         givenStreamIsCancelable
         givenStreamHasNotBeenCanceled
     {
@@ -109,7 +109,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
 
     function test_RefundableAmountOf_StatusDepleted()
         external
-        givenNotNull
+        whenNotNull
         givenStreamIsCancelable
         givenStreamHasNotBeenCanceled
     {

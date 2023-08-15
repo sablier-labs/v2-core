@@ -27,11 +27,11 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
         assertEq(actualSymbol, expectedSymbol, "symbol");
     }
 
-    modifier givenERC20Asset() {
+    modifier whenERC20Asset() {
         _;
     }
 
-    function test_SafeAssetSymbol_LongSymbol() external givenERC20Asset {
+    function test_SafeAssetSymbol_LongSymbol() external whenERC20Asset {
         ERC20 asset =
         new ERC20({ name_: "Token", symbol_: "This symbol is has more than 30 characters and it should be ignored" });
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
@@ -39,11 +39,11 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
         assertEq(actualSymbol, expectedSymbol, "symbol");
     }
 
-    modifier givenSymbolNotLong() {
+    modifier whenSymbolNotLong() {
         _;
     }
 
-    function test_SafeAssetSymbol() external givenERC20Asset givenSymbolNotLong {
+    function test_SafeAssetSymbol() external whenERC20Asset whenSymbolNotLong {
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(dai));
         string memory expectedSymbol = dai.symbol();
         assertEq(actualSymbol, expectedSymbol, "symbol");

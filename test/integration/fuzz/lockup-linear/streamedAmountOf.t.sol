@@ -29,7 +29,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_StreamedAmountOf_CliffTimeInTheFuture(uint40 timeJump)
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
     {
         timeJump = boundUint40(timeJump, 0, defaults.CLIFF_DURATION() - 1);
@@ -56,7 +56,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 depositAmount
     )
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
         givenCliffTimeNotInTheFuture
     {
@@ -89,7 +89,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 depositAmount
     )
         external
-        givenNotNull
+        whenNotNull
         givenStreamHasNotBeenCanceled
         givenCliffTimeNotInTheFuture
     {

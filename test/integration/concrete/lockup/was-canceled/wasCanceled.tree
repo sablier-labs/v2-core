@@ -1,8 +1,8 @@
 wasCanceled.t.sol
-├── given the id references a null stream
+├── when the id references a null stream
 │  └── it should revert
-└── given the id does not reference a null stream
-   ├── when the stream was not canceled
+└── when the id does not reference a null stream
+   ├── given the stream was not canceled
    │  └── it should return false
-   └── when the stream was canceled
+   └── given the stream was canceled
       └── it should return true
