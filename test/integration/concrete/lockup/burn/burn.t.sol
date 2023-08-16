@@ -41,18 +41,13 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    function test_RevertWhen_StreamHasNotBeenDepleted_StatusPending()
-        external
-        whenNotDelegateCalled
-        whenNotNull
-        givenStreamHasNotBeenDepleted
-    {
+    function test_RevertWhen_StatusPending() external whenNotDelegateCalled whenNotNull givenStreamHasNotBeenDepleted {
         vm.warp({ timestamp: getBlockTimestamp() - 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StreamHasNotBeenDepleted_StatusStreaming()
+    function test_RevertWhen_StatusStreaming()
         external
         whenNotDelegateCalled
         whenNotNull
@@ -63,18 +58,13 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StreamHasNotBeenDepleted_StatusSettled()
-        external
-        whenNotDelegateCalled
-        whenNotNull
-        givenStreamHasNotBeenDepleted
-    {
+    function test_RevertWhen_StatusSettled() external whenNotDelegateCalled whenNotNull givenStreamHasNotBeenDepleted {
         vm.warp({ timestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StreamHasNotBeenDepleted_StatusCanceled()
+    function test_RevertWhen_StatusCanceled()
         external
         whenNotDelegateCalled
         whenNotNull
