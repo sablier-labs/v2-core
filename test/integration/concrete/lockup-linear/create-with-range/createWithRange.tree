@@ -14,9 +14,9 @@ createWithRange.t.sol
             ├── when the cliff time is not less than the end time
             │  └── it should revert
             └── when the cliff time is less than the end time
-               ├── given the end time is not in the future
+               ├── when the end time is not in the future
                │  └── it should revert
-               └── given the end time is in the future
+               └── when the end time is in the future
                   ├── given the protocol fee is too high
                   │  └── it should revert
                   └── given the protocol fee is not too high

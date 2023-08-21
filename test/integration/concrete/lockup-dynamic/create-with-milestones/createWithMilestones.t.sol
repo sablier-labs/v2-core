@@ -195,7 +195,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
     {
         // Disable both the protocol and the broker fee so that they don't interfere with the calculations.
         changePrank({ msgSender: users.admin });
@@ -235,7 +235,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
     {
         UD60x18 protocolFee = MAX_FEE + ud(1);
@@ -262,7 +262,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
         givenProtocolFeeNotTooHigh
     {
@@ -281,7 +281,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
         givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh
@@ -309,7 +309,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
         givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh
@@ -328,7 +328,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
         givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh

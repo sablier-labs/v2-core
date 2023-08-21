@@ -84,7 +84,7 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
     {
         uint40 endTime = defaults.END_TIME();
         vm.warp({ timestamp: defaults.END_TIME() });
@@ -99,7 +99,7 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
     {
         UD60x18 protocolFee = MAX_FEE + ud(1);
 
@@ -122,7 +122,7 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         givenProtocolFeeNotTooHigh
     {
         UD60x18 brokerFee = MAX_FEE + ud(1);
@@ -137,7 +137,7 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh
     {
@@ -153,7 +153,7 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh
         whenAssetContract
@@ -167,7 +167,7 @@ contract CreateWithRange_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh
         whenAssetContract

@@ -96,7 +96,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
     {
         depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
 
@@ -138,7 +138,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
     {
         protocolFee = _bound(protocolFee, MAX_FEE + ud(1), MAX_UD60x18);
@@ -165,7 +165,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
         givenProtocolFeeNotTooHigh
     {
@@ -215,7 +215,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         whenSegmentAmountsSumDoesNotOverflow
         whenStartTimeLessThanFirstSegmentMilestone
         whenSegmentMilestonesOrdered
-        givenEndTimeInTheFuture
+        whenEndTimeInTheFuture
         whenDepositAmountEqualToSegmentAmountsSum
         givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh

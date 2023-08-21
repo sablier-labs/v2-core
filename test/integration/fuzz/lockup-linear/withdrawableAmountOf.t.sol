@@ -33,7 +33,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    modifier givenCliffTimeNotInTheFuture() {
+    modifier whenCliffTimeNotInTheFuture() {
         // Disable the protocol fee so that it doesn't interfere with the calculations.
         changePrank({ msgSender: users.admin });
         comptroller.setProtocolFee({ asset: dai, newProtocolFee: ZERO });
@@ -55,7 +55,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         external
         givenNotNull
         givenStreamHasNotBeenCanceled
-        givenCliffTimeNotInTheFuture
+        whenCliffTimeNotInTheFuture
     {
         vm.assume(depositAmount != 0);
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
@@ -102,7 +102,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         external
         givenNotNull
         givenStreamHasNotBeenCanceled
-        givenCliffTimeNotInTheFuture
+        whenCliffTimeNotInTheFuture
         givenPreviousWithdrawals
     {
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);

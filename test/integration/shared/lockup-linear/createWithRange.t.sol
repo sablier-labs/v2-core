@@ -30,7 +30,7 @@ abstract contract CreateWithRange_Integration_Shared_Test is LockupLinear_Integr
         _;
     }
 
-    modifier givenEndTimeInTheFuture() {
+    modifier whenEndTimeInTheFuture() {
         _;
     }
 
