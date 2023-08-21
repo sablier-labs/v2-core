@@ -71,7 +71,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         givenNotNull
         whenCallerCurrentRecipient
         givenNFTNotBurned
-        whenWithdrawableAmountNotZero
+        givenWithdrawableAmountNotZero
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });

@@ -27,7 +27,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Shared_Test is Lockup_Integ
         _;
     }
 
-    modifier whenWithdrawableAmountNotZero() {
+    modifier givenWithdrawableAmountNotZero() {
         _;
     }
 }
