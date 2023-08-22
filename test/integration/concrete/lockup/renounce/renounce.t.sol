@@ -39,21 +39,21 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_RevertWhen_StatusDepleted() external whenNotDelegateCalled givenStreamCold {
+    function test_RevertGiven_StatusDepleted() external whenNotDelegateCalled givenStreamCold {
         vm.warp({ timestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamDepleted.selector, defaultStreamId));
         lockup.renounce(defaultStreamId);
     }
 
-    function test_RevertWhen_StatusCanceled() external whenNotDelegateCalled givenStreamCold {
+    function test_RevertGiven_StatusCanceled() external whenNotDelegateCalled givenStreamCold {
         vm.warp({ timestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamCanceled.selector, defaultStreamId));
         lockup.renounce(defaultStreamId);
     }
 
-    function test_RevertWhen_StatusSettled() external whenNotDelegateCalled givenStreamCold {
+    function test_RevertGiven_StatusSettled() external whenNotDelegateCalled givenStreamCold {
         vm.warp({ timestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, defaultStreamId));
         lockup.renounce(defaultStreamId);
@@ -83,7 +83,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_RevertWhen_StreamNotCancelable() external whenNotDelegateCalled givenStreamWarm whenCallerSender {
+    function test_RevertGiven_StreamNotCancelable() external whenNotDelegateCalled givenStreamWarm whenCallerSender {
         // Create the not cancelable stream.
         uint256 notCancelableStreamId = createDefaultStreamNotCancelable();
 
@@ -94,7 +94,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         lockup.renounce(notCancelableStreamId);
     }
 
-    modifier whenStreamCancelable() {
+    modifier givenStreamCancelable() {
         _;
     }
 
@@ -103,14 +103,14 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         whenNotDelegateCalled
         givenStreamWarm
         whenCallerSender
-        whenStreamCancelable
+        givenStreamCancelable
     {
         lockup.renounce(defaultStreamId);
         bool isCancelable = lockup.isCancelable(defaultStreamId);
         assertFalse(isCancelable, "isCancelable");
     }
 
-    modifier whenRecipientContract() {
+    modifier givenRecipientContract() {
         _;
     }
 
@@ -119,8 +119,8 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         whenNotDelegateCalled
         givenStreamWarm
         whenCallerSender
-        whenStreamCancelable
-        whenRecipientContract
+        givenStreamCancelable
+        givenRecipientContract
     {
         // Create the stream with a no-op contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(noop));
@@ -136,7 +136,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         assertFalse(isCancelable, "isCancelable");
     }
 
-    modifier whenRecipientImplementsHook() {
+    modifier givenRecipientImplementsHook() {
         _;
     }
 
@@ -145,9 +145,9 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         whenNotDelegateCalled
         givenStreamWarm
         whenCallerSender
-        whenStreamCancelable
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenStreamCancelable
+        givenRecipientContract
+        givenRecipientImplementsHook
     {
         // Create the stream with a reverting contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(revertingRecipient));
@@ -174,9 +174,9 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         whenNotDelegateCalled
         givenStreamWarm
         whenCallerSender
-        whenStreamCancelable
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenStreamCancelable
+        givenRecipientContract
+        givenRecipientImplementsHook
         whenRecipientDoesNotRevert
     {
         // Create the stream with a reentrant contract as the stream's recipient.
@@ -204,9 +204,9 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         whenNotDelegateCalled
         givenStreamWarm
         whenCallerSender
-        whenStreamCancelable
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenStreamCancelable
+        givenRecipientContract
+        givenRecipientImplementsHook
         whenRecipientDoesNotRevert
         whenNoRecipientReentrancy
     {

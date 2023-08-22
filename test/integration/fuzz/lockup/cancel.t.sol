@@ -53,8 +53,8 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         givenStreamCancelable
         givenStatusStreaming
         whenCallerSender
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenRecipientContract
+        givenRecipientImplementsHook
         whenRecipientDoesNotRevert
         whenNoRecipientReentrancy
     {
@@ -120,8 +120,8 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         givenStreamCancelable
         givenStatusStreaming
         whenCallerRecipient
-        whenSenderContract
-        whenSenderImplementsHook
+        givenSenderContract
+        givenSenderImplementsHook
         whenSenderDoesNotRevert
         whenNoSenderReentrancy
     {

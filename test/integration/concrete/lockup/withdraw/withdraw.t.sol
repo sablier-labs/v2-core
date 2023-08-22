@@ -242,8 +242,8 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoOverdraw
         whenCallerSender
         whenEndTimeInTheFuture
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenRecipientContract
+        givenRecipientImplementsHook
         whenRecipientDoesNotRevert
         whenNoRecipientReentrancy
     {
@@ -312,7 +312,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    modifier whenRecipientContract() {
+    modifier givenRecipientContract() {
         _;
     }
 
@@ -328,7 +328,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenCallerSender
         whenEndTimeInTheFuture
         whenStreamHasNotBeenCanceled
-        whenRecipientContract
+        givenRecipientContract
     {
         // Create the stream with a no-op contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(noop));
@@ -356,7 +356,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    modifier whenRecipientImplementsHook() {
+    modifier givenRecipientImplementsHook() {
         _;
     }
 
@@ -372,8 +372,8 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenCallerSender
         whenEndTimeInTheFuture
         whenStreamHasNotBeenCanceled
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenRecipientContract
+        givenRecipientImplementsHook
     {
         // Create the stream with a reverting contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(revertingRecipient));
@@ -417,8 +417,8 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenCallerSender
         whenEndTimeInTheFuture
         whenStreamHasNotBeenCanceled
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenRecipientContract
+        givenRecipientImplementsHook
         whenRecipientDoesNotRevert
     {
         // Create the stream with a reentrant contract as the stream's recipient.
@@ -466,8 +466,8 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenCallerSender
         whenEndTimeInTheFuture
         whenStreamHasNotBeenCanceled
-        whenRecipientContract
-        whenRecipientImplementsHook
+        givenRecipientContract
+        givenRecipientImplementsHook
         whenRecipientDoesNotRevert
         whenNoRecipientReentrancy
     {

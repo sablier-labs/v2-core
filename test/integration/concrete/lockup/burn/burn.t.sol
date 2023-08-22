@@ -41,7 +41,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    function test_RevertWhen_StatusPending()
+    function test_RevertGiven_StatusPending()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -52,7 +52,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StatusStreaming()
+    function test_RevertGiven_StatusStreaming()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -63,7 +63,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StatusSettled()
+    function test_RevertGiven_StatusSettled()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -74,7 +74,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    function test_RevertWhen_StatusCanceled()
+    function test_RevertGiven_StatusCanceled()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -107,7 +107,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    function test_RevertWhen_NFTDoesNotExist()
+    function test_RevertGiven_NFTDoesNotExist()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -122,7 +122,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    modifier whenNFTExists() {
+    modifier givenNFTExists() {
         _;
     }
 
@@ -132,7 +132,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         givenNotNull
         givenStreamHasBeenDepleted
         whenCallerAuthorized
-        whenNFTExists
+        givenNFTExists
     {
         // Approve the operator to handle the stream.
         lockup.approve({ to: users.operator, tokenId: streamId });
@@ -154,7 +154,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         givenNotNull
         givenStreamHasBeenDepleted
         whenCallerAuthorized
-        whenNFTExists
+        givenNFTExists
     {
         lockup.burn(streamId);
         vm.expectRevert("ERC721: invalid token ID");

@@ -76,7 +76,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         assertEq(actualStatus, expectedStatus);
     }
 
-    modifier whenRefundableAmountNotZero() {
+    modifier givenRefundableAmountNotZero() {
         _;
     }
 
@@ -86,7 +86,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         givenAssetsNotFullyWithdrawn
         givenStreamNotCanceled
         whenStartTimeNotInTheFuture
-        whenRefundableAmountNotZero
+        givenRefundableAmountNotZero
     {
         vm.warp({ timestamp: defaults.START_TIME() + 1 seconds });
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
