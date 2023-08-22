@@ -26,7 +26,7 @@ abstract contract StreamedAmountOf_Integration_Shared_Test is Lockup_Integration
         _;
     }
 
-    modifier givenStartTimeInThePast() {
+    modifier whenStartTimeInThePast() {
         _;
     }
 }

@@ -48,7 +48,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         givenNotNull
         givenStreamHasNotBeenCanceled
         givenStatusStreaming
-        givenStartTimeInThePast
+        whenStartTimeInThePast
     {
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.START_TIME() + 2000 seconds });
@@ -70,7 +70,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    modifier whenMultipleSegments() {
+    modifier givenMultipleSegments() {
         _;
     }
 
@@ -79,8 +79,8 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         givenNotNull
         givenStreamHasNotBeenCanceled
         givenStatusStreaming
-        whenMultipleSegments
-        givenStartTimeInThePast
+        givenMultipleSegments
+        whenStartTimeInThePast
     {
         // Warp 1 second to the future.
         vm.warp({ timestamp: defaults.START_TIME() + 1 seconds });
@@ -100,8 +100,8 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         givenNotNull
         givenStreamHasNotBeenCanceled
         givenStatusStreaming
-        givenStartTimeInThePast
-        whenMultipleSegments
+        whenStartTimeInThePast
+        givenMultipleSegments
         whenCurrentMilestoneNot1st
     {
         // Simulate the passage of time. 750 seconds is ~10% of the way in the second segment.

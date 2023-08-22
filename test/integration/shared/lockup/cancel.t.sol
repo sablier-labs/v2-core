@@ -52,11 +52,11 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         _;
     }
 
-    modifier whenRecipientContract() {
+    modifier givenRecipientContract() {
         _;
     }
 
-    modifier whenRecipientImplementsHook() {
+    modifier givenRecipientImplementsHook() {
         _;
     }
 
@@ -73,11 +73,11 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         _;
     }
 
-    modifier whenSenderContract() {
+    modifier givenSenderContract() {
         _;
     }
 
-    modifier whenSenderImplementsHook() {
+    modifier givenSenderImplementsHook() {
         _;
     }
 

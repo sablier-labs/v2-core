@@ -16,14 +16,14 @@ renounce.t.sol
          ├── when the caller is not the sender
          │  └── it should revert
          └── when the caller is the sender
-            ├── when the recipient is not a contract
+            ├── given the recipient is not a contract
             │  └── it should renounce the stream
-            └── when the recipient is a contract
-               ├── when the recipient does not implement the hook
+            └── given the recipient is a contract
+               ├── given the recipient does not implement the hook
                │  ├── it should renounce the stream
                │  ├── it should call the recipient hook
                │  └── it should ignore the revert
-               └── when the recipient implements the hook
+               └── given the recipient implements the hook
                   ├── when the recipient reverts
                   │  ├── it should renounce the stream
                   │  ├── it should call the recipient hook
