@@ -62,6 +62,9 @@ contract SablierV2LockupDynamic is
     /// @dev Sablier V2 Lockup Dynamic streams mapped by unsigned integer ids.
     mapping(uint256 id => LockupDynamic.Stream stream) private _streams;
 
+    /// @dev Sablier V2 Lockup Dynamic streamIds mapped by recipient addresses.
+    mapping(address recipient => uint256[] streamIds) private _streamsByUser;
+
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
@@ -166,6 +169,11 @@ contract SablierV2LockupDynamic is
         if (_statusOf(streamId) == Lockup.Status.SETTLED) {
             stream.isCancelable = false;
         }
+    }
+
+    /// @inheritdoc ISablierV2LockupDynamic
+    function getStreamsByUser(address recipient) external view returns (uint256[] memory) {
+        return _streamsByUser[recipient];
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -572,6 +580,10 @@ contract SablierV2LockupDynamic is
             // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
             nextStreamId = streamId + 1;
             protocolRevenues[params.asset] = protocolRevenues[params.asset] + createAmounts.protocolFee;
+
+            // Effects: update the _streamsByUser mapping.
+            // Using unchecked because no possibility of overflow.
+            _streamsByUser[params.recipient].push(streamId);
         }
 
         // Effects: mint the NFT to the recipient.

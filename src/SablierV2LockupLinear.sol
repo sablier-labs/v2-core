@@ -50,6 +50,9 @@ contract SablierV2LockupLinear is
     /// @dev Sablier V2 Lockup Linear streams mapped by unsigned integers.
     mapping(uint256 id => LockupLinear.Stream stream) private _streams;
 
+    /// @dev Sablier V2 Lockup Linear streamIds mapped by recipient addresses.
+    mapping(address recipient => uint256[] streamIds) private _streamsByUser;
+
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
@@ -149,6 +152,11 @@ contract SablierV2LockupLinear is
         if (_statusOf(streamId) == Lockup.Status.SETTLED) {
             stream.isCancelable = false;
         }
+    }
+
+    /// @inheritdoc ISablierV2LockupLinear
+    function getStreamsByUser(address recipient) external view returns (uint256[] memory) {
+        return _streamsByUser[recipient];
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -474,9 +482,13 @@ contract SablierV2LockupLinear is
             wasCanceled: false
         });
 
-        // Effects: bump the next stream id and record the protocol fee.
-        // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
         unchecked {
+            // Effects: update the _streamsByUser mapping.
+            // Using unchecked because no possibility of overflow.
+            _streamsByUser[params.recipient].push(streamId);
+
+            // Effects: bump the next stream id and record the protocol fee.
+            // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
             nextStreamId = streamId + 1;
             protocolRevenues[params.asset] = protocolRevenues[params.asset] + createAmounts.protocolFee;
         }

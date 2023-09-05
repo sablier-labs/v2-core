@@ -57,6 +57,10 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @param streamId The stream id for the query.
     function getStream(uint256 streamId) external view returns (LockupLinear.Stream memory stream);
 
+    /// @notice Retrieves the stream Ids belonging to a recipient addresses.
+    /// @param recipient The recipient address for the query.
+    function getStreamsByUser(address recipient) external view returns (uint256[] memory streamIds);
+
     /// @notice Calculates the amount streamed to the recipient, denoted in units of the asset's decimals.
     ///
     /// When the stream is warm, the streaming function is:
