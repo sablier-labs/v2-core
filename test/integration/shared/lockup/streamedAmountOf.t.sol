@@ -8,6 +8,7 @@ abstract contract StreamedAmountOf_Integration_Shared_Test is Lockup_Integration
 
     function setUp() public virtual override {
         defaultStreamId = createDefaultStream();
+        changePrank({ msgSender: users.recipient });
     }
 
     modifier givenNotNull() {

@@ -128,6 +128,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         vm.warp({ timestamp: currentTime });
 
         // Make the withdrawal.
+        changePrank({ msgSender: users.recipient });
         lockupLinear.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
 
         // Run the test.

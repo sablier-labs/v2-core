@@ -9,7 +9,9 @@ import { Integration_Test } from "../../../Integration.t.sol";
 abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Test, Lockup_Integration_Shared_Test {
     uint256 internal defaultStreamId;
 
-    function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) { }
+    function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) {
+        changePrank({ msgSender: users.recipient });
+    }
 
     function test_RevertGiven_Null() external {
         uint256 nullStreamId = 1729;
@@ -114,6 +116,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         givenStreamHasNotBeenCanceled
     {
         vm.warp({ timestamp: defaults.END_TIME() });
+        changePrank({ msgSender: users.recipient });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
         uint128 expectedReturnableAmount = 0;

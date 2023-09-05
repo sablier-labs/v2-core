@@ -101,6 +101,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         vm.warp({ timestamp: currentTime });
 
         // Make the withdrawal.
+        changePrank({ msgSender: users.recipient });
         lockupDynamic.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
 
         // Run the test.

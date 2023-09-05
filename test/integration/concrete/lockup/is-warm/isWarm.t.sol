@@ -49,6 +49,7 @@ abstract contract IsWarm_Integration_Concrete_Test is Integration_Test, Lockup_I
 
     function test_IsWarm_StatusDepleted() external givenNotNull {
         vm.warp({ timestamp: defaults.END_TIME() });
+        changePrank({ msgSender: users.recipient });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         bool isWarm = lockup.isWarm(defaultStreamId);
         assertFalse(isWarm, "isWarm");

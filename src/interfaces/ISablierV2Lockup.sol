@@ -241,13 +241,12 @@ interface ISablierV2Lockup is
     ///
     /// Notes:
     /// - This function attempts to invoke a hook on the stream's recipient, provided that the recipient is a contract
-    /// and `msg.sender` is either the sender or an approved operator.
+    /// and `msg.sender` is an approved operator.
     ///
     /// Requirements:
     /// - Must not be delegate called.
     /// - `streamId` must not reference a null or depleted stream.
-    /// - `msg.sender` must be the stream's sender, the stream's recipient or an approved third party.
-    /// - `to` must be the recipient if `msg.sender` is the stream's sender.
+    /// - `msg.sender` must be the stream's recipient or an approved third party.
     /// - `to` must not be the zero address.
     /// - `amount` must be greater than zero and must not exceed the withdrawable amount.
     ///

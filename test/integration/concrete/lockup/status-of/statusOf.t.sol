@@ -25,6 +25,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
 
     function test_StatusOf_AssetsFullyWithdrawn() external givenNotNull {
         vm.warp({ timestamp: defaults.END_TIME() });
+        changePrank({ msgSender: users.recipient });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
         Lockup.Status expectedStatus = Lockup.Status.DEPLETED;

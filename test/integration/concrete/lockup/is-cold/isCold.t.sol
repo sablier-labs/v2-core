@@ -49,6 +49,7 @@ abstract contract IsCold_Integration_Concrete_Test is Integration_Test, Lockup_I
 
     function test_IsCold_StatusDepleted() external givenNotNull {
         vm.warp({ timestamp: defaults.END_TIME() });
+        changePrank({ msgSender: users.recipient });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         bool isCold = lockup.isCold(defaultStreamId);
         assertTrue(isCold, "isCold");

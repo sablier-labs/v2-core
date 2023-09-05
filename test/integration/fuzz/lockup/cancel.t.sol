@@ -72,7 +72,9 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
 
         // Make the withdrawal only if the amount is greater than zero.
         if (withdrawAmount > 0) {
+            changePrank({ msgSender: address(goodRecipient) });
             lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
+            changePrank({ msgSender: users.sender });
         }
 
         // Expect the assets to be refunded to the Sender.

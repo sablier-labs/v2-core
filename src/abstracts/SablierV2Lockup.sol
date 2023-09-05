@@ -235,14 +235,9 @@ abstract contract SablierV2Lockup is
             revert Errors.SablierV2Lockup_StreamDepleted(streamId);
         }
 
-        // Checks: `msg.sender` is the stream's sender, the stream's recipient, or an approved third party.
-        if (!_isCallerStreamSender(streamId) && !_isCallerStreamRecipientOrApproved(streamId)) {
+        // Checks: `msg.sender` is the stream's recipient, or an approved third party.
+        if (!_isCallerStreamRecipientOrApproved(streamId)) {
             revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);
-        }
-
-        // Checks: if `msg.sender` is the stream's sender, the withdrawal address must be the recipient.
-        if (_isCallerStreamSender(streamId) && to != _ownerOf(streamId)) {
-            revert Errors.SablierV2Lockup_InvalidSenderWithdrawal(streamId, msg.sender, to);
         }
 
         // Checks: the withdrawal address is not zero.

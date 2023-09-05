@@ -28,10 +28,7 @@ withdraw.t.sol
                       ├── when the caller is the recipient
                       │  ├── it should make the withdrawal
                       │  └── it should update the withdrawn amount
-                      ├── when the caller is an approved third party
-                      │  ├── it should make the withdrawal
-                      │  └── it should update the withdrawn amount
-                      └── when the caller is the sender
+                      └── when the caller is an approved third party
                          ├── given the end time is not in the future
                          │  ├── it should make the withdrawal
                          │  ├── it should mark the stream as depleted

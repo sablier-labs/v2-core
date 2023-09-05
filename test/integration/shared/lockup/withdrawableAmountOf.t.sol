@@ -6,7 +6,9 @@ import { Lockup_Integration_Shared_Test } from "./Lockup.t.sol";
 abstract contract WithdrawableAmountOf_Integration_Shared_Test is Lockup_Integration_Shared_Test {
     uint256 internal defaultStreamId;
 
-    function setUp() public virtual override { }
+    function setUp() public virtual override {
+        changePrank({ msgSender: users.recipient });
+    }
 
     modifier givenNotNull() {
         defaultStreamId = createDefaultStream();

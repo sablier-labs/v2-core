@@ -14,6 +14,7 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Lockup_Integration
         earlyStopTime = defaults.WARP_26_PERCENT();
         originalTime = getBlockTimestamp();
         createTestStreams();
+        changePrank({ msgSender: users.recipient });
     }
 
     /// @dev Creates the default streams used throughout the tests.
@@ -63,12 +64,9 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Lockup_Integration
     }
 
     /// @dev This modifier runs the test in three different modes:
-    /// - Stream's sender as caller
     /// - Stream's recipient as caller
     /// - Approved NFT operator as caller
     modifier whenCallerAuthorizedAllStreams() {
-        caller = users.sender;
-        _;
         createTestStreams();
         caller = users.recipient;
         changePrank({ msgSender: users.recipient });
