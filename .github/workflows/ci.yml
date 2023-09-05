@@ -79,7 +79,7 @@ jobs:
       - name: "Generate and prepare the contract artifacts"
         run: "./shell/prepare-artifacts.sh"
         
-      - name: "Generate the testing contracts"
+      - name: "Build the test contracts"
         run: "FOUNDRY_PROFILE=test-optimized forge build"
 
       - name: "Cache the build so that it can be re-used by the other jobs"
