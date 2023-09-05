@@ -63,6 +63,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         bool isSettled;
         LockupDynamic.Range range;
         uint256 streamId;
+        uint256[] recipientStreamId;
         // Create vars
         uint256 actualBrokerBalance;
         uint256 actualHolderBalance;
@@ -92,6 +93,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
     ///
     /// - It should perform all expected ERC-20 transfers.
     /// - It should create the stream.
+    /// - It should update the _streamsByUser.
     /// - It should bump the next stream id.
     /// - It should record the protocol fee.
     /// - It should mint the NFT.
@@ -217,6 +219,10 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
             vars.expectedStatus = Lockup.Status.STREAMING;
         }
         assertEq(vars.actualStatus, vars.expectedStatus, "post-create stream status");
+
+        // Assert that _streamsByUser has been updated
+        vars.recipientStreamId = lockupDynamic.getStreamsByUser(params.recipient);
+        assertEq(vars.recipientStreamId[0], vars.streamId, "post-create _streamsByUser update status");
 
         // Assert that the next stream id has been bumped.
         vars.actualNextStreamId = lockupDynamic.nextStreamId();

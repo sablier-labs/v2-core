@@ -63,6 +63,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         bool isDepleted;
         bool isSettled;
         uint256 streamId;
+        uint256[] recipientStreamId;
         // Create vars
         uint256 actualBrokerBalance;
         uint256 actualNextStreamId;
@@ -89,6 +90,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
     ///
     /// - It should perform all expected ERC-20 transfers.
     /// - It should create the stream.
+    /// - It should update the _streamsByUser.
     /// - It should bump the next stream id.
     /// - It should record the protocol fee.
     /// - It should mint the NFT.
@@ -206,6 +208,10 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         vars.actualStatus = lockupLinear.statusOf(vars.streamId);
         vars.expectedStatus = params.range.start > currentTime ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
         assertEq(vars.actualStatus, vars.expectedStatus, "post-create stream status");
+
+        // Assert that _streamsByUser has been updated
+        vars.recipientStreamId = lockupLinear.getStreamsByUser(params.recipient);
+        assertEq(vars.recipientStreamId[0], vars.streamId, "post-create _streamsByUser update status");
 
         // Assert that the next stream id has been bumped.
         vars.actualNextStreamId = lockupLinear.nextStreamId();
