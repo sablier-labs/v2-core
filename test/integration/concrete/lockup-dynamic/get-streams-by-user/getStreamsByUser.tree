@@ -1,0 +1,5 @@
+ getStreamsByUser.t.sol
+ ├── when the recipient has no registered stream
+ │   └── it should return an empty array
+ └── when the recipient has atleast one registered stream
+     └── it should return an array of stream Ids belonging to that recipient
