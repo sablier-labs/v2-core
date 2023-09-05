@@ -96,7 +96,6 @@ jobs:
         with:
           name: "contract-artifacts"
           path: "artifacts"
-      
       - name: "Add build summary"
         run: |
           echo "## Build result" >> $GITHUB_STEP_SUMMARY
