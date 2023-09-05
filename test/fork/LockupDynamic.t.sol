@@ -92,6 +92,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
     ///
     /// - It should perform all expected ERC-20 transfers.
     /// - It should create the stream.
+    /// - It should update the _streamsByUser.
     /// - It should bump the next stream id.
     /// - It should record the protocol fee.
     /// - It should mint the NFT.
