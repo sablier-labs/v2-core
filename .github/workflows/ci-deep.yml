@@ -80,13 +80,17 @@ jobs:
       - name: "Produce an optimized build with --via-ir"
         run: "FOUNDRY_PROFILE=optimized forge build"
 
+      - name: "Produce the test contracts"
+        run: "FOUNDRY_PROFILE=test-optimized forge build"  
+
       - name: "Cache the build so that it can be re-used by the other jobs"
         uses: "actions/cache/save@v3"
         with:
-          path: |
-            out-optimized
-            cache
           key: "foundry-build-${{ github.sha }}"
+          path: |
+            cache
+            out
+            out-optimized
 
       - name: "Add build summary"
         run: |
@@ -113,8 +117,9 @@ jobs:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
-            out-optimized
             cache
+            out
+            out-optimized
 
       - name: "Run the unit tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/unit\""
@@ -144,8 +149,9 @@ jobs:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
-            out-optimized
             cache
+            out
+            out-optimized
 
       - name: "Run the integration tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\""
@@ -176,8 +182,9 @@ jobs:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
-            out-optimized
             cache
+            out
+            out-optimized
 
       - name: "Run the invariant tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant/**/*.sol\""
@@ -207,8 +214,9 @@ jobs:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
-            out-optimized
             cache
+            out
+            out-optimized
 
       - name: "Run the fork tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/fork/**/*.sol\""
