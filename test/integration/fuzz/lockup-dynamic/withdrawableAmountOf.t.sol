@@ -23,7 +23,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         // Disable the protocol fee so that it doesn't interfere with the calculations.
         changePrank({ msgSender: users.admin });
         comptroller.setProtocolFee({ asset: dai, newProtocolFee: ZERO });
-        changePrank({ msgSender: users.sender });
+        changePrank({ msgSender: users.recipient });
     }
 
     modifier whenStartTimeInThePast() {
@@ -101,7 +101,6 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         vm.warp({ timestamp: currentTime });
 
         // Make the withdrawal.
-        changePrank({ msgSender: users.recipient });
         lockupDynamic.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
 
         // Run the test.

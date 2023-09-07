@@ -39,7 +39,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_Sender()
+    function test_RevertWhen_CallerSender()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -147,8 +147,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
 
+        // Make Alice the `to` address in this test.
+        address to = users.alice;
+
         // Make the withdrawal.
-        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.WITHDRAW_AMOUNT() });
+        lockup.withdraw({ streamId: defaultStreamId, to: to, amount: defaults.WITHDRAW_AMOUNT() });
 
         // Assert that the withdrawn amount has been updated.
         uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);
@@ -305,7 +308,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         // Create the stream with a no-op contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(noop));
 
-        approveOperatorFromCaller(address(noop), streamId, users.operator);
+        approveOperatorFromCaller({ caller: address(noop), streamId_: streamId, operator: users.operator });
 
         // Expect a call to the hook.
         vm.expectCall(
@@ -352,7 +355,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         // Create the stream with a reverting contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(revertingRecipient));
 
-        approveOperatorFromCaller(address(revertingRecipient), streamId, users.operator);
+        approveOperatorFromCaller({ caller: address(revertingRecipient), streamId_: streamId, operator: users.operator });
 
         // Expect a call to the hook.
         vm.expectCall(
@@ -400,7 +403,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         // Create the stream with a reentrant contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(reentrantRecipient));
 
-        approveOperatorFromCaller(address(reentrantRecipient), streamId, users.operator);
+        approveOperatorFromCaller({ caller: address(reentrantRecipient), streamId_: streamId, operator: users.operator });
 
         // Halve the withdraw amount so that the recipient can re-entry and make another withdrawal.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT() / 2;
@@ -452,7 +455,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         // Create the stream with a contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
 
-        approveOperatorFromCaller(address(goodRecipient), streamId, users.operator);
+        approveOperatorFromCaller({ caller: address(goodRecipient), streamId_: streamId, operator: users.operator });
 
         // Set the withdraw amount to the streamed amount.
         uint128 withdrawAmount = lockup.streamedAmountOf(streamId);
@@ -491,9 +494,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     /// @dev Changes the `msg.sender` to the given `caller` and approves the `operator`, and then changes the
     /// `msg.sender` to `operator`.
-    function approveOperatorFromCaller(address caller, uint256 streamId, address operator) internal {
+    function approveOperatorFromCaller(address caller, uint256 streamId_, address operator) internal {
         changePrank({ msgSender: caller });
-        lockup.approve({ to: operator, tokenId: streamId });
+        lockup.approve({ to: operator, tokenId: streamId_ });
         changePrank({ msgSender: operator });
     }
 }

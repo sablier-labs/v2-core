@@ -37,7 +37,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         // Disable the protocol fee so that it doesn't interfere with the calculations.
         changePrank({ msgSender: users.admin });
         comptroller.setProtocolFee({ asset: dai, newProtocolFee: ZERO });
-        changePrank({ msgSender: users.sender });
+        changePrank({ msgSender: users.recipient });
         _;
     }
 
@@ -60,8 +60,8 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         vm.assume(depositAmount != 0);
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
 
-        // Mint enough assets to the Sender.
-        deal({ token: address(dai), to: users.sender, give: depositAmount });
+        // Mint enough assets to the Recipient.
+        deal({ token: address(dai), to: users.recipient, give: depositAmount });
 
         // Create the stream. The broker fee is disabled so that it doesn't interfere with the calculations.
         LockupLinear.CreateWithRange memory params = defaults.createWithRange();
@@ -115,8 +115,8 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 streamedAmount = calculateStreamedAmount(currentTime, depositAmount);
         withdrawAmount = boundUint128(withdrawAmount, 1, streamedAmount);
 
-        // Mint enough assets to the Sender.
-        deal({ token: address(dai), to: users.sender, give: depositAmount });
+        // Mint enough assets to the Recipient.
+        deal({ token: address(dai), to: users.recipient, give: depositAmount });
 
         // Create the stream. The broker fee is disabled so that it doesn't interfere with the calculations.
         LockupLinear.CreateWithRange memory params = defaults.createWithRange();
@@ -128,7 +128,6 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         vm.warp({ timestamp: currentTime });
 
         // Make the withdrawal.
-        changePrank({ msgSender: users.recipient });
         lockupLinear.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
 
         // Run the test.

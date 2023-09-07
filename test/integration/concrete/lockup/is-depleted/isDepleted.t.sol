@@ -9,9 +9,7 @@ import { Integration_Test } from "../../../Integration.t.sol";
 abstract contract IsDepleted_Integration_Concrete_Test is Integration_Test, Lockup_Integration_Shared_Test {
     uint256 internal defaultStreamId;
 
-    function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) {
-        changePrank({ msgSender: users.recipient });
-    }
+    function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) { }
 
     function test_RevertGiven_Null() external {
         uint256 nullStreamId = 1729;
@@ -31,6 +29,7 @@ abstract contract IsDepleted_Integration_Concrete_Test is Integration_Test, Lock
 
     modifier givenStreamDepleted() {
         vm.warp({ timestamp: defaults.END_TIME() });
+        changePrank({ msgSender: users.recipient });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         _;
     }
