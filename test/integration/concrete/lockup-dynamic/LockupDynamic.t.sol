@@ -30,6 +30,7 @@ import { Renounce_Integration_Concrete_Test } from "../lockup/renounce/renounce.
 import { SetComptroller_Integration_Concrete_Test } from "../lockup/set-comptroller/setComptroller.t.sol";
 import { SetNFTDescriptor_Integration_Concrete_Test } from "../lockup/set-nft-descriptor/setNFTDescriptor.t.sol";
 import { StatusOf_Integration_Concrete_Test } from "../lockup/status-of/statusOf.t.sol";
+import { TransferFrom_Integration_Concrete_Test } from "../lockup/transfer-from/transferFrom.t.sol";
 import { Withdraw_Integration_Concrete_Test } from "../lockup/withdraw/withdraw.t.sol";
 import { WasCanceled_Integration_Concrete_Test } from "../lockup/was-canceled/wasCanceled.t.sol";
 import { WithdrawMax_Integration_Concrete_Test } from "../lockup/withdraw-max/withdrawMax.t.sol";
@@ -388,6 +389,20 @@ contract StatusOf_LockupDynamic_Integration_Concrete_Test is
     {
         LockupDynamic_Integration_Concrete_Test.setUp();
         StatusOf_Integration_Concrete_Test.setUp();
+    }
+}
+
+contract TransferFrom_LockupDynamic_Integration_Concrete_Test is
+    LockupDynamic_Integration_Concrete_Test,
+    TransferFrom_Integration_Concrete_Test
+{
+    function setUp()
+        public
+        virtual
+        override(LockupDynamic_Integration_Concrete_Test, TransferFrom_Integration_Concrete_Test)
+    {
+        LockupDynamic_Integration_Concrete_Test.setUp();
+        TransferFrom_Integration_Concrete_Test.setUp();
     }
 }
 

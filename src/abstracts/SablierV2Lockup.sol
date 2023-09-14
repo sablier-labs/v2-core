@@ -324,11 +324,34 @@ abstract contract SablierV2Lockup is
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @notice Overrides the internal ERC-721 transfer function to emit an ERC-4906 event upon transfer. The goal is to
+    /// refresh the NFT metadata on external platforms.
+    /// @dev This event is also emitted when the NFT is minted or burned.
+    function _afterTokenTransfer(
+        address, /* from */
+        address, /* to */
+        uint256 streamId,
+        uint256 /* batchSize */
+    )
+        internal
+        override
+        updateMetadata(streamId)
+    { }
+
     /// @notice Overrides the internal ERC-721 transfer function to check that the stream is transferable.
     /// @dev There are two cases when the transferable flag is ignored:
     /// - If `from` is 0, then the transfer is a mint and is allowed.
     /// - If `to` is 0, then the transfer is a burn and is also allowed.
-    function _beforeTokenTransfer(address from, address to, uint256 streamId, uint256) internal view override {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 streamId,
+        uint256 /* batchSize */
+    )
+        internal
+        view
+        override
+    {
         if (!isTransferable(streamId) && to != address(0) && from != address(0)) {
             revert Errors.SablierV2Lockup_NotTransferrable(streamId);
         }
