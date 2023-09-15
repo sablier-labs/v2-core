@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 // solhint-disable max-line-length,no-console,quotes
-pragma solidity >=0.8.19 <0.9.0;
+pragma solidity >=0.8.21 <0.9.0;
 
 import { console2 } from "forge-std/console2.sol";
 import { LibString } from "solady/utils/LibString.sol";
