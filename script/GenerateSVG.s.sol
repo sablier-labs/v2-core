@@ -19,12 +19,12 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
 
     /// @param progress The streamed amount as a numerical percentage with 4 implied decimals.
     /// @param status The status of the stream, as a string.
-    /// @param streamed The abbreviated streamed amount, as a string.
+    /// @param total The abbreviated deposited amount, as a string.
     /// @param duration The total duration of the stream in days, as a number.
     function run(
         uint256 progress,
         string memory status,
-        string memory streamed,
+        string memory total,
         uint256 duration
     )
         public
@@ -41,8 +41,8 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
                 progress: stringifyPercentage(progress),
                 progressNumerical: progress,
                 status: status,
-                streamed: streamed.equal("0") ? "0" : string.concat(SVGElements.SIGN_GE, " ", streamed),
-                streamingModel: "Lockup Linear"
+                streamingModel: "Lockup Linear",
+                total: string.concat(SVGElements.SIGN_GE, " ", total)
             })
         );
     }
