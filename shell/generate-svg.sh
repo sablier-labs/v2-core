@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Notes:
-# - There are four input arguments: progress, status, total, and duration
+# - There are four input arguments: progress, status, total amount, and duration
 
 # Pre-requisites:
 # - foundry (https://getfoundry.sh)

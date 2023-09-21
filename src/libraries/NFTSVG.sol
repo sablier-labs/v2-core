@@ -58,7 +58,7 @@ library NFTSVG {
         (vars.statusWidth, vars.statusCard) =
             SVGElements.card({ cardType: SVGElements.CardType.STATUS, content: params.status });
 
-        // Generate the total card.
+        // Generate the total amount card.
         (vars.totalWidth, vars.totalCard) =
             SVGElements.card({ cardType: SVGElements.CardType.TOTAL, content: params.total });
 
