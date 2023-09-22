@@ -63,7 +63,7 @@ library SVGElements {
     enum CardType {
         PROGRESS,
         STATUS,
-        TOTAL,
+        AMOUNT,
         DURATION
     }
 
@@ -258,8 +258,8 @@ library SVGElements {
             return "Progress";
         } else if (cardType == CardType.STATUS) {
             return "Status";
-        } else if (cardType == CardType.TOTAL) {
-            return "Total";
+        } else if (cardType == CardType.AMOUNT) {
+            return "Amount";
         } else {
             return "Duration";
         }

@@ -63,6 +63,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         vars.svg = NFTSVG.generateSVG(
             NFTSVG.SVGParams({
                 accentColor: generateAccentColor(address(sablier), streamId),
+                amount: abbreviateAmount({ amount: vars.depositedAmount, decimals: safeAssetDecimals(vars.asset) }),
                 assetAddress: vars.asset.toHexString(),
                 assetSymbol: vars.assetSymbol,
                 duration: calculateDurationInDays({
@@ -73,8 +74,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
                 progress: stringifyPercentage(vars.streamedPercentage),
                 progressNumerical: vars.streamedPercentage,
                 status: vars.status,
-                streamingModel: vars.streamingModel,
-                total: abbreviateAmount({ amount: vars.depositedAmount, decimals: safeAssetDecimals(vars.asset) })
+                streamingModel: vars.streamingModel
             })
         );
 

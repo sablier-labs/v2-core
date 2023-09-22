@@ -13,6 +13,7 @@ library NFTSVG {
 
     struct SVGParams {
         string accentColor;
+        string amount;
         string assetAddress;
         string assetSymbol;
         string duration;
@@ -21,10 +22,12 @@ library NFTSVG {
         string sablierAddress;
         string status;
         string streamingModel;
-        string total;
     }
 
     struct SVGVars {
+        string amountCard;
+        uint256 amountWidth;
+        uint256 amountXPosition;
         string cards;
         uint256 cardsWidth;
         string durationCard;
@@ -36,9 +39,6 @@ library NFTSVG {
         string statusCard;
         uint256 statusWidth;
         uint256 statusXPosition;
-        string totalCard;
-        uint256 totalWidth;
-        uint256 totalXPosition;
     }
 
     function generateSVG(SVGParams memory params) internal pure returns (string memory) {
@@ -58,9 +58,9 @@ library NFTSVG {
         (vars.statusWidth, vars.statusCard) =
             SVGElements.card({ cardType: SVGElements.CardType.STATUS, content: params.status });
 
-        // Generate the total amount card.
-        (vars.totalWidth, vars.totalCard) =
-            SVGElements.card({ cardType: SVGElements.CardType.TOTAL, content: params.total });
+        // Generate the deposit amount card.
+        (vars.amountWidth, vars.amountCard) =
+            SVGElements.card({ cardType: SVGElements.CardType.AMOUNT, content: params.amount });
 
         // Generate the duration card.
         (vars.durationWidth, vars.durationCard) =
@@ -69,28 +69,28 @@ library NFTSVG {
         unchecked {
             // Calculate the width of the row containing the cards and the margins between them.
             vars.cardsWidth =
-                vars.totalWidth + vars.durationWidth + vars.progressWidth + vars.statusWidth + CARD_MARGIN * 3;
+                vars.amountWidth + vars.durationWidth + vars.progressWidth + vars.statusWidth + CARD_MARGIN * 3;
 
             // Calculate the positions on the X axis based on the following layout:
             //
             // ___________________________ SVG Width (1000px) ___________________________
             // |     |          |      |        |      |        |      |          |     |
-            // | <-> | Progress | 16px | Status | 16px | Total  | 16px | Duration | <-> |
+            // | <-> | Progress | 16px | Status | 16px | Amount | 16px | Duration | <-> |
             vars.progressXPosition = (1000 - vars.cardsWidth) / 2;
             vars.statusXPosition = vars.progressXPosition + vars.progressWidth + CARD_MARGIN;
-            vars.totalXPosition = vars.statusXPosition + vars.statusWidth + CARD_MARGIN;
-            vars.durationXPosition = vars.totalXPosition + vars.totalWidth + CARD_MARGIN;
+            vars.amountXPosition = vars.statusXPosition + vars.statusWidth + CARD_MARGIN;
+            vars.durationXPosition = vars.amountXPosition + vars.amountWidth + CARD_MARGIN;
         }
 
         // Concatenate all cards.
-        vars.cards = string.concat(vars.progressCard, vars.statusCard, vars.totalCard, vars.durationCard);
+        vars.cards = string.concat(vars.progressCard, vars.statusCard, vars.amountCard, vars.durationCard);
 
         return string.concat(
             '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">',
             SVGElements.BACKGROUND,
             generateDefs(params.accentColor, params.status, vars.cards),
             generateFloatingText(params.sablierAddress, params.streamingModel, params.assetAddress, params.assetSymbol),
-            generateHrefs(vars.progressXPosition, vars.statusXPosition, vars.totalXPosition, vars.durationXPosition),
+            generateHrefs(vars.progressXPosition, vars.statusXPosition, vars.amountXPosition, vars.durationXPosition),
             "</svg>"
         );
     }
@@ -146,7 +146,7 @@ library NFTSVG {
     function generateHrefs(
         uint256 progressXPosition,
         uint256 statusXPosition,
-        uint256 totalXPosition,
+        uint256 amountXPosition,
         uint256 durationXPosition
     )
         internal
@@ -164,8 +164,8 @@ library NFTSVG {
             '<use href="#Status" x="',
             statusXPosition.toString(),
             '" y="790"/>',
-            '<use href="#Total" x="',
-            totalXPosition.toString(),
+            '<use href="#Amount" x="',
+            amountXPosition.toString(),
             '" y="790"/>',
             '<use href="#Duration" x="',
             durationXPosition.toString(),

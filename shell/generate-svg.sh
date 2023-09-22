@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Notes:
-# - There are four input arguments: progress, status, total amount, and duration
+# - There are four input arguments: progress, status, deposit amount, and duration
 
 # Pre-requisites:
 # - foundry (https://getfoundry.sh)
@@ -12,7 +12,7 @@ set -euo pipefail
 # Load the arguments while using default values
 arg_progress=${1:-4235}
 arg_status=${2:-"Streaming"}
-arg_total=${3:-"1.23M"}
+arg_amoung=${3:-"1.23M"}
 arg_duration=${4:-"91"}
 
 # Run the Forge script and extract the SVG from stdout
@@ -21,13 +21,13 @@ output=$(
   --sig "run(uint256,string,string,uint256)" \
   "$arg_progress" \
   "$arg_status" \
-  "$arg_total" \
+  "$arg_amoung" \
   "$arg_duration"
 )
 svg=$(echo "$output" | awk -F "svg: string " '{print $2}' | awk 'NF > 0')
 
 # Generate the file name
-name="nft-${arg_progress}-${arg_status}-${arg_total}-${arg_duration}.svg"
+name="nft-${arg_progress}-${arg_status}-${arg_amoung}-${arg_duration}.svg"
 sanitized="$(echo "$name" | sed "s/ //g" )" # remove whitespaces
 
 # Put the SVG in a file
