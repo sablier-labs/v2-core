@@ -42,6 +42,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         uint40 warpTimestamp;
         LockupDynamic.Segment[] segments;
         uint128 withdrawAmount;
+        bool transferable;
     }
 
     struct Vars {
@@ -119,6 +120,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         params.broker.fee = _bound(params.broker.fee, 0, MAX_FEE);
         params.protocolFee = _bound(params.protocolFee, 0, MAX_FEE);
         params.startTime = boundUint40(params.startTime, 0, defaults.START_TIME());
+        params.transferable = true;
 
         // Fuzz the segment milestones.
         fuzzSegmentMilestones(params.segments, params.startTime);
@@ -152,11 +154,14 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         vars.initialLockupDynamicBalance = vars.balances[0];
         vars.initialBrokerBalance = vars.balances[1];
 
-        // Expect the relevant event to be emitted.
         vars.streamId = lockupDynamic.nextStreamId();
-        vm.expectEmit({ emitter: address(lockupDynamic) });
         vars.range =
             LockupDynamic.Range({ start: params.startTime, end: params.segments[params.segments.length - 1].milestone });
+
+        // Expect the relevant events to be emitted.
+        vm.expectEmit({ emitter: address(lockupDynamic) });
+        emit MetadataUpdate({ _tokenId: vars.streamId });
+        vm.expectEmit({ emitter: address(lockupDynamic) });
         emit CreateLockupDynamicStream({
             streamId: vars.streamId,
             funder: holder,
@@ -165,6 +170,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
             amounts: vars.createAmounts,
             asset: asset,
             cancelable: true,
+            transferable: params.transferable,
             segments: params.segments,
             range: vars.range,
             broker: params.broker.account
@@ -176,6 +182,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
                 asset: asset,
                 broker: params.broker,
                 cancelable: true,
+                transferable: params.transferable,
                 recipient: params.recipient,
                 segments: params.segments,
                 sender: params.sender,
@@ -196,6 +203,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         assertEq(actualStream.endTime, vars.range.end, "endTime");
         assertEq(actualStream.isCancelable, vars.isCancelable, "isCancelable");
         assertEq(actualStream.isDepleted, false, "isDepleted");
+        assertEq(actualStream.isTransferable, true, "isTransferable");
         assertEq(actualStream.isStream, true, "isStream");
         assertEq(actualStream.segments, params.segments, "segments");
         assertEq(actualStream.sender, params.sender, "sender");

@@ -359,7 +359,9 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
             amount: defaults.BROKER_FEE_AMOUNT()
         });
 
-        // Expect the relevant event to be emitted.
+        // Expect the relevant events to be emitted.
+        vm.expectEmit({ emitter: address(lockupDynamic) });
+        emit MetadataUpdate({ _tokenId: streamId });
         vm.expectEmit({ emitter: address(lockupDynamic) });
         emit CreateLockupDynamicStream({
             streamId: streamId,
@@ -370,6 +372,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Concrete_Test is
             segments: defaults.segments(),
             asset: IERC20(asset),
             cancelable: true,
+            transferable: true,
             range: defaults.lockupDynamicRange(),
             broker: users.broker
         });

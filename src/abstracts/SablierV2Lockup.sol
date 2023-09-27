@@ -8,6 +8,7 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
+import { ISablierV2LockupRecipient } from "../interfaces/hooks/ISablierV2LockupRecipient.sol";
 import { Errors } from "../libraries/Errors.sol";
 import { Lockup } from "../types/DataTypes.sol";
 import { SablierV2Base } from "./SablierV2Base.sol";
@@ -123,6 +124,9 @@ abstract contract SablierV2Lockup is
         withdrawableAmount = _withdrawableAmountOf(streamId);
     }
 
+    /// @inheritdoc ISablierV2Lockup
+    function isTransferable(uint256 streamId) public view virtual returns (bool);
+
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -195,8 +199,18 @@ abstract contract SablierV2Lockup is
             revert Errors.SablierV2Lockup_Unauthorized(streamId, msg.sender);
         }
 
-        // Effects: renounce the stream.
+        // Checks and Effects: renounce the stream.
         _renounce(streamId);
+
+        // Interactions: if the recipient is a contract, try to invoke the renounce hook on the recipient without
+        // reverting if the hook is not implemented, and also without bubbling up any potential revert.
+        address recipient = _ownerOf(streamId);
+        if (recipient.code.length > 0) {
+            try ISablierV2LockupRecipient(recipient).onStreamRenounced(streamId) { } catch { }
+        }
+
+        // Log the renouncement.
+        emit ISablierV2Lockup.RenounceLockupStream(streamId);
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -252,8 +266,32 @@ abstract contract SablierV2Lockup is
             revert Errors.SablierV2Lockup_WithdrawAmountZero(streamId);
         }
 
-        // Checks, Effects and Interactions: make the withdrawal.
+        // Checks: the withdraw amount is not greater than the withdrawable amount.
+        uint128 withdrawableAmount = _withdrawableAmountOf(streamId);
+        if (amount > withdrawableAmount) {
+            revert Errors.SablierV2Lockup_Overdraw(streamId, amount, withdrawableAmount);
+        }
+
+        // Effects and Interactions: make the withdrawal.
         _withdraw(streamId, to, amount);
+
+        // Retrieve the recipient from storage.
+        address recipient = _ownerOf(streamId);
+
+        // Interactions: if `msg.sender` is not the recipient and the recipient is a contract, try to invoke the
+        // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
+        // any potential revert.
+        if (msg.sender != recipient && recipient.code.length > 0) {
+            try ISablierV2LockupRecipient(recipient).onStreamWithdrawn({
+                streamId: streamId,
+                caller: msg.sender,
+                to: to,
+                amount: amount
+            }) { } catch { }
+        }
+
+        // Log the withdrawal.
+        emit ISablierV2Lockup.WithdrawFromLockupStream(streamId, to, amount);
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -281,7 +319,7 @@ abstract contract SablierV2Lockup is
         // Skip the withdrawal if the withdrawable amount is zero.
         uint128 withdrawableAmount = _withdrawableAmountOf(streamId);
         if (withdrawableAmount > 0) {
-            _withdraw({ streamId: streamId, to: currentRecipient, amount: withdrawableAmount });
+            withdraw({ streamId: streamId, to: currentRecipient, amount: withdrawableAmount });
         }
 
         // Checks and Effects: transfer the NFT.
@@ -320,6 +358,39 @@ abstract contract SablierV2Lockup is
     /*//////////////////////////////////////////////////////////////////////////
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Overrides the internal ERC-721 transfer function to emit an ERC-4906 event upon transfer. The goal is to
+    /// refresh the NFT metadata on external platforms.
+    /// @dev This event is also emitted when the NFT is minted or burned.
+    function _afterTokenTransfer(
+        address, /* from */
+        address, /* to */
+        uint256 streamId,
+        uint256 /* batchSize */
+    )
+        internal
+        override
+        updateMetadata(streamId)
+    { }
+
+    /// @notice Overrides the internal ERC-721 transfer function to check that the stream is transferable.
+    /// @dev There are two cases when the transferable flag is ignored:
+    /// - If `from` is 0, then the transfer is a mint and is allowed.
+    /// - If `to` is 0, then the transfer is a burn and is also allowed.
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 streamId,
+        uint256 /* batchSize */
+    )
+        internal
+        view
+        override
+    {
+        if (!isTransferable(streamId) && to != address(0) && from != address(0)) {
+            revert Errors.SablierV2Lockup_NotTransferrable(streamId);
+        }
+    }
 
     /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party.
     /// @param streamId The stream id for the query.

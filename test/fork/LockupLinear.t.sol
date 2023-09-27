@@ -42,6 +42,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         uint128 totalAmount;
         uint40 warpTimestamp;
         uint128 withdrawAmount;
+        bool transferable;
     }
 
     struct Vars {
@@ -91,7 +92,8 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
     /// - It should bump the next stream id.
     /// - It should record the protocol fee.
     /// - It should mint the NFT.
-    /// - It should emit a {CreateLockupDynamicStream} event.
+    /// - It should emit a {MetadataUpdate} event
+    /// - It should emit a {CreateLockupLinearStream} event.
     /// - It may make a withdrawal.
     /// - It may update the withdrawn amounts.
     /// - It may emit a {WithdrawFromLockupStream} event.
@@ -121,6 +123,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         params.range.start = boundUint40(params.range.start, currentTime - 1000 seconds, currentTime + 10_000 seconds);
         params.range.cliff = boundUint40(params.range.cliff, params.range.start, params.range.start + 52 weeks);
         params.totalAmount = boundUint128(params.totalAmount, 1, uint128(initialHolderBalance));
+        params.transferable = true;
 
         // Bound the end time so that it is always greater than both the current time and the cliff time (this is
         // a requirement of the protocol).
@@ -156,8 +159,11 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         vars.createAmounts.brokerFee = ud(params.totalAmount).mul(params.broker.fee).intoUint128();
         vars.createAmounts.deposit = params.totalAmount - vars.createAmounts.protocolFee - vars.createAmounts.brokerFee;
 
-        // Expect the relevant event to be emitted.
         vars.streamId = lockupLinear.nextStreamId();
+
+        // Expect the relevant events to be emitted.
+        vm.expectEmit({ emitter: address(lockupLinear) });
+        emit MetadataUpdate({ _tokenId: vars.streamId });
         vm.expectEmit({ emitter: address(lockupLinear) });
         emit CreateLockupLinearStream({
             streamId: vars.streamId,
@@ -167,6 +173,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
             amounts: vars.createAmounts,
             asset: asset,
             cancelable: true,
+            transferable: params.transferable,
             range: params.range,
             broker: params.broker.account
         });
@@ -177,6 +184,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
                 asset: asset,
                 broker: params.broker,
                 cancelable: true,
+                transferable: params.transferable,
                 range: params.range,
                 recipient: params.recipient,
                 sender: params.sender,
@@ -192,6 +200,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         assertEq(actualStream.endTime, params.range.end, "endTime");
         assertEq(actualStream.isCancelable, true, "isCancelable");
         assertEq(actualStream.isDepleted, false, "isDepleted");
+        assertEq(actualStream.isTransferable, true, "isTransferable");
         assertEq(actualStream.isStream, true, "isStream");
         assertEq(actualStream.sender, params.sender, "sender");
         assertEq(actualStream.startTime, params.range.start, "startTime");

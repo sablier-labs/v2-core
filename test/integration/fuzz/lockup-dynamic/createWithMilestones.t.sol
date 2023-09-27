@@ -227,6 +227,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         params.broker.fee = _bound(params.broker.fee, 0, MAX_FEE);
         protocolFee = _bound(protocolFee, 0, MAX_FEE);
         params.startTime = boundUint40(params.startTime, 0, defaults.START_TIME());
+        params.transferable = true;
 
         // Fuzz the segment milestones.
         fuzzSegmentMilestones(params.segments, params.startTime);
@@ -277,6 +278,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
             amounts: vars.createAmounts,
             asset: dai,
             cancelable: params.cancelable,
+            transferable: params.transferable,
             segments: params.segments,
             range: range,
             broker: params.broker.account
@@ -288,6 +290,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
                 asset: dai,
                 broker: params.broker,
                 cancelable: params.cancelable,
+                transferable: params.transferable,
                 recipient: params.recipient,
                 segments: params.segments,
                 sender: params.sender,
@@ -307,6 +310,7 @@ contract CreateWithMilestones_LockupDynamic_Integration_Fuzz_Test is
         assertEq(actualStream.asset, dai, "asset");
         assertEq(actualStream.endTime, range.end, "endTime");
         assertEq(actualStream.isCancelable, vars.isCancelable, "isCancelable");
+        assertEq(actualStream.isTransferable, true, "isTransferable");
         assertEq(actualStream.isDepleted, false, "isStream");
         assertEq(actualStream.isStream, true, "isStream");
         assertEq(actualStream.sender, params.sender, "sender");

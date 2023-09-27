@@ -152,6 +152,11 @@ interface ISablierV2Lockup is
     /// @param streamId The stream id for the query.
     function withdrawableAmountOf(uint256 streamId) external view returns (uint128 withdrawableAmount);
 
+    /// @notice Retrieves a flag indicating whether the stream NFT can be transferred.
+    /// @dev Reverts if `streamId` references a null stream.
+    /// @param streamId The stream id for the query.
+    function isTransferable(uint256 streamId) external view returns (bool);
+
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
