@@ -12,8 +12,8 @@ abstract contract Fork_Test is Base_Test {
                                      CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    IERC20 internal immutable asset;
-    address internal immutable holder;
+    IERC20 internal asset;
+    address internal holder;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      VARIABLES
