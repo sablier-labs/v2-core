@@ -77,7 +77,7 @@ abstract contract SablierV2Lockup is
     /// @inheritdoc ISablierV2Lockup
     function getRecipient(uint256 streamId) external view override returns (address recipient) {
         // Checks: the stream NFT exists.
-        _requireMinted({ tokenId: streamId });
+        _requireOwned({ tokenId: streamId });
 
         // The NFT owner is the stream's recipient.
         recipient = _ownerOf(streamId);
@@ -104,7 +104,7 @@ abstract contract SablierV2Lockup is
     /// @inheritdoc ERC721
     function tokenURI(uint256 streamId) public view override(IERC721Metadata, ERC721) returns (string memory uri) {
         // Checks: the stream NFT exists.
-        _requireMinted({ tokenId: streamId });
+        _requireOwned({ tokenId: streamId });
 
         // Generate the URI describing the stream NFT.
         uri = _nftDescriptor.tokenURI({ sablier: this, streamId: streamId });
