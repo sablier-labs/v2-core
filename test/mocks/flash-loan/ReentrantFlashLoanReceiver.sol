@@ -20,7 +20,7 @@ contract ReentrantFlashLoanReceiver is Constants, IERC3156FlashBorrower {
         returns (bytes32 response)
     {
         initiator;
-        IERC20(asset).approve({ spender: msg.sender, amount: amount + fee });
+        IERC20(asset).approve({ spender: msg.sender, value: amount + fee });
         IERC3156FlashLender(msg.sender).flashLoan({ receiver: this, asset: asset, amount: amount, data: data });
         response = FLASH_LOAN_CALLBACK_SUCCESS;
     }

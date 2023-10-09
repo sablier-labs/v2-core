@@ -20,7 +20,7 @@ contract GoodFlashLoanReceiver is Constants, IERC3156FlashBorrower {
     {
         initiator;
         data;
-        IERC20(asset).approve({ spender: msg.sender, amount: amount + fee });
+        IERC20(asset).approve({ spender: msg.sender, value: amount + fee });
         response = FLASH_LOAN_CALLBACK_SUCCESS;
     }
 }
