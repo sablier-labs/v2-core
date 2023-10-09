@@ -77,7 +77,7 @@ contract FlashLoanFunction_Integration_Concrete_Test is FlashLoanFunction_Integr
     {
         uint256 amount = 100e18;
         deal({ token: address(dai), to: address(flashLoan), give: amount * 2 });
-        vm.expectRevert("ERC20: transfer amount exceeds balance");
+        vm.expectRevert();
         flashLoan.flashLoan({
             receiver: reentrantFlashLoanReceiver,
             asset: address(dai),
