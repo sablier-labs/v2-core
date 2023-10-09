@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
 import { ERC20Bytes32 } from "../../../../mocks/erc20/ERC20Bytes32.sol";
+import { ERC20Mock } from "../../../../mocks/erc20/ERC20Mock.sol";
 import { NFTDescriptor_Integration_Concrete_Test } from "../NFTDescriptor.t.sol";
 
 contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_Concrete_Test {
@@ -36,8 +35,8 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
     }
 
     function test_SafeAssetSymbol_LongSymbol() external whenERC20Contract givenSymbolString {
-        ERC20 asset =
-        new ERC20({ name_: "Token", symbol_: "This symbol is has more than 30 characters and it should be ignored" });
+        ERC20Mock asset =
+        new ERC20Mock({ name: "Token", symbol: "This symbol is has more than 30 characters and it should be ignored" });
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
         string memory expectedSymbol = "Long Symbol";
         assertEq(actualSymbol, expectedSymbol, "symbol");
