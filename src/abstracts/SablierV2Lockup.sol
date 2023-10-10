@@ -360,10 +360,10 @@ abstract contract SablierV2Lockup is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Overrides the internal ERC-721 `_update` function to check that the stream is transferable and to emit
-    /// an ERC-4906 event upon transfer.
+    /// an ERC-4906 event upon update.
     /// @dev There are two cases when the transferable flag is ignored:
-    /// - If `from` is 0, then the transfer is a mint and is allowed.
-    /// - If `to` is 0, then the transfer is a burn and is also allowed.
+    /// - If `from` is 0, then the update is a mint and is allowed.
+    /// - If `to` is 0, then the update is a burn and is also allowed.
     /// The ERC-4906 event is also emitted when the NFT is minted or burned.
     function _update(
         address to,
