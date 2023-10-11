@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity >=0.8.19;
+pragma solidity >=0.8.20;
 
 import { SablierV2Base } from "../../../src/abstracts/SablierV2Base.sol";
 import { ISablierV2Comptroller } from "../../../src/interfaces/ISablierV2Comptroller.sol";

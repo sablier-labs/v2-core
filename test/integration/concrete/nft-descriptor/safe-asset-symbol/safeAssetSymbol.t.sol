@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.19 <0.9.0;
+pragma solidity >=0.8.20 <0.9.0;
 
 import { ERC20Bytes32 } from "../../../../mocks/erc20/ERC20Bytes32.sol";
 import { ERC20Mock } from "../../../../mocks/erc20/ERC20Mock.sol";

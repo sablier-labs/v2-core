@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 // solhint-disable max-line-length,no-console,quotes
-pragma solidity >=0.8.19 <0.9.0;
+pragma solidity >=0.8.20 <0.9.0;
 
 import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
-
 import { console2 } from "forge-std/console2.sol";
 import { StdStyle } from "forge-std/StdStyle.sol";
 import { LibString } from "solady/utils/LibString.sol";
