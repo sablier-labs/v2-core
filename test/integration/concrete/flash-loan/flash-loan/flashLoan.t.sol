@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19;
 
+import { IERC20Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
 import { ud } from "@prb/math/src/UD60x18.sol";
 
 import { IERC3156FlashLender } from "src/interfaces/erc3156/IERC3156FlashLender.sol";
@@ -75,13 +76,18 @@ contract FlashLoanFunction_Integration_Concrete_Test is FlashLoanFunction_Integr
         whenCalculatedFeeNotTooHigh
         whenBorrowDoesNotFail
     {
-        uint256 amount = 100e18;
-        deal({ token: address(dai), to: address(flashLoan), give: amount * 2 });
-        vm.expectRevert();
+        uint256 balance = 100e18;
+        uint256 amount = 60e18;
+        deal({ token: address(dai), to: address(flashLoan), give: balance });
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector, address(flashLoan), balance - amount, amount
+            )
+        );
         flashLoan.flashLoan({
             receiver: reentrantFlashLoanReceiver,
             asset: address(dai),
-            amount: LIQUIDITY_AMOUNT / 4,
+            amount: amount,
             data: bytes("")
         });
     }
