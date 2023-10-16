@@ -274,7 +274,8 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
             emit WithdrawFromLockupStream({
                 streamId: vars.streamId,
                 to: params.recipient,
-                amount: params.withdrawAmount
+                amount: params.withdrawAmount,
+                asset: ASSET
             });
             vm.expectEmit({ emitter: address(lockupLinear) });
             emit MetadataUpdate({ _tokenId: vars.streamId });
@@ -334,9 +335,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
             vm.expectEmit({ emitter: address(lockupLinear) });
             vars.senderAmount = lockupLinear.refundableAmountOf(vars.streamId);
             vars.recipientAmount = lockupLinear.withdrawableAmountOf(vars.streamId);
-            emit CancelLockupStream(
-                vars.streamId, params.sender, params.recipient, vars.senderAmount, vars.recipientAmount
-            );
+            emit CancelLockupStream(vars.streamId, params.sender, ASSET, vars.senderAmount, vars.recipientAmount);
             vm.expectEmit({ emitter: address(lockupLinear) });
             emit MetadataUpdate({ _tokenId: vars.streamId });
 

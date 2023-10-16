@@ -228,7 +228,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         emit CancelLockupStream({
             streamId: testStreamIds[0],
             sender: users.sender,
-            recipient: users.recipient,
+            asset: dai,
             senderAmount: senderAmount0,
             recipientAmount: defaults.DEPOSIT_AMOUNT() - senderAmount0
         });
@@ -236,7 +236,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         emit CancelLockupStream({
             streamId: testStreamIds[1],
             sender: users.sender,
-            recipient: users.recipient,
+            asset: dai,
             senderAmount: senderAmount1,
             recipientAmount: defaults.DEPOSIT_AMOUNT() - senderAmount1
         });

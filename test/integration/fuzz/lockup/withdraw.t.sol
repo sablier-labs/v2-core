@@ -86,7 +86,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream(defaultStreamId, to, withdrawAmount);
+        emit WithdrawFromLockupStream(defaultStreamId, to, withdrawAmount, dai);
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: defaultStreamId });
 
@@ -150,7 +150,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream(defaultStreamId, to, withdrawAmount);
+        emit WithdrawFromLockupStream(defaultStreamId, to, withdrawAmount, dai);
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: defaultStreamId });
 

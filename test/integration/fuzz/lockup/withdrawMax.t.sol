@@ -25,7 +25,8 @@ abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test, Withdra
         emit WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
-            amount: defaults.DEPOSIT_AMOUNT()
+            amount: defaults.DEPOSIT_AMOUNT(),
+            asset: dai
         });
 
         // Make the max withdrawal.
@@ -65,7 +66,12 @@ abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test, Withdra
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
+        emit WithdrawFromLockupStream({
+            streamId: defaultStreamId,
+            to: users.recipient,
+            amount: withdrawAmount,
+            asset: dai
+        });
 
         // Make the max withdrawal.
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });

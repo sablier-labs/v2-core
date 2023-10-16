@@ -42,7 +42,12 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
 
             // Expect the relevant event to be emitted.
             vm.expectEmit({ emitter: address(lockup) });
-            emit WithdrawFromLockupStream({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
+            emit WithdrawFromLockupStream({
+                streamId: defaultStreamId,
+                to: users.recipient,
+                amount: withdrawAmount,
+                asset: dai
+            });
         }
 
         // Expect the relevant event to be emitted.

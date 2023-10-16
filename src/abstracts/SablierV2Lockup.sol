@@ -291,9 +291,6 @@ abstract contract SablierV2Lockup is
                 amount: amount
             }) { } catch { }
         }
-
-        // Log the withdrawal.
-        emit ISablierV2Lockup.WithdrawFromLockupStream(streamId, to, amount);
     }
 
     /// @inheritdoc ISablierV2Lockup
