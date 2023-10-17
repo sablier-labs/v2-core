@@ -188,7 +188,7 @@ interface ISablierV2Lockup is
     /// Requirements:
     /// - Must not be delegate called.
     /// - The stream must be warm and cancelable.
-    /// - `msg.sender` must be either the stream's sender or the stream's recipient (i.e. the NFT owner).
+    /// - `msg.sender` must be the stream's sender.
     ///
     /// @param streamId The id of the stream to cancel.
     function cancel(uint256 streamId) external;

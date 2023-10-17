@@ -75,7 +75,9 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         vm.warp({ timestamp: defaults.START_TIME() + timeJump });
 
         // Cancel the stream.
+        changePrank({ msgSender: users.sender });
         lockup.cancel({ streamId: defaultStreamId });
+        changePrank({ msgSender: users.recipient });
 
         // Bound the withdraw amount.
         uint128 withdrawableAmount = lockup.withdrawableAmountOf(defaultStreamId);

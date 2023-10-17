@@ -14,7 +14,6 @@ import { ISablierV2Comptroller } from "./interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2Lockup } from "./interfaces/ISablierV2Lockup.sol";
 import { ISablierV2LockupDynamic } from "./interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupRecipient } from "./interfaces/hooks/ISablierV2LockupRecipient.sol";
-import { ISablierV2LockupSender } from "./interfaces/hooks/ISablierV2LockupSender.sol";
 import { ISablierV2NFTDescriptor } from "./interfaces/ISablierV2NFTDescriptor.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { Helpers } from "./libraries/Helpers.sol";
@@ -512,31 +511,16 @@ contract SablierV2LockupDynamic is
         // Interactions: refund the sender.
         asset.safeTransfer({ to: sender, value: senderAmount });
 
-        // Interactions: if `msg.sender` is the sender and the recipient is a contract, try to invoke the cancel
+        // Interactions: if the recipient is a contract, try to invoke the cancel
         // hook on the recipient without reverting if the hook is not implemented, and without bubbling up any
         // potential revert.
-        if (msg.sender == sender) {
-            if (recipient.code.length > 0) {
-                try ISablierV2LockupRecipient(recipient).onStreamCanceled({
-                    streamId: streamId,
-                    sender: sender,
-                    senderAmount: senderAmount,
-                    recipientAmount: recipientAmount
-                }) { } catch { }
-            }
-        }
-        // Interactions: if `msg.sender` is the recipient and the sender is a contract, try to invoke the cancel
-        // hook on the sender without reverting if the hook is not implemented, and also without bubbling up any
-        // potential revert.
-        else {
-            if (sender.code.length > 0) {
-                try ISablierV2LockupSender(sender).onStreamCanceled({
-                    streamId: streamId,
-                    recipient: recipient,
-                    senderAmount: senderAmount,
-                    recipientAmount: recipientAmount
-                }) { } catch { }
-            }
+        if (recipient.code.length > 0) {
+            try ISablierV2LockupRecipient(recipient).onStreamCanceled({
+                streamId: streamId,
+                sender: sender,
+                senderAmount: senderAmount,
+                recipientAmount: recipientAmount
+            }) { } catch { }
         }
 
         // Log the cancellation.
