@@ -421,14 +421,14 @@ contract SablierV2LockupLinear is
         address sender = _streams[streamId].sender;
         address recipient = _ownerOf(streamId);
 
+        // Retrieve the ERC-20 asset from storage.
         IERC20 asset = _streams[streamId].asset;
 
         // Interactions: refund the sender.
         asset.safeTransfer({ to: sender, value: senderAmount });
 
-        // Interactions: if the recipient is a contract, try to invoke the cancel
-        // hook on the recipient without reverting if the hook is not implemented, and without bubbling up any
-        // potential revert.
+        // Interactions: if the recipient is a contract, try to invoke the cancel hook on the recipient without
+        // reverting if the hook is not implemented, and without bubbling up any potential revert.
         if (recipient.code.length > 0) {
             try ISablierV2LockupRecipient(recipient).onStreamCanceled({
                 streamId: streamId,
@@ -439,7 +439,7 @@ contract SablierV2LockupLinear is
         }
 
         // Log the cancellation.
-        emit ISablierV2Lockup.CancelLockupStream(streamId, sender, asset, senderAmount, recipientAmount);
+        emit ISablierV2Lockup.CancelLockupStream(streamId, sender, recipient, asset, senderAmount, recipientAmount);
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
@@ -548,6 +548,6 @@ contract SablierV2LockupLinear is
         asset.safeTransfer({ to: to, value: amount });
 
         // Log the withdrawal.
-        emit ISablierV2Lockup.WithdrawFromLockupStream(streamId, to, amount, asset);
+        emit ISablierV2Lockup.WithdrawFromLockupStream(streamId, to, asset, amount);
     }
 }

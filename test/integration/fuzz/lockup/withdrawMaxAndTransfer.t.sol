@@ -45,8 +45,8 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
             emit WithdrawFromLockupStream({
                 streamId: defaultStreamId,
                 to: users.recipient,
-                amount: withdrawAmount,
-                asset: dai
+                asset: dai,
+                amount: withdrawAmount
             });
         }
 

@@ -21,14 +21,16 @@ interface ISablierV2Lockup is
     /// @notice Emitted when a stream is canceled.
     /// @param streamId The id of the stream.
     /// @param sender The address of the stream's sender.
+    /// @param recipient The address of the stream's recipient.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param senderAmount The amount of assets refunded to the stream's sender, denoted in units of the asset's
     /// decimals.
     /// @param recipientAmount The amount of assets left for the stream's recipient to withdraw, denoted in units of the
     /// asset's decimals.
     event CancelLockupStream(
-        uint256 indexed streamId,
+        uint256 streamId,
         address indexed sender,
+        address indexed recipient,
         IERC20 indexed asset,
         uint128 senderAmount,
         uint128 recipientAmount
@@ -49,9 +51,9 @@ interface ISablierV2Lockup is
     /// @notice Emitted when assets are withdrawn from a stream.
     /// @param streamId The id of the stream.
     /// @param to The address that has received the withdrawn assets.
-    /// @param amount The amount of assets withdrawn, denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
-    event WithdrawFromLockupStream(uint256 indexed streamId, address indexed to, uint128 amount, IERC20 indexed asset);
+    /// @param amount The amount of assets withdrawn, denoted in units of the asset's decimals.
+    event WithdrawFromLockupStream(uint256 indexed streamId, address indexed to, IERC20 indexed asset, uint128 amount);
 
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS

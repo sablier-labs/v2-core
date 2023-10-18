@@ -310,22 +310,22 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         emit WithdrawFromLockupStream({
             streamId: testStreamIds[0],
             to: users.recipient,
-            amount: testAmounts[0],
-            asset: dai
+            asset: dai,
+            amount: testAmounts[0]
         });
         vm.expectEmit({ emitter: address(lockup) });
         emit WithdrawFromLockupStream({
             streamId: testStreamIds[1],
             to: users.recipient,
-            amount: testAmounts[1],
-            asset: dai
+            asset: dai,
+            amount: testAmounts[1]
         });
         vm.expectEmit({ emitter: address(lockup) });
         emit WithdrawFromLockupStream({
             streamId: testStreamIds[2],
             to: users.recipient,
-            amount: testAmounts[2],
-            asset: dai
+            asset: dai,
+            amount: testAmounts[2]
         });
 
         // Make the withdrawals.

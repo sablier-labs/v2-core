@@ -71,7 +71,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         givenStreamWarm
         whenCallerUnauthorized
     {
-        // Make recipient the caller in this test.
+        // Make the Recipient the caller in this test.
         changePrank({ msgSender: users.recipient });
 
         // Run the test.
@@ -255,7 +255,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit CancelLockupStream(streamId, users.sender, dai, senderAmount, recipientAmount);
+        emit CancelLockupStream(streamId, users.sender, address(goodRecipient), dai, senderAmount, recipientAmount);
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: streamId });
 

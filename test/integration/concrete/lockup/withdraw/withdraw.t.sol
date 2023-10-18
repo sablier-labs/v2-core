@@ -299,8 +299,8 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         emit WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
-            amount: withdrawAmount,
-            asset: dai
+            asset: dai,
+            amount: withdrawAmount
         });
 
         // Make the withdrawal.
@@ -499,8 +499,8 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         emit WithdrawFromLockupStream({
             streamId: streamId,
             to: address(goodRecipient),
-            amount: withdrawAmount,
-            asset: dai
+            asset: dai,
+            amount: withdrawAmount
         });
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: streamId });
