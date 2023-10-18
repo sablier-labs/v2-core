@@ -636,6 +636,7 @@ contract SablierV2LockupDynamic is
             _streams[streamId].isCancelable = false;
         }
 
+        // Retrieve the ERC-20 asset from storage.
         IERC20 asset = _streams[streamId].asset;
 
         // Interactions: perform the ERC-20 transfer.
