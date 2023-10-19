@@ -132,7 +132,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         return user;
     }
 
-    /// @dev Conditionally deploys V2 Core normally or from a optimized source compiled with `--via-ir`.
+    /// @dev Conditionally deploys V2 Core normally or from an optimized source compiled with `--via-ir`.
     /// We cannot use the {DeployCore} script because some tests rely on hard coded addresses for the
     /// deployed contracts. Since the script itself would have to be deployed, using it would bump the
     /// deployer's nonce, which would in turn lead to different addresses (recall that the addresses

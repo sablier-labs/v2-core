@@ -9,14 +9,14 @@ import { ISablierV2LockupLinear } from "../../src/interfaces/ISablierV2LockupLin
 import { ISablierV2NFTDescriptor } from "../../src/interfaces/ISablierV2NFTDescriptor.sol";
 
 abstract contract DeployOptimized is StdCheats {
-    /// @dev Deploys {SablierV2Comptroller} from a optimized source compiled with `--via-ir`.
+    /// @dev Deploys {SablierV2Comptroller} from an optimized source compiled with `--via-ir`.
     function deployOptimizedComptroller(address initialAdmin) internal returns (ISablierV2Comptroller) {
         return ISablierV2Comptroller(
             deployCode("out-optimized/SablierV2Comptroller.sol/SablierV2Comptroller.json", abi.encode(initialAdmin))
         );
     }
 
-    /// @dev Deploys {SablierV2LockupDynamic} from a optimized source compiled with `--via-ir`.
+    /// @dev Deploys {SablierV2LockupDynamic} from an optimized source compiled with `--via-ir`.
     function deployOptimizedDynamic(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
@@ -34,7 +34,7 @@ abstract contract DeployOptimized is StdCheats {
         );
     }
 
-    /// @dev Deploys {SablierV2LockupLinear} from a optimized source compiled with `--via-ir`.
+    /// @dev Deploys {SablierV2LockupLinear} from an optimized source compiled with `--via-ir`.
     function deployOptimizedLinear(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
@@ -51,7 +51,7 @@ abstract contract DeployOptimized is StdCheats {
         );
     }
 
-    /// @dev Deploys {SablierV2NFTDescriptor} from a optimized source compiled with `--via-ir`.
+    /// @dev Deploys {SablierV2NFTDescriptor} from an optimized source compiled with `--via-ir`.
     function deployOptimizedNFTDescriptor() internal returns (ISablierV2NFTDescriptor) {
         return
             ISablierV2NFTDescriptor(deployCode("out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json"));
