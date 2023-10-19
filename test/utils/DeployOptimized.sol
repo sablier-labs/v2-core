@@ -17,7 +17,7 @@ abstract contract DeployOptimized is StdCheats {
     }
 
     /// @dev Deploys {SablierV2LockupDynamic} from an optimized source compiled with `--via-ir`.
-    function deployOptimizedDynamic(
+    function deployOptimizedLockupDynamic(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
         ISablierV2NFTDescriptor nftDescriptor_,
@@ -35,7 +35,7 @@ abstract contract DeployOptimized is StdCheats {
     }
 
     /// @dev Deploys {SablierV2LockupLinear} from an optimized source compiled with `--via-ir`.
-    function deployOptimizedLinear(
+    function deployOptimizedLockupLinear(
         address initialAdmin,
         ISablierV2Comptroller comptroller_,
         ISablierV2NFTDescriptor nftDescriptor_
@@ -71,7 +71,7 @@ abstract contract DeployOptimized is StdCheats {
     {
         comptroller_ = deployOptimizedComptroller(initialAdmin);
         nftDescriptor_ = deployOptimizedNFTDescriptor();
-        lockupDynamic_ = deployOptimizedDynamic(initialAdmin, comptroller_, nftDescriptor_, maxSegmentCount);
-        lockupLinear_ = deployOptimizedLinear(initialAdmin, comptroller_, nftDescriptor_);
+        lockupDynamic_ = deployOptimizedLockupDynamic(initialAdmin, comptroller_, nftDescriptor_, maxSegmentCount);
+        lockupLinear_ = deployOptimizedLockupLinear(initialAdmin, comptroller_, nftDescriptor_);
     }
 }

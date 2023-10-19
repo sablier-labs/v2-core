@@ -33,7 +33,7 @@ contract Precompiles_Test is Base_Test {
         ISablierV2Comptroller comptroller = precompiles.deployComptroller(users.admin);
         address actualLockupDynamic = address(precompiles.deployLockupDynamic(users.admin, comptroller, nftDescriptor));
         address expectedLockupDynamic =
-            address(deployOptimizedDynamic(users.admin, comptroller, nftDescriptor, defaults.MAX_SEGMENT_COUNT()));
+            address(deployOptimizedLockupDynamic(users.admin, comptroller, nftDescriptor, defaults.MAX_SEGMENT_COUNT()));
         bytes memory expectedLockupDynamicCode =
             adjustBytecode(expectedLockupDynamic.code, expectedLockupDynamic, actualLockupDynamic);
         assertEq(actualLockupDynamic.code, expectedLockupDynamicCode, "bytecodes mismatch");
@@ -42,7 +42,7 @@ contract Precompiles_Test is Base_Test {
     function test_DeployLockupLinear() external onlyTestOptimizedProfile {
         ISablierV2Comptroller comptroller = precompiles.deployComptroller(users.admin);
         address actualLockupLinear = address(precompiles.deployLockupLinear(users.admin, comptroller, nftDescriptor));
-        address expectedLockupLinear = address(deployOptimizedLinear(users.admin, comptroller, nftDescriptor));
+        address expectedLockupLinear = address(deployOptimizedLockupLinear(users.admin, comptroller, nftDescriptor));
         bytes memory expectedLockupLinearCode =
             adjustBytecode(expectedLockupLinear.code, expectedLockupLinear, actualLockupLinear);
         assertEq(actualLockupLinear.code, expectedLockupLinearCode, "bytecodes mismatch");
