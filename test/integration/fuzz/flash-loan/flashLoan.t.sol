@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19;
 
-import { UD60x18, ud } from "@prb/math/UD60x18.sol";
+import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
 import { IERC3156FlashBorrower } from "src/interfaces/erc3156/IERC3156FlashBorrower.sol";
 import { Errors } from "src/libraries/Errors.sol";
@@ -28,7 +28,7 @@ contract FlashLoanFunction_Integration_Fuzz_Test is FlashLoanFunction_Integratio
         external
         whenNotDelegateCalled
         whenAmountNotTooHigh
-        whenAssetFlashLoanable
+        givenAssetFlashLoanable
     {
         // Bound the flash fee so that the calculated fee ends up being greater than 2^128.
         flashFee = _bound(flashFee, ud(1.1e18), ud(10e18));
@@ -45,7 +45,7 @@ contract FlashLoanFunction_Integration_Fuzz_Test is FlashLoanFunction_Integratio
         });
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - Multiple values for the comptroller flash fee, including zero
     /// - Multiple values for the flash loan amount, including zero
@@ -58,7 +58,7 @@ contract FlashLoanFunction_Integration_Fuzz_Test is FlashLoanFunction_Integratio
         external
         whenNotDelegateCalled
         whenAmountNotTooHigh
-        whenAssetFlashLoanable
+        givenAssetFlashLoanable
         whenCalculatedFeeNotTooHigh
         whenBorrowDoesNotFail
         whenNoReentrancy

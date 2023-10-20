@@ -2,8 +2,8 @@
 pragma solidity >=0.8.19;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { UD2x18, ud2x18 } from "@prb/math/UD2x18.sol";
-import { UD60x18 } from "@prb/math/UD60x18.sol";
+import { UD2x18, ud2x18 } from "@prb/math/src/UD2x18.sol";
+import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { Broker, Lockup, LockupDynamic, LockupLinear } from "../../src/types/DataTypes.sol";
 
@@ -104,6 +104,7 @@ contract Defaults is Constants {
             isCancelable: true,
             isDepleted: false,
             isStream: true,
+            isTransferable: true,
             segments: segments(),
             sender: users.sender,
             startTime: START_TIME,
@@ -122,6 +123,7 @@ contract Defaults is Constants {
             cliffTime: CLIFF_TIME,
             endTime: END_TIME,
             isCancelable: true,
+            isTransferable: true,
             isDepleted: false,
             isStream: true,
             sender: users.sender,
@@ -185,6 +187,7 @@ contract Defaults is Constants {
             asset: asset,
             broker: broker(),
             cancelable: true,
+            transferable: true,
             recipient: users.recipient,
             segments: segmentsWithDeltas(),
             sender: users.sender,
@@ -197,6 +200,7 @@ contract Defaults is Constants {
             asset: asset,
             broker: broker(),
             cancelable: true,
+            transferable: true,
             durations: durations(),
             recipient: users.recipient,
             sender: users.sender,
@@ -209,6 +213,7 @@ contract Defaults is Constants {
             asset: asset,
             broker: broker(),
             cancelable: true,
+            transferable: true,
             recipient: users.recipient,
             segments: segments(),
             sender: users.sender,
@@ -222,6 +227,7 @@ contract Defaults is Constants {
             asset: asset,
             broker: broker(),
             cancelable: true,
+            transferable: true,
             range: lockupLinearRange(),
             recipient: users.recipient,
             sender: users.sender,

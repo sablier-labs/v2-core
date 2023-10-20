@@ -19,10 +19,10 @@ abstract contract CancelMultiple_Integration_Fuzz_Test is Integration_Test, Canc
     )
         external
         whenNotDelegateCalled
-        whenNoNull
-        whenAllStreamsWarm
+        givenNoNull
+        givenAllStreamsWarm
         whenCallerAuthorizedAllStreams
-        whenAllStreamsCancelable
+        givenAllStreamsCancelable
     {
         timeJump = _bound(timeJump, 0 seconds, defaults.TOTAL_DURATION() - 1 seconds);
         endTime = boundUint40(endTime, defaults.END_TIME(), defaults.END_TIME() + defaults.TOTAL_DURATION());
@@ -48,6 +48,7 @@ abstract contract CancelMultiple_Integration_Fuzz_Test is Integration_Test, Canc
             streamId: streamIds[0],
             sender: users.sender,
             recipient: users.recipient,
+            asset: dai,
             senderAmount: senderAmount0,
             recipientAmount: defaults.DEPOSIT_AMOUNT() - senderAmount0
         });
@@ -56,6 +57,7 @@ abstract contract CancelMultiple_Integration_Fuzz_Test is Integration_Test, Canc
             streamId: streamIds[1],
             sender: users.sender,
             recipient: users.recipient,
+            asset: dai,
             senderAmount: senderAmount1,
             recipientAmount: defaults.DEPOSIT_AMOUNT() - senderAmount1
         });

@@ -1,8 +1,8 @@
 {
   "name": "@sablier/v2-core",
-  "description": "Core smart contracts of the Sablier V2 cryptoasset streaming protocol",
+  "description": "Core smart contracts of the Sablier V2 token streaming protocol",
   "license": "BUSL-1.1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Sablier Labs Ltd",
     "url": "https://sablier.com"
@@ -12,15 +12,16 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "4.9.2",
-    "@prb/math": "4.0.1"
+    "@prb/math": "4.0.1",
+    "solhint": "^3.6.2"
   },
   "devDependencies": {
-    "prettier": "^2.8.8",
-    "solhint": "^3.4.1"
+    "prettier": "^2.8.8"
   },
   "files": [
     "artifacts",
     "src",
+    "CHANGELOG.md",
     "LICENSE-GPL.md"
   ],
   "homepage": "https://github.com/sablier-labs/v2-core#readme",
@@ -40,16 +41,12 @@
     "token-streaming"
   ],
   "peerDependencies": {
-    "@openzeppelin/contracts": "4.9.2",
     "@prb/math": "4.0.1"
   },
   "publishConfig": {
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sablier-labs/v2-core"
-  },
+  "repository": "github.com/sablier-labs/v2-core",
   "scripts": {
     "build": "forge build",
     "build:optimized": "FOUNDRY_PROFILE=optimized forge build",

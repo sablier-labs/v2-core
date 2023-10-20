@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { UD60x18, ZERO } from "@prb/math/UD60x18.sol";
+import { UD60x18, ZERO } from "@prb/math/src/UD60x18.sol";
 
 import { Integration_Test } from "../../Integration.t.sol";
 
 contract SetFlashFee_Integration_Fuzz_Test is Integration_Test {
-    modifier whenCallerAdmin() {
+    modifier givenCallerAdmin() {
         _;
     }
 
-    function testFuzz_SetFlashFee(UD60x18 newFlashFee) external whenCallerAdmin {
+    function testFuzz_SetFlashFee(UD60x18 newFlashFee) external givenCallerAdmin {
         newFlashFee = _bound(newFlashFee, 0, MAX_FEE);
 
         // Expect the relevant event to be emitted.

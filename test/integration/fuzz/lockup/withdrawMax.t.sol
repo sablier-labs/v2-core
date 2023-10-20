@@ -25,6 +25,7 @@ abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test, Withdra
         emit WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
+            asset: dai,
             amount: defaults.DEPOSIT_AMOUNT()
         });
 
@@ -51,7 +52,7 @@ abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test, Withdra
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");
     }
 
-    function testFuzz_WithdrawMax(uint256 timeJump) external whenEndTimeInTheFuture {
+    function testFuzz_WithdrawMax(uint256 timeJump) external givenEndTimeInTheFuture {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
 
         // Simulate the passage of time.
@@ -65,7 +66,12 @@ abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test, Withdra
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
+        emit WithdrawFromLockupStream({
+            streamId: defaultStreamId,
+            to: users.recipient,
+            asset: dai,
+            amount: withdrawAmount
+        });
 
         // Make the max withdrawal.
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });

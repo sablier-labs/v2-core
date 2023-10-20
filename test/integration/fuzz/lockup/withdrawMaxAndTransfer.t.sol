@@ -12,7 +12,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
         WithdrawMaxAndTransfer_Integration_Shared_Test.setUp();
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - New recipient same and different from the current one
     /// - Withdrawable amount zero and not zero
@@ -22,9 +22,10 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
     )
         external
         whenNotDelegateCalled
-        whenNotNull
+        givenNotNull
         whenCallerCurrentRecipient
-        whenNFTNotBurned
+        givenNFTNotBurned
+        givenStreamTransferable
     {
         vm.assume(newRecipient != address(0));
         timeJump = _bound(timeJump, 0, defaults.TOTAL_DURATION() * 2);
@@ -41,7 +42,12 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
 
             // Expect the relevant event to be emitted.
             vm.expectEmit({ emitter: address(lockup) });
-            emit WithdrawFromLockupStream({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
+            emit WithdrawFromLockupStream({
+                streamId: defaultStreamId,
+                to: users.recipient,
+                asset: dai,
+                amount: withdrawAmount
+            });
         }
 
         // Expect the relevant event to be emitted.

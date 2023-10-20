@@ -8,22 +8,22 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
 
     function setUp() public virtual override {
         defaultStreamId = createDefaultStream();
-        changePrank({ msgSender: users.recipient });
+        changePrank({ msgSender: users.sender });
     }
 
     modifier whenNotDelegateCalled() {
         _;
     }
 
-    modifier whenNotNull() {
+    modifier givenNotNull() {
         _;
     }
 
-    modifier whenStreamCold() {
+    modifier givenStreamCold() {
         _;
     }
 
-    modifier whenStreamWarm() {
+    modifier givenStreamWarm() {
         _;
     }
 
@@ -35,28 +35,23 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         _;
     }
 
-    modifier whenStreamCancelable() {
+    modifier givenStreamCancelable() {
         _;
     }
 
     /// @dev In the LockupLinear contract, the streaming starts after the cliff time, whereas in the LockupDynamic
     /// contract, the streaming starts after the start time.
-    modifier whenStatusStreaming() {
+    modifier givenStatusStreaming() {
         // Warp to the future, after the stream's start time but before the stream's end time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
-    modifier whenCallerSender() {
-        changePrank({ msgSender: users.sender });
+    modifier givenRecipientContract() {
         _;
     }
 
-    modifier whenRecipientContract() {
-        _;
-    }
-
-    modifier whenRecipientImplementsHook() {
+    modifier givenRecipientImplementsHook() {
         _;
     }
 
@@ -65,27 +60,6 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
     }
 
     modifier whenNoRecipientReentrancy() {
-        _;
-    }
-
-    modifier whenCallerRecipient() {
-        changePrank({ msgSender: users.recipient });
-        _;
-    }
-
-    modifier whenSenderContract() {
-        _;
-    }
-
-    modifier whenSenderImplementsHook() {
-        _;
-    }
-
-    modifier whenSenderDoesNotRevert() {
-        _;
-    }
-
-    modifier whenNoSenderReentrancy() {
         _;
     }
 }

@@ -7,7 +7,7 @@ import { Lockup, LockupLinear } from "../types/DataTypes.sol";
 import { ISablierV2Lockup } from "./ISablierV2Lockup.sol";
 
 /// @title ISablierV2LockupLinear
-/// @notice Creates and manages lockup streams with a linear streaming function.
+/// @notice Creates and manages Lockup streams with linear streaming functions.
 interface ISablierV2LockupLinear is ISablierV2Lockup {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
@@ -22,6 +22,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// broker fee amount, all denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Boolean indicating whether the stream will be cancelable or not.
+    /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
     /// @param range Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as Unix
     /// timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
@@ -33,6 +34,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
         Lockup.CreateAmounts amounts,
         IERC20 indexed asset,
         bool cancelable,
+        bool transferable,
         LockupLinear.Range range,
         address broker
     );
@@ -84,7 +86,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Creates a stream by setting the start time to `block.timestamp`, and the end time to
-    /// the sum of `block.timestamp` and `params.durations.total. The stream is funded by `msg.sender` and is wrapped
+    /// the sum of `block.timestamp` and `params.durations.total`. The stream is funded by `msg.sender` and is wrapped
     /// in an ERC-721 NFT.
     ///
     /// @dev Emits a {Transfer} and {CreateLockupLinearStream} event.

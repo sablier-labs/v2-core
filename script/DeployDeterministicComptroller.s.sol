@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity >=0.8.19 <=0.9.0;
+pragma solidity >=0.8.19 <0.9.0;
 
 import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
 
@@ -11,14 +11,14 @@ contract DeployDeterministicComptroller is BaseScript {
     /// @dev The presence of the salt instructs Forge to deploy contracts via this deterministic CREATE2 factory:
     /// https://github.com/Arachnid/deterministic-deployment-proxy
     function run(
-        uint256 create2Salt,
+        string memory create2Salt,
         address initialAdmin
     )
         public
         virtual
-        broadcaster
+        broadcast
         returns (SablierV2Comptroller comptroller)
     {
-        comptroller = new SablierV2Comptroller{ salt: bytes32(create2Salt) }(initialAdmin);
+        comptroller = new SablierV2Comptroller{ salt: bytes32(abi.encodePacked(create2Salt)) }(initialAdmin);
     }
 }
