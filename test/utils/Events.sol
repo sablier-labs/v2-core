@@ -2,7 +2,7 @@
 pragma solidity >=0.8.19;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { UD60x18 } from "@prb/math/UD60x18.sol";
+import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { IERC3156FlashBorrower } from "../../src/interfaces/erc3156/IERC3156FlashBorrower.sol";
 import { ISablierV2Comptroller } from "../../src/interfaces/ISablierV2Comptroller.sol";
@@ -69,9 +69,10 @@ abstract contract Events {
     //////////////////////////////////////////////////////////////////////////*/
 
     event CancelLockupStream(
-        uint256 indexed streamId,
+        uint256 streamId,
         address indexed sender,
         address indexed recipient,
+        IERC20 indexed asset,
         uint128 senderAmount,
         uint128 recipientAmount
     );
@@ -82,7 +83,7 @@ abstract contract Events {
         address indexed admin, ISablierV2NFTDescriptor oldNFTDescriptor, ISablierV2NFTDescriptor newNFTDescriptor
     );
 
-    event WithdrawFromLockupStream(uint256 indexed streamId, address indexed to, uint128 amount);
+    event WithdrawFromLockupStream(uint256 indexed streamId, address indexed to, IERC20 indexed asset, uint128 amount);
 
     /*//////////////////////////////////////////////////////////////////////////
                              SABLIER-V2-LOCKUP-DYNAMIC
@@ -96,6 +97,7 @@ abstract contract Events {
         Lockup.CreateAmounts amounts,
         IERC20 indexed asset,
         bool cancelable,
+        bool transferable,
         LockupDynamic.Segment[] segments,
         LockupDynamic.Range range,
         address broker
@@ -113,6 +115,7 @@ abstract contract Events {
         Lockup.CreateAmounts amounts,
         IERC20 indexed asset,
         bool cancelable,
+        bool transferable,
         LockupLinear.Range range,
         address broker
     );

@@ -32,11 +32,11 @@ abstract contract CancelMultiple_Integration_Shared_Test is Lockup_Integration_S
         _;
     }
 
-    modifier whenNoNull() {
+    modifier givenNoNull() {
         _;
     }
 
-    modifier whenAllStreamsWarm() {
+    modifier givenAllStreamsWarm() {
         _;
     }
 
@@ -48,11 +48,11 @@ abstract contract CancelMultiple_Integration_Shared_Test is Lockup_Integration_S
         _;
         vm.warp({ timestamp: originalTime });
         createTestStreams();
-        changePrank({ msgSender: users.recipient });
+        changePrank({ msgSender: users.sender });
         _;
     }
 
-    modifier whenAllStreamsCancelable() {
+    modifier givenAllStreamsCancelable() {
         _;
     }
 }

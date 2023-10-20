@@ -2,7 +2,7 @@
 pragma solidity >=0.8.19;
 
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
-import { PRBMathUtils } from "@prb/math/test/Utils.sol";
+import { PRBMathUtils } from "@prb/math/src/test/Utils.sol";
 
 import { Vm } from "@prb/test/PRBTest.sol";
 import { StdUtils } from "forge-std/StdUtils.sol";
@@ -56,7 +56,7 @@ abstract contract Utils is StdUtils, PRBMathUtils {
 
     /// @dev Checks if the Foundry profile is "test-optimized".
     function isTestOptimizedProfile() internal returns (bool) {
-        string memory profile = vm.envOr("FOUNDRY_PROFILE", string(""));
+        string memory profile = vm.envOr({ name: "FOUNDRY_PROFILE", defaultValue: string("default") });
         return Strings.equal(profile, "test-optimized");
     }
 }

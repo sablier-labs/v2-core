@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { ZERO } from "@prb/math/UD60x18.sol";
+import { ZERO } from "@prb/math/src/UD60x18.sol";
 
 import { Broker, LockupDynamic } from "src/types/DataTypes.sol";
 
@@ -30,7 +30,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         _;
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past
     /// - End time in the present
@@ -62,7 +62,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         _;
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past
     /// - End time in the present

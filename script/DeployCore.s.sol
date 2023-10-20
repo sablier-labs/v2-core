@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity >=0.8.19 <=0.9.0;
+pragma solidity >=0.8.19 <0.9.0;
 
 import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
 import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
 import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
 import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
+
 import { BaseScript } from "./Base.s.sol";
 
 /// @notice Deploys all V2 Core contract in the following order:
@@ -20,7 +21,7 @@ contract DeployCore is BaseScript {
     )
         public
         virtual
-        broadcaster
+        broadcast
         returns (
             SablierV2Comptroller comptroller,
             SablierV2LockupDynamic lockupDynamic,

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { ZERO } from "@prb/math/UD60x18.sol";
+import { ZERO } from "@prb/math/src/UD60x18.sol";
 
 import { Broker, LockupLinear } from "src/types/DataTypes.sol";
 
@@ -29,8 +29,8 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
 
     function testFuzz_StreamedAmountOf_CliffTimeInTheFuture(uint40 timeJump)
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamHasNotBeenCanceled
     {
         timeJump = boundUint40(timeJump, 0, defaults.CLIFF_DURATION() - 1);
         vm.warp({ timestamp: defaults.START_TIME() + timeJump });
@@ -43,7 +43,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         _;
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past
     /// - End time in the present
@@ -56,8 +56,8 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 depositAmount
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamHasNotBeenCanceled
         whenCliffTimeNotInTheFuture
     {
         vm.assume(depositAmount != 0);
@@ -89,8 +89,8 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         uint128 depositAmount
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamHasNotBeenCanceled
         whenCliffTimeNotInTheFuture
     {
         vm.assume(depositAmount != 0);

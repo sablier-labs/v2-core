@@ -4,7 +4,7 @@ pragma solidity >=0.8.19;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import { UD60x18, ud } from "@prb/math/UD60x18.sol";
+import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
 import { SablierV2Lockup } from "./abstracts/SablierV2Lockup.sol";
 import { ISablierV2Comptroller } from "./interfaces/ISablierV2Comptroller.sol";
@@ -12,7 +12,6 @@ import { ISablierV2Lockup } from "./interfaces/ISablierV2Lockup.sol";
 import { ISablierV2LockupLinear } from "./interfaces/ISablierV2LockupLinear.sol";
 import { ISablierV2NFTDescriptor } from "./interfaces/ISablierV2NFTDescriptor.sol";
 import { ISablierV2LockupRecipient } from "./interfaces/hooks/ISablierV2LockupRecipient.sol";
-import { ISablierV2LockupSender } from "./interfaces/hooks/ISablierV2LockupSender.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { Helpers } from "./libraries/Helpers.sol";
 import { Lockup, LockupLinear } from "./types/DataTypes.sol";
@@ -169,10 +168,15 @@ contract SablierV2LockupLinear is
         }
     }
 
-    /// @inheritdoc ISablierV2Lockup
-    function isCold(uint256 streamId) external view override notNull(streamId) returns (bool result) {
-        Lockup.Status status = _statusOf(streamId);
-        result = status == Lockup.Status.SETTLED || status == Lockup.Status.CANCELED || status == Lockup.Status.DEPLETED;
+    /// @inheritdoc SablierV2Lockup
+    function isTransferable(uint256 streamId)
+        public
+        view
+        override(ISablierV2Lockup, SablierV2Lockup)
+        notNull(streamId)
+        returns (bool result)
+    {
+        result = _streams[streamId].isTransferable;
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -189,12 +193,6 @@ contract SablierV2LockupLinear is
     /// @inheritdoc ISablierV2Lockup
     function isStream(uint256 streamId) public view override(ISablierV2Lockup, SablierV2Lockup) returns (bool result) {
         result = _streams[streamId].isStream;
-    }
-
-    /// @inheritdoc ISablierV2Lockup
-    function isWarm(uint256 streamId) external view override notNull(streamId) returns (bool result) {
-        Lockup.Status status = _statusOf(streamId);
-        result = status == Lockup.Status.PENDING || status == Lockup.Status.STREAMING;
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -269,6 +267,7 @@ contract SablierV2LockupLinear is
                 asset: params.asset,
                 broker: params.broker,
                 cancelable: params.cancelable,
+                transferable: params.transferable,
                 range: range,
                 recipient: params.recipient,
                 sender: params.sender,
@@ -422,38 +421,25 @@ contract SablierV2LockupLinear is
         address sender = _streams[streamId].sender;
         address recipient = _ownerOf(streamId);
 
-        // Interactions: refund the sender.
-        _streams[streamId].asset.safeTransfer({ to: sender, value: senderAmount });
+        // Retrieve the ERC-20 asset from storage.
+        IERC20 asset = _streams[streamId].asset;
 
-        // Interactions: if `msg.sender` is the sender and the recipient is a contract, try to invoke the cancel
-        // hook on the recipient without reverting if the hook is not implemented, and without bubbling up any
-        // potential revert.
-        if (msg.sender == sender) {
-            if (recipient.code.length > 0) {
-                try ISablierV2LockupRecipient(recipient).onStreamCanceled({
-                    streamId: streamId,
-                    sender: sender,
-                    senderAmount: senderAmount,
-                    recipientAmount: recipientAmount
-                }) { } catch { }
-            }
-        }
-        // Interactions: if `msg.sender` is the recipient and the sender is a contract, try to invoke the cancel
-        // hook on the sender without reverting if the hook is not implemented, and also without bubbling up any
-        // potential revert.
-        else {
-            if (sender.code.length > 0) {
-                try ISablierV2LockupSender(sender).onStreamCanceled({
-                    streamId: streamId,
-                    recipient: recipient,
-                    senderAmount: senderAmount,
-                    recipientAmount: recipientAmount
-                }) { } catch { }
-            }
+        // Interactions: refund the sender.
+        asset.safeTransfer({ to: sender, value: senderAmount });
+
+        // Interactions: if the recipient is a contract, try to invoke the cancel hook on the recipient without
+        // reverting if the hook is not implemented, and without bubbling up any potential revert.
+        if (recipient.code.length > 0) {
+            try ISablierV2LockupRecipient(recipient).onStreamCanceled({
+                streamId: streamId,
+                sender: sender,
+                senderAmount: senderAmount,
+                recipientAmount: recipientAmount
+            }) { } catch { }
         }
 
         // Log the cancellation.
-        emit ISablierV2Lockup.CancelLockupStream(streamId, sender, recipient, senderAmount, recipientAmount);
+        emit ISablierV2Lockup.CancelLockupStream(streamId, sender, recipient, asset, senderAmount, recipientAmount);
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
@@ -479,6 +465,7 @@ contract SablierV2LockupLinear is
             cliffTime: params.range.cliff,
             endTime: params.range.end,
             isCancelable: params.cancelable,
+            isTransferable: params.transferable,
             isDepleted: false,
             isStream: true,
             sender: params.sender,
@@ -520,6 +507,7 @@ contract SablierV2LockupLinear is
             amounts: createAmounts,
             asset: params.asset,
             cancelable: params.cancelable,
+            transferable: params.transferable,
             range: params.range,
             broker: params.broker.account
         });
@@ -534,26 +522,10 @@ contract SablierV2LockupLinear is
 
         // Effects: renounce the stream by making it not cancelable.
         _streams[streamId].isCancelable = false;
-
-        // Interactions: if the recipient is a contract, try to invoke the renounce hook on the recipient without
-        // reverting if the hook is not implemented, and also without bubbling up any potential revert.
-        address recipient = _ownerOf(streamId);
-        if (recipient.code.length > 0) {
-            try ISablierV2LockupRecipient(recipient).onStreamRenounced(streamId) { } catch { }
-        }
-
-        // Log the renouncement.
-        emit ISablierV2Lockup.RenounceLockupStream(streamId);
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
     function _withdraw(uint256 streamId, address to, uint128 amount) internal override {
-        // Checks: the withdraw amount is not greater than the withdrawable amount.
-        uint128 withdrawableAmount = _withdrawableAmountOf(streamId);
-        if (amount > withdrawableAmount) {
-            revert Errors.SablierV2Lockup_Overdraw(streamId, amount, withdrawableAmount);
-        }
-
         // Effects: update the withdrawn amount.
         _streams[streamId].amounts.withdrawn = _streams[streamId].amounts.withdrawn + amount;
 
@@ -570,25 +542,13 @@ contract SablierV2LockupLinear is
             _streams[streamId].isCancelable = false;
         }
 
+        // Retrieve the ERC-20 asset from storage.
+        IERC20 asset = _streams[streamId].asset;
+
         // Interactions: perform the ERC-20 transfer.
-        _streams[streamId].asset.safeTransfer({ to: to, value: amount });
-
-        // Retrieve the recipient from storage.
-        address recipient = _ownerOf(streamId);
-
-        // Interactions: if `msg.sender` is not the recipient and the recipient is a contract, try to invoke the
-        // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
-        // any potential revert.
-        if (msg.sender != recipient && recipient.code.length > 0) {
-            try ISablierV2LockupRecipient(recipient).onStreamWithdrawn({
-                streamId: streamId,
-                caller: msg.sender,
-                to: to,
-                amount: amount
-            }) { } catch { }
-        }
+        asset.safeTransfer({ to: to, value: amount });
 
         // Log the withdrawal.
-        emit ISablierV2Lockup.WithdrawFromLockupStream(streamId, to, amount);
+        emit ISablierV2Lockup.WithdrawFromLockupStream(streamId, to, asset, amount);
     }
 }

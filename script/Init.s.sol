@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity >=0.8.19 <=0.9.0;
+pragma solidity >=0.8.19 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -26,9 +26,9 @@ contract Init is BaseScript {
         IERC20 asset
     )
         public
-        broadcaster
+        broadcast
     {
-        address sender = deployer;
+        address sender = broadcaster;
         address recipient = vm.addr(vm.deriveKey({ mnemonic: mnemonic, index: 1 }));
 
         /*//////////////////////////////////////////////////////////////////////////
@@ -73,6 +73,7 @@ contract Init is BaseScript {
                     totalAmount: totalAmounts[i],
                     asset: asset,
                     cancelable: true,
+                    transferable: true,
                     durations: LockupLinear.Durations({ cliff: cliffDurations[i], total: totalDurations[i] }),
                     broker: Broker(address(0), ud60x18(0))
                 })
@@ -98,6 +99,7 @@ contract Init is BaseScript {
                 asset: asset,
                 broker: Broker(address(0), ud60x18(0)),
                 cancelable: true,
+                transferable: true,
                 recipient: recipient,
                 sender: sender,
                 segments: segments,

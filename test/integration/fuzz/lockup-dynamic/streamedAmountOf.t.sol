@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { ZERO } from "@prb/math/UD60x18.sol";
+import { ZERO } from "@prb/math/src/UD60x18.sol";
 import { Broker, LockupDynamic } from "src/types/DataTypes.sol";
 
 import { StreamedAmountOf_Integration_Shared_Test } from "../../shared/lockup/streamedAmountOf.t.sol";
@@ -25,7 +25,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         changePrank({ msgSender: users.sender });
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past
     /// - End time in the present
@@ -37,8 +37,8 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeJump
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamHasNotBeenCanceled
         whenStartTimeInThePast
     {
         vm.assume(segment.amount != 0);
@@ -69,7 +69,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    modifier whenMultipleSegments() {
+    modifier givenMultipleSegments() {
         _;
     }
 
@@ -77,7 +77,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         _;
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past
     /// - End time in the present
@@ -90,10 +90,10 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeJump
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamHasNotBeenCanceled
         whenStartTimeInThePast
-        whenMultipleSegments
+        givenMultipleSegments
         whenCurrentMilestoneNot1st
     {
         vm.assume(segments.length > 1);
@@ -141,10 +141,10 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint40 timeWarp1
     )
         external
-        whenNotNull
-        whenStreamHasNotBeenCanceled
+        givenNotNull
+        givenStreamHasNotBeenCanceled
         whenStartTimeInThePast
-        whenMultipleSegments
+        givenMultipleSegments
         whenCurrentMilestoneNot1st
     {
         vm.assume(segments.length > 1);

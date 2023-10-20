@@ -1,7 +1,6 @@
 [profile.default]
   auto_detect_solc = false
   bytecode_hash = "none"
-  cbor_metadata = false
   emv_version = "paris"
   fs_permissions = [{ access = "read", path = "out-optimized" }]
   libs = ["lib"]
@@ -16,7 +15,7 @@
   out = "out"
   script = "script"
   sender = "0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38"
-  solc = "0.8.19"
+  solc = "0.8.21"
   src = "src"
   test = "test"
 
@@ -53,7 +52,9 @@
 [profile.smt.model_checker]
   engine = "chc" # constrained Horn clauses
   invariants = ["contract", "reentrancy"]
+  show_proved_safe = true
   show_unproved = true
+  show_unsupported = true
   timeout = 100_000 # in milliseconds, per solving query
   targets = [
     "assert",
@@ -103,7 +104,7 @@
   arbitrum_one = "https://arbitrum-mainnet.infura.io/v3/${API_KEY_INFURA}"
   avalanche = "https://avalanche-mainnet.infura.io/v3/${API_KEY_INFURA}"
   bnb_smart_chain = "https://bsc-dataseed.binance.org"
-  gnosis_chain = "https://blockscout.com/xdai/mainnet/api/eth-rpc"
+  gnosis_chain = "https://rpc.gnosischain.com"
   goerli = "https://goerli.infura.io/v3/${API_KEY_INFURA}"
   localhost = "http://localhost:8545"
   mainnet = "${RPC_URL_MAINNET}"

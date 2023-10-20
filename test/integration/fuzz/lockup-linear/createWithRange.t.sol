@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { MAX_UD60x18, UD60x18, ud } from "@prb/math/UD60x18.sol";
+import { MAX_UD60x18, UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
 import { Errors } from "src/libraries/Errors.sol";
 import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
@@ -90,7 +90,7 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
         whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
+        givenProtocolFeeNotTooHigh
     {
         vm.assume(broker.account != address(0));
         broker.fee = _bound(broker.fee, MAX_FEE + ud(1), MAX_UD60x18);
@@ -111,7 +111,7 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         uint128 initialProtocolRevenues;
     }
 
-    /// @dev Given enough test runs, all of the following scenarios will be fuzzed:
+    /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - All possible permutations for the funder, sender, recipient, and broker
     /// - Multiple values for the total amount
@@ -134,7 +134,7 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
         whenEndTimeInTheFuture
-        whenProtocolFeeNotTooHigh
+        givenProtocolFeeNotTooHigh
         whenBrokerFeeNotTooHigh
         whenAssetContract
         whenAssetERC20
@@ -144,12 +144,10 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         params.range.start =
             boundUint40(params.range.start, defaults.START_TIME(), defaults.START_TIME() + 10_000 seconds);
         params.range.cliff = boundUint40(params.range.cliff, params.range.start, params.range.start + 52 weeks);
-        params.range.end = boundUint40(params.range.end, params.range.cliff + 1, MAX_UNIX_TIMESTAMP);
-        params.broker.fee = _bound(params.broker.fee, 0, MAX_FEE);
-        protocolFee = _bound(protocolFee, 0, MAX_FEE);
         params.range.end = boundUint40(params.range.end, params.range.cliff + 1 seconds, MAX_UNIX_TIMESTAMP);
         params.broker.fee = _bound(params.broker.fee, 0, MAX_FEE);
         protocolFee = _bound(protocolFee, 0, MAX_FEE);
+        params.transferable = true;
 
         // Calculate the fee amounts and the deposit amount.
         Vars memory vars;
@@ -192,6 +190,7 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
             amounts: vars.createAmounts,
             asset: dai,
             cancelable: params.cancelable,
+            transferable: params.transferable,
             range: params.range,
             broker: params.broker.account
         });
@@ -204,6 +203,7 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
                 cancelable: params.cancelable,
                 range: params.range,
                 recipient: params.recipient,
+                transferable: params.transferable,
                 sender: params.sender,
                 totalAmount: params.totalAmount
             })
@@ -217,6 +217,7 @@ contract CreateWithRange_LockupLinear_Integration_Fuzz_Test is
         assertEq(actualStream.endTime, params.range.end, "endTime");
         assertEq(actualStream.isCancelable, params.cancelable, "isCancelable");
         assertEq(actualStream.isDepleted, false, "isStream");
+        assertEq(actualStream.isTransferable, true, "isTransferable");
         assertEq(actualStream.isStream, true, "isStream");
         assertEq(actualStream.sender, params.sender, "sender");
         assertEq(actualStream.startTime, params.range.start, "startTime");
