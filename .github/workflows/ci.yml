@@ -315,7 +315,7 @@ jobs:
         with:
           fail-on: "none"
           sarif: "results.sarif"
-          solc-version: "0.8.19"
+          solc-version: "0.8.21"
           target: "src/"
           ignore-compile: true
 
