@@ -299,16 +299,6 @@ jobs:
         with:
           submodules: "recursive"
 
-      - name: "Restore the cached build"
-        uses: "actions/cache/restore@v3"
-        with:
-          fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
-          path: |
-            cache
-            out
-            out-optimized
-
       - name: "Run Slither analysis"
         uses: "crytic/slither-action@v0.3.0"
         id: "slither"
@@ -316,8 +306,6 @@ jobs:
           fail-on: "none"
           sarif: "results.sarif"
           solc-version: "0.8.21"
-          target: "src/"
-          ignore-compile: true
 
       - name: "Upload SARIF file to GitHub code scanning"
         uses: "github/codeql-action/upload-sarif@v2"
