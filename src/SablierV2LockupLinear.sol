@@ -430,9 +430,7 @@ contract SablierV2LockupLinear is
         // Log the cancellation.
         emit ISablierV2Lockup.CancelLockupStream(streamId, sender, recipient, asset, senderAmount, recipientAmount);
 
-        // Emits an ERC-4906 event to trigger an update of the NFT metadata. The `updateMetadata` modifier isn't used
-        // here to avoid DOS attacks by malicious recipient contracts, which could force excessive gas costs on the
-        // sender.
+        // Emits an ERC-4906 event to trigger an update of the NFT metadata.
         emit MetadataUpdate({ _tokenId: streamId });
 
         // Interactions: if the recipient is a contract, try to invoke the cancel hook on the recipient without
