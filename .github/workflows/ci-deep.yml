@@ -68,8 +68,6 @@ jobs:
     steps:
       - name: "Check out the repo"
         uses: "actions/checkout@v3"
-        with:
-          submodules: "recursive"
 
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
@@ -92,6 +90,9 @@ jobs:
             out
             out-optimized
 
+      - name: "Install the Node.js dependencies"
+        run: "pnpm install"
+  
       - name: "Add build summary"
         run: |
           echo "## Build result" >> $GITHUB_STEP_SUMMARY
@@ -105,8 +106,6 @@ jobs:
     steps:
       - name: "Check out the repo"
         uses: "actions/checkout@v3"
-        with:
-          submodules: "recursive"
 
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
@@ -120,6 +119,9 @@ jobs:
             cache
             out
             out-optimized
+
+      - name: "Install the Node.js dependencies"
+        run: "pnpm install"
 
       - name: "Run the unit tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/unit\""
@@ -137,8 +139,6 @@ jobs:
     steps:
       - name: "Check out the repo"
         uses: "actions/checkout@v3"
-        with:
-          submodules: "recursive"
 
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
@@ -153,6 +153,9 @@ jobs:
             out
             out-optimized
 
+      - name: "Install the Node.js dependencies"
+        run: "pnpm install"
+    
       - name: "Run the integration tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\""
 
@@ -170,8 +173,6 @@ jobs:
     steps:
       - name: "Check out the repo"
         uses: "actions/checkout@v3"
-        with:
-          submodules: "recursive"
 
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
@@ -186,6 +187,9 @@ jobs:
             out
             out-optimized
 
+      - name: "Install the Node.js dependencies"
+        run: "pnpm install"
+            
       - name: "Run the invariant tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant/**/*.sol\""
 
@@ -202,8 +206,6 @@ jobs:
     steps:
       - name: "Check out the repo"
         uses: "actions/checkout@v3"
-        with:
-          submodules: "recursive"
 
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
@@ -217,6 +219,9 @@ jobs:
             cache
             out
             out-optimized
+
+      - name: "Install the Node.js dependencies"
+        run: "pnpm install"
 
       - name: "Run the fork tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/fork/**/*.sol\""

@@ -3,7 +3,7 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import { Solarray } from "solarray/Solarray.sol";
+import { Solarray } from "solarray/src/Solarray.sol";
 
 import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
