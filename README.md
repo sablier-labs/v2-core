@@ -26,7 +26,23 @@ of tokens deposited.
 
 ## Install
 
-### Foundry
+### Node.js (recommended)
+
+Sablier V2 Core is available as a Node.js package:
+
+```shell
+yarn add @sablier/v2-core
+```
+
+Add these to your `remappings.txt` file:
+
+```text
+@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/
+@prb/math/=node_modules/@prb/math/
+@sablier/v2-core/=node_modules/@sablier/v2-core/
+```
+
+### Foundry (slow)
 
 First, run the install step:
 
@@ -47,14 +63,6 @@ Finally, add this to your `remappings.txt` file:
 
 ```text
 @sablier/v2-core/=lib/v2-core/
-```
-
-### Node.js
-
-Sablier V2 Core is available as a Node.js package:
-
-```shell
-pnpm add @sablier/v2-core
 ```
 
 ## Usage
