@@ -83,7 +83,7 @@ jobs:
       - name: "Cache the build and the node modules so that they can be re-used by the other jobs"
         uses: "actions/cache/save@v3"
         with:
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
@@ -133,7 +133,7 @@ jobs:
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
@@ -164,7 +164,7 @@ jobs:
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
@@ -193,7 +193,7 @@ jobs:
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
@@ -222,7 +222,7 @@ jobs:
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
@@ -253,7 +253,7 @@ jobs:
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
@@ -281,6 +281,17 @@ jobs:
 
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
+
+      - name: "Restore the cached build and node modules"
+        uses: "actions/cache/restore@v3"
+        with:
+          fail-on-cache-miss: true
+          key: "build-and-modules-${{ github.sha }}"
+          path: |
+            cache
+            node_modules
+            out
+            out-optimized
 
       - name: "Generate the coverage report using the unit and the integration tests"
         run: "forge coverage --match-path \"test/{unit,integration}/**/*.sol\" --report lcov"
