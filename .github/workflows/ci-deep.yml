@@ -3,7 +3,7 @@ name: "CI Deep"
 env:
   API_KEY_ETHERSCAN: ${{ secrets.API_KEY_ETHERSCAN }}
   API_KEY_INFURA: ${{ secrets.API_KEY_INFURA }}
-  RPC_URL_MAINNET: ${{ secrets.RPC_URL_MAINNET }}
+  MAINNET_RPC_URL: ${{ secrets.MAINNET_RPC_URL }}
 
 on:
   schedule:
@@ -93,7 +93,7 @@ jobs:
         run: "FOUNDRY_PROFILE=optimized forge build"
 
       - name: "Build the test contracts"
-        run: "FOUNDRY_PROFILE=test-optimized forge build"  
+        run: "FOUNDRY_PROFILE=test-optimized forge build"
 
       - name: "Cache the build so that it can be re-used by the other jobs"
         uses: "actions/cache/save@v3"
@@ -103,7 +103,7 @@ jobs:
             cache
             out
             out-optimized
-  
+
       - name: "Add build summary"
         run: |
           echo "## Build result" >> $GITHUB_STEP_SUMMARY
@@ -133,7 +133,7 @@ jobs:
           node-version: "lts/*"
 
       - name: "Install the Node.js dependencies"
-        run: "pnpm install"        
+        run: "pnpm install"
 
       - name: "Restore the cached build"
         uses: "actions/cache/restore@v3"
@@ -188,7 +188,7 @@ jobs:
             cache
             out
             out-optimized
-    
+
       - name: "Run the integration tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\""
 
@@ -222,8 +222,8 @@ jobs:
           node-version: "lts/*"
 
       - name: "Install the Node.js dependencies"
-        run: "pnpm install"       
-        
+        run: "pnpm install"
+
 
       - name: "Restore the cached build"
         uses: "actions/cache/restore@v3"
@@ -234,7 +234,7 @@ jobs:
             cache
             out
             out-optimized
-            
+
       - name: "Run the invariant tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant/**/*.sol\""
 
