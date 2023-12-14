@@ -68,7 +68,9 @@ fi
 
 # Check: required Bash >=4.0.0 for associative arrays
 if ((BASH_VERSINFO[0] < 4)); then
-    echo -e "${EC}Error:\nThis script requires Bash version 4.0.0 or higher.\nYou are currently using Bash version ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}.${BASH_VERSINFO[2]}.\nPlease upgrade your Bash version and try again.${NC}"
+    echo -e "${EC}Error:\nThis script requires Bash version 4.0.0 or higher.
+    \nYou are currently using Bash version ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}.${BASH_VERSINFO[2]}.
+    \nPlease upgrade your Bash version and try again.${NC}"
     exit 1
 fi
 
