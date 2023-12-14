@@ -80,12 +80,13 @@ jobs:
       - name: "Build the test contracts"
         run: "FOUNDRY_PROFILE=test-optimized forge build"
 
-      - name: "Cache the build so that it can be re-used by the other jobs"
+      - name: "Cache the build and the node modules so that they can be re-used by the other jobs"
         uses: "actions/cache/save@v3"
         with:
           key: "foundry-build-${{ github.sha }}"
           path: |
             cache
+            node_modules
             out
             out-optimized
 
@@ -128,13 +129,14 @@ jobs:
       - name: "Install the Node.js dependencies"
         run: "pnpm install"  
         
-      - name: "Restore the cached build"
+      - name: "Restore the cached build and node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
             cache
+            node_modules
             out
             out-optimized
 
@@ -158,27 +160,14 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Install Pnpm"
-        uses: "pnpm/action-setup@v2"
-        with:
-          version: "8"
-
-      - name: "Install Node.js"
-        uses: "actions/setup-node@v3"
-        with:
-          cache: "pnpm"
-          node-version: "lts/*"
-
-      - name: "Install the Node.js dependencies"
-        run: "pnpm install"
-
-      - name: "Restore the cached build"
+      - name: "Restore the cached build and node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
             cache
+            node_modules
             out
             out-optimized
 
@@ -200,27 +189,14 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Install Pnpm"
-        uses: "pnpm/action-setup@v2"
-        with:
-          version: "8"
-
-      - name: "Install Node.js"
-        uses: "actions/setup-node@v3"
-        with:
-          cache: "pnpm"
-          node-version: "lts/*"
-
-      - name: "Install the Node.js dependencies"
-        run: "pnpm install"
-
-      - name: "Restore the cached build"
+      - name: "Restore the cached build and node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
             cache
+            node_modules
             out
             out-optimized
 
@@ -242,27 +218,14 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Install Pnpm"
-        uses: "pnpm/action-setup@v2"
-        with:
-          version: "8"
-
-      - name: "Install Node.js"
-        uses: "actions/setup-node@v3"
-        with:
-          cache: "pnpm"
-          node-version: "lts/*"
-
-      - name: "Install the Node.js dependencies"
-        run: "pnpm install"
-        
-      - name: "Restore the cached build"
+      - name: "Restore the cached build and node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
             cache
+            node_modules
             out
             out-optimized
     
@@ -286,27 +249,14 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Install Pnpm"
-        uses: "pnpm/action-setup@v2"
-        with:
-          version: "8"
-
-      - name: "Install Node.js"
-        uses: "actions/setup-node@v3"
-        with:
-          cache: "pnpm"
-          node-version: "lts/*"
-
-      - name: "Install the Node.js dependencies"
-        run: "pnpm install"
-
-      - name: "Restore the cached build"
+      - name: "Restore the cached build and node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
           key: "foundry-build-${{ github.sha }}"
           path: |
             cache
+            node_modules
             out
             out-optimized
     
@@ -331,20 +281,6 @@ jobs:
 
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
-
-      - name: "Install Pnpm"
-        uses: "pnpm/action-setup@v2"
-        with:
-          version: "8"
-
-      - name: "Install Node.js"
-        uses: "actions/setup-node@v3"
-        with:
-          cache: "pnpm"
-          node-version: "lts/*"
-
-      - name: "Install the Node.js dependencies"
-        run: "pnpm install"
 
       - name: "Generate the coverage report using the unit and the integration tests"
         run: "forge coverage --match-path \"test/{unit,integration}/**/*.sol\" --report lcov"
