@@ -76,16 +76,16 @@ fi
 
 # Define chain configurations
 declare -A chains
-chains["arbitrum_one"]="$ARBITRUM_RPC_URL $ARBISCAN_API_KEY $ARBITRUM_CHAIN_ID $ARBITRUM_ADMIN"
-chains["avalanche"]="$AVALANCHE_RPC_URL $SNOWTRACE_API_KEY $AVALANCHE_CHAIN_ID $AVALANCHE_ADMIN"
-chains["base"]="$BASE_RPC_URL $BASESCAN_API_KEY $BASE_CHAIN_ID $BASE_ADMIN"
-chains["bnb_smart_chain"]="$BSC_RPC_URL $BSCSCAN_API_KEY $BSC_CHAIN_ID $BSC_ADMIN"
-chains["gnosis"]="$GNOSIS_RPC_URL $GNOSISSCAN_API_KEY $GNOSIS_CHAIN_ID $GNOSIS_ADMIN"
-chains["mainnet"]="$MAINNET_RPC_URL $ETHERSCAN_API_KEY $MAINNET_CHAIN_ID $MAINNET_ADMIN"
-chains["optimism"]="$OPTIMISM_RPC_URL $OPTIMISTIC_API_KEY $OPTIMISM_CHAIN_ID $OPTIMISM_ADMIN"
-chains["polygon"]="$POLYGON_RPC_URL $POLYGONSCAN_API_KEY $POLYGON_CHAIN_ID $POLYGON_ADMIN"
-chains["scroll"]="$SCROLL_RPC_URL $SCROLL_API_KEY $SCROLL_CHAIN_ID $SCROLL_ADMIN"
-chains["sepolia"]="$SEPOLIA_RPC_URL $ETHERSCAN_API_KEY $SEPOLIA_CHAIN_ID $SEPOLIA_ADMIN"
+chains["arbitrum_one"]="$ARBITRUM_RPC_URL $ARBISCAN_API_KEY $ARBITRUM_CHAIN_ID $ARBITRUM_ADMIN $ARBITRUM_COMPTROLLER"
+chains["avalanche"]="$AVALANCHE_RPC_URL $SNOWTRACE_API_KEY $AVALANCHE_CHAIN_ID $AVALANCHE_ADMIN $AVALANCHE_COMPTROLLER"
+chains["base"]="$BASE_RPC_URL $BASESCAN_API_KEY $BASE_CHAIN_ID $BASE_ADMIN $BASE_COMPTROLLER"
+chains["bnb_smart_chain"]="$BSC_RPC_URL $BSCSCAN_API_KEY $BSC_CHAIN_ID $BSC_ADMIN $BSC_COMPTROLLER"
+chains["gnosis"]="$GNOSIS_RPC_URL $GNOSISSCAN_API_KEY $GNOSIS_CHAIN_ID $GNOSIS_ADMIN $GNOSIS_COMPTROLLER"
+chains["mainnet"]="$MAINNET_RPC_URL $ETHERSCAN_API_KEY $MAINNET_CHAIN_ID $MAINNET_ADMIN $MAINNET_COMPTROLLER"
+chains["optimism"]="$OPTIMISM_RPC_URL $OPTIMISTIC_API_KEY $OPTIMISM_CHAIN_ID $OPTIMISM_ADMIN $OPTIMISM_COMPTROLLER"
+chains["polygon"]="$POLYGON_RPC_URL $POLYGONSCAN_API_KEY $POLYGON_CHAIN_ID $POLYGON_ADMIN $POLYGON_COMPTROLLER"
+chains["scroll"]="$SCROLL_RPC_URL $SCROLL_API_KEY $SCROLL_CHAIN_ID $SCROLL_ADMIN $SCROLL_COMPTROLLER"
+chains["sepolia"]="$SEPOLIA_RPC_URL $ETHERSCAN_API_KEY $SEPOLIA_CHAIN_ID $SEPOLIA_ADMIN $SEPOLIA_COMPTROLLER"
 
 # Flag for broadcast deployment
 BROADCAST_DEPLOYMENT=false
@@ -159,7 +159,7 @@ for chain in "${requested_chains[@]}"; do
     fi
 
     # Split the configuration into RPC, API key, Chain ID and the admin address
-    IFS=' ' read -r rpc_url api_key chain_id admin <<< "${chains[$chain]}"
+    IFS=' ' read -r rpc_url api_key chain_id admin comptroller <<< "${chains[$chain]}"
 
     # Declare a deployment command
     deployment_command="";
@@ -168,20 +168,22 @@ for chain in "${requested_chains[@]}"; do
     if [[ $DETERMINISTIC_DEPLOYMENT == true ]]; then
         echo -e "\n${IC}Deploying deterministic contracts to $chain...${NC}"
         # Construct the command
-        deployment_command="forge script script/DeployDeterministicCore.s.sol \
+        deployment_command="forge script script/DeployDeterministicCore3.s.sol \
         --rpc-url $rpc_url \
-        --sig run(string,address,uint256) \
+        --sig run(string,address,address,uint256) \
         \'ChainID $chain_id, Version 1.1.0\' \
         $admin \
+        $comptroller \
         $MAX_SEGMENTS_COUNT \
         -vvv"
     else
         echo -e "\n${IC}Deploying contracts to $chain...${NC}"
         # Construct the command
-        deployment_command="forge script script/DeployCore.s.sol \
+        deployment_command="forge script script/DeployCore3.s.sol \
         --rpc-url $rpc_url \
-        --sig run(address,uint256) \
+        --sig run(address,address,uint256) \
         $admin \
+        $comptroller \
         $MAX_SEGMENTS_COUNT \
         -vvv"
     fi
@@ -209,14 +211,12 @@ for chain in "${requested_chains[@]}"; do
     touch "$chain_file"
 
     # Extract and save contract addresses
-    comptroller_address=$(echo "$output" | awk '/comptroller: contract/{print $NF}')
     lockupDynamic_address=$(echo "$output" | awk '/lockupDynamic: contract/{print $NF}')
     lockupLinear_address=$(echo "$output" | awk '/lockupLinear: contract/{print $NF}')
     nftDescriptor_address=$(echo "$output" | awk '/nftDescriptor: contract/{print $NF}')
 
     # Save to the chain file
     {
-        echo "SablierV2Comptroller = $comptroller_address"
         echo "SablierV2LockupDynamic = $lockupDynamic_address"
         echo "SablierV2LockupLinear = $lockupLinear_address"
         echo "SablierV2NFTDescriptor = $nftDescriptor_address"
