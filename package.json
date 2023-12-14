@@ -26,6 +26,7 @@
     "artifacts",
     "src",
     "test/utils",
+    "remappings.txt",
     "CHANGELOG.md",
     "LICENSE-GPL.md"
   ],
