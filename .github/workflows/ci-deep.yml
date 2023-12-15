@@ -93,18 +93,18 @@ jobs:
         run: "FOUNDRY_PROFILE=optimized forge build"
 
       - name: "Build the test contracts"
-        run: "FOUNDRY_PROFILE=test-optimized forge build"  
+        run: "FOUNDRY_PROFILE=test-optimized forge build"
 
-      - name: "Cache the build so that it can be re-used by the other jobs"
+      - name: "Cache the build and the node modules so that they can be re-used by the other jobs"
         uses: "actions/cache/save@v3"
         with:
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
             out
             out-optimized
-  
+
       - name: "Add build summary"
         run: |
           echo "## Build result" >> $GITHUB_STEP_SUMMARY
@@ -122,11 +122,11 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
@@ -153,17 +153,17 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
             out
             out-optimized
-    
+
       - name: "Run the integration tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/integration/**/*.sol\""
 
@@ -185,17 +185,17 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules
             out
             out-optimized
-            
+
       - name: "Run the invariant tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant/**/*.sol\""
 
@@ -216,11 +216,11 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
-          key: "foundry-build-${{ github.sha }}"
+          key: "build-and-modules-${{ github.sha }}"
           path: |
             cache
             node_modules

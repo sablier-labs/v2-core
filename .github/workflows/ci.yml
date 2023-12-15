@@ -76,7 +76,7 @@ jobs:
 
       - name: "Generate and prepare the contract artifacts"
         run: "./shell/prepare-artifacts.sh"
-        
+
       - name: "Build the test contracts"
         run: "FOUNDRY_PROFILE=test-optimized forge build"
 
@@ -90,9 +90,6 @@ jobs:
             out
             out-optimized
 
-      - name: "Install the Node.js dependencies"
-        run: "pnpm install"
-  
       - name: "Store the contract artifacts in CI"
         uses: "actions/upload-artifact@v3"
         with:
@@ -126,10 +123,7 @@ jobs:
           cache: "pnpm"
           node-version: "lts/*"
 
-      - name: "Install the Node.js dependencies"
-        run: "pnpm install"  
-        
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
@@ -160,7 +154,7 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
@@ -189,7 +183,7 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
@@ -218,7 +212,7 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
@@ -228,7 +222,7 @@ jobs:
             node_modules
             out
             out-optimized
-    
+
       - name: "Run the invariant tests against the optimized build"
         run: "FOUNDRY_PROFILE=test-optimized forge test --match-path \"test/invariant/**/*.sol\""
 
@@ -249,7 +243,7 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
@@ -259,7 +253,7 @@ jobs:
             node_modules
             out
             out-optimized
-    
+
       - name: "Generate fuzz seed that changes weekly to avoid burning through RPC allowance"
         run: |
           echo "FOUNDRY_FUZZ_SEED=$(echo $(($EPOCHSECONDS / 604800)))" >> $GITHUB_ENV
@@ -282,7 +276,7 @@ jobs:
       - name: "Install Foundry"
         uses: "foundry-rs/foundry-toolchain@v1"
 
-      - name: "Restore the cached build and node modules"
+      - name: "Restore the cached build and the node modules"
         uses: "actions/cache/restore@v3"
         with:
           fail-on-cache-miss: true
