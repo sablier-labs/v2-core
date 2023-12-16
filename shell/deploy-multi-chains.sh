@@ -7,7 +7,7 @@
 #  --with-gas-price Specify gas price for transaction.
 #  --all Deploy on all chains.
 # Example: ./shell/deploy-multi-chains.sh # Default deploys only to Sepolia
-# Example: ./shell/deploy-multi-chains.sh --broadcast arbitrum_one mainnet
+# Example: ./shell/deploy-multi-chains.sh --broadcast optimism mainnet
 # Example: ./shell/deploy-multi-chains.sh --deterministic --broadcast mainnet
 
 # Make sure you set-up your .env file first. See .env.example.
@@ -36,6 +36,7 @@ mkdir $deployments
 
 # from: https://docs.sablier.com/contracts/v2/deployments
 ARBITRUM_COMPTROLLER="0x17Ec73692F0aDf7E7C554822FBEAACB4BE781762"
+ARBITRUM_SEPOLIA_COMPTROLLER="0xA6A0cfA3442053fbB516D55205A749Ef2D33aed9"
 AVALANCHE_COMPTROLLER="0x66F5431B0765D984f82A4fc4551b2c9ccF7eAC9C"
 BASE_COMPTROLLER="0x7Faaedd40B1385C118cA7432952D9DC6b5CbC49e"
 BSC_COMPTROLLER="0x33511f69A784Fd958E6713aCaC7c9dCF1A5578E8"
@@ -48,6 +49,7 @@ SEPOLIA_COMPTROLLER="0x2006d43E65e66C5FF20254836E63947FA8bAaD68"
 
 # Declare chain IDs
 ARBITRUM_CHAIN_ID="42161"
+ARBITRUM_SEPOLIA_CHAIN_ID="421614"
 AVALANCHE_CHAIN_ID="43114"
 BASE_CHAIN_ID="8453"
 BSC_CHAIN_ID="56"
@@ -76,7 +78,8 @@ fi
 
 # Define chain configurations
 declare -A chains
-chains["arbitrum_one"]="$ARBITRUM_RPC_URL $ARBISCAN_API_KEY $ARBITRUM_CHAIN_ID $ARBITRUM_ADMIN $ARBITRUM_COMPTROLLER"
+chains["arbitrum"]="$ARBITRUM_RPC_URL $ARBISCAN_API_KEY $ARBITRUM_CHAIN_ID $ARBITRUM_ADMIN $ARBITRUM_COMPTROLLER"
+chains["arbitrum_sepolia"]="$ARBITRUM_SEPOLIA_RPC_URL $ARBISCAN_API_KEY $ARBITRUM_SEPOLIA_CHAIN_ID $ARBITRUM_SEPOLIA_ADMIN $ARBITRUM_SEPOLIA_COMPTROLLER"
 chains["avalanche"]="$AVALANCHE_RPC_URL $SNOWTRACE_API_KEY $AVALANCHE_CHAIN_ID $AVALANCHE_ADMIN $AVALANCHE_COMPTROLLER"
 chains["base"]="$BASE_RPC_URL $BASESCAN_API_KEY $BASE_CHAIN_ID $BASE_ADMIN $BASE_COMPTROLLER"
 chains["bnb_smart_chain"]="$BSC_RPC_URL $BSCSCAN_API_KEY $BSC_CHAIN_ID $BSC_ADMIN $BSC_COMPTROLLER"
