@@ -8,9 +8,9 @@ import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
 
 import { BaseScript } from "./Base.s.sol";
 
-/// @notice Deploys all V2 Core contracts at deterministic addresses across chains, in the following order:
+/// @notice Deploys these contracts at deterministic addresses across chains, in the following order:
 ///
-/// 1. {SablierV2Comptroller}
+/// 1. {SablierV2NFTDescriptor}
 /// 2. {SablierV2LockupDynamic}
 /// 3. {SablierV2LockupLinear}
 ///
@@ -35,7 +35,6 @@ contract DeployDeterministicCore3 is BaseScript {
     {
         bytes32 salt = bytes32(abi.encodePacked(create2Salt));
         nftDescriptor = new SablierV2NFTDescriptor{ salt: salt }();
-        // forgefmt: disable-next-line
         lockupDynamic =
             new SablierV2LockupDynamic{ salt: salt }(initialAdmin, comptroller, nftDescriptor, maxSegmentCount);
         lockupLinear = new SablierV2LockupLinear{ salt: salt }(initialAdmin, comptroller, nftDescriptor);
