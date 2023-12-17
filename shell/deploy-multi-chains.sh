@@ -1,30 +1,30 @@
 #!/usr/bin/env bash
 
-# Usage: ./shell/deploy-multi-chains.sh [options] [chain1 [chain2 ...]]
+# Usage: ./shell/deploy-multi-chains.sh [options] [[chain1 chain2 ...]]
 # Options:
-#  --deterministic Deploy using the deterministic script.
-#  --broadcast Broadcast the deployment and verify on Etherscan.
-#  --with-gas-price Specify gas price for transaction.
 #  --all Deploy on all chains.
-# Example: ./shell/deploy-multi-chains.sh # Default deploys only to Sepolia
+#  --broadcast Broadcast the deployment and verify on Etherscan.
+#  --deterministic Deploy using the deterministic script.
+#  --with-gas-price Specify gas price for transaction.
+# Example: ./shell/deploy-multi-chains.sh # By default, deploys only to Sepolia
 # Example: ./shell/deploy-multi-chains.sh --broadcast optimism mainnet
-# Example: ./shell/deploy-multi-chains.sh --deterministic --broadcast mainnet
+# Example: ./shell/deploy-multi-chains.sh --broadcast --deterministic mainnet
 
-# Make sure you set-up your .env file first. See .env.example.
+# Make sure you set-up your `.env.deployment` file first.
 
 # Pre-requisites:
+# - bash >=4.0.0
 # - foundry (https://getfoundry.sh)
-# - bash version >=4.0.0
 
 # Strict mode: https://gist.github.com/vncsna/64825d5609c146e80de8b1fd623011ca
 set -euo pipefail
 
-# color codes
+# Color codes
 EC='\033[0;31m' # Error Color
-SC='\033[0;32m' # Success Color
-WC='\033[0;33m' # Warn Color
 IC='\033[0;36m' # Info Color
 NC='\033[0m' # No Color
+SC='\033[0;32m' # Success Color
+WC='\033[0;33m' # Warn Color
 
 # Unicode characters for tick
 TICK="\xE2\x9C\x94"
@@ -34,7 +34,7 @@ deployments=./deployments
 rm -rf $deployments
 mkdir $deployments
 
-# from: https://docs.sablier.com/contracts/v2/deployments
+# Addressed taken from https://docs.sablier.com/contracts/v2/deployments
 ARBITRUM_COMPTROLLER="0x17Ec73692F0aDf7E7C554822FBEAACB4BE781762"
 ARBITRUM_SEPOLIA_COMPTROLLER="0xA6A0cfA3442053fbB516D55205A749Ef2D33aed9"
 AVALANCHE_COMPTROLLER="0x66F5431B0765D984f82A4fc4551b2c9ccF7eAC9C"
@@ -47,7 +47,7 @@ POLYGON_COMPTROLLER="0x9761692EDf10F5F2A69f0150e2fd50dcecf05F2E"
 SCROLL_COMPTROLLER="0x859708495E3B3c61Bbe19e6E3E1F41dE3A5C5C5b"
 SEPOLIA_COMPTROLLER="0x2006d43E65e66C5FF20254836E63947FA8bAaD68"
 
-# Declare chain IDs
+# Declare the chain IDs
 ARBITRUM_CHAIN_ID="42161"
 ARBITRUM_SEPOLIA_CHAIN_ID="421614"
 AVALANCHE_CHAIN_ID="43114"
@@ -61,14 +61,14 @@ SCROLL_CHAIN_ID="534352"
 SEPOLIA_CHAIN_ID="11155111"
 
 # Source the .env file to load the variables
-if [ -f .env ]; then
-    source .env
+if [ -f .env.deployment ]; then
+    source .env.deployment
 else
-    echo -e "${EC}Error: .env file not found${NC}"
+    echo -e "${EC}Error: .env.deployment file not found${NC}"
     exit 1
 fi
 
-# Check: required Bash >=4.0.0 for associative arrays
+# Check: Bash >=4.0.0 is required for associative arrays
 if ((BASH_VERSINFO[0] < 4)); then
     echo -e "${EC}Error:\nThis script requires Bash version 4.0.0 or higher.
     \nYou are currently using Bash version ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}.${BASH_VERSINFO[2]}.
@@ -76,7 +76,7 @@ if ((BASH_VERSINFO[0] < 4)); then
     exit 1
 fi
 
-# Define chain configurations
+# Define the chain configurations
 declare -A chains
 chains["arbitrum"]="$ARBITRUM_RPC_URL $ARBISCAN_API_KEY $ARBITRUM_CHAIN_ID $ARBITRUM_ADMIN $ARBITRUM_COMPTROLLER"
 chains["arbitrum_sepolia"]="$ARBITRUM_SEPOLIA_RPC_URL $ARBISCAN_API_KEY $ARBITRUM_SEPOLIA_CHAIN_ID $ARBITRUM_SEPOLIA_ADMIN $ARBITRUM_SEPOLIA_COMPTROLLER"
@@ -87,8 +87,8 @@ chains["gnosis"]="$GNOSIS_RPC_URL $GNOSISSCAN_API_KEY $GNOSIS_CHAIN_ID $GNOSIS_A
 chains["mainnet"]="$MAINNET_RPC_URL $ETHERSCAN_API_KEY $MAINNET_CHAIN_ID $MAINNET_ADMIN $MAINNET_COMPTROLLER"
 chains["optimism"]="$OPTIMISM_RPC_URL $OPTIMISTIC_API_KEY $OPTIMISM_CHAIN_ID $OPTIMISM_ADMIN $OPTIMISM_COMPTROLLER"
 chains["polygon"]="$POLYGON_RPC_URL $POLYGONSCAN_API_KEY $POLYGON_CHAIN_ID $POLYGON_ADMIN $POLYGON_COMPTROLLER"
-chains["scroll"]="$SCROLL_RPC_URL $SCROLL_API_KEY $SCROLL_CHAIN_ID $SCROLL_ADMIN $SCROLL_COMPTROLLER"
 chains["sepolia"]="$SEPOLIA_RPC_URL $ETHERSCAN_API_KEY $SEPOLIA_CHAIN_ID $SEPOLIA_ADMIN $SEPOLIA_COMPTROLLER"
+chains["scroll"]="$SCROLL_RPC_URL $SCROLLSCAN_API_KEY $SCROLL_CHAIN_ID $SCROLL_ADMIN $SCROLL_COMPTROLLER"
 
 # Flag for broadcast deployment
 BROADCAST_DEPLOYMENT=false
@@ -97,32 +97,33 @@ BROADCAST_DEPLOYMENT=false
 DETERMINISTIC_DEPLOYMENT=false
 
 # Flag for gas price
-WITH_GAS_PRICE=false
 GAS_PRICE=0
+WITH_GAS_PRICE=false
 
 # Flag for all chains
 ON_ALL_CHAINS=false
 
-# Requested chains
-requested_chains=()
+# Provided chains
+provided_chains=()
 
 # Check for arguments passed to the script
 for ((i=1; i<=$#; i++)); do
     arg=${!i}
 
-    # Check for '--broadcast' flag in the arguments
+    # Check if '--broadcast' flag is provided the arguments
     if [[ $arg == "--broadcast" ]]; then
         BROADCAST_DEPLOYMENT=true
     fi
 
-    # Check for '--broadcast' flag in the arguments
+    # Check if '--deterministic' flag is provided in the arguments
     if [[ $arg == "--deterministic" ]]; then
         DETERMINISTIC_DEPLOYMENT=true
     fi
 
-    # Check for '--with-gas-price' flag in the arguments
+    # Check if '--with-gas-price' flag is provided in the arguments
     if [[ $arg == "--with-gas-price" ]]; then
         WITH_GAS_PRICE=true
+
         # Increment index to get the next argument, which should be the gas price
         ((i++))
         GAS_PRICE=${!i}
@@ -132,36 +133,36 @@ for ((i=1; i<=$#; i++)); do
         fi
     fi
 
-    # Check for '--all' flag in the arguments
+    # Check if '--all' flag is provided in the arguments
     if [[ $arg == "--all" ]]; then
         ON_ALL_CHAINS=true
-        requested_chains=("${!chains[@]}")
+        provided_chains=("${!chains[@]}")
     fi
 
     # Check for passed chains
     if [[ $arg != "--all" && $arg != "--deterministic" && $arg != "--broadcast" && $arg != "--with-gas-price" && $ON_ALL_CHAINS == false ]]; then
-        requested_chains+=("$arg")
+        provided_chains+=("$arg")
     fi
 done
 
-# Set the default chain to Sepolia if no chains are requested
-if [ ${#requested_chains[@]} -eq 0 ]; then
-    requested_chains=("sepolia")
+# Set the default chain to Sepolia if no chains are provided
+if [ ${#provided_chains[@]} -eq 0 ]; then
+    provided_chains=("sepolia")
 fi
 
 # Compile the contracts
 echo "Compiling the contracts..."
 FOUNDRY_PROFILE=optimized forge build
 
-# Deploy to requested chains
-for chain in "${requested_chains[@]}"; do
-    # Check if the requested chain is defined
+# Deploy to the provided chains
+for chain in "${provided_chains[@]}"; do
+    # Check if the provided chain is defined
     if [[ ! -v "chains[$chain]" ]]; then
         echo -e "\n${WC}Warning: Chain configuration for '$chain' not found.${NC}"
         continue
     fi
 
-    # Split the configuration into RPC, API key, Chain ID and the admin address
+    # Split the configuration into RPC, API key, Chain ID, admin, and comptroller
     IFS=' ' read -r rpc_url api_key chain_id admin comptroller <<< "${chains[$chain]}"
 
     # Declare a deployment command
@@ -177,7 +178,7 @@ for chain in "${requested_chains[@]}"; do
         \'ChainID $chain_id, Version 1.1.1\' \
         $admin \
         $comptroller \
-        $MAX_SEGMENTS_COUNT \
+        $MAX_SEGMENT_COUNT \
         -vvv"
     else
         echo -e "\n${IC}Deploying contracts to $chain...${NC}"
@@ -187,7 +188,7 @@ for chain in "${requested_chains[@]}"; do
         --sig run(address,address,uint256) \
         $admin \
         $comptroller \
-        $MAX_SEGMENTS_COUNT \
+        $MAX_SEGMENT_COUNT \
         -vvv"
     fi
 
@@ -225,7 +226,7 @@ for chain in "${requested_chains[@]}"; do
         echo "SablierV2NFTDescriptor = $nftDescriptor_address"
     } >> "$chain_file"
 
-    echo -e "${SC}$TICK Deployed on $chain. Addresses saved in $chain_file${NC}"
+    echo -e "${SC}$TICK Deployed on $chain. You can find the addresses in $chain_file${NC}"
 done
 
 echo -e "\nAll deployments completed."
