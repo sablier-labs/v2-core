@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-# Usage: ./shell/deploy-multi-chains.sh [options] [[chain1 chain2 ...]]
+# Usage: ./shell/deploy-multi-chain.sh [options] [[chain1 chain2 ...]]
 # Options:
 #  --all Deploy on all chains.
 #  --broadcast Broadcast the deployment and verify on Etherscan.
 #  --deterministic Deploy using the deterministic script.
 #  --with-gas-price Specify gas price for transaction.
-# Example: ./shell/deploy-multi-chains.sh # By default, deploys only to Sepolia
-# Example: ./shell/deploy-multi-chains.sh --broadcast optimism mainnet
-# Example: ./shell/deploy-multi-chains.sh --broadcast --deterministic mainnet
+# Example: ./shell/deploy-multi-chain.sh # By default, deploys only to Sepolia
+# Example: ./shell/deploy-multi-chain.sh --broadcast optimism mainnet
+# Example: ./shell/deploy-multi-chain.sh --broadcast --deterministic mainnet
 
 # Make sure you set-up your `.env.deployment` file first.
 
