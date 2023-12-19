@@ -15,7 +15,7 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 
 ### Changed
 
-- Bump solc version to `0.8.23` ([#758](https://github.com/sablier-labs/v2-core/pull/758))
+- Upgrade Solidity to `0.8.23` ([#758](https://github.com/sablier-labs/v2-core/pull/758))
 
 ## [1.1.1] - 2023-12-16
 
