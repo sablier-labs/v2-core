@@ -172,30 +172,30 @@ for chain in "${provided_chains[@]}"; do
     if [[ $DETERMINISTIC_DEPLOYMENT == true ]]; then
         echo -e "\n${IC}Deploying deterministic contracts to $chain...${NC}"
         # Construct the command
-        deployment_command=(forge script script/DeployDeterministicCore3.s.sol)
-        deployment_command+=(--rpc-url "${rpc_url}")
-        deployment_command+=(--sig 'run(string,address,address,uint256)')
-        deployment_command+=("ChainID ${chain_id}, Version 1.1.1")
-        deployment_command+=(${admin})
-        deployment_command+=(${comptroller})
-        deployment_command+=(${MAX_SEGMENT_COUNT})
-        deployment_command+=(-vvv)
+        deployment_command=("forge" "script" "script/DeployDeterministicCore3.s.sol")
+        deployment_command+=("--rpc-url" "$rpc_url")
+        deployment_command+=("--sig" "run(string,address,address,uint256)")
+        deployment_command+=("ChainID $chain_id, Version 1.1.1")
+        deployment_command+=("$admin")
+        deployment_command+=("$comptroller")
+        deployment_command+=("$MAX_SEGMENT_COUNT")
+        deployment_command+=("-vvv")
     else
         echo -e "\n${IC}Deploying contracts to $chain...${NC}"
         # Construct the command
-        deployment_command=(forge script script/DeployCore3.s.sol)
-        deployment_command+=(--rpc-url "${rpc_url}")
-        deployment_command+=(--sig 'run(address,address,uint256)')
-        deployment_command+=(${admin})
-        deployment_command+=(${comptroller})
-        deployment_command+=(${MAX_SEGMENT_COUNT})
-        deployment_command+=(-vvv)
+        deployment_command=("forge" "script" "script/DeployCore3.s.sol")
+        deployment_command+=("--rpc-url" "$rpc_url")
+        deployment_command+=("--sig" "run(address,address,uint256)")
+        deployment_command+=("$admin")
+        deployment_command+=("$comptroller")
+        deployment_command+=("$MAX_SEGMENT_COUNT")
+        deployment_command+=("-vvv")
     fi
 
     # Append additional options if broadcast is enabled
     if [[ $BROADCAST_DEPLOYMENT == true ]]; then
         echo -e "${SC}+${NC} Broadcasting on $chain"
-        deployment_command+=(--broadcast --verify --etherscan-api-key ${api_key})
+        deployment_command+=("--broadcast" "--verify" "--etherscan-api-key" "$api_key")
     else
         echo -e "${SC}+${NC} Simulating on $chain"
     fi
@@ -204,7 +204,7 @@ for chain in "${provided_chains[@]}"; do
     if [[ $WITH_GAS_PRICE == true ]]; then
         gas_price_in_gwei=$(echo "scale=2; $GAS_PRICE / 1000000000" | bc)
         echo -e "${SC}+${NC} Using gas price of $gas_price_in_gwei gwei"
-        deployment_command+=(--with-gas-price ${GAS_PRICE})
+        deployment_command+=("--with-gas-price" "$GAS_PRICE")
     fi
 
     # Run the deployment command
