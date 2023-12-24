@@ -98,14 +98,14 @@ ON_ALL_CHAINS=false
 # Flag for displaying deployement command
 READ_ONLY=false
 
+# Flag to enter interactive mode in case .env.deployment not found or --interactive is provided
+INTERACTIVE=false
+
 # Script to execute
 sol_script=""
 
 # Provided chains
 provided_chains=()
-
-# Flag to enter interactive mode in case .env.deployment not found or --interactive is provided
-INTERACTIVE=false
 
 # Declare the chains array
 declare -A chains
@@ -317,13 +317,15 @@ for chain in "${provided_chains[@]}"; do
     # Declare a deployment command
     declare -a deployment_command
 
+    deployment_command=("forge")
+
     # Construct the deployment command
     if [[ ${DETERMINISTIC_DEPLOYMENT} == true ]]; then
         echo -e "${SC}+${NC} Deterministic address"
         if [[ ${sol_script} == "" ]]; then
-            deployment_command=("forge" "script" "script/DeployDeterministicCore3.s.sol")
+            deployment_command+=("script" "script/DeployDeterministicCore3.s.sol")
         else
-            deployment_command=("forge" "script" "${sol_script}")
+            deployment_command+=("script" "${sol_script}")
         fi
         deployment_command+=("--rpc-url" "${rpc_url}")
 
@@ -342,9 +344,9 @@ for chain in "${provided_chains[@]}"; do
     else
         # Construct the command
         if [[ ${sol_script} == "" ]]; then
-            deployment_command=("forge" "script" "script/DeployCore3.s.sol")
+            deployment_command+=("script" "script/DeployCore3.s.sol")
         else
-            deployment_command=("forge" "script" "${sol_script}")
+            deployment_command+=("script" "${sol_script}")
         fi
         deployment_command+=("--rpc-url" "${rpc_url}")
 
@@ -360,6 +362,13 @@ for chain in "${provided_chains[@]}"; do
     deployment_command+=("${MAX_SEGMENT_COUNT}")
     deployment_command+=("-vvv")
 
+    # Append additional options if gas price is enabled
+    if [[ ${WITH_GAS_PRICE} == true ]]; then
+        gas_price_in_gwei=$(echo "scale=2; ${GAS_PRICE} / 1000000000" | bc)
+        echo -e "${SC}+${NC} Max gas price: ${gas_price_in_gwei} gwei"
+        deployment_command+=("--with-gas-price" "${GAS_PRICE}")
+    fi
+
     # Append additional options if broadcast is enabled
     if [[ ${BROADCAST_DEPLOYMENT} == true ]]; then
         echo -e "${SC}+${NC} Broadcasting on-chain"
@@ -368,22 +377,18 @@ for chain in "${provided_chains[@]}"; do
         echo -e "${SC}+${NC} Simulating on forked network"
     fi
 
-    # Append additional options if gas price is enabled
-    if [[ ${WITH_GAS_PRICE} == true ]]; then
-        gas_price_in_gwei=$(echo "scale=2; ${GAS_PRICE} / 1000000000" | bc)
-        echo -e "${SC}+${NC} Max gas price: ${gas_price_in_gwei} gwei"
-        deployment_command+=("--with-gas-price" "${GAS_PRICE}")
-    fi
-
     if [[ ${READ_ONLY} == true ]]; then
         # print deployment_command
         echo -e "${SC}+${NC} Printing command without action\n"
-        echo -e "${deployment_command[@]}"
+        echo -e "FOUNDRY_PROFILE=optimized ${deployment_command[@]}"
     else
-        # Run the deployment command
-        output=$(FOUNDRY_PROFILE=optimized "${deployment_command[@]}") 2>&1
+        # Execute the deployment command and print the logs in real-time
+        output=$(FOUNDRY_PROFILE=optimized "${deployment_command[@]}" |& tee /dev/fd/2) || true
 
-        echo "${output}"
+        # Check for error in output
+        if [[ ${output} == *"Error"* ]]; then
+            exit 1
+        fi
 
         # Create a file for the chain
         chain_file="${deployments}/${chain}.txt"
