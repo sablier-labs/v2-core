@@ -26,13 +26,20 @@ Clone this repository including submodules:
 $ git clone --recurse-submodules -j8 git@github.com:sablier-labs/v2-core.git
 ```
 
-Then, inside the project's directory, run this to install the Node.js dependencies:
+Then, inside the project's directory, run this to install the Node.js dependencies and build the contracts:
 
 ```shell
 $ bun install
+$ bun run build
 ```
 
 Now you can start making changes.
+
+To see a list of all available scripts:
+
+```shell
+$ bun run
+```
 
 ## Pull Requests
 
