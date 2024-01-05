@@ -8,7 +8,7 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
-import { ISablierV2LockupRecipient } from "../interfaces/hooks/ISablierV2LockupRecipient.sol";
+import { ISablierV2Recipient } from "../interfaces/hooks/ISablierV2Recipient.sol";
 import { Errors } from "../libraries/Errors.sol";
 import { Lockup } from "../types/DataTypes.sol";
 import { SablierV2Base } from "./SablierV2Base.sol";
@@ -209,7 +209,7 @@ abstract contract SablierV2Lockup is
         // reverting if the hook is not implemented, and also without bubbling up any potential revert.
         address recipient = _ownerOf(streamId);
         if (recipient.code.length > 0) {
-            try ISablierV2LockupRecipient(recipient).onStreamRenounced(streamId) { } catch { }
+            try ISablierV2Recipient(recipient).onLockupStreamRenounced(streamId) { } catch { }
         }
     }
 
@@ -284,7 +284,7 @@ abstract contract SablierV2Lockup is
         // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
         // any potential revert.
         if (msg.sender != recipient && recipient.code.length > 0) {
-            try ISablierV2LockupRecipient(recipient).onStreamWithdrawn({
+            try ISablierV2Recipient(recipient).onLockupStreamWithdrawn({
                 streamId: streamId,
                 caller: msg.sender,
                 to: to,

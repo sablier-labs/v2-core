@@ -2,7 +2,7 @@
 pragma solidity >=0.8.19 <0.9.0;
 
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
-import { ISablierV2LockupRecipient } from "src/interfaces/hooks/ISablierV2LockupRecipient.sol";
+import { ISablierV2Recipient } from "src/interfaces/hooks/ISablierV2Recipient.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
 import { Lockup } from "src/types/DataTypes.sol";
@@ -342,7 +342,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         vm.expectCall(
             address(noop),
             abi.encodeCall(
-                ISablierV2LockupRecipient.onStreamWithdrawn,
+                ISablierV2Recipient.onLockupStreamWithdrawn,
                 (streamId, users.sender, address(noop), defaults.WITHDRAW_AMOUNT())
             )
         );
@@ -387,7 +387,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         vm.expectCall(
             address(revertingRecipient),
             abi.encodeCall(
-                ISablierV2LockupRecipient.onStreamWithdrawn,
+                ISablierV2Recipient.onLockupStreamWithdrawn,
                 (streamId, users.sender, address(revertingRecipient), defaults.WITHDRAW_AMOUNT())
             )
         );
@@ -436,7 +436,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         vm.expectCall(
             address(reentrantRecipient),
             abi.encodeCall(
-                ISablierV2LockupRecipient.onStreamWithdrawn,
+                ISablierV2Recipient.onLockupStreamWithdrawn,
                 (streamId, users.sender, address(reentrantRecipient), withdrawAmount)
             )
         );
@@ -489,7 +489,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         vm.expectCall(
             address(goodRecipient),
             abi.encodeCall(
-                ISablierV2LockupRecipient.onStreamWithdrawn,
+                ISablierV2Recipient.onLockupStreamWithdrawn,
                 (streamId, users.sender, address(goodRecipient), withdrawAmount)
             )
         );
