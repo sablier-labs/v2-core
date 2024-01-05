@@ -142,7 +142,13 @@ contract SablierV2LockupDynamic is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function getSender(uint256 streamId) external view override notNull(streamId) returns (address sender) {
+    function getSender(uint256 streamId)
+        public
+        view
+        override(ISablierV2Lockup, SablierV2Lockup)
+        notNull(streamId)
+        returns (address sender)
+    {
         sender = _streams[streamId].sender;
     }
 
