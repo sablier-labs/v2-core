@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.19;
+pragma solidity >=0.8.22;
 
 import { FlashLoan_Integration_Shared_Test } from "./FlashLoan.t.sol";
 
