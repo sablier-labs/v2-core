@@ -40,7 +40,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_CallerUnauthorized_Sender()
+    function test_RevertWhen_CallerSender()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -54,38 +54,58 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(
             abi.encodeWithSelector(
-                Errors.SablierV2Lockup_InvalidSenderWithdrawal.selector, defaultStreamId, users.sender, users.sender
+                Errors.SablierV2Lockup_WithdrawalAddressNotRecipient.selector,
+                defaultStreamId,
+                users.sender,
+                users.sender
             )
         );
         lockup.withdraw({ streamId: defaultStreamId, to: users.sender, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_CallerUnauthorized_MaliciousThirdParty()
+    function test_RevertWhen_CallerUnkwownAddress()
         external
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
         whenCallerUnauthorized
     {
+        address unknownAddress = address(0xCAFE);
+
         // Make Eve the caller in this test.
-        changePrank({ msgSender: users.eve });
+        changePrank({ msgSender: unknownAddress });
 
         // Run the test.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2Lockup_Unauthorized.selector, defaultStreamId, users.eve)
+            abi.encodeWithSelector(
+                Errors.SablierV2Lockup_WithdrawalAddressNotRecipient.selector,
+                defaultStreamId,
+                unknownAddress,
+                unknownAddress
+            )
         );
-        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
+        lockup.withdraw({ streamId: defaultStreamId, to: unknownAddress, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_FormerRecipient() external whenNotDelegateCalled givenNotNull givenStreamNotDepleted {
+    function test_RevertWhen_CallerFormerRecipient()
+        external
+        whenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+    {
         // Transfer the stream to Alice.
         lockup.transferFrom(users.recipient, users.alice, defaultStreamId);
 
         // Run the test.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2Lockup_Unauthorized.selector, defaultStreamId, users.recipient)
+            abi.encodeWithSelector(
+                Errors.SablierV2Lockup_WithdrawalAddressNotRecipient.selector,
+                defaultStreamId,
+                users.recipient,
+                users.recipient
+            )
         );
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
     }
@@ -310,6 +330,31 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
         // Make the operator the caller in this test.
         changePrank({ msgSender: users.operator });
+
+        // Simulate the passage of time.
+        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+
+        // Make the withdrawal.
+        lockup.withdraw({ streamId: defaultStreamId, to: users.operator, amount: defaults.WITHDRAW_AMOUNT() });
+
+        // Assert that the withdrawn amount has been updated.
+        uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);
+        uint128 expectedWithdrawnAmount = defaults.WITHDRAW_AMOUNT();
+        assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
+    }
+
+    function test_Withdraw_CallerUnknownAddress()
+        external
+        whenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        whenCallerAuthorized
+        whenToNonZeroAddress
+        whenWithdrawAmountNotZero
+        whenNoOverdraw
+    {
+        // Make the unknown address the caller in this test.
+        changePrank({ msgSender: address(0xCAFE) });
 
         // Simulate the passage of time.
         vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
