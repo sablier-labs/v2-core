@@ -154,7 +154,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         _;
     }
 
-    function test_Withdraw_SenderContract()
+    function test_Withdraw_SenderDoesNotImplementHook()
         external
         whenNotDelegateCalled
         givenNotNull

@@ -302,7 +302,7 @@ abstract contract SablierV2Lockup is
         // Interactions: if `msg.sender` is not the sender and the sender is a contract, try to invoke the
         // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
         // any potential revert.
-        if (!isCallerStreamSender && sender.code.length > 0) {
+        if (msg.sender != sender && sender.code.length > 0) {
             try ISablierV2Sender(sender).onLockupStreamWithdrawn({
                 streamId: streamId,
                 caller: msg.sender,
