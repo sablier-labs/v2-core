@@ -155,7 +155,6 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
     /// - Multiple withdraw amounts
     function testFuzz_Withdraw(
         uint256 timeJump,
-        address caller,
         address to,
         uint128 withdrawAmount
     )
