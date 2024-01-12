@@ -33,7 +33,7 @@ interface ISablierV2Recipient {
     /// @param streamId The id of the renounced stream.
     function onLockupStreamRenounced(uint256 streamId) external;
 
-    /// @notice Responds to withdrawals triggered by either the stream's sender or an approved third party.
+    /// @notice Responds to withdrawals triggered by anyone unless `caller` is the recipient address.
     ///
     /// @dev Notes:
     /// - This function may revert, but the Sablier contract will ignore the revert.
