@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
+# Pre-requisites for running this script:
+#
+# - bash >=4.0.0
+# - foundry (https://getfoundry.sh)
+
 # Usage: ./shell/deploy-multi-chain.sh [options] [[chain1 chain2 ...]]
-#   Enters interactive mode if .env.deployment not found
+#   Enters interactive mode if no `.env.deployment` file is found
+#
 # Options:
 #  --all              Deploy on all chains.
 #  --broadcast        Broadcast the deployment and verify on Etherscan.
@@ -9,17 +15,14 @@
 #  -h, --help         Show available command-line options and exit.
 #  -i, --interactive  Enters interactive mode and ignore .env.deployment.
 #  --print            Simulate and show the deployment command.
-#  -s, --script       Script to run from /script folder.
+#  -s, --script       Script to run from the `script` folder.
 #  --with-gas-price   Specify gas price for transaction.
-# Example: ./shell/deploy-multi-chain.sh # By default, deploys only to Sepolia
-# Example: ./shell/deploy-multi-chain.sh --broadcast optimism mainnet
-# Example: ./shell/deploy-multi-chain.sh --broadcast --deterministic --print mainnet
-
-# Make sure you set-up your `.env.deployment` file first.
-
-# Pre-requisites:
-# - bash >=4.0.0
-# - foundry (https://getfoundry.sh)
+#
+# Example: ./shell/deploy-multi-chain.sh # By default, deploys to Sepolia only
+# Example: ./shell/deploy-multi-chain.sh --broadcast optimism polygon
+# Example: ./shell/deploy-multi-chain.sh --broadcast --deterministic --print optimism
+#
+# Make sure to set up your `.env.deployment` file first.
 
 # Strict mode: https://gist.github.com/vncsna/64825d5609c146e80de8b1fd623011ca
 set -euo pipefail
@@ -48,8 +51,9 @@ usage="\nUsage: ./shell/deploy-multi-chain.sh [-h] [--help] [--print] [-i] [--in
                                      [[chain1 chain2 ...]]
 Examples:
     ./shell/deploy-multi-chain.sh # By default, deploys only to Sepolia
-    ./shell/deploy-multi-chain.sh --broadcast optimism mainnet
-    ./shell/deploy-multi-chain.sh --broadcast --deterministic mainnet"
+    ./shell/deploy-multi-chain.sh --broadcast optimism polygon
+    ./shell/deploy-multi-chain.sh --broadcast --deterministic optimism
+"
 
 # Create deployments directory
 deployments=./deployments
@@ -88,7 +92,7 @@ BROADCAST_DEPLOYMENT=false
 # Flag for deterministic deployment
 DETERMINISTIC_DEPLOYMENT=false
 
-# Flag for gas price
+# Flags for gas price
 GAS_PRICE=0
 WITH_GAS_PRICE=false
 
@@ -101,11 +105,11 @@ READ_ONLY=false
 # Flag to enter interactive mode in case .env.deployment not found or --interactive is provided
 INTERACTIVE=false
 
-# Script to execute
-sol_script=""
-
 # Provided chains
 provided_chains=()
+
+# Script to execute
+sol_script=""
 
 # Declare the chains array
 declare -A chains
@@ -131,7 +135,7 @@ function initialize_interactive {
     echo -e "1. Enter admin address: \c"
     read admin
 
-    echo -e "2. Enter etherscan API key: \c"
+    echo -e "2. Enter Etherscan API key: \c"
     read api_key
 
     echo -e "3. Enter max segment count: \c"
@@ -187,7 +191,7 @@ for ((i=1; i<=$#; i++)); do
 
     # Check if '--deterministic' flag is provided in the arguments
     if [[ ${arg} == "--deterministic" ]]; then
-        echo -e "\nWhat version is this deployment? (1.1.1 / 1.1.2): \c"
+        echo -e "\nWhat version is this deployment? (1.1.1 or 1.1.2): \c"
         read VERSION
         if [[ "${VERSION}" != "1.1.1" && "${VERSION}" != "1.1.2" ]]; then
             echo -e "\n${EC}Invalid version. Please enter either 1.1.1 or 1.1.2${NC}"
@@ -199,12 +203,12 @@ for ((i=1; i<=$#; i++)); do
     # Show usage of this command with --help option
     if [[ ${arg} == "--help" || ${arg} == "-h" ]]; then
         echo -e "${usage}"
-        # Get all network names from the chains array
+        # Get all chain names from the chains array
         names=("${!chains[@]}")
         # Sort the names
         sorted_names=($(printf "%s\n" "${names[@]}" | sort))
         # Print the header
-        printf "\nSupported networks: \n%-20s %-20s\n" "Network" "Chain ID"
+        printf "\nSupported chains: \n%-20s %-20s\n" "Chain Name" "Chain ID"
         printf "%-20s %-20s\n" "-----------" "-----------"
 
         # Print the chains and their Chain IDs
@@ -263,17 +267,17 @@ for ((i=1; i<=$#; i++)); do
 
     # Check for passed chains
     if [[ ${arg} != "--all" &&
-            ${arg} != "--broadcast" &&
-            ${arg} != "--deterministic" &&
-            ${arg} != "--help" &&
-            ${arg} != "-h" &&
-            ${arg} != "-i" &&
-            ${arg} != "--interactive" &&
-            ${arg} != "--print" &&
-            ${arg} != "-s" &&
-            ${arg} != "--script" &&
-            ${arg} != "--with-gas-price" &&
-            ${ON_ALL_CHAINS} == false
+          ${arg} != "--broadcast" &&
+          ${arg} != "--deterministic" &&
+          ${arg} != "--help" &&
+          ${arg} != "-h" &&
+          ${arg} != "-i" &&
+          ${arg} != "--interactive" &&
+          ${arg} != "--print" &&
+          ${arg} != "-s" &&
+          ${arg} != "--script" &&
+          ${arg} != "--with-gas-price" &&
+          ${ON_ALL_CHAINS} == false
     ]]; then
         # check for synonyms
         if [[ ${arg} == "ethereum" ]]; then
@@ -295,7 +299,7 @@ echo "Compiling the contracts..."
 for chain in "${provided_chains[@]}"; do
     # Check if the provided chain is defined
     if [[ ! -v "chains[${chain}]" ]]; then
-        printf "\n${WC}Warning for '${chain}': Invalid command or network. Get full list of supported networks: ${NC}"
+        printf "\n${WC}Warning for '${chain}': Invalid command or chain name. Get the full list of supported chains: ${NC}"
         printf "\n\n\t${IC}./shell/deploy-multi-chain.sh --help${NC}\n"
         continue
     fi
@@ -304,7 +308,7 @@ for chain in "${provided_chains[@]}"; do
 
     if [[ ${INTERACTIVE} == true ]]; then
         # load values from the terminal prompt
-        echo -e "Enter RPC URL for ${chain} network: \c"
+        echo -e "Enter RPC URL for ${chain}: \c"
         read rpc_url
 
         # Get the values from the chains array
@@ -314,7 +318,7 @@ for chain in "${provided_chains[@]}"; do
         IFS=' ' read -r rpc_url api_key chain_id admin comptroller <<< "${chains[$chain]}"
     fi
 
-    # Declare a deployment command
+    # Declare the deployment command
     declare -a deployment_command
 
     deployment_command=("forge")
@@ -374,11 +378,11 @@ for chain in "${provided_chains[@]}"; do
         echo -e "${SC}+${NC} Broadcasting on-chain"
         deployment_command+=("--broadcast" "--verify" "--etherscan-api-key" "${api_key}")
     else
-        echo -e "${SC}+${NC} Simulating on forked network"
+        echo -e "${SC}+${NC} Simulating on forked chain"
     fi
 
     if [[ ${READ_ONLY} == true ]]; then
-        # print deployment_command
+        # Print deployment_command
         echo -e "${SC}+${NC} Printing command without action\n"
         echo -e "FOUNDRY_PROFILE=optimized ${deployment_command[@]}"
     else
