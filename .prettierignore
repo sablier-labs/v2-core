@@ -4,7 +4,6 @@ broadcast
 cache
 coverage
 docs
-lib
 node_modules
 out
 out-optimized
@@ -16,6 +15,7 @@ out-svg
 *.sol
 .DS_Store
 .pnp.*
+bun.lockb
 lcov.info
 package-lock.json
 pnpm-lock.yaml

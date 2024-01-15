@@ -14,7 +14,7 @@ You will need the following software on your machine:
 - [Git](https://git-scm.com/downloads)
 - [Foundry](https://github.com/foundry-rs/foundry)
 - [Node.Js](https://nodejs.org/en/download/)
-- [Pnpm](https://pnpm.io/)
+- [Bun](https://bun.sh/)
 
 In addition, familiarity with [Solidity](https://soliditylang.org/) is requisite.
 
@@ -26,13 +26,20 @@ Clone this repository including submodules:
 $ git clone --recurse-submodules -j8 git@github.com:sablier-labs/v2-core.git
 ```
 
-Then, inside the project's directory, run this to install the Node.js dependencies:
+Then, inside the project's directory, run this to install the Node.js dependencies and build the contracts:
 
 ```shell
-$ pnpm install
+$ bun install
+$ bun run build
 ```
 
 Now you can start making changes.
+
+To see a list of all available scripts:
+
+```shell
+$ bun run
+```
 
 ## Pull Requests
 
@@ -48,7 +55,6 @@ When making a pull request, ensure that:
   - Gas snapshots are provided and demonstrate an improvement (or an acceptable deficit given other improvements).
   - Reference contracts are modified correspondingly if relevant.
   - New tests are included for all new features or code paths.
-- If making a modification to third-party Node.js dependencies, `pnpm audit` passes.
 - A descriptive summary of the PR has been provided.
 
 ## Environment Variables
@@ -63,7 +69,6 @@ populate it with the appropriate environment values. You need to provide your mn
 To make CI work in your pull request, ensure that the necessary environment variables are configured in your forked
 repository's secrets. Please add the following variables in your GitHub Secrets:
 
-- API_KEY_ETHERSCAN
 - API_KEY_INFURA
 - RPC_URL_MAINNET
 
