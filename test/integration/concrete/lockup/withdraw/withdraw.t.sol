@@ -63,17 +63,17 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.sender, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_CallerUnkwownAddress()
+    function test_RevertWhen_CallerUnknown()
         external
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
         whenCallerUnauthorized
     {
-        address unknownAddress = address(0xCAFE);
+        address unknownCaller = address(0xCAFE);
 
         // Make Eve the caller in this test.
-        changePrank({ msgSender: unknownAddress });
+        changePrank({ msgSender: unknownCaller });
 
         // Run the test.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
@@ -81,11 +81,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
             abi.encodeWithSelector(
                 Errors.SablierV2Lockup_WithdrawalAddressNotRecipient.selector,
                 defaultStreamId,
-                unknownAddress,
-                unknownAddress
+                unknownCaller,
+                unknownCaller
             )
         );
-        lockup.withdraw({ streamId: defaultStreamId, to: unknownAddress, amount: withdrawAmount });
+        lockup.withdraw({ streamId: defaultStreamId, to: unknownCaller, amount: withdrawAmount });
     }
 
     function test_RevertWhen_CallerFormerRecipient()

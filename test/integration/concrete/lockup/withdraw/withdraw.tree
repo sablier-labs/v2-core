@@ -11,7 +11,7 @@ withdraw.t.sol
           ├── when the caller is unauthorized
           │  ├── when the caller is the sender
           │  │  └── it should revert
-          │  ├── when the caller is an unknown address
+          │  ├── when the caller is unknown
           │  │  └── it should revert
           │  └── when the caller is a former recipient
           │     └── it should revert
@@ -25,7 +25,7 @@ withdraw.t.sol
                    ├── when the withdraw amount overdraws
                    │  └── it should revert
                    └── when the withdraw amount does not overdraw
-                      ├── when the caller is the recipient   
+                      ├── when the caller is the recipient
                       │  ├── given the sender is not a contract
                       │  │  ├── it should make the withdrawal
                       │  │  └── it should update the withdrawn amount
@@ -55,7 +55,7 @@ withdraw.t.sol
                       ├── when the caller is an approved third party
                       │  ├── it should make the withdrawal
                       │  └── it should update the withdrawn amount
-                      ├── when the caller is an unknown address
+                      ├── when the caller is unknown
                       │  ├── it should make the withdrawal
                       │  └── it should update the withdrawn amount
                       └── when the caller is the sender

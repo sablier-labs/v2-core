@@ -244,7 +244,7 @@ abstract contract SablierV2Lockup is
         // Retrieve the recipient from storage.
         address recipient = _ownerOf(streamId);
 
-        // Checks: if `msg.sender` is not the stream's recipient, nor an approved third party, the withdrawal address
+        // Checks: if `msg.sender` is neither the stream's recipient nor an approved third party, the withdrawal address
         // must be the recipient.
         if (to != recipient && !_isCallerStreamRecipientOrApproved(streamId)) {
             revert Errors.SablierV2Lockup_WithdrawalAddressNotRecipient(streamId, msg.sender, to);
