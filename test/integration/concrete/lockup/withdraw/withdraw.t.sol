@@ -40,12 +40,52 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
+    function test_RevertWhen_ToZeroAddress() external whenNotDelegateCalled givenNotNull givenStreamNotDepleted {
+        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
+        vm.expectRevert(Errors.SablierV2Lockup_WithdrawToZeroAddress.selector);
+        lockup.withdraw({ streamId: defaultStreamId, to: address(0), amount: withdrawAmount });
+    }
+
+    function test_RevertWhen_WithdrawAmountZero()
+        external
+        whenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        whenToNonZeroAddress
+    {
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_WithdrawAmountZero.selector, defaultStreamId));
+        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: 0 });
+    }
+
+    function test_RevertWhen_Overdraw()
+        external
+        whenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        whenToNonZeroAddress
+        whenWithdrawAmountNotZero
+    {
+        uint128 withdrawableAmount = 0;
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierV2Lockup_Overdraw.selector, defaultStreamId, MAX_UINT128, withdrawableAmount
+            )
+        );
+        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: MAX_UINT128 });
+    }
+
+    modifier whenNoOverdraw() {
+        _;
+    }
+
     function test_RevertWhen_CallerSender()
         external
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerUnauthorized
+        givenWithdrawalAddressNotRecipient
+        whenWithdrawAmountNotZero
+        whenNoOverdraw
     {
         // Make the Sender the caller in this test.
         changePrank({ msgSender: users.sender });
@@ -68,7 +108,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerUnauthorized
+        givenWithdrawalAddressNotRecipient
+        whenWithdrawAmountNotZero
+        whenNoOverdraw
     {
         address unknownCaller = address(0xCAFE);
 
@@ -93,6 +135,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
+        givenWithdrawalAddressNotRecipient
+        whenWithdrawAmountNotZero
+        whenNoOverdraw
     {
         // Transfer the stream to Alice.
         lockup.transferFrom(users.recipient, users.alice, defaultStreamId);
@@ -110,58 +155,12 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_ToZeroAddress()
-        external
-        whenNotDelegateCalled
-        givenNotNull
-        givenStreamNotDepleted
-        whenCallerAuthorized
-    {
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
-        vm.expectRevert(Errors.SablierV2Lockup_WithdrawToZeroAddress.selector);
-        lockup.withdraw({ streamId: defaultStreamId, to: address(0), amount: withdrawAmount });
-    }
-
-    function test_RevertWhen_WithdrawAmountZero()
-        external
-        whenNotDelegateCalled
-        givenNotNull
-        givenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-    {
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_WithdrawAmountZero.selector, defaultStreamId));
-        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: 0 });
-    }
-
-    function test_RevertWhen_Overdraw()
-        external
-        whenNotDelegateCalled
-        givenNotNull
-        givenStreamNotDepleted
-        whenCallerAuthorized
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-    {
-        uint128 withdrawableAmount = 0;
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.SablierV2Lockup_Overdraw.selector, defaultStreamId, MAX_UINT128, withdrawableAmount
-            )
-        );
-        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: MAX_UINT128 });
-    }
-
-    modifier whenNoOverdraw() {
-        _;
-    }
-
     function test_Withdraw_SenderNotContract()
         external
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressNotRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -179,7 +178,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressNotRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -201,7 +200,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressNotRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -249,7 +248,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressNotRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -273,7 +272,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressNotRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -320,7 +319,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressNotRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -348,7 +347,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressIsRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -378,7 +377,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressIsRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -416,7 +415,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressIsRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -453,7 +452,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressIsRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -473,7 +472,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressIsRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -497,7 +496,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressIsRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -522,7 +521,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressIsRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw
@@ -571,7 +570,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNotDelegateCalled
         givenNotNull
         givenStreamNotDepleted
-        whenCallerAuthorized
+        givenWithdrawalAddressIsRecipient
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenNoOverdraw

@@ -44,7 +44,6 @@ contract Withdraw_LockupDynamic_Integration_Fuzz_Test is
         external
         whenNotDelegateCalled
         givenNotNull
-        whenCallerAuthorized
         whenToNonZeroAddress
         whenWithdrawAmountNotZero
         whenWithdrawAmountNotGreaterThanWithdrawableAmount
