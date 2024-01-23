@@ -251,9 +251,9 @@ interface ISablierV2Lockup is
     /// Requirements:
     /// - Must not be delegate called.
     /// - `streamId` must not reference a null or depleted stream.
-    /// - `to` must be the recipient if `msg.sender` is not the stream's recipient or an approved third party.
     /// - `to` must not be the zero address.
     /// - `amount` must be greater than zero and must not exceed the withdrawable amount.
+    /// - `to` must be the recipient if `msg.sender` is not the stream's recipient or an approved third party.
     ///
     /// @param streamId The id of the stream to withdraw from.
     /// @param to The address receiving the withdrawn assets.
