@@ -12,24 +12,20 @@ import { TimestampStore } from "../stores/TimestampStore.sol";
 /// @notice Base contract with common logic needed by all handler contracts.
 abstract contract BaseHandler is Constants, Fuzzers, StdCheats {
     /*//////////////////////////////////////////////////////////////////////////
-                                     CONSTANTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @dev Maximum number of streams that can be created during an invariant campaign.
-    uint256 internal constant MAX_STREAM_COUNT = 100;
-
-    /// @dev The virtual address of the Foundry VM.
-    address internal constant VM_ADDRESS = address(uint160(uint256(keccak256("hevm cheat code"))));
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                     VARIABLES
+                                    STATE-VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Maps function names to the number of times they have been called.
     mapping(string func => uint256 calls) public calls;
 
+    /// @dev Maximum number of streams that can be created during an invariant campaign.
+    uint256 internal constant MAX_STREAM_COUNT = 100;
+
     /// @dev The total number of calls made to this contract.
     uint256 public totalCalls;
+
+    /// @dev The virtual address of the Foundry VM.
+    address internal constant VM_ADDRESS = address(uint160(uint256(keccak256("hevm cheat code"))));
 
     /*//////////////////////////////////////////////////////////////////////////
                                    TEST CONTRACTS

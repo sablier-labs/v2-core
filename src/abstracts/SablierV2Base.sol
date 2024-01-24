@@ -22,18 +22,14 @@ abstract contract SablierV2Base is
     using SafeERC20 for IERC20;
 
     /*//////////////////////////////////////////////////////////////////////////
-                                  PUBLIC CONSTANTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @inheritdoc ISablierV2Base
-    UD60x18 public constant override MAX_FEE = UD60x18.wrap(0.1e18);
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                   PUBLIC STORAGE
+                                  STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Base
     ISablierV2Comptroller public override comptroller;
+
+    /// @inheritdoc ISablierV2Base
+    UD60x18 public constant override MAX_FEE = UD60x18.wrap(0.1e18);
 
     /// @inheritdoc ISablierV2Base
     mapping(IERC20 asset => uint128 revenues) public override protocolRevenues;
