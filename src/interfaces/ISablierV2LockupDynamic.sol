@@ -24,7 +24,6 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @param cancelable Boolean indicating whether the stream will be cancelable or not.
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
     /// @param segments The segments the protocol uses to compose the custom streaming curve.
-    /// @param range Struct containing (i) the stream's start time and (ii) end time, both as Unix timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
     event CreateLockupDynamicStream(
         uint256 streamId,
@@ -59,7 +58,8 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @param streamId The stream id for the query.
     function getSegments(uint256 streamId) external view returns (LockupDynamic.Segment[] memory segments);
 
-    /// @notice Retrieves the stream entity.
+    /// @notice Retrieves the stream details, which is a struct containing the `Lockup.Stream` entity and the stream's
+    /// segments.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream id for the query.
     function getStream(uint256 streamId) external view returns (LockupDynamic.Stream memory stream);

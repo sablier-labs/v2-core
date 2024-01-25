@@ -245,15 +245,16 @@ interface ISablierV2Lockup is
     /// @dev Emits a {Transfer}, {WithdrawFromLockupStream}, and {MetadataUpdate} event.
     ///
     /// Notes:
-    /// - This function attempts to call a hook on the recipient of the stream, unless `msg.sender` is the recipient.
-    /// - This function attempts to call a hook on the sender of the stream, unless `msg.sender` is the sender.
+    /// - This function attempts to invoke a hook on the stream's recipient, provided that the recipient is a contract
+    /// and `msg.sender` is either the sender or an approved operator.
     ///
     /// Requirements:
     /// - Must not be delegate called.
     /// - `streamId` must not reference a null or depleted stream.
+    /// - `msg.sender` must be the stream's sender, the stream's recipient or an approved third party.
+    /// - `to` must be the recipient if `msg.sender` is the stream's sender.
     /// - `to` must not be the zero address.
     /// - `amount` must be greater than zero and must not exceed the withdrawable amount.
-    /// - `to` must be the recipient if `msg.sender` is not the stream's recipient or an approved third party.
     ///
     /// @param streamId The id of the stream to withdraw from.
     /// @param to The address receiving the withdrawn assets.

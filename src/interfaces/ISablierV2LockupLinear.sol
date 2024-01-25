@@ -43,7 +43,8 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Retrieves the stream's cliff time, which is a Unix timestamp.
+    /// @notice Retrieves the stream's cliff time, which is a Unix timestamp.  A value of zero means there
+    /// is no cliff.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream id for the query.
     function getCliffTime(uint256 streamId) external view returns (uint40 cliffTime);
@@ -54,7 +55,8 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @param streamId The stream id for the query.
     function getRange(uint256 streamId) external view returns (LockupLinear.Range memory range);
 
-    /// @notice Retrieves the stream entity.
+    /// @notice Retrieves the stream details, which is a struct containing the `Lockup.Stream` entity and stream's cliff
+    /// time.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream id for the query.
     function getStream(uint256 streamId) external view returns (LockupLinear.Stream memory stream);
@@ -112,8 +114,8 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// - Must not be delegate called.
     /// - `params.totalAmount` must be greater than zero.
     /// - If set, `params.broker.fee` must not be greater than `MAX_FEE`.
-    /// - `params.range.start` must be less than or equal to `params.range.cliff`.
-    /// - `params.range.cliff` must be less than `params.range.end`.
+    /// - If set, `params.range.cliff` must be greater than or equal to `params.range.start`.
+    /// - If set, `params.range.cliff` must be less than `params.range.end`.
     /// - `params.range.end` must be in the future.
     /// - `params.recipient` must not be the zero address.
     /// - `msg.sender` must have allowed this contract to spend at least `params.totalAmount` assets.

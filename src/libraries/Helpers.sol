@@ -93,7 +93,7 @@ library Helpers {
         }
 
         // Checks: the start time is less than or equal to the cliff time.
-        if (range.start > range.cliff) {
+        if (range.cliff != 0 && range.start > range.cliff) {
             revert Errors.SablierV2LockupLinear_StartTimeGreaterThanCliffTime(range.start, range.cliff);
         }
 
