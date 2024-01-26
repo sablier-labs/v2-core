@@ -62,7 +62,7 @@ abstract contract SablierV2Lockup is
 
     /// @dev Checks that `streamId` does not reference a null stream.
     modifier notNull(uint256 streamId) {
-        if (!isStream(streamId)) {
+        if (!_streams[streamId].isStream) {
             revert Errors.SablierV2Lockup_Null(streamId);
         }
         _;
@@ -235,9 +235,9 @@ abstract contract SablierV2Lockup is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Lockup
-    function burn(uint256 streamId) external override noDelegateCall {
-        // Checks: only depleted streams can be burned. This also checks that the stream is not null.
-        if (!isDepleted(streamId)) {
+    function burn(uint256 streamId) external override noDelegateCall notNull(streamId) {
+        // Checks: only depleted streams can be burned.
+        if (!_streams[streamId].isDepleted) {
             revert Errors.SablierV2Lockup_StreamNotDepleted(streamId);
         }
 
@@ -253,9 +253,9 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function cancel(uint256 streamId) public override noDelegateCall {
-        // Checks: the stream is neither depleted nor canceled. This also checks that the stream is not null.
-        if (isDepleted(streamId)) {
+    function cancel(uint256 streamId) public override noDelegateCall notNull(streamId) {
+        // Checks: the stream is neither depleted nor canceled.
+        if (_streams[streamId].isDepleted) {
             revert Errors.SablierV2Lockup_StreamDepleted(streamId);
         } else if (wasCanceled(streamId)) {
             revert Errors.SablierV2Lockup_StreamCanceled(streamId);
@@ -337,10 +337,11 @@ abstract contract SablierV2Lockup is
         public
         override
         noDelegateCall
+        notNull(streamId)
         updateMetadata(streamId)
     {
-        // Checks: the stream is not depleted. This also checks that the stream is not null.
-        if (isDepleted(streamId)) {
+        // Checks: the stream is not depleted.
+        if (_streams[streamId].isDepleted) {
             revert Errors.SablierV2Lockup_StreamDepleted(streamId);
         }
 
@@ -370,7 +371,7 @@ abstract contract SablierV2Lockup is
         }
 
         // Retrieve the sender from storage.
-        address sender = getSender(streamId);
+        address sender = _streams[streamId].sender;
 
         // Effects and Interactions: make the withdrawal.
         _withdraw(streamId, to, amount);
