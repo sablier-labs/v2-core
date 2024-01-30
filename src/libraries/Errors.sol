@@ -118,6 +118,12 @@ library Errors {
     /// @notice Thrown when trying to create a stream with a start time greater than the cliff time.
     error SablierV2LockupLinear_StartTimeGreaterThanCliffTime(uint40 startTime, uint40 cliffTime);
 
+    /// @notice Thrown when trying to create a stream with a start time greater than the end time.
+    error SablierV2LockupLinear_StartTimeNotLessThanEndTime(uint40 startTime, uint40 endTime);
+
+    /// @notice Thrown when trying to create a stream with a start time equal to zero.
+    error SablierV2LockupLinear_StartTimeZero();
+
     /*//////////////////////////////////////////////////////////////////////////
                              SABLIER-V2-NFT-DESCRIPTOR
     //////////////////////////////////////////////////////////////////////////*/

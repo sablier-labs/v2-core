@@ -28,7 +28,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         whenRecipientNonZeroAddress
         whenDepositAmountNotZero
     {
-        startTime = boundUint40(startTime, defaults.CLIFF_TIME() + 1 seconds, MAX_UNIX_TIMESTAMP);
+        startTime = boundUint40(startTime, defaults.CLIFF_TIME() + 1 seconds, defaults.END_TIME() - 1 seconds);
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2LockupLinear_StartTimeGreaterThanCliffTime.selector, startTime, defaults.CLIFF_TIME()
@@ -48,7 +48,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         whenStartTimeNotGreaterThanCliffTime
     {
         uint40 startTime = defaults.START_TIME();
-        endTime = boundUint40(endTime, startTime, startTime + 2 weeks);
+        endTime = boundUint40(endTime, startTime + 1, startTime + 2 weeks);
         cliffTime = boundUint40(cliffTime, endTime, MAX_UNIX_TIMESTAMP);
 
         vm.expectRevert(

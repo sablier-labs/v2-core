@@ -59,15 +59,17 @@ contract LockupLinear_Invariant_Test is Lockup_Invariant_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev The cliff time must not be less than the start time.
-    function invariant_CliffTimeGteStartTime() external useCurrentTimestamp {
+    function invariant_CliffTimeGteStartTimeOrZero() external useCurrentTimestamp {
         uint256 lastStreamId = lockupStore.lastStreamId();
         for (uint256 i = 0; i < lastStreamId; ++i) {
             uint256 streamId = lockupStore.streamIds(i);
-            assertGte(
-                lockupLinear.getCliffTime(streamId),
-                lockupLinear.getStartTime(streamId),
-                "Invariant violated: cliff time < start time"
-            );
+            if (lockupLinear.getCliffTime(streamId) > 0) {
+                assertGte(
+                    lockupLinear.getCliffTime(streamId),
+                    lockupLinear.getStartTime(streamId),
+                    "Invariant violated: cliff time < start time"
+                );
+            }
         }
     }
 

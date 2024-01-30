@@ -262,7 +262,7 @@ contract SablierV2LockupLinear is
             wasCanceled: false
         });
 
-        // Effects: set the cliff time if it greater than 0.
+        // Effects: set the cliff time if it is greater than 0.
         if (params.range.cliff > 0) {
             _cliffs[streamId] = params.range.cliff;
         }
