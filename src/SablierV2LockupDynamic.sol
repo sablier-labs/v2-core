@@ -210,6 +210,14 @@ contract SablierV2LockupDynamic is
         }
     }
 
+    /// @dev Calculates the streamed amount for a stream with multiple segments.
+    ///
+    /// Notes:
+    ///
+    /// 1. Normalization to 18 decimals is not needed because there is no mix of amounts with different decimals.
+    /// 2. The stream's start time must be in the past so that the calculations below do not overflow.
+    /// 3. The stream's end time must be in the future so that the loop below does not panic with an "index out of
+    /// bounds" error.
     function _calculateStreamedAmountForMultipleSegments(uint256 streamId) internal view returns (uint128) {
         unchecked {
             uint40 currentTime = uint40(block.timestamp);
