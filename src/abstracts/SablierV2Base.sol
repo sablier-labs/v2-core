@@ -9,15 +9,15 @@ import { IAdminable } from "../interfaces/IAdminable.sol";
 import { ISablierV2Base } from "../interfaces/ISablierV2Base.sol";
 import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { Errors } from "../libraries/Errors.sol";
-import { Adminable } from "./Adminable.sol";
+import { BlastGovernor } from "./BlastGovernor.sol";
 import { NoDelegateCall } from "./NoDelegateCall.sol";
 
 /// @title SablierV2Base
 /// @notice See the documentation in {ISablierV2Base}.
 abstract contract SablierV2Base is
     NoDelegateCall, // 0 inherited components
-    ISablierV2Base, // 1 inherited component
-    Adminable // 1 inherited component
+    ISablierV2Base, // 2 inherited component
+    BlastGovernor // 3 inherited component
 {
     using SafeERC20 for IERC20;
 
@@ -45,7 +45,7 @@ abstract contract SablierV2Base is
     /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialComptroller The address of the initial comptroller.
-    constructor(address initialAdmin, ISablierV2Comptroller initialComptroller) {
+    constructor(address initialAdmin, ISablierV2Comptroller initialComptroller) BlastGovernor() {
         admin = initialAdmin;
         comptroller = initialComptroller;
         emit IAdminable.TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
