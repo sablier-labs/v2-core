@@ -5,11 +5,15 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { IAdminable } from "./IAdminable.sol";
+import { IBlastGovernor } from "./IBlastGovernor.sol";
 import { ISablierV2Comptroller } from "./ISablierV2Comptroller.sol";
 
 /// @title ISablierV2Base
 /// @notice Base logic for all Sablier V2 streaming contracts.
-interface ISablierV2Base is IAdminable {
+interface ISablierV2Base is
+    IAdminable, // 0 inherited components
+    IBlastGovernor // 0 inherited components
+{
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
