@@ -31,7 +31,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         startTime = boundUint40(startTime, defaults.CLIFF_TIME() + 1 seconds, defaults.END_TIME() - 1 seconds);
         vm.expectRevert(
             abi.encodeWithSelector(
-                Errors.SablierV2LockupLinear_StartTimeGreaterThanCliffTime.selector, startTime, defaults.CLIFF_TIME()
+                Errors.SablierV2LockupLinear_StartTimeNotLessThanCliffTime.selector, startTime, defaults.CLIFF_TIME()
             )
         );
         createDefaultStreamWithStartTime(startTime);

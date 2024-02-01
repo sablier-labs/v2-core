@@ -338,12 +338,12 @@ contract SablierV2LockupDynamic is
         stream.isTransferable = params.transferable;
         stream.isStream = true;
         stream.sender = params.sender;
+        stream.startTime = params.startTime;
 
         unchecked {
             // The segment count cannot be zero at this point.
             uint256 segmentCount = params.segments.length;
             stream.endTime = params.segments[segmentCount - 1].timestamp;
-            stream.startTime = params.startTime;
 
             // Effects: store the segments. Since Solidity lacks a syntax for copying arrays directly from
             // memory to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.

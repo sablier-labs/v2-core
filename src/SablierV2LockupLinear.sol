@@ -151,6 +151,7 @@ contract SablierV2LockupLinear is
             range.cliff = params.durations.cliff > 0 ? range.start + params.durations.cliff : 0;
             range.end = range.start + params.durations.total;
         }
+
         // Checks, Effects and Interactions: create the stream.
         streamId = _createWithTimestamps(
             LockupLinear.CreateWithTimestamps({

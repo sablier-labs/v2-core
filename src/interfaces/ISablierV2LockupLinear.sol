@@ -108,6 +108,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @dev Emits a {Transfer} and {CreateLockupLinearStream} event.
     ///
     /// Notes:
+    /// - A cliff time of zero means there is no cliff.
     /// - As long as the times are ordered, it is not an error for the start or the cliff time to be in the past.
     ///
     /// Requirements:
@@ -116,7 +117,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// - If set, `params.broker.fee` must not be greater than `MAX_FEE`.
     /// - `params.range.start` must be greater than zero.
     /// - `params.range.start` must be less than `params.range.end`.
-    /// - If set, `params.range.cliff` must be greater than or equal to `params.range.start`.
+    /// - If set, `params.range.cliff` must be greater than `params.range.start`.
     /// - If set, `params.range.cliff` must be less than `params.range.end`.
     /// - `params.range.end` must be in the future.
     /// - `params.recipient` must not be the zero address.

@@ -119,7 +119,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         uint40 endTime = defaults.END_TIME();
         vm.expectRevert(
             abi.encodeWithSelector(
-                Errors.SablierV2LockupLinear_StartTimeGreaterThanCliffTime.selector, startTime, cliffTime
+                Errors.SablierV2LockupLinear_StartTimeNotLessThanCliffTime.selector, startTime, cliffTime
             )
         );
         createDefaultStreamWithRange(LockupLinear.Range({ start: startTime, cliff: cliffTime, end: endTime }));
