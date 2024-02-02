@@ -55,8 +55,8 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @param streamId The stream id for the query.
     function getRange(uint256 streamId) external view returns (LockupLinear.Range memory range);
 
-    /// @notice Retrieves the stream details, which is a struct containing the `Lockup.Stream` entity and stream's cliff
-    /// time.
+    /// @notice Retrieves the stream details, which is a struct containing the `Lockup.Stream` entity and the stream's
+    /// cliff time.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream id for the query.
     function getStream(uint256 streamId) external view returns (LockupLinear.Stream memory stream);
