@@ -51,7 +51,7 @@ contract SablierV2LockupDynamic is
     /// @inheritdoc ISablierV2LockupDynamic
     uint256 public immutable override MAX_SEGMENT_COUNT;
 
-    /// @dev Stream segments mapped by stream id.
+    /// @dev Stream segments mapped by stream ids.
     mapping(uint256 id => LockupDynamic.Segment[] segments) internal _segments;
 
     /*//////////////////////////////////////////////////////////////////////////

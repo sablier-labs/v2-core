@@ -44,7 +44,7 @@ contract SablierV2LockupLinear is
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Cliff times mapped by stream id. They can be zero.
+    /// @dev Cliff times mapped by stream ids. They can be zero.
     mapping(uint256 id => uint40 cliff) internal _cliffs;
 
     /*//////////////////////////////////////////////////////////////////////////
