@@ -73,11 +73,8 @@ abstract contract SablierV2Lockup is
 
     /// @inheritdoc ISablierV2Lockup
     function getRecipient(uint256 streamId) external view override returns (address recipient) {
-        // Checks: the stream NFT exists.
-        _requireOwned({ tokenId: streamId });
-
-        // The NFT owner is the stream's recipient.
-        recipient = _ownerOf(streamId);
+        // Checks: the stream NFT exists, and return the owner, which is the stream's recipient.
+        recipient = _requireOwned({ tokenId: streamId });
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -378,7 +375,7 @@ abstract contract SablierV2Lockup is
     /// @param to The address of the new recipient of the stream.
     /// @param streamId Id of the stream to update.
     /// @param auth Optional parameter. If the value is non 0, the upstream implementation of this function will check
-    /// that `auth` is either the recipient of the stream, or approved to operate on the stream (by the recipient).
+    /// that `auth` is either the recipient of the stream, or an approved third party.
     /// @return The original recipient of the `streamId` before the update.
     function _update(
         address to,
