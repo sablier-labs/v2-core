@@ -20,7 +20,7 @@ contract DeployDeterministicLockupLinear is BaseScript {
         broadcast
         returns (SablierV2LockupLinear lockupLinear)
     {
-        bytes32 salt = _constructCreate2Salt();
+        bytes32 salt = constructCreate2Salt();
         lockupLinear = new SablierV2LockupLinear{ salt: salt }(initialAdmin, initialComptroller, initialNFTDescriptor);
     }
 }

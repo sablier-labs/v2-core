@@ -30,7 +30,7 @@ contract DeployDeterministicCore2 is BaseScript {
             SablierV2LockupLinear lockupLinear
         )
     {
-        bytes32 salt = _constructCreate2Salt();
+        bytes32 salt = constructCreate2Salt();
         comptroller = new SablierV2Comptroller{ salt: salt }(initialAdmin);
         lockupDynamic =
             new SablierV2LockupDynamic{ salt: salt }(initialAdmin, comptroller, nftDescriptor, maxSegmentCount);

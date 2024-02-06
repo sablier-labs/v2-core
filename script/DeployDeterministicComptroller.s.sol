@@ -9,7 +9,7 @@ import { BaseScript } from "./Base.s.sol";
 /// @dev Reverts if the contract has already been deployed.
 contract DeployDeterministicComptroller is BaseScript {
     function run(address initialAdmin) public virtual broadcast returns (SablierV2Comptroller comptroller) {
-        bytes32 salt = _constructCreate2Salt();
+        bytes32 salt = constructCreate2Salt();
         comptroller = new SablierV2Comptroller{ salt: salt }(initialAdmin);
     }
 }

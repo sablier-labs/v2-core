@@ -9,7 +9,7 @@ import { BaseScript } from "./Base.s.sol";
 /// @dev Reverts if the contract has already been deployed.
 contract DeployDeterministicNFTDescriptor is BaseScript {
     function run() public virtual broadcast returns (SablierV2NFTDescriptor nftDescriptor) {
-        bytes32 salt = _constructCreate2Salt();
+        bytes32 salt = constructCreate2Salt();
         nftDescriptor = new SablierV2NFTDescriptor{ salt: salt }();
     }
 }

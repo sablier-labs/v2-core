@@ -50,9 +50,10 @@ abstract contract BaseScript is Script {
     ///
     /// Notes:
     /// - The salt format is "ChainID <chainid>, Version <version>".
-    /// - The version is obtained from the `package.json` file via --ffi cheatcode:
+    /// - The version is obtained from `package.json` using the `ffi` cheatcode:
     /// https://book.getfoundry.sh/cheatcodes/ffi
-    function _constructCreate2Salt() internal returns (bytes32) {
+    /// - Requires `jq` CLI tool installed: https://jqlang.github.io/jq/
+    function constructCreate2Salt() public returns (bytes32) {
         string memory chainId = block.chainid.toString();
         string[] memory inputs = new string[](4);
         inputs[0] = "jq";
@@ -62,7 +63,7 @@ abstract contract BaseScript is Script {
         bytes memory result = vm.ffi(inputs);
         string memory version = string(result);
         string memory create2Salt = string.concat("ChainID ", chainId, ", Version ", version);
-        console2.log(create2Salt);
+        console2.log("The CREATE2 salt is \"%s\"", create2Salt);
         return bytes32(abi.encodePacked(create2Salt));
     }
 }
