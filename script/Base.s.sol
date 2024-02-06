@@ -7,7 +7,7 @@ import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { console2 } from "forge-std/src/console2.sol";
 import { Script } from "forge-std/src/Script.sol";
 
-abstract contract BaseScript is Script {
+contract BaseScript is Script {
     using Strings for uint256;
 
     /// @dev Included to enable compilation of the script without a $MNEMONIC environment variable.
