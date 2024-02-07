@@ -84,38 +84,6 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function getEndTime(uint256 streamId) external view override notNull(streamId) returns (uint40 endTime) {
-        endTime = _streams[streamId].endTime;
-    }
-
-    /// @inheritdoc ISablierV2Lockup
-    function getRecipient(uint256 streamId) external view override returns (address recipient) {
-        // Checks: the stream NFT exists and return the owner, which is the stream's recipient.
-        recipient = _requireOwned({ tokenId: streamId });
-    }
-
-    /// @inheritdoc ISablierV2Lockup
-    function isCold(uint256 streamId) external view override notNull(streamId) returns (bool result) {
-        Lockup.Status status = _statusOf(streamId);
-        result = status == Lockup.Status.SETTLED || status == Lockup.Status.CANCELED || status == Lockup.Status.DEPLETED;
-    }
-
-    /// @inheritdoc ISablierV2Lockup
-    function isWarm(uint256 streamId) external view override notNull(streamId) returns (bool result) {
-        Lockup.Status status = _statusOf(streamId);
-        result = status == Lockup.Status.PENDING || status == Lockup.Status.STREAMING;
-    }
-
-    /// @inheritdoc ERC721
-    function tokenURI(uint256 streamId) public view override(IERC721Metadata, ERC721) returns (string memory uri) {
-        // Checks: the stream NFT exists.
-        _requireOwned({ tokenId: streamId });
-
-        // Generate the URI describing the stream NFT.
-        uri = nftDescriptor.tokenURI({ sablier: this, streamId: streamId });
-    }
-    /// @inheritdoc ISablierV2Lockup
-
     function getDepositedAmount(uint256 streamId)
         external
         view
@@ -127,30 +95,14 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function getSender(uint256 streamId) public view override notNull(streamId) returns (address sender) {
-        sender = _streams[streamId].sender;
+    function getEndTime(uint256 streamId) external view override notNull(streamId) returns (uint40 endTime) {
+        endTime = _streams[streamId].endTime;
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function getStartTime(uint256 streamId) external view override notNull(streamId) returns (uint40 startTime) {
-        startTime = _streams[streamId].startTime;
-    }
-
-    /// @inheritdoc ISablierV2Lockup
-    function refundableAmountOf(uint256 streamId)
-        external
-        view
-        override
-        notNull(streamId)
-        returns (uint128 refundableAmount)
-    {
-        // These checks are needed because {_calculateStreamedAmount} does not look up the stream's status. Note that
-        // checking for `isCancelable` also checks if the stream `wasCanceled` thanks to the protocol invariant that
-        // canceled streams are not cancelable anymore.
-        if (_streams[streamId].isCancelable && !_streams[streamId].isDepleted) {
-            refundableAmount = _streams[streamId].amounts.deposited - _calculateStreamedAmount(streamId);
-        }
-        // Otherwise, the result is implicitly zero.
+    function getRecipient(uint256 streamId) external view override returns (address recipient) {
+        // Checks: the stream NFT exists and return the owner, which is the stream's recipient.
+        recipient = _requireOwned({ tokenId: streamId });
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -162,6 +114,16 @@ abstract contract SablierV2Lockup is
         returns (uint128 refundedAmount)
     {
         refundedAmount = _streams[streamId].amounts.refunded;
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function getSender(uint256 streamId) external view override notNull(streamId) returns (address sender) {
+        sender = _streams[streamId].sender;
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function getStartTime(uint256 streamId) external view override notNull(streamId) returns (uint40 startTime) {
+        startTime = _streams[streamId].startTime;
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -183,18 +145,47 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function isTransferable(uint256 streamId) public view override notNull(streamId) returns (bool result) {
-        result = _streams[streamId].isTransferable;
+    function isCold(uint256 streamId) external view override notNull(streamId) returns (bool result) {
+        Lockup.Status status = _statusOf(streamId);
+        result = status == Lockup.Status.SETTLED || status == Lockup.Status.CANCELED || status == Lockup.Status.DEPLETED;
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function isDepleted(uint256 streamId) public view override notNull(streamId) returns (bool result) {
+    function isDepleted(uint256 streamId) external view override notNull(streamId) returns (bool result) {
         result = _streams[streamId].isDepleted;
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function isStream(uint256 streamId) public view override returns (bool result) {
+    function isStream(uint256 streamId) external view override returns (bool result) {
         result = _streams[streamId].isStream;
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function isTransferable(uint256 streamId) external view override notNull(streamId) returns (bool result) {
+        result = _streams[streamId].isTransferable;
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function isWarm(uint256 streamId) external view override notNull(streamId) returns (bool result) {
+        Lockup.Status status = _statusOf(streamId);
+        result = status == Lockup.Status.PENDING || status == Lockup.Status.STREAMING;
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function refundableAmountOf(uint256 streamId)
+        external
+        view
+        override
+        notNull(streamId)
+        returns (uint128 refundableAmount)
+    {
+        // These checks are needed because {_calculateStreamedAmount} does not look up the stream's status. Note that
+        // checking for `isCancelable` also checks if the stream `wasCanceled` thanks to the protocol invariant that
+        // canceled streams are not cancelable anymore.
+        if (_streams[streamId].isCancelable && !_streams[streamId].isDepleted) {
+            refundableAmount = _streams[streamId].amounts.deposited - _calculateStreamedAmount(streamId);
+        }
+        // Otherwise, the result is implicitly zero.
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -214,8 +205,17 @@ abstract contract SablierV2Lockup is
         streamedAmount = _streamedAmountOf(streamId);
     }
 
+    /// @inheritdoc ERC721
+    function tokenURI(uint256 streamId) public view override(IERC721Metadata, ERC721) returns (string memory uri) {
+        // Checks: the stream NFT exists.
+        _requireOwned({ tokenId: streamId });
+
+        // Generate the URI describing the stream NFT.
+        uri = nftDescriptor.tokenURI({ sablier: this, streamId: streamId });
+    }
+
     /// @inheritdoc ISablierV2Lockup
-    function wasCanceled(uint256 streamId) public view override notNull(streamId) returns (bool result) {
+    function wasCanceled(uint256 streamId) external view override notNull(streamId) returns (bool result) {
         result = _streams[streamId].wasCanceled;
     }
 
@@ -257,7 +257,7 @@ abstract contract SablierV2Lockup is
         // Checks: the stream is neither depleted nor canceled.
         if (_streams[streamId].isDepleted) {
             revert Errors.SablierV2Lockup_StreamDepleted(streamId);
-        } else if (wasCanceled(streamId)) {
+        } else if (_streams[streamId].wasCanceled) {
             revert Errors.SablierV2Lockup_StreamCanceled(streamId);
         }
 
@@ -471,10 +471,13 @@ abstract contract SablierV2Lockup is
             || getApproved(streamId) == msg.sender;
     }
 
+    /// @notice Checks whether `msg.sender` is the stream's sender.
+    /// @param streamId The stream id for the query.
     function _isCallerStreamSender(uint256 streamId) internal view returns (bool) {
         return msg.sender == _streams[streamId].sender;
     }
 
+    /// @dev Retrieves the stream's status without performing a null check.
     function _statusOf(uint256 streamId) internal view returns (Lockup.Status) {
         if (_streams[streamId].isDepleted) {
             return Lockup.Status.DEPLETED;
@@ -515,7 +518,7 @@ abstract contract SablierV2Lockup is
     {
         address from = _ownerOf(streamId);
 
-        if (!isTransferable(streamId) && from != address(0) && to != address(0)) {
+        if (!_streams[streamId].isTransferable && from != address(0) && to != address(0)) {
             revert Errors.SablierV2Lockup_NotTransferable(streamId);
         }
 
