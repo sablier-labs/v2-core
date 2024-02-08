@@ -64,7 +64,7 @@ contract LockupLinear_Invariant_Test is Lockup_Invariant_Test {
         for (uint256 i = 0; i < lastStreamId; ++i) {
             uint256 streamId = lockupStore.streamIds(i);
             if (lockupLinear.getCliffTime(streamId) > 0) {
-                assertGte(
+                assertGt(
                     lockupLinear.getCliffTime(streamId),
                     lockupLinear.getStartTime(streamId),
                     "Invariant violated: cliff time < start time"
