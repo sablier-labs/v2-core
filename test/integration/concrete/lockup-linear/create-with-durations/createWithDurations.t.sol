@@ -37,7 +37,7 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         LockupLinear.Durations memory durations =
             LockupLinear.Durations({ cliff: 0, total: MAX_UINT40 - startTime + 1 seconds });
 
-        // Calculate the cliff time and the end time. Needs to be "unchecked" to avoid an overflow.
+        // Calculate the cliff time and the end time. Needs to be "unchecked" to allow an overflow.
         uint40 cliffTime;
         uint40 endTime;
         unchecked {

@@ -29,7 +29,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         durations.cliff = boundUint40(durations.cliff, 0, MAX_UINT40 - startTime);
         durations.total = boundUint40(durations.total, MAX_UINT40 - startTime + 1 seconds, MAX_UINT40);
 
-        // Calculate the cliff time and the end time. Needs to be "unchecked" to avoid an overflow.
+        // Calculate the cliff time and the end time. Needs to be "unchecked" to allow an overflow.
         uint40 cliffTime;
         uint40 endTime;
         unchecked {
