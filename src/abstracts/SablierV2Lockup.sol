@@ -34,7 +34,7 @@ abstract contract SablierV2Lockup is
     uint256 public override nextStreamId;
 
     /// @dev Contract that generates the non-fungible token URI.
-    ISablierV2NFTDescriptor public nftDescriptor;
+    ISablierV2NFTDescriptor public override nftDescriptor;
 
     /// @dev Sablier V2 Lockup streams mapped by unsigned integers.
     mapping(uint256 id => Lockup.Stream stream) internal _streams;

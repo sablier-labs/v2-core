@@ -265,7 +265,7 @@ library LockupLinear {
 
     /// @notice Struct encapsulating all the data for a specific id, so that an integrator can obtain all information
     /// within one call to our contract.
-    /// @dev It contains the same data as the `Lockup.Stream` struct, plus the range.
+    /// @dev It contains the same data as the `Lockup.Stream` struct, plus the cliff value.
     struct Stream {
         address sender;
         uint40 startTime;
