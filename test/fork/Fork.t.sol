@@ -35,8 +35,8 @@ abstract contract Fork_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function setUp() public virtual override {
-        // Fork Ethereum Mainnet at a specific block number.
-        vm.createSelectFork({ blockNumber: 16_126_000, urlOrAlias: "mainnet" });
+        // Fork Blast sepolia testnet at a specific block number.
+        vm.createSelectFork({ blockNumber: 1_620_391, urlOrAlias: "blast_sepolia" });
 
         // The base is set up after the fork is selected so that the base test contracts are deployed on the fork.
         Base_Test.setUp();
@@ -72,6 +72,12 @@ abstract contract Fork_Test is Base_Test {
         assumeNoBlacklisted(address(ASSET), sender);
         assumeNoBlacklisted(address(ASSET), recipient);
         assumeNoBlacklisted(address(ASSET), broker);
+    }
+
+    /// @dev Checks if forked `ASSET` is a Blast L2 asset.
+    function isBlastAsset() internal view returns (bool) {
+        return address(ASSET) == 0x4200000000000000000000000000000000000022
+            || address(ASSET) == 0x4200000000000000000000000000000000000023;
     }
 
     /// @dev Labels the most relevant contracts.
