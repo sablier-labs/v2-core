@@ -44,7 +44,7 @@ contract SablierV2LockupLinear is
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Cliff times mapped by stream ids. They can be zero.
+    /// @dev Cliff times mapped by stream ids.
     mapping(uint256 id => uint40 cliff) internal _cliffs;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -182,7 +182,7 @@ contract SablierV2LockupLinear is
                            INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Calculates the streamed amount without looking up the stream's status.
+    /// @inheritdoc SablierV2Lockup
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
         // If the cliff time is in the future, return zero.
         uint256 cliffTime = uint256(_cliffs[streamId]);

@@ -187,7 +187,7 @@ contract SablierV2LockupDynamic is
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Calculates the streamed amount without looking up the stream's status.
+    /// @inheritdoc SablierV2Lockup
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
         // If the start time is in the future, return zero.
         uint40 currentTime = uint40(block.timestamp);

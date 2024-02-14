@@ -178,7 +178,7 @@ library LockupDynamic {
         uint40 duration;
     }
 
-    /// @notice Struct encapsulating all the data for a specific id, so that an integrator can obtain all information
+    /// @notice Struct encapsulating all the data for a specific id, so that anyone can obtain all information
     /// within one call to our contract.
     /// @dev It contains the same data as the `Lockup.Stream` struct, plus the segments.
     struct Stream {
@@ -263,7 +263,7 @@ library LockupLinear {
         uint40 end;
     }
 
-    /// @notice Struct encapsulating all the data for a specific id, so that an integrator can obtain all information
+    /// @notice Struct encapsulating all the data for a specific id, so that anyone can obtain all information
     /// within one call to our contract.
     /// @dev It contains the same data as the `Lockup.Stream` struct, plus the cliff value.
     struct Stream {

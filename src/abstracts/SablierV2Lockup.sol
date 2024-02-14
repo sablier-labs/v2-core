@@ -33,7 +33,7 @@ abstract contract SablierV2Lockup is
     /// @inheritdoc ISablierV2Lockup
     uint256 public override nextStreamId;
 
-    /// @dev Contract that generates the non-fungible token URI.
+    /// @inheritdoc ISablierV2Lockup
     ISablierV2NFTDescriptor public override nftDescriptor;
 
     /// @dev Sablier V2 Lockup streams mapped by unsigned integers.
@@ -459,8 +459,8 @@ abstract contract SablierV2Lockup is
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Calculates the streamed amount of the stream, which is implemented by child contracts, it can vary
-    /// depending on the model.
+    /// @notice Calculates the streamed amount of the stream without looking up the stream's status, which is
+    /// implemented by child contracts, it can vary depending on the model.
     function _calculateStreamedAmount(uint256 streamId) internal view virtual returns (uint128);
 
     /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party.
@@ -496,6 +496,19 @@ abstract contract SablierV2Lockup is
         }
     }
 
+    /// @dev See the documentation for the user-facing functions that call this internal function.
+    function _streamedAmountOf(uint256 streamId) internal view returns (uint128) {
+        Lockup.Amounts memory amounts = _streams[streamId].amounts;
+
+        if (_streams[streamId].isDepleted) {
+            return amounts.withdrawn;
+        } else if (_streams[streamId].wasCanceled) {
+            return amounts.deposited - amounts.refunded;
+        }
+
+        return _calculateStreamedAmount(streamId);
+    }
+
     /// @notice Overrides the internal ERC-721 `_update` function to check that the stream is transferable and emit
     /// an ERC-4906 event.
     /// @dev There are two cases when the transferable flag is ignored:
@@ -523,19 +536,6 @@ abstract contract SablierV2Lockup is
         }
 
         return super._update(to, streamId, auth);
-    }
-
-    /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _streamedAmountOf(uint256 streamId) internal view returns (uint128) {
-        Lockup.Amounts memory amounts = _streams[streamId].amounts;
-
-        if (_streams[streamId].isDepleted) {
-            return amounts.withdrawn;
-        } else if (_streams[streamId].wasCanceled) {
-            return amounts.deposited - amounts.refunded;
-        }
-
-        return _calculateStreamedAmount(streamId);
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.

@@ -59,8 +59,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @param streamId The stream id for the query.
     function getSegments(uint256 streamId) external view returns (LockupDynamic.Segment[] memory segments);
 
-    /// @notice Retrieves the stream details, which is a struct containing the `Lockup.Stream` entity and the stream's
-    /// segments.
+    /// @notice Retrieves the stream details, which is a struct documented in {DataTypes}.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream id for the query.
     function getStream(uint256 streamId) external view returns (LockupDynamic.Stream memory stream);
