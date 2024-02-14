@@ -7,43 +7,14 @@ import { IBlastGovernor } from "../interfaces/IBlastGovernor.sol";
 
 /// @title BlastGovernor
 /// @notice This contract implements logic to interact with the Blast contracts.
-/// @dev https://docs.blast.io/
+/// @dev Deploys with default Disabled yield for ETH and Automatic yield for USDB and WETH (https://docs.blast.io)
+///     - Blast ETH: 0x4300000000000000000000000000000000000002
+///     - Blast USDB: 0x4200000000000000000000000000000000000022
+///     - Blast WETH: 0x4200000000000000000000000000000000000023
 abstract contract BlastGovernor is
     Adminable, // 1 inherited component
     IBlastGovernor // 0 inherited component
 {
-    /*//////////////////////////////////////////////////////////////////////////
-                                  STATE VARIABLES
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @inheritdoc IBlastGovernor
-    IBlast public constant BLAST_ETH = IBlast(0x4300000000000000000000000000000000000002);
-
-    /// @inheritdoc IBlastGovernor
-    IBlast public constant BLAST_USDB = IBlast(0x4200000000000000000000000000000000000022);
-
-    /// @inheritdoc IBlastGovernor
-    IBlast public constant BLAST_WETH = IBlast(0x4200000000000000000000000000000000000023);
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                     CONSTRUCTOR
-    //////////////////////////////////////////////////////////////////////////*/
-
-    constructor() {
-        // configure the gas mode for ETH on Blast network.
-        BLAST_ETH.configure({
-            yieldMode: IBlast.YieldMode.VOID,
-            gasMode: IBlast.GasMode.CLAIMABLE,
-            governor: address(this)
-        });
-
-        // configure the yield mode for USDB on Blast network.
-        BLAST_USDB.configure({ yieldMode: IBlast.YieldMode.CLAIMABLE });
-
-        // configure the yield mode for WETH on Blast network.
-        BLAST_WETH.configure({ yieldMode: IBlast.YieldMode.CLAIMABLE });
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -54,23 +25,23 @@ abstract contract BlastGovernor is
     }
 
     /// @inheritdoc IBlastGovernor
-    function readClaimableYield() external view override returns (uint256) {
-        return BLAST_ETH.readClaimableYield(address(this));
+    function readClaimableYield(IBlast blastEthAddress) external view override returns (uint256) {
+        return blastEthAddress.readClaimableYield(address(this));
     }
 
     /// @inheritdoc IBlastGovernor
-    function readGasParams()
+    function readGasParams(IBlast blastEthAddress)
         external
         view
         override
         returns (uint256 etherSeconds, uint256 etherBalance, uint256 lastUpdated, IBlast.GasMode gasMode)
     {
-        return BLAST_ETH.readGasParams(address(this));
+        return blastEthAddress.readGasParams(address(this));
     }
 
     /// @inheritdoc IBlastGovernor
-    function readYieldConfiguration() external view override returns (uint8) {
-        return BLAST_ETH.readYieldConfiguration(address(this));
+    function readYieldConfiguration(IBlast blastEthAddress) external view override returns (uint8) {
+        return blastEthAddress.readYieldConfiguration(address(this));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -79,8 +50,8 @@ abstract contract BlastGovernor is
 
     /// @inheritdoc IBlastGovernor
     function claim(
-        address recipientOfYield,
         uint256 amount,
+        address recipientOfYield,
         IBlast token
     )
         external
@@ -92,30 +63,47 @@ abstract contract BlastGovernor is
     }
 
     /// @inheritdoc IBlastGovernor
-    function claimAllGas(address recipientOfGas) external override onlyAdmin returns (uint256) {
-        return BLAST_ETH.claimAllGas(address(this), recipientOfGas);
+    function claimAllGas(
+        IBlast blastEthAddress,
+        address recipientOfGas
+    )
+        external
+        override
+        onlyAdmin
+        returns (uint256)
+    {
+        return blastEthAddress.claimAllGas(address(this), recipientOfGas);
     }
 
     /// @inheritdoc IBlastGovernor
-    function claimAllYield(address recipientOfYield) external override onlyAdmin returns (uint256) {
-        return BLAST_ETH.claimAllYield(address(this), recipientOfYield);
+    function claimAllYield(
+        IBlast blastEthAddress,
+        address recipientOfYield
+    )
+        external
+        override
+        onlyAdmin
+        returns (uint256)
+    {
+        return blastEthAddress.claimAllYield(address(this), recipientOfYield);
     }
 
     /// @inheritdoc IBlastGovernor
-    function configure(IBlast.YieldMode yieldMode, IBlast token) external {
+    function configure(IBlast token, IBlast.YieldMode yieldMode) external override onlyAdmin {
         token.configure({ yieldMode: yieldMode });
     }
 
     /// @inheritdoc IBlastGovernor
     function configure(
-        IBlast.YieldMode yieldMode,
+        IBlast blastEthAddress,
         IBlast.GasMode gasMode,
-        address newGovernor
+        IBlast.YieldMode yieldMode,
+        address governor
     )
         external
         override
         onlyAdmin
     {
-        BLAST_ETH.configure({ yieldMode: yieldMode, gasMode: gasMode, governor: newGovernor });
+        blastEthAddress.configure({ yieldMode: yieldMode, gasMode: gasMode, governor: governor });
     }
 }

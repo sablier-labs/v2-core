@@ -27,6 +27,12 @@ interface IBlast {
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @notice Retrieves the claimable yield in an ERC20 token for `account`.
+    /// @dev Requires {YieldMode} set to CLAIMABLE.
+    /// @param account The address of the account.
+    /// @return claimableYield Yield amount available to claim.
+    function getClaimableAmount(address account) external view returns (uint256 claimableYield);
+
     /// @notice Retrieves the claimable yield for `account`.
     /// @dev Requires {YieldMode} set to CLAIMABLE.
     /// @param account The address of the account.
@@ -49,36 +55,15 @@ interface IBlast {
     /// @return yieldMode The yield mode as an integer position in {YieldMode}.
     function readYieldConfiguration(address account) external view returns (uint8 yieldMode);
 
-    /// @notice Retrieves the claimable yield in an ERC20 token for `account`.
-    /// @dev Requires {YieldMode} set to CLAIMABLE.
-    /// @param account The address of the account.
-    /// @return claimableYield Yield amount available to claim.
-    function getClaimableAmount(address account) external view returns (uint256 claimableYield);
-
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Sets the yield mode, gas modes and governor address.
+    /// @notice Claim all yield in an ERC20 token for `account`.
     /// @dev This function should only be called by the contract itself.
-    /// @param yieldMode Enum representing the yield mode to set.
-    /// @param gasMode Enum representing the gas mode to set.
-    /// @param governor The address of the new governor.
-    function configure(YieldMode yieldMode, GasMode gasMode, address governor) external;
-
-    /// @notice Sets the yield mode, gas modes and governor address for `account`.
-    /// @dev This function can be called by the governor.
-    /// @param account The address of the account.
-    /// @param yieldMode Enum representing the yield mode to set.
-    /// @param gasMode Enum representing the gas mode to set.
-    /// @param governor The address of the new governor.
-    function configureContract(address account, YieldMode yieldMode, GasMode gasMode, address governor) external;
-
-    /// @notice Claim all yield in ETH for `account`.
-    /// @dev This function should only be called by the contract itself.
-    /// @param account The address of the account.
     /// @param recipientOfYield The recipient address for yield.
-    function claimAllYield(address account, address recipientOfYield) external returns (uint256);
+    /// @param amount Yield amount to claim.
+    function claim(address recipientOfYield, uint256 amount) external returns (uint256);
 
     /// @notice Claim all gas in ETH for `account`.
     /// @dev This function should only be called by the contract itself.
@@ -86,14 +71,21 @@ interface IBlast {
     /// @param recipientOfGas The recipient address for gas.
     function claimAllGas(address account, address recipientOfGas) external returns (uint256);
 
+    /// @notice Claim all yield in ETH for `account`.
+    /// @dev This function should only be called by the contract itself.
+    /// @param account The address of the account.
+    /// @param recipientOfYield The recipient address for yield.
+    function claimAllYield(address account, address recipientOfYield) external returns (uint256);
+
     /// @notice Sets the yield mode for an ERC20 token.
     /// @dev This function should only be called by the contract itself.
     /// @param yieldMode Enum representing the yield mode to set.
     function configure(YieldMode yieldMode) external;
 
-    /// @notice Claim all yield in an ERC20 token for `account`.
+    /// @notice Sets the yield mode, gas modes and governor address.
     /// @dev This function should only be called by the contract itself.
-    /// @param recipientOfYield The recipient address for yield.
-    /// @param amount Yield amount to claim.
-    function claim(address recipientOfYield, uint256 amount) external returns (uint256);
+    /// @param yieldMode Enum representing the yield mode to set.
+    /// @param gasMode Enum representing the gas mode to set.
+    /// @param governor The address of the new governor.
+    function configure(YieldMode yieldMode, GasMode gasMode, address governor) external;
 }

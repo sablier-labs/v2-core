@@ -45,7 +45,7 @@ abstract contract SablierV2Base is
     /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialComptroller The address of the initial comptroller.
-    constructor(address initialAdmin, ISablierV2Comptroller initialComptroller) BlastGovernor() {
+    constructor(address initialAdmin, ISablierV2Comptroller initialComptroller) {
         admin = initialAdmin;
         comptroller = initialComptroller;
         emit IAdminable.TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
