@@ -99,8 +99,8 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         createDefaultStreamWithDurations(durations);
 
         // Assert that the stream has been created.
-        LockupLinear.Stream memory actualStream = lockupLinear.getStream(streamId);
-        LockupLinear.Stream memory expectedStream = defaults.lockupLinearStream();
+        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);
+        LockupLinear.StreamLL memory expectedStream = defaults.lockupLinearStream();
         expectedStream.cliffTime = range.cliff;
         expectedStream.endTime = range.end;
         expectedStream.startTime = range.start;

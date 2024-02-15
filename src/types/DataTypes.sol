@@ -67,7 +67,7 @@ library Lockup {
         DEPLETED
     }
 
-    /// @notice A common data structure to be stored in all contracts inheriting {SablierV2Lockup}.
+    /// @notice A common data structure to be stored in all child contracts of {SablierV2Lockup}.
     /// @dev The fields are arranged like this to save gas via tight variable packing.
     /// @param sender The address streaming the assets, with the ability to cancel the stream.
     /// @param startTime The Unix timestamp indicating the stream's start.
@@ -178,10 +178,10 @@ library LockupDynamic {
         uint40 duration;
     }
 
-    /// @notice Struct encapsulating all the data for a specific id, so that anyone can obtain all information
-    /// within one call to our contract.
+    /// @notice Struct encapsulating all the data for a specific id, allowing anyone to retrieve all information within
+    /// one call to the contract.
     /// @dev It contains the same data as the `Lockup.Stream` struct, plus the segments.
-    struct Stream {
+    struct StreamLD {
         address sender;
         uint40 startTime;
         uint40 endTime;
@@ -263,10 +263,10 @@ library LockupLinear {
         uint40 end;
     }
 
-    /// @notice Struct encapsulating all the data for a specific id, so that anyone can obtain all information
-    /// within one call to our contract.
+    /// @notice Struct encapsulating all the data for a specific id, allowing anyone to retrieve all information within
+    /// one call to the contract.
     /// @dev It contains the same data as the `Lockup.Stream` struct, plus the cliff value.
-    struct Stream {
+    struct StreamLL {
         address sender;
         uint40 startTime;
         bool isCancelable;

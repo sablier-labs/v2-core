@@ -96,7 +96,7 @@ contract SablierV2LockupLinear is
         view
         override
         notNull(streamId)
-        returns (LockupLinear.Stream memory stream)
+        returns (LockupLinear.StreamLL memory stream)
     {
         Lockup.Stream memory lockupStream = _streams[streamId];
 
@@ -105,7 +105,7 @@ contract SablierV2LockupLinear is
             lockupStream.isCancelable = false;
         }
 
-        stream = LockupLinear.Stream({
+        stream = LockupLinear.StreamLL({
             amounts: lockupStream.amounts,
             asset: lockupStream.asset,
             cliffTime: _cliffs[streamId],

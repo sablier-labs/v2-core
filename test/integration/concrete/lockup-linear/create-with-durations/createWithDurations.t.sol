@@ -107,8 +107,8 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithDurations();
 
         // Assert that the stream has been created.
-        LockupLinear.Stream memory actualStream = lockupLinear.getStream(streamId);
-        LockupLinear.Stream memory expectedStream = defaults.lockupLinearStream();
+        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);
+        LockupLinear.StreamLL memory expectedStream = defaults.lockupLinearStream();
         expectedStream.startTime = range.start;
         expectedStream.cliffTime = range.cliff;
         expectedStream.endTime = range.end;

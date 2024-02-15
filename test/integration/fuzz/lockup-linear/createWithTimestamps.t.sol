@@ -210,7 +210,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         );
 
         // Assert that the stream has been created.
-        LockupLinear.Stream memory actualStream = lockupLinear.getStream(streamId);
+        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);
         assertEq(actualStream.amounts, Lockup.Amounts(vars.createAmounts.deposit, 0, 0));
         assertEq(actualStream.asset, dai, "asset");
         assertEq(actualStream.cliffTime, params.range.cliff, "cliffTime");

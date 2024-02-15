@@ -87,8 +87,8 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         );
 
         // Assert that the stream has been created.
-        LockupLinear.Stream memory actualStream = lockupLinear.getStream(streamId);
-        LockupLinear.Stream memory expectedStream = defaults.lockupLinearStream();
+        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);
+        LockupLinear.StreamLL memory expectedStream = defaults.lockupLinearStream();
         expectedStream.cliffTime = 0;
         assertEq(actualStream, expectedStream);
 
@@ -291,8 +291,8 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithAsset(IERC20(asset));
 
         // Assert that the stream has been created.
-        LockupLinear.Stream memory actualStream = lockupLinear.getStream(streamId);
-        LockupLinear.Stream memory expectedStream = defaults.lockupLinearStream();
+        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);
+        LockupLinear.StreamLL memory expectedStream = defaults.lockupLinearStream();
         expectedStream.asset = IERC20(asset);
         assertEq(actualStream, expectedStream);
 

@@ -193,7 +193,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         );
 
         // Assert that the stream has been created.
-        LockupLinear.Stream memory actualStream = lockupLinear.getStream(vars.streamId);
+        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(vars.streamId);
         assertEq(actualStream.amounts, Lockup.Amounts(vars.createAmounts.deposit, 0, 0));
         assertEq(actualStream.asset, ASSET, "asset");
         assertEq(actualStream.cliffTime, params.range.cliff, "cliffTime");

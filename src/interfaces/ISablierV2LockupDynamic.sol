@@ -62,7 +62,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @notice Retrieves the stream details, which is a struct documented in {DataTypes}.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream id for the query.
-    function getStream(uint256 streamId) external view returns (LockupDynamic.Stream memory stream);
+    function getStream(uint256 streamId) external view returns (LockupDynamic.StreamLD memory stream);
 
     /// @notice Calculates the amount streamed to the recipient, denoted in units of the asset's decimals.
     ///

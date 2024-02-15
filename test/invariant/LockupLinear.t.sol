@@ -78,7 +78,7 @@ contract LockupLinear_Invariant_Test is Lockup_Invariant_Test {
         uint256 lastStreamId = lockupStore.lastStreamId();
         for (uint256 i = 0; i < lastStreamId; ++i) {
             uint256 streamId = lockupStore.streamIds(i);
-            LockupLinear.Stream memory stream = lockupLinear.getStream(streamId);
+            LockupLinear.StreamLL memory stream = lockupLinear.getStream(streamId);
             assertNotEq(stream.amounts.deposited, 0, "Invariant violated: stream non-null, deposited amount zero");
         }
     }
@@ -101,7 +101,7 @@ contract LockupLinear_Invariant_Test is Lockup_Invariant_Test {
         uint256 lastStreamId = lockupStore.lastStreamId();
         for (uint256 i = 0; i < lastStreamId; ++i) {
             uint256 streamId = lockupStore.streamIds(i);
-            LockupLinear.Stream memory stream = lockupLinear.getStream(streamId);
+            LockupLinear.StreamLL memory stream = lockupLinear.getStream(streamId);
             assertNotEq(stream.endTime, 0, "Invariant violated: stream non-null, end time zero");
         }
     }
