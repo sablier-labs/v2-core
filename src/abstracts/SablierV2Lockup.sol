@@ -388,10 +388,10 @@ abstract contract SablierV2Lockup is
             }) { } catch { }
         }
 
-        // Interactions: if `msg.sender` is not the sender and the sender is a contract, try to invoke the
-        // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
-        // any potential revert.
-        if (msg.sender != sender && sender.code.length > 0) {
+        // Interactions: if `msg.sender` is not the sender, sender is not same as the recipient and the sender is a
+        // contract, try to invoke the withdraw hook on it without reverting if the hook is not implemented, and also
+        // without bubbling up any potential revert.
+        if (msg.sender != sender && sender != recipient && sender.code.length > 0) {
             try ISablierV2Sender(sender).onLockupStreamWithdrawn({
                 streamId: streamId,
                 caller: msg.sender,
