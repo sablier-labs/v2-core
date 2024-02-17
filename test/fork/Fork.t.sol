@@ -74,12 +74,6 @@ abstract contract Fork_Test is Base_Test {
         assumeNoBlacklisted(address(ASSET), broker);
     }
 
-    /// @dev Checks if forked `ASSET` is a Blast L2 asset.
-    function isBlastAsset() internal view returns (bool) {
-        return address(ASSET) == 0x4200000000000000000000000000000000000022
-            || address(ASSET) == 0x4200000000000000000000000000000000000023;
-    }
-
     /// @dev Labels the most relevant contracts.
     function labelContracts() internal {
         vm.label({ account: address(ASSET), newLabel: IERC20Metadata(address(ASSET)).symbol() });
