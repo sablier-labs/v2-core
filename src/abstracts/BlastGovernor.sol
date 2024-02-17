@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity >=0.8.22;
+pragma solidity >=0.8.19;
 
 import { Adminable } from "./Adminable.sol";
-import { IBlast } from "../interfaces/IBlast.sol";
+import { IERC20Rebasing } from "../interfaces/Blast/IERC20Rebasing.sol";
+import { IBlast } from "../interfaces/Blast/IBlast.sol";
+import { GasMode } from "../interfaces/Blast/IGas.sol";
+import { YieldMode } from "../interfaces/Blast/IYield.sol";
 import { IBlastGovernor } from "../interfaces/IBlastGovernor.sol";
 
 /// @title BlastGovernor
@@ -20,28 +23,33 @@ abstract contract BlastGovernor is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc IBlastGovernor
-    function getClaimableAmount(IBlast token) external view override returns (uint256 claimableYield) {
+    function getClaimableAmount(IERC20Rebasing token) external view override returns (uint256 claimableYield) {
         return token.getClaimableAmount(address(this));
     }
 
     /// @inheritdoc IBlastGovernor
-    function readClaimableYield(IBlast blastEthAddress) external view override returns (uint256) {
-        return blastEthAddress.readClaimableYield(address(this));
+    function getConfiguration(IERC20Rebasing token) external view override returns (YieldMode) {
+        return token.getConfiguration(address(this));
     }
 
     /// @inheritdoc IBlastGovernor
-    function readGasParams(IBlast blastEthAddress)
+    function readClaimableYield(IBlast blastEth) external view override returns (uint256) {
+        return blastEth.readClaimableYield(address(this));
+    }
+
+    /// @inheritdoc IBlastGovernor
+    function readGasParams(IBlast blastEth)
         external
         view
         override
-        returns (uint256 etherSeconds, uint256 etherBalance, uint256 lastUpdated, IBlast.GasMode gasMode)
+        returns (uint256 etherSeconds, uint256 etherBalance, uint256 lastUpdated, GasMode gasMode)
     {
-        return blastEthAddress.readGasParams(address(this));
+        return blastEth.readGasParams(address(this));
     }
 
     /// @inheritdoc IBlastGovernor
-    function readYieldConfiguration(IBlast blastEthAddress) external view override returns (uint8) {
-        return blastEthAddress.readYieldConfiguration(address(this));
+    function readYieldConfiguration(IBlast blastEth) external view override returns (uint8) {
+        return blastEth.readYieldConfiguration(address(this));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -52,7 +60,7 @@ abstract contract BlastGovernor is
     function claim(
         uint256 amount,
         address recipientOfYield,
-        IBlast token
+        IERC20Rebasing token
     )
         external
         override
@@ -63,47 +71,30 @@ abstract contract BlastGovernor is
     }
 
     /// @inheritdoc IBlastGovernor
-    function claimAllGas(
-        IBlast blastEthAddress,
-        address recipientOfGas
+    function claimAllGas(IBlast blastEth, address recipientOfGas) external override onlyAdmin returns (uint256) {
+        return blastEth.claimAllGas(address(this), recipientOfGas);
+    }
+
+    /// @inheritdoc IBlastGovernor
+    function claimAllYield(IBlast blastEth, address recipientOfYield) external override onlyAdmin returns (uint256) {
+        return blastEth.claimAllYield(address(this), recipientOfYield);
+    }
+
+    /// @inheritdoc IBlastGovernor
+    function configureYieldForToken(
+        IERC20Rebasing token,
+        YieldMode yieldMode
     )
         external
         override
         onlyAdmin
         returns (uint256)
     {
-        return blastEthAddress.claimAllGas(address(this), recipientOfGas);
+        return token.configure(yieldMode);
     }
 
     /// @inheritdoc IBlastGovernor
-    function claimAllYield(
-        IBlast blastEthAddress,
-        address recipientOfYield
-    )
-        external
-        override
-        onlyAdmin
-        returns (uint256)
-    {
-        return blastEthAddress.claimAllYield(address(this), recipientOfYield);
-    }
-
-    /// @inheritdoc IBlastGovernor
-    function configure(IBlast token, IBlast.YieldMode yieldMode) external override onlyAdmin {
-        token.configure({ yieldMode: yieldMode });
-    }
-
-    /// @inheritdoc IBlastGovernor
-    function configure(
-        IBlast blastEthAddress,
-        IBlast.GasMode gasMode,
-        IBlast.YieldMode yieldMode,
-        address governor
-    )
-        external
-        override
-        onlyAdmin
-    {
-        blastEthAddress.configure({ yieldMode: yieldMode, gasMode: gasMode, governor: governor });
+    function configureVoidYieldAndClaimableGas(IBlast blastEth, address governor) external override onlyAdmin {
+        blastEth.configure(YieldMode.VOID, GasMode.CLAIMABLE, governor);
     }
 }
