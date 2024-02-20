@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
+// solhint-disable max-line-length
 pragma solidity >=0.8.22 <0.9.0;
 
 import { ISablierV2Recipient } from "src/interfaces/hooks/ISablierV2Recipient.sol";
@@ -12,17 +13,22 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         Withdraw_Integration_Shared_Test.setUp();
     }
 
-    /*//////////////////////////////////////////////////////////////////////////
-                                       TESTS
-    //////////////////////////////////////////////////////////////////////////*/
+    modifier givenSenderAndRecipientDifferent() {
+        _;
+    }
 
-    function test_WithdrawHooks_CallerUnknown() external {
+    function test_WithdrawHooks_CallerUnknown()
+        external
+        givenSenderContract
+        givenRecipientContract
+        givenSenderAndRecipientDifferent
+    {
         address unknownCaller = address(0xCAFE);
 
         // Create the stream with sender and recipient as contracts.
-        uint256 streamId = createDefaultStream(address(goodRecipient), address(goodSender));
+        uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
 
-        // Make unknownCaller the caller in this test.
+        // Make `unknownCaller` the caller in this test.
         changePrank({ msgSender: unknownCaller });
 
         // Simulate the passage of time.
@@ -54,9 +60,14 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
     }
 
-    function test_WithdrawHooks_CallerApprovedOperator() external {
+    function test_WithdrawHooks_CallerApprovedOperator()
+        external
+        givenSenderContract
+        givenRecipientContract
+        givenSenderAndRecipientDifferent
+    {
         // Create the stream with sender and recipient as contracts.
-        uint256 streamId = createDefaultStream(address(goodRecipient), address(goodSender));
+        uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
 
         // Approve the operator to handle the stream.
         changePrank({ msgSender: address(goodRecipient) });
@@ -82,7 +93,6 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         });
 
         // Expect a call to the sender hook.
-        // solhint-disable max-line-length
         vm.expectCall({
             callee: address(goodSender),
             data: abi.encodeCall(
@@ -95,9 +105,14 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
     }
 
-    function test_WithdrawHooks_CallerSender() external {
+    function test_WithdrawHooks_CallerSender()
+        external
+        givenSenderContract
+        givenRecipientContract
+        givenSenderAndRecipientDifferent
+    {
         // Create the stream with sender and recipient as contracts.
-        uint256 streamId = createDefaultStream(address(goodRecipient), address(goodSender));
+        uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
 
         // Make the sender the caller in this test.
         changePrank({ msgSender: address(goodSender) });
@@ -132,9 +147,14 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
     }
 
-    function test_WithdrawHooks_CallerRecipient() external {
+    function test_WithdrawHooks_CallerRecipient()
+        external
+        givenSenderContract
+        givenRecipientContract
+        givenSenderAndRecipientDifferent
+    {
         // Create the stream with sender and recipient as contracts.
-        uint256 streamId = createDefaultStream(address(goodRecipient), address(goodSender));
+        uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
 
         // Make the recipient the caller in this test.
         changePrank({ msgSender: address(goodRecipient) });
@@ -173,11 +193,11 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         _;
     }
 
-    function test_SenderHook_CallerUnknown() external givenSenderIsRecipient {
+    function test_WithdrawHooks_SenderHook_CallerUnknown() external givenSenderContract givenSenderIsRecipient {
         address unknownCaller = address(0xCAFE);
 
         // Create the stream with recipient which is same as the sender contract.
-        uint256 streamId = createDefaultStreamToSelf(address(goodSender));
+        uint256 streamId = createDefaultStreamToSender(address(goodSender));
 
         // Make unknownCaller the caller in this test.
         changePrank({ msgSender: unknownCaller });
@@ -201,9 +221,13 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(goodSender), amount: withdrawAmount });
     }
 
-    function test_SenderHook_CallerApprovedOperator() external givenSenderIsRecipient {
+    function test_WithdrawHooks_SenderHook_CallerApprovedOperator()
+        external
+        givenSenderContract
+        givenSenderIsRecipient
+    {
         // Create the stream with recipient which is same as the sender contract.
-        uint256 streamId = createDefaultStreamToSelf(address(goodSender));
+        uint256 streamId = createDefaultStreamToSender(address(goodSender));
 
         // Approve the operator to handle the stream.
         changePrank({ msgSender: address(goodSender) });
@@ -231,9 +255,9 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(goodSender), amount: withdrawAmount });
     }
 
-    function test_SenderHook_CallerSender() external givenSenderIsRecipient {
+    function test_WithdrawHooks_SenderHook_CallerSender() external givenSenderContract givenSenderIsRecipient {
         // Create the stream with the sender as the recipient.
-        uint256 streamId = createDefaultStreamToSelf(address(goodSender));
+        uint256 streamId = createDefaultStreamToSender(address(goodSender));
 
         // Approve the operator to handle the stream.
         changePrank({ msgSender: address(goodSender) });

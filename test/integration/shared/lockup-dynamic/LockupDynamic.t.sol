@@ -52,14 +52,6 @@ abstract contract LockupDynamic_Integration_Shared_Test is Lockup_Integration_Sh
         streamId = lockupDynamic.createWithTimestamps(_params.createWithTimestamps);
     }
 
-    /// @dev Creates the default stream with the provided sender and recipient.
-    function createDefaultStream(address recipient, address sender) internal override returns (uint256 streamId) {
-        LockupDynamic.CreateWithTimestamps memory params = _params.createWithTimestamps;
-        params.sender = sender;
-        params.recipient = recipient;
-        streamId = lockupDynamic.createWithTimestamps(params);
-    }
-
     /// @dev Creates the default stream with the provided asset.
     function createDefaultStreamWithAsset(IERC20 asset) internal override returns (uint256 streamId) {
         LockupDynamic.CreateWithTimestamps memory params = _params.createWithTimestamps;
@@ -153,6 +145,21 @@ abstract contract LockupDynamic_Integration_Shared_Test is Lockup_Integration_Sh
     function createDefaultStreamWithTotalAmount(uint128 totalAmount) internal override returns (uint256 streamId) {
         LockupDynamic.CreateWithTimestamps memory params = _params.createWithTimestamps;
         params.totalAmount = totalAmount;
+        streamId = lockupDynamic.createWithTimestamps(params);
+    }
+
+    /// @dev Creates the default stream with the provided sender and recipient.
+    function createDefaultStreamWithUsers(
+        address recipient,
+        address sender
+    )
+        internal
+        override
+        returns (uint256 streamId)
+    {
+        LockupDynamic.CreateWithTimestamps memory params = _params.createWithTimestamps;
+        params.sender = sender;
+        params.recipient = recipient;
         streamId = lockupDynamic.createWithTimestamps(params);
     }
 }

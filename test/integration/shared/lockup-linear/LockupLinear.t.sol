@@ -29,14 +29,6 @@ abstract contract LockupLinear_Integration_Shared_Test is Lockup_Integration_Sha
         streamId = lockupLinear.createWithTimestamps(_params.createWithTimestamps);
     }
 
-    /// @dev Creates the default stream with the provided sender and recipient.
-    function createDefaultStream(address recipient, address sender) internal override returns (uint256 streamId) {
-        LockupLinear.CreateWithTimestamps memory params = _params.createWithTimestamps;
-        params.sender = sender;
-        params.recipient = recipient;
-        streamId = lockupLinear.createWithTimestamps(params);
-    }
-
     /// @dev Creates the default stream with the provided address.
     function createDefaultStreamWithAsset(IERC20 asset) internal override returns (uint256 streamId) {
         LockupLinear.CreateWithTimestamps memory params = _params.createWithTimestamps;
@@ -119,6 +111,21 @@ abstract contract LockupLinear_Integration_Shared_Test is Lockup_Integration_Sha
     function createDefaultStreamWithTotalAmount(uint128 totalAmount) internal override returns (uint256 streamId) {
         LockupLinear.CreateWithTimestamps memory params = _params.createWithTimestamps;
         params.totalAmount = totalAmount;
+        streamId = lockupLinear.createWithTimestamps(params);
+    }
+
+    /// @dev Creates the default stream with the provided sender and recipient.
+    function createDefaultStreamWithUsers(
+        address recipient,
+        address sender
+    )
+        internal
+        override
+        returns (uint256 streamId)
+    {
+        LockupLinear.CreateWithTimestamps memory params = _params.createWithTimestamps;
+        params.sender = sender;
+        params.recipient = recipient;
         streamId = lockupLinear.createWithTimestamps(params);
     }
 }
