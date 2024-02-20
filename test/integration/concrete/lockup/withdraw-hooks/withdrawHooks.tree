@@ -1,5 +1,5 @@
 withdrawHooks.t.sol
-├── given recipient is different than the sender
+├── given the recipient is different than the sender
 │   ├── when the caller is unknown
 │   │   ├── it should make one hook call to the sender
 │   │   └── it should make one hook call to the recipient
@@ -7,15 +7,15 @@ withdrawHooks.t.sol
 │   │   ├── it should make one hook call to the sender
 │   │   └── it should make one hook call to the recipient
 │   ├── when the caller is the sender
-│   │   ├── it should make zero hook calls to the sender
+│   │   ├── it should not make any hook call to the sender
 │   │   └── it should make one hook call to the recipient
 │   └── when the caller is the recipient
 │       ├── it should make one hook call to the sender
-│       └── it should make zero hook calls to the recipient
+│       └── it should not make any hook call to the recipient
 └── given the recipient is same as the sender
     ├── when the caller is unknown
     │   └── it should make one hook call to the sender
     ├── when the caller is an approved third party
     │   └── it should make one hook call to the sender
     └── when the caller is the sender
-        └── it should make zero hook calls to the sender
+        └── it should not make any hook call to the sender

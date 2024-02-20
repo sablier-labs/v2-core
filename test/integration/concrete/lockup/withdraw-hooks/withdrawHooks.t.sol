@@ -13,7 +13,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         Withdraw_Integration_Shared_Test.setUp();
     }
 
-    modifier givenSenderAndRecipientDifferent() {
+    modifier givenDifferentSenderAndRecipient() {
         _;
     }
 
@@ -21,7 +21,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         external
         givenSenderContract
         givenRecipientContract
-        givenSenderAndRecipientDifferent
+        givenDifferentSenderAndRecipient
     {
         address unknownCaller = address(0xCAFE);
 
@@ -64,7 +64,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         external
         givenSenderContract
         givenRecipientContract
-        givenSenderAndRecipientDifferent
+        givenDifferentSenderAndRecipient
     {
         // Create the stream with sender and recipient as contracts.
         uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
@@ -109,7 +109,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         external
         givenSenderContract
         givenRecipientContract
-        givenSenderAndRecipientDifferent
+        givenDifferentSenderAndRecipient
     {
         // Create the stream with sender and recipient as contracts.
         uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
@@ -151,7 +151,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         external
         givenSenderContract
         givenRecipientContract
-        givenSenderAndRecipientDifferent
+        givenDifferentSenderAndRecipient
     {
         // Create the stream with sender and recipient as contracts.
         uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
@@ -189,11 +189,11 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
     }
 
-    modifier givenSenderIsRecipient() {
+    modifier givenSameSenderAndRecipient() {
         _;
     }
 
-    function test_WithdrawHooks_SenderHook_CallerUnknown() external givenSenderContract givenSenderIsRecipient {
+    function test_WithdrawHooks_SenderHook_CallerUnknown() external givenSenderContract givenSameSenderAndRecipient {
         address unknownCaller = address(0xCAFE);
 
         // Create the stream with recipient which is same as the sender contract.
@@ -224,7 +224,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
     function test_WithdrawHooks_SenderHook_CallerApprovedOperator()
         external
         givenSenderContract
-        givenSenderIsRecipient
+        givenSameSenderAndRecipient
     {
         // Create the stream with recipient which is same as the sender contract.
         uint256 streamId = createDefaultStreamToSender(address(goodSender));
@@ -255,7 +255,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(goodSender), amount: withdrawAmount });
     }
 
-    function test_WithdrawHooks_SenderHook_CallerSender() external givenSenderContract givenSenderIsRecipient {
+    function test_WithdrawHooks_SenderHook_CallerSender() external givenSenderContract givenSameSenderAndRecipient {
         // Create the stream with the sender as the recipient.
         uint256 streamId = createDefaultStreamToSender(address(goodSender));
 
