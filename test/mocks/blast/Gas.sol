@@ -3,7 +3,7 @@ pragma solidity >=0.8.19;
 
 import { PRBTest } from "@prb/test/src/PRBTest.sol";
 
-import { GasMode, IGas } from "src/interfaces/Blast/IGas.sol";
+import { GasMode, IGas } from "src/interfaces/blast/IGas.sol";
 
 contract Gas is IGas, PRBTest {
     /// @dev Blast.sol --> controls all access to Gas.sol
@@ -30,7 +30,7 @@ contract Gas is IGas, PRBTest {
         view
         returns (uint256 etherSeconds, uint256 etherBalance, uint256 lastUpdated_, GasMode gasMode_)
     {
-        return (0, claimableGas[contractAddress], lastUpdated, GasMode.VOID);
+        return (0, claimableGas[contractAddress], lastUpdated, gasMode[contractAddress]);
     }
 
     /// @dev This function is used to simulate claiming gas.

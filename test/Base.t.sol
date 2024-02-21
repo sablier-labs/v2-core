@@ -18,6 +18,7 @@ import { GoodFlashLoanReceiver } from "./mocks/flash-loan/GoodFlashLoanReceiver.
 import { Noop } from "./mocks/Noop.sol";
 import { GoodRecipient } from "./mocks/hooks/GoodRecipient.sol";
 import { Assertions } from "./utils/Assertions.sol";
+import { BlastEvm } from "./utils/BlastEvm.sol";
 import { Calculations } from "./utils/Calculations.sol";
 import { Constants } from "./utils/Constants.sol";
 import { Defaults } from "./utils/Defaults.sol";
@@ -27,7 +28,7 @@ import { Fuzzers } from "./utils/Fuzzers.sol";
 import { Users } from "./utils/Types.sol";
 
 /// @notice Base test contract with common logic needed by all tests.
-abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimized, Events, Fuzzers {
+abstract contract Base_Test is Assertions, BlastEvm, Calculations, Constants, DeployOptimized, Events, Fuzzers {
     /*//////////////////////////////////////////////////////////////////////////
                                      VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
@@ -153,6 +154,14 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         vm.label({ account: address(lockupDynamic), newLabel: "LockupDynamic" });
         vm.label({ account: address(lockupLinear), newLabel: "LockupLinear" });
         vm.label({ account: address(nftDescriptor), newLabel: "NFTDescriptor" });
+    }
+
+    /// @dev Deploys the Blast related contracts.
+    function initializeBlastEvm() internal {
+        deployBlastContracts();
+
+        initializeDefaultConfiguration(address(lockupDynamic));
+        initializeDefaultConfiguration(address(lockupLinear));
     }
 
     /*//////////////////////////////////////////////////////////////////////////

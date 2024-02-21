@@ -5,8 +5,8 @@ import { StdCheats } from "forge-std/src/StdCheats.sol";
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { PRBTest } from "@prb/test/src/PRBTest.sol";
 
-import { IERC20Rebasing } from "src/interfaces/Blast/IERC20Rebasing.sol";
-import { YieldMode } from "src/interfaces/Blast/IYield.sol";
+import { IERC20Rebasing } from "src/interfaces/blast/IERC20Rebasing.sol";
+import { YieldMode } from "src/interfaces/blast/IYield.sol";
 
 contract ERC20Rebasing is ERC20, IERC20Rebasing, PRBTest, StdCheats {
     mapping(address account => uint256) public claimableYield;
