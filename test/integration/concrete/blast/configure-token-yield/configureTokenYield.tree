@@ -1,0 +1,5 @@
+configureTokenYield.t.sol
+├── given the token configuration has not been set
+│   ├── it should return Automatic yield mode
+└── given the token configuration has been set to Claimable
+    └── it should return Claimable yield mode

@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: BSL 1.1 - Copyright 2024 MetaLayer Labs Ltd.
 pragma solidity >=0.8.19;
 
-import { IGas } from "src/interfaces/Blast/IGas.sol";
-import { IYield } from "src/interfaces/Blast/IYield.sol";
-import { GasMode } from "src/interfaces/Blast/IGas.sol";
-import { YieldMode } from "src/interfaces/Blast/IYield.sol";
+import { GasMode, IGas } from "src/interfaces/blast/IGas.sol";
+import { IYield, YieldMode } from "src/interfaces/blast/IYield.sol";
 
 import { Gas } from "./Gas.sol";
 import { Yield } from "./Yield.sol";
@@ -114,5 +112,9 @@ contract Blast {
     /// @return GasMode representing the gas mode (VOID, CLAIMABLE)
     function readGasParams(address contractAddress) public view returns (uint256, uint256, uint256, GasMode) {
         return IGas(GAS_CONTRACT).readGasParams(contractAddress);
+    }
+
+    function setLastUpdatedForGas() public {
+        Gas(GAS_CONTRACT).setLastUpdated();
     }
 }

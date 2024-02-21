@@ -3,7 +3,7 @@ pragma solidity >=0.8.19;
 
 import { PRBTest } from "@prb/test/src/PRBTest.sol";
 
-import { IYield, YieldMode } from "src/interfaces/Blast/IYield.sol";
+import { IYield, YieldMode } from "src/interfaces/blast/IYield.sol";
 
 contract Yield is IYield, PRBTest {
     /// @dev Blast.sol --> controls all access to Yield.sol

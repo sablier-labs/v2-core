@@ -9,15 +9,15 @@ import { IAdminable } from "../interfaces/IAdminable.sol";
 import { ISablierV2Base } from "../interfaces/ISablierV2Base.sol";
 import { ISablierV2Comptroller } from "../interfaces/ISablierV2Comptroller.sol";
 import { Errors } from "../libraries/Errors.sol";
-import { BlastGovernor } from "./BlastGovernor.sol";
 import { NoDelegateCall } from "./NoDelegateCall.sol";
+import { SablierV2Governor } from "./SablierV2Governor.sol";
 
 /// @title SablierV2Base
 /// @notice See the documentation in {ISablierV2Base}.
 abstract contract SablierV2Base is
     NoDelegateCall, // 0 inherited components
     ISablierV2Base, // 2 inherited component
-    BlastGovernor // 3 inherited component
+    SablierV2Governor // 3 inherited component
 {
     using SafeERC20 for IERC20;
 

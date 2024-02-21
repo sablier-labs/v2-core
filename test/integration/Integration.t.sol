@@ -30,6 +30,9 @@ abstract contract Integration_Test is Base_Test {
         // Deploy V2 Core.
         deployCoreConditionally();
 
+        // Deploy Blast yield contracts and initialize default configurations.
+        initializeBlastEvm();
+
         // Label the contracts.
         labelContracts();
 

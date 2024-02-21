@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.19;
 
-import { IERC20Rebasing } from "./Blast/IERC20Rebasing.sol";
-import { IBlast } from "./Blast/IBlast.sol";
-import { GasMode } from "./Blast/IGas.sol";
-import { YieldMode } from "./Blast/IYield.sol";
+import { IBlast } from "./blast/IBlast.sol";
+import { IERC20Rebasing } from "./blast/IERC20Rebasing.sol";
+import { GasMode } from "./blast/IGas.sol";
+import { YieldMode } from "./blast/IYield.sol";
 
-/// @title IBlastGovernor
+/// @title ISablierV2Governor
 /// @notice This interface acts as a periphery to interact with the yield modules on Blast L2.
 /// @dev https://docs.blast.io/
-interface IBlastGovernor {
+interface ISablierV2Governor {
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
