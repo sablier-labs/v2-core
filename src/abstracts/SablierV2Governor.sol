@@ -28,28 +28,8 @@ abstract contract SablierV2Governor is
     }
 
     /// @inheritdoc ISablierV2Governor
-    function getClaimableYield(IBlast blastEth) external view override returns (uint256) {
-        return blastEth.readClaimableYield(address(this));
-    }
-
-    /// @inheritdoc ISablierV2Governor
-    function getGasParams(IBlast blastEth)
-        external
-        view
-        override
-        returns (uint256 etherSeconds, uint256 etherBalance, uint256 lastUpdated, GasMode gasMode)
-    {
-        return blastEth.readGasParams(address(this));
-    }
-
-    /// @inheritdoc ISablierV2Governor
     function getAssetConfiguration(IERC20Rebasing asset) external view override returns (YieldMode) {
         return asset.getConfiguration(address(this));
-    }
-
-    /// @inheritdoc ISablierV2Governor
-    function getYieldConfiguration(IBlast blastEth) external view override returns (uint8) {
-        return blastEth.readYieldConfiguration(address(this));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -62,7 +42,7 @@ abstract contract SablierV2Governor is
         address recipientOfYield,
         IERC20Rebasing asset
     )
-        external
+        public
         override
         onlyAdmin
         returns (uint256)
@@ -71,21 +51,11 @@ abstract contract SablierV2Governor is
     }
 
     /// @inheritdoc ISablierV2Governor
-    function claimAllGas(IBlast blastEth, address recipientOfGas) external override onlyAdmin returns (uint256) {
-        return blastEth.claimAllGas(address(this), recipientOfGas);
-    }
-
-    /// @inheritdoc ISablierV2Governor
-    function claimAllYield(IBlast blastEth, address recipientOfYield) external override onlyAdmin returns (uint256) {
-        return blastEth.claimAllYield(address(this), recipientOfYield);
-    }
-
-    /// @inheritdoc ISablierV2Governor
     function configureRebasingAsset(
         IERC20Rebasing asset,
         YieldMode yieldMode
     )
-        external
+        public
         override
         onlyAdmin
         returns (uint256)
@@ -94,7 +64,7 @@ abstract contract SablierV2Governor is
     }
 
     /// @inheritdoc ISablierV2Governor
-    function configureYieldAndGas(IBlast blastEth, address governor) external override onlyAdmin {
+    function configureYieldAndGas(IBlast blastEth, address governor) public override onlyAdmin {
         blastEth.configure(YieldMode.VOID, GasMode.CLAIMABLE, governor);
     }
 }

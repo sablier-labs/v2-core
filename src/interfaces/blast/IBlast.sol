@@ -12,6 +12,8 @@ interface IBlast is IGas, IYield {
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
+    function governorMap(address) external view returns (address);
+
     /// @notice Reads the claimable yield for a specific contract
     /// @param contractAddress The address of the contract for which the claimable yield is to be read.
     /// @return claimableYield claimable yield.
