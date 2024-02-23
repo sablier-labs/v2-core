@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: BSL 1.1 - Copyright 2024 MetaLayer Labs Ltd.
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.19;
 
-import { YieldMode } from "./IYield.sol";
+import { YieldMode } from "./IBlast.sol";
 
 /// @title IERC20Rebasing
-/// @notice This interface is responsible for interacting with the ERC20Rebasing module of Blast L2.
-/// @dev https://docs.blast.io/
+/// @notice Interface for ERC-20 rebasing assets on Blast L2.
+/// @dev See: https://docs.blast.io/
 interface IERC20Rebasing {
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
@@ -31,7 +31,7 @@ interface IERC20Rebasing {
     /// @return uint256 Amount claimed.
     function claim(address recipient, uint256 amount) external returns (uint256);
 
-    /// @notice Sets the yield mode for an ERC20 token.
+    /// @notice Sets the yield mode for an ERC-20 asset.
     /// @dev This function should only be called by the contract itself.
     /// @param yieldMode Yield mode to configure.
     /// @return uint256 Current user balance
