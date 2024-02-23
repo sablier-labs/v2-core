@@ -3,7 +3,6 @@ pragma solidity >=0.8.19;
 
 import { IBlast } from "./blast/IBlast.sol";
 import { IERC20Rebasing } from "./blast/IERC20Rebasing.sol";
-import { GasMode } from "./blast/IGas.sol";
 import { YieldMode } from "./blast/IYield.sol";
 
 /// @title ISablierV2Governor
@@ -20,51 +19,15 @@ interface ISablierV2Governor {
     /// @return claimableYield Claimable amount.
     function getClaimableAssetYield(IERC20Rebasing asset) external view returns (uint256 claimableYield);
 
-    /// @notice Reads the claimable yield.
-    /// @dev Requires YieldMode set to CLAIMABLE.
-    /// @param blastEth The address of the Blast ETH contract.
-    /// @return claimableYield claimable yield.
-    function getClaimableYield(IBlast blastEth) external view returns (uint256 claimableYield);
-
-    /// @notice Retrieves the gas mode parameters.
-    /// @param blastEth The address of the Blast ETH contract.
-    /// @return etherSeconds Number of seconds required for claimable gas to mature.
-    /// @return etherBalance The amount of gas to claim in ETH.
-    /// @return lastUpdated Timestamp when gas was updated.
-    /// @return gasMode The Gas mode as a GasMode variant.
-    function getGasParams(IBlast blastEth)
-        external
-        view
-        returns (uint256 etherSeconds, uint256 etherBalance, uint256 lastUpdated, GasMode gasMode);
-
     /// @notice Retrieves the configured yield mode from `asset`.
     /// @dev Requires YieldMode set to CLAIMABLE.
     /// @param asset The address of the ERC20 asset.
     /// @return Configured yield mode.
     function getAssetConfiguration(IERC20Rebasing asset) external view returns (YieldMode);
 
-    /// @notice Reads the yield configuration.
-    /// @param blastEth The address of the Blast ETH contract.
-    /// @return yieldMode representing yield enum.
-    function getYieldConfiguration(IBlast blastEth) external view returns (uint8 yieldMode);
-
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Claim all gas in ETH for when Claimable configuration is used.
-    /// @dev Only callable by the admin.
-    /// @param blastEth The address of the Blast ETH contract.
-    /// @param recipientOfGas The address of the recipient of the gas.
-    /// @return uint256 The amount of gas that was claimed
-    function claimAllGas(IBlast blastEth, address recipientOfGas) external returns (uint256);
-
-    /// @notice Claim all yield in ETH for when Claimable configuration is used.
-    /// @dev Only callable by the admin.
-    /// @param blastEth The address of the Blast ETH contract.
-    /// @param recipientOfYield The address of the recipient of the yield.
-    /// @return uint256 The amount of yield that was claimed
-    function claimAllYield(IBlast blastEth, address recipientOfYield) external returns (uint256);
 
     /// @notice Claim yield from `asset` and send to a recipient.
     /// @dev Only callable by the admin.
