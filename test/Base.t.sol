@@ -74,6 +74,7 @@ abstract contract Base_Test is Assertions, BlastEvm, Calculations, Constants, De
         users = Users({
             admin: createUser("Admin"),
             alice: createUser("Alice"),
+            blastBridge: createUser("blastBridge"),
             broker: createUser("Broker"),
             eve: createUser("Eve"),
             operator: createUser("Operator"),
@@ -158,7 +159,7 @@ abstract contract Base_Test is Assertions, BlastEvm, Calculations, Constants, De
 
     /// @dev Deploys the Blast related contracts.
     function initializeBlastEvm() internal {
-        deployBlastContracts();
+        deployBlastContracts(users.blastBridge);
 
         initializeDefaultConfiguration(address(lockupDynamic));
         initializeDefaultConfiguration(address(lockupLinear));
