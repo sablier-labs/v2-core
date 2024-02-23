@@ -7,6 +7,7 @@ import { IYield, YieldMode } from "src/interfaces/blast/IYield.sol";
 import { Gas } from "./Gas.sol";
 import { Yield } from "./Yield.sol";
 
+/// @dev Credits to https://github.com/blast-io/blast/tree/master/blast-optimism
 contract Blast {
     mapping(address => address) public governorMap;
 

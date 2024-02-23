@@ -7,7 +7,10 @@ import { YieldMode } from "src/interfaces/blast/IYield.sol";
 import { Integration_Test } from "../../../Integration.t.sol";
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
 
-abstract contract ConfigureTokenYield_Integration_Concrete_Test is Integration_Test, Lockup_Integration_Shared_Test {
+abstract contract ConfigureRebasingAsset_Integration_Concrete_Test is
+    Integration_Test,
+    Lockup_Integration_Shared_Test
+{
     function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) { }
 
     function test_Configure_DefaultMode() external {
@@ -23,7 +26,7 @@ abstract contract ConfigureTokenYield_Integration_Concrete_Test is Integration_T
         // Make admin the caller in this test.
         changePrank({ msgSender: users.admin });
 
-        base.configureYieldForToken({ token: IERC20Rebasing(address(busd)), yieldMode: YieldMode.CLAIMABLE });
+        base.configureRebasingAsset({ asset: IERC20Rebasing(address(busd)), yieldMode: YieldMode.CLAIMABLE });
         _;
     }
 

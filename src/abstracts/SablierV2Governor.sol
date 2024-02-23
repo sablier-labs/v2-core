@@ -23,22 +23,17 @@ abstract contract SablierV2Governor is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Governor
-    function getClaimableAmount(IERC20Rebasing token) external view override returns (uint256 claimableYield) {
-        return token.getClaimableAmount(address(this));
+    function getClaimableAssetYield(IERC20Rebasing asset) external view override returns (uint256 claimableYield) {
+        return asset.getClaimableAmount(address(this));
     }
 
     /// @inheritdoc ISablierV2Governor
-    function getConfiguration(IERC20Rebasing token) external view override returns (YieldMode) {
-        return token.getConfiguration(address(this));
-    }
-
-    /// @inheritdoc ISablierV2Governor
-    function readClaimableYield(IBlast blastEth) external view override returns (uint256) {
+    function getClaimableYield(IBlast blastEth) external view override returns (uint256) {
         return blastEth.readClaimableYield(address(this));
     }
 
     /// @inheritdoc ISablierV2Governor
-    function readGasParams(IBlast blastEth)
+    function getGasParams(IBlast blastEth)
         external
         view
         override
@@ -48,7 +43,12 @@ abstract contract SablierV2Governor is
     }
 
     /// @inheritdoc ISablierV2Governor
-    function readYieldConfiguration(IBlast blastEth) external view override returns (uint8) {
+    function getAssetConfiguration(IERC20Rebasing asset) external view override returns (YieldMode) {
+        return asset.getConfiguration(address(this));
+    }
+
+    /// @inheritdoc ISablierV2Governor
+    function getYieldConfiguration(IBlast blastEth) external view override returns (uint8) {
         return blastEth.readYieldConfiguration(address(this));
     }
 
@@ -57,17 +57,17 @@ abstract contract SablierV2Governor is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Governor
-    function claim(
+    function claimRebasingAssetYield(
         uint256 amount,
         address recipientOfYield,
-        IERC20Rebasing token
+        IERC20Rebasing asset
     )
         external
         override
         onlyAdmin
         returns (uint256)
     {
-        return token.claim(recipientOfYield, amount);
+        return asset.claim(recipientOfYield, amount);
     }
 
     /// @inheritdoc ISablierV2Governor
@@ -81,8 +81,8 @@ abstract contract SablierV2Governor is
     }
 
     /// @inheritdoc ISablierV2Governor
-    function configureYieldForToken(
-        IERC20Rebasing token,
+    function configureRebasingAsset(
+        IERC20Rebasing asset,
         YieldMode yieldMode
     )
         external
@@ -90,11 +90,11 @@ abstract contract SablierV2Governor is
         onlyAdmin
         returns (uint256)
     {
-        return token.configure(yieldMode);
+        return asset.configure(yieldMode);
     }
 
     /// @inheritdoc ISablierV2Governor
-    function configureVoidYieldAndClaimableGas(IBlast blastEth, address governor) external override onlyAdmin {
+    function configureYieldAndGas(IBlast blastEth, address governor) external override onlyAdmin {
         blastEth.configure(YieldMode.VOID, GasMode.CLAIMABLE, governor);
     }
 }

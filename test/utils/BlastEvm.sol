@@ -27,11 +27,11 @@ abstract contract BlastEvm {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Deploys the Blast related contracts.
-    function deployBlastContracts() internal {
+    function deployBlastContracts(address bridge) internal {
         blast = new Blast();
         blastGas = blast.GAS_CONTRACT();
         blastYield = blast.YIELD_CONTRACT();
-        busd = new ERC20Rebasing();
+        busd = new ERC20Rebasing(bridge);
     }
 
     function initializeDefaultConfiguration(address contractAddress) internal {
@@ -43,9 +43,13 @@ abstract contract BlastEvm {
         // Set the default Gas configuration
         stdstore.target(blastGas).sig("gasMode(address)").with_key(contractAddress).checked_write(uint8(GasMode.VOID));
 
-        // Set the default Yield configuration for token
+        // Set the default Yield configuration for asset
         stdstore.target(address(busd)).sig("yieldMode(address)").with_key(contractAddress).checked_write(
             uint8(YieldMode.AUTOMATIC)
         );
+    }
+
+    function distributeYield(uint256 addToSharePrice) internal {
+        busd.addValue((busd.count() * addToSharePrice));
     }
 }

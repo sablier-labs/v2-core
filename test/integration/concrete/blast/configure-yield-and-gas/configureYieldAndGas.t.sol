@@ -8,7 +8,7 @@ import { YieldMode } from "src/interfaces/blast/IYield.sol";
 import { Integration_Test } from "../../../Integration.t.sol";
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
 
-abstract contract Configure_Integration_Concrete_Test is Integration_Test, Lockup_Integration_Shared_Test {
+abstract contract ConfigureYieldAndGas_Integration_Concrete_Test is Integration_Test, Lockup_Integration_Shared_Test {
     function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) { }
 
     function test_Configure_DefaultModes() external {
@@ -34,7 +34,7 @@ abstract contract Configure_Integration_Concrete_Test is Integration_Test, Locku
         // Make admin the caller in this test.
         changePrank({ msgSender: users.admin });
 
-        base.configureVoidYieldAndClaimableGas({ blastEth: IBlast(address(blast)), governor: users.admin });
+        base.configureYieldAndGas({ blastEth: IBlast(address(blast)), governor: users.admin });
         _;
     }
 

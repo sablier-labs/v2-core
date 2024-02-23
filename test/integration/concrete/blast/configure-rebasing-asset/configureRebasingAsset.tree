@@ -1,0 +1,5 @@
+configureRebasingAsset.t.sol
+├── given the desired asset configuration has not been set
+│   ├── it should return Automatic yield mode
+└── given the desired asset configuration has been set
+    └── it should return Claimable yield mode
