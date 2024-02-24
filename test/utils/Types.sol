@@ -6,8 +6,6 @@ struct Users {
     address payable admin;
     // Impartial user.
     address payable alice;
-    // Blast bridge operator.
-    address payable blastBridge;
     // Default stream broker.
     address payable broker;
     // Malicious user.

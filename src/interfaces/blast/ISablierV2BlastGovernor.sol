@@ -27,19 +27,18 @@ interface ISablierV2BlastGovernor {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Claim yield from `asset` and send to a recipient.
+    /// @notice Claim the provided amount of yield assets to the `to` address.
     /// @dev Reverts if `msg.sender` is not the contract admin.
-    /// @param amount Amount to claim.
-    /// @param to Address to receive the claimed amount.
     /// @param asset The address of the ERC-20 asset.
-    function claimRebasingAssetYield(uint256 amount, address to, IERC20Rebasing asset) external;
+    /// @param amount The amount to claim.
+    /// @param to The address receiving the claimed assets.
+    function claimRebasingAssetYield(IERC20Rebasing asset, uint256 amount, address to) external;
 
     /// @notice Sets the yield mode for a rebasing ERC-20 asset.
     /// @dev Reverts if `msg.sender` is not the contract admin.
     /// @param asset The address of the rebasing ERC-20 asset.
     /// @param yieldMode Enum representing the yield mode to set.
-    /// @return balance The current balance of this contract.
-    function configureRebasingAsset(IERC20Rebasing asset, YieldMode yieldMode) external returns (uint256 balance);
+    function configureRebasingAsset(IERC20Rebasing asset, YieldMode yieldMode) external;
 
     /// @notice configures yield and gas modes and sets the governor.
     /// @dev Reverts if `msg.sender` is not the contract admin.

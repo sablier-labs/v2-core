@@ -16,8 +16,6 @@ contract Defaults is Constants {
                                      CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    uint256 public constant BLAST_ASSET_BALANCE = 1000e18;
-    uint256 public constant BLAST_SHARE_PRICE = 0.05e9;
     UD60x18 public constant BROKER_FEE = UD60x18.wrap(0.003e18); // 0.3%
     uint128 public constant BROKER_FEE_AMOUNT = 30.120481927710843373e18; // 0.3% of total amount
     uint128 public constant CLIFF_AMOUNT = 2500e18;
