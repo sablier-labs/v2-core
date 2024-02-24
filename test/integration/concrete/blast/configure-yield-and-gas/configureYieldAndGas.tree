@@ -1,9 +1,0 @@
-configureYieldAndGas.t.sol
-├── given the desired Blast configurations have not been set
-│   ├── it should return void yield mode
-│   ├── it should return void gas mode
-│   └── it should return zero address for governor
-└── given the desired Blast configurations have been set
-    ├── it should return void yield mode
-    ├── it should return claimable gas mode
-    └── it should return the correct governor address

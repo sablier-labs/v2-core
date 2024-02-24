@@ -4,8 +4,6 @@ pragma solidity >=0.8.19;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { PRBMathAssertions } from "@prb/math/test/utils/Assertions.sol";
 import { PRBTest } from "@prb/test/src/PRBTest.sol";
-import { GasMode } from "src/interfaces/blast/IGas.sol";
-import { YieldMode } from "src/interfaces/blast/IYield.sol";
 
 import { Lockup, LockupDynamic, LockupLinear } from "../../src/types/DataTypes.sol";
 
@@ -109,16 +107,6 @@ abstract contract Assertions is PRBTest, PRBMathAssertions {
     /// @dev Compares two {Lockup.Status} enum values.
     function assertEq(Lockup.Status a, Lockup.Status b, string memory err) internal {
         assertEq(uint256(a), uint256(b), err);
-    }
-
-    /// @dev Compares two {GasMode} enum values.
-    function assertEq(GasMode a, GasMode b) internal {
-        assertEq(uint256(a), uint256(b), "gasMode");
-    }
-
-    /// @dev Compares two {YieldMode} enum values.
-    function assertEq(YieldMode a, YieldMode b) internal {
-        assertEq(uint256(a), uint256(b), "yieldMode");
     }
 
     /// @dev Compares two `uint128` numbers.

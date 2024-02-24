@@ -1,7 +1,0 @@
-getClaimableAssetYield.t.sol
-├── given asset yield is set to Void
-│   └── it should revert
-├── given asset yield is set to Automatic
-│   └── it should revert
-└── given asset yield is set to Claimable
-    └── it should return the claimable yield amount
