@@ -3,11 +3,12 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
+import { Sphinx } from "@sphinx-labs/contracts/SphinxPlugin.sol";
 
 import { console2 } from "forge-std/src/console2.sol";
 import { Script } from "forge-std/src/Script.sol";
 
-contract BaseScript is Script {
+contract BaseScript is Script, Sphinx {
     using Strings for uint256;
 
     /// @dev The Avalanche chain ID.
@@ -51,12 +52,22 @@ contract BaseScript is Script {
         } else {
             maxCount = 500;
         }
-    }
 
-    modifier broadcast() {
-        vm.startBroadcast(broadcaster);
-        _;
-        vm.stopBroadcast();
+        // Sets Sphinx.
+        sphinxConfig.mainnets = [
+            Network.arbitrum,
+            Network.avalanche,
+            Network.bnb,
+            Network.gnosis,
+            Network.ethereum,
+            Network.optimism,
+            Network.polygon
+        ];
+        sphinxConfig.owners = [from];
+        sphinxConfig.threshold = 1;
+        sphinxConfig.orgId = vm.envOr(SPHINX_API_KEY, "sphinx-org-id");
+        sphinxConfig.projectName = "v2-core";
+        sphinxConfig.testnets = [Network.sepolia];
     }
 
     /// @dev The presence of the salt instructs Forge to deploy contracts via this deterministic CREATE2 factory:

@@ -8,7 +8,7 @@ import { BaseScript } from "./Base.s.sol";
 /// @notice Deploys {SablierV2Comptroller} at a deterministic address across chains.
 /// @dev Reverts if the contract has already been deployed.
 contract DeployDeterministicComptroller is BaseScript {
-    function run(address initialAdmin) public virtual broadcast returns (SablierV2Comptroller comptroller) {
+    function run(address initialAdmin) public virtual sphinx returns (SablierV2Comptroller comptroller) {
         bytes32 salt = constructCreate2Salt();
         comptroller = new SablierV2Comptroller{ salt: salt }(initialAdmin);
     }

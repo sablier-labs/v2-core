@@ -17,7 +17,7 @@ contract DeployDeterministicLockupDynamic is BaseScript {
     )
         public
         virtual
-        broadcast
+        sphinx
         returns (SablierV2LockupDynamic lockupDynamic)
     {
         bytes32 salt = constructCreate2Salt();

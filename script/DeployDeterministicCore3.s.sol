@@ -22,7 +22,7 @@ contract DeployDeterministicCore3 is BaseScript {
     )
         public
         virtual
-        broadcast
+        sphinx
         returns (
             SablierV2NFTDescriptor nftDescriptor,
             SablierV2LockupDynamic lockupDynamic,

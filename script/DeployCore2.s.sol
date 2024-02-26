@@ -20,7 +20,7 @@ contract DeployCore2 is BaseScript {
     )
         public
         virtual
-        broadcast
+        sphinx
         returns (
             SablierV2Comptroller comptroller,
             SablierV2LockupDynamic lockupDynamic,

@@ -20,7 +20,7 @@ contract DeployDeterministicCore is BaseScript {
     function run(address initialAdmin)
         public
         virtual
-        broadcast
+        sphinx
         returns (
             SablierV2Comptroller comptroller,
             SablierV2LockupDynamic lockupDynamic,
