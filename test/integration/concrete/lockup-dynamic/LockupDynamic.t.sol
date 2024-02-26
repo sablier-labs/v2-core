@@ -10,7 +10,17 @@ import { Cancel_Integration_Concrete_Test } from "../lockup/cancel/cancel.t.sol"
 import { CancelMultiple_Integration_Concrete_Test } from "../lockup/cancel-multiple/cancelMultiple.t.sol";
 import { ClaimProtocolRevenues_Integration_Concrete_Test } from
     "../lockup/claim-protocol-revenues/claimProtocolRevenues.t.sol";
+import { ClaimRebasingAssetYield_Integration_Concrete_Test } from
+    "../lockup/claim-rebasing-asset-yield/claimRebasingAssetYield.t.sol";
+import { ConfigureRebasingAsset_Integration_Concrete_Test } from
+    "../lockup/configure-rebasing-asset/configureRebasingAsset.t.sol";
+import { ConfigureYieldAndGas_Integration_Concrete_Test } from
+    "../lockup/configure-yield-and-gas/configureYieldAndGas.t.sol";
 import { GetAsset_Integration_Concrete_Test } from "../lockup/get-asset/getAsset.t.sol";
+import { GetAssetConfiguration_Integration_Concrete_Test } from
+    "../lockup/get-asset-configuration/getAssetConfiguration.t.sol";
+import { GetClaimableAssetYield_Integration_Concrete_Test } from
+    "../lockup/get-claimable-asset-yield/getClaimableAssetYield.t.sol";
 import { GetDepositedAmount_Integration_Concrete_Test } from "../lockup/get-deposited-amount/getDepositedAmount.t.sol";
 import { GetEndTime_Integration_Concrete_Test } from "../lockup/get-end-time/getEndTime.t.sol";
 import { GetRecipient_Integration_Concrete_Test } from "../lockup/get-recipient/getRecipient.t.sol";
@@ -112,6 +122,48 @@ contract ClaimProtocolRevenues_LockupDynamic_Integration_Concrete_Test is
     }
 }
 
+contract ClaimRebasingAssetYield_LockupDynamic_Integration_Concrete_Test is
+    LockupDynamic_Integration_Concrete_Test,
+    ClaimRebasingAssetYield_Integration_Concrete_Test
+{
+    function setUp()
+        public
+        virtual
+        override(LockupDynamic_Integration_Concrete_Test, ClaimRebasingAssetYield_Integration_Concrete_Test)
+    {
+        LockupDynamic_Integration_Concrete_Test.setUp();
+        ClaimRebasingAssetYield_Integration_Concrete_Test.setUp();
+    }
+}
+
+contract ConfigureRebasingAsset_LockupDynamic_Integration_Concrete_Test is
+    LockupDynamic_Integration_Concrete_Test,
+    ConfigureRebasingAsset_Integration_Concrete_Test
+{
+    function setUp()
+        public
+        virtual
+        override(LockupDynamic_Integration_Concrete_Test, ConfigureRebasingAsset_Integration_Concrete_Test)
+    {
+        LockupDynamic_Integration_Concrete_Test.setUp();
+        ConfigureRebasingAsset_Integration_Concrete_Test.setUp();
+    }
+}
+
+contract ConfigureYieldAndGas_LockupDynamic_Integration_Concrete_Test is
+    LockupDynamic_Integration_Concrete_Test,
+    ConfigureYieldAndGas_Integration_Concrete_Test
+{
+    function setUp()
+        public
+        virtual
+        override(LockupDynamic_Integration_Concrete_Test, ConfigureYieldAndGas_Integration_Concrete_Test)
+    {
+        LockupDynamic_Integration_Concrete_Test.setUp();
+        ConfigureYieldAndGas_Integration_Concrete_Test.setUp();
+    }
+}
+
 contract GetAsset_LockupDynamic_Integration_Concrete_Test is
     LockupDynamic_Integration_Concrete_Test,
     GetAsset_Integration_Concrete_Test
@@ -123,6 +175,34 @@ contract GetAsset_LockupDynamic_Integration_Concrete_Test is
     {
         LockupDynamic_Integration_Concrete_Test.setUp();
         GetAsset_Integration_Concrete_Test.setUp();
+    }
+}
+
+contract GetAssetConfiguration_LockupDynamic_Integration_Concrete_Test is
+    LockupDynamic_Integration_Concrete_Test,
+    GetAssetConfiguration_Integration_Concrete_Test
+{
+    function setUp()
+        public
+        virtual
+        override(LockupDynamic_Integration_Concrete_Test, GetAssetConfiguration_Integration_Concrete_Test)
+    {
+        LockupDynamic_Integration_Concrete_Test.setUp();
+        GetAssetConfiguration_Integration_Concrete_Test.setUp();
+    }
+}
+
+contract GetClaimableAssetYield_LockupDynamic_Integration_Concrete_Test is
+    LockupDynamic_Integration_Concrete_Test,
+    GetClaimableAssetYield_Integration_Concrete_Test
+{
+    function setUp()
+        public
+        virtual
+        override(LockupDynamic_Integration_Concrete_Test, GetClaimableAssetYield_Integration_Concrete_Test)
+    {
+        LockupDynamic_Integration_Concrete_Test.setUp();
+        GetClaimableAssetYield_Integration_Concrete_Test.setUp();
     }
 }
 

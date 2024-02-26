@@ -1,0 +1,13 @@
+claimRebasingAssetYield.t.sol
+├── when the caller is not the admin
+│   └── it should revert
+└── when the caller is the admin
+    ├── given the yield mode is not Claimable
+    │   └── it should revert
+    └── given the yield mode is Claimable
+        ├── when the amount is greater than the claimable amount
+        │   └── it should revert
+        └── when the amount is not greater than the claimable amount
+            ├── it should transfer the claimed amount to the recipient
+            ├── it should update the claimable amount
+            └── it should return the claimed amount

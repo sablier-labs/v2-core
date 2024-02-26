@@ -4,6 +4,7 @@ pragma solidity >=0.8.19 <0.9.0;
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+import { IERC20Rebasing } from "../src/interfaces/blast/IERC20Rebasing.sol";
 import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
 import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";
@@ -13,6 +14,8 @@ import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
 import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
 import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
+import { BlastMock } from "./mocks/blast/BlastMock.sol";
+import { ERC20RebasingMock } from "./mocks/blast/ERC20RebasingMock.sol";
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
 import { GoodFlashLoanReceiver } from "./mocks/flash-loan/GoodFlashLoanReceiver.sol";
 import { Noop } from "./mocks/Noop.sol";
@@ -38,9 +41,11 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
                                    TEST CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
+    BlastMock internal blastMock;
     ISablierV2Comptroller internal comptroller;
     ERC20 internal dai;
     Defaults internal defaults;
+    IERC20Rebasing internal erc20RebasingMock;
     GoodFlashLoanReceiver internal goodFlashLoanReceiver;
     GoodRecipient internal goodRecipient;
     ISablierV2LockupDynamic internal lockupDynamic;
@@ -61,8 +66,14 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         noop = new Noop();
         usdt = new ERC20MissingReturn("Tether USD", "USDT", 6);
 
+        // Deploy the blast contracts.
+        blastMock = new BlastMock();
+        erc20RebasingMock = new ERC20RebasingMock();
+
         // Label the base test contracts.
+        vm.label({ account: address(blastMock), newLabel: "Blast Mock" });
         vm.label({ account: address(dai), newLabel: "DAI" });
+        vm.label({ account: address(erc20RebasingMock), newLabel: "ERC20Rebasing Mock" });
         vm.label({ account: address(goodFlashLoanReceiver), newLabel: "Good Flash Loan Receiver" });
         vm.label({ account: address(goodRecipient), newLabel: "Good Recipient" });
         vm.label({ account: address(nftDescriptor), newLabel: "NFT Descriptor" });

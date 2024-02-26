@@ -32,7 +32,8 @@ interface ISablierV2BlastGovernor {
     /// @param asset The address of the ERC-20 asset.
     /// @param amount The amount to claim.
     /// @param to The address receiving the claimed assets.
-    function claimRebasingAssetYield(IERC20Rebasing asset, uint256 amount, address to) external;
+    /// @return Amount claimed.
+    function claimRebasingAssetYield(IERC20Rebasing asset, uint256 amount, address to) external returns (uint256);
 
     /// @notice Sets the yield mode for a rebasing ERC-20 asset.
     /// @dev Reverts if `msg.sender` is not the contract admin.

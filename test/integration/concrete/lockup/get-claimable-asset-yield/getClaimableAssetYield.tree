@@ -1,0 +1,5 @@
+getClaimableAssetYield.t.sol
+├── given the yield mode is not Claimable
+│   └── it should revert
+└── given the yield mode is Claimable
+    └── it should return the claimable amount

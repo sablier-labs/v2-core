@@ -31,8 +31,17 @@ abstract contract SablierV2BlastGovernor is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2BlastGovernor
-    function claimRebasingAssetYield(IERC20Rebasing asset, uint256 amount, address to) public override onlyAdmin {
-        asset.claim(to, amount);
+    function claimRebasingAssetYield(
+        IERC20Rebasing asset,
+        uint256 amount,
+        address to
+    )
+        public
+        override
+        onlyAdmin
+        returns (uint256 claimed)
+    {
+        claimed = asset.claim(to, amount);
     }
 
     /// @inheritdoc ISablierV2BlastGovernor

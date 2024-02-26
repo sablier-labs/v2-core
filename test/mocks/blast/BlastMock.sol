@@ -17,40 +17,61 @@ contract BlastMock {
     function configure(YieldMode yieldMode, GasMode gasMode, address governor) public {
         governorMap[msg.sender] = governor;
         GAS.setGasMode(msg.sender, gasMode);
-        YIELD.configure(msg.sender, yieldMode);
+        YIELD.configure(msg.sender, uint8(yieldMode));
     }
 
-    function getConfig(address contractAddress)
-        public
-        view
-        returns (YieldMode yieldMode, GasMode gasMode, address governor)
-    {
-        yieldMode = YIELD.getYieldMode(contractAddress);
-        gasMode = GAS.getGasMode(contractAddress);
-        governor = governorMap[contractAddress];
+    function readYieldConfiguration(address contractAddress) public view returns (uint8) {
+        return YIELD.getConfiguration(contractAddress);
+    }
+
+    function readGasParams(address contractAddress) public view returns (uint256, uint256, uint256, GasMode) {
+        return GAS.readGasParams(contractAddress);
     }
 }
 
 contract GasMock {
+    address public immutable BLAST_MOCK;
+
     mapping(address => GasMode) internal _gasMode;
 
-    function setGasMode(address contractAddress, GasMode gasMode) public {
-        _gasMode[contractAddress] = gasMode;
+    modifier onlyBlastMock() {
+        require(msg.sender == BLAST_MOCK, "Caller must be blast mock contract");
+        _;
     }
 
-    function getGasMode(address contractAddress) public view returns (GasMode) {
-        return _gasMode[contractAddress];
+    constructor() {
+        BLAST_MOCK = msg.sender;
+    }
+
+    function readGasParams(address contractAddress) public view returns (uint256, uint256, uint256, GasMode) {
+        return (0, 0, 0, _gasMode[contractAddress]);
+    }
+
+    function setGasMode(address contractAddress, GasMode gasMode) public onlyBlastMock {
+        _gasMode[contractAddress] = gasMode;
     }
 }
 
 contract YieldMock {
+    address public immutable BLAST_MOCK;
+
     mapping(address => YieldMode) internal _yieldMode;
 
-    function configure(address contractAddress, YieldMode yieldMode) public {
-        _yieldMode[contractAddress] = yieldMode;
+    modifier onlyBlastMock() {
+        require(msg.sender == BLAST_MOCK, "Caller must be blast mock contract");
+        _;
     }
 
-    function getYieldMode(address contractAddress) public view returns (YieldMode) {
-        return _yieldMode[contractAddress];
+    constructor() {
+        BLAST_MOCK = msg.sender;
+    }
+
+    function getConfiguration(address contractAddress) public view returns (uint8) {
+        return uint8(_yieldMode[contractAddress]);
+    }
+
+    function configure(address contractAddress, uint8 flag) public onlyBlastMock returns (uint256) {
+        _yieldMode[contractAddress] = YieldMode(flag);
+        return flag;
     }
 }
