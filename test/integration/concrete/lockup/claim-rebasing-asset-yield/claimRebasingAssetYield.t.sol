@@ -14,7 +14,7 @@ abstract contract ClaimRebasingAssetYield_Integration_Concrete_Test is
 {
     function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) {
         // Set the claimable amount to 100.
-        ERC20RebasingMock(address(erc20RebasingMock)).setClaimableAmount(address(base), 100);
+        ERC20RebasingMock(address(erc20RebasingMock)).setClaimableAmount(address(base), 100e18);
     }
 
     function test_RevertWhen_CallerNotAdmin() external {
@@ -44,10 +44,10 @@ abstract contract ClaimRebasingAssetYield_Integration_Concrete_Test is
         _;
     }
 
-    function test_RevertWhen_amountGreaterThanClaimable() external whenCallerAdmin givenClaimableYield {
+    function test_RevertWhen_AmountGreaterThanClaimable() external whenCallerAdmin givenClaimableYield {
         // Run the test.
         vm.expectRevert();
-        base.claimRebasingAssetYield({ asset: erc20RebasingMock, amount: 101, to: users.admin });
+        base.claimRebasingAssetYield({ asset: erc20RebasingMock, amount: 101e18, to: users.admin });
     }
 
     modifier whenAmountNotGreaterThanClaimable() {
@@ -60,22 +60,26 @@ abstract contract ClaimRebasingAssetYield_Integration_Concrete_Test is
         givenClaimableYield
         whenAmountNotGreaterThanClaimable
     {
-        // Store the recipient's balance before the claim.
-        uint256 recipientBalanceBefore = ERC20RebasingMock(address(erc20RebasingMock)).balanceOf(users.admin);
+        // Store the admin's balance before the claim.
+        uint256 adminBalanceBefore = ERC20RebasingMock(address(erc20RebasingMock)).balanceOf(users.admin);
+
+        // Declare the claim amount.
+        uint256 claimAmount = 100e18;
 
         // Claim the rebasing asset yield.
-        uint256 actualClaimed = base.claimRebasingAssetYield({ asset: erc20RebasingMock, amount: 100, to: users.admin });
+        uint256 actualClaimedAmount =
+            base.claimRebasingAssetYield({ asset: erc20RebasingMock, amount: claimAmount, to: users.admin });
 
         // Store the recipient's balance after the claim.
-        uint256 recipientBalanceAfter = ERC20RebasingMock(address(erc20RebasingMock)).balanceOf(users.admin);
+        uint256 adminBalanceAfter = ERC20RebasingMock(address(erc20RebasingMock)).balanceOf(users.admin);
 
         // Assert that recipient's balance is increased by the claimed amount.
-        assertEq(recipientBalanceAfter, recipientBalanceBefore + 100);
+        assertEq(adminBalanceBefore + claimAmount, adminBalanceAfter);
 
         // Assert the claimable amount is now 0.
         assertEq(erc20RebasingMock.getClaimableAmount(address(base)), 0);
 
         // Assert the the return value equals the claimed amount.
-        assertEq(actualClaimed, 100);
+        assertEq(actualClaimedAmount, claimAmount);
     }
 }

@@ -11,7 +11,7 @@ interface IERC20Rebasing {
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Query an CLAIMABLE account's claimable yield.
+    /// @notice Query an `CLAIMABLE` account's claimable yield.
     /// @param account Address to query the claimable amount.
     /// @return amount Claimable amount.
     function getClaimableAmount(address account) external view returns (uint256 amount);
@@ -25,7 +25,7 @@ interface IERC20Rebasing {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Claim yield from a CLAIMABLE account and send to a recipient.
+    /// @notice Claim yield from a `CLAIMABLE` account and send to a recipient.
     /// @param recipient Address to receive the claimed balance.
     /// @param amount Amount to claim.
     /// @return uint256 Amount claimed.
