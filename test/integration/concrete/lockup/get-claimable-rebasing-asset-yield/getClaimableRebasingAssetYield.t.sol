@@ -7,7 +7,7 @@ import { ERC20RebasingMock } from "../../../../mocks/blast/ERC20RebasingMock.sol
 import { Integration_Test } from "../../../Integration.t.sol";
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
 
-abstract contract GetClaimableAssetYield_Integration_Concrete_Test is
+abstract contract GetClaimableRebasingAssetYield_Integration_Concrete_Test is
     Integration_Test,
     Lockup_Integration_Shared_Test
 {
@@ -19,7 +19,7 @@ abstract contract GetClaimableAssetYield_Integration_Concrete_Test is
     function test_RevertGiven_NotClaimableYield() external {
         // Run the test.
         vm.expectRevert();
-        base.getClaimableAssetYield(erc20RebasingMock);
+        base.getClaimableRebasingAssetYield(erc20RebasingMock);
     }
 
     modifier givenClaimableYield() {
@@ -29,9 +29,9 @@ abstract contract GetClaimableAssetYield_Integration_Concrete_Test is
         _;
     }
 
-    function test_GetClaimableAssetYield() external givenClaimableYield {
+    function test_GetClaimableRebasingAssetYield() external givenClaimableYield {
         // Run the test.
-        uint256 actualClaimableAmount = base.getClaimableAssetYield(erc20RebasingMock);
+        uint256 actualClaimableAmount = base.getClaimableRebasingAssetYield(erc20RebasingMock);
         uint256 expectedClaimableAmount = 100;
 
         assertEq(actualClaimableAmount, expectedClaimableAmount);

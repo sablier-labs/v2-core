@@ -4,24 +4,24 @@ pragma solidity >=0.8.19;
 import { IBlast, GasMode, YieldMode } from "./IBlast.sol";
 import { IERC20Rebasing } from "./IERC20Rebasing.sol";
 
-/// @title ISablierV2BlastGovernor
+/// @title ISablierV2Blast
 /// @notice This contract manages interactions with rebasing assets and configuring Blast L2's unique functionalities,
 /// yield mode and gas mode.
 /// @dev See: https://docs.blast.io/
-interface ISablierV2BlastGovernor {
+interface ISablierV2Blast {
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Retrieves the claimable yield from `asset`.
+    /// @notice Retrieves the claimable yield from rebasing `asset`.
     /// @dev Reverts if the yield mode is not set to `CLAIMABLE`.
     /// @param asset The address of the rebasing ERC-20 asset.
-    function getClaimableAssetYield(IERC20Rebasing asset) external view returns (uint256 claimableYield);
+    function getClaimableRebasingAssetYield(IERC20Rebasing asset) external view returns (uint256 claimableYield);
 
-    /// @notice Retrieves the configured yield mode from `asset`.
+    /// @notice Retrieves the configured yield mode from rebasing `asset`.
     /// @dev Reverts if the yield mode is not set to `CLAIMABLE`.
     /// @param asset The address of the rebasing ERC-20 asset.
-    function getAssetConfiguration(IERC20Rebasing asset) external view returns (YieldMode yieldMode);
+    function getRebasingAssetConfiguration(IERC20Rebasing asset) external view returns (YieldMode yieldMode);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS

@@ -6,7 +6,7 @@ import { YieldMode } from "src/interfaces/blast/IERC20Rebasing.sol";
 import { Integration_Test } from "../../../Integration.t.sol";
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
 
-abstract contract GetAssetConfiguration_Integration_Concrete_Test is
+abstract contract GetRebasingAssetConfiguration_Integration_Concrete_Test is
     Integration_Test,
     Lockup_Integration_Shared_Test
 {
@@ -15,7 +15,7 @@ abstract contract GetAssetConfiguration_Integration_Concrete_Test is
         changePrank({ msgSender: users.admin });
     }
 
-    function test_GetAssetConfigurationGiven_AutomaticYield() external {
+    function test_GetRebasingAssetConfigurationGiven_AutomaticYield() external {
         // Set the yield mode to automatic.
         base.configureRebasingAsset(erc20RebasingMock, YieldMode.AUTOMATIC);
 
@@ -27,7 +27,7 @@ abstract contract GetAssetConfiguration_Integration_Concrete_Test is
         assertEq(uint8(actualYieldMode), uint8(expectedYieldMode));
     }
 
-    function test_GetAssetConfigurationGiven_VoidYield() external {
+    function test_GetRebasingAssetConfigurationGiven_VoidYield() external {
         // Set the yield mode to automatic.
         base.configureRebasingAsset(erc20RebasingMock, YieldMode.VOID);
 
@@ -39,7 +39,7 @@ abstract contract GetAssetConfiguration_Integration_Concrete_Test is
         assertEq(uint8(actualYieldMode), uint8(expectedYieldMode));
     }
 
-    function test_GetAssetConfigurationGiven_ClaimableYield() external {
+    function test_GetRebasingAssetConfigurationGiven_ClaimableYield() external {
         // Set the yield mode to claimable.
         base.configureRebasingAsset(erc20RebasingMock, YieldMode.CLAIMABLE);
 

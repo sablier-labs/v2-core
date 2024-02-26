@@ -4,25 +4,30 @@ pragma solidity >=0.8.19;
 import { Adminable } from "./Adminable.sol";
 import { IBlast, YieldMode, GasMode } from "../interfaces/blast/IBlast.sol";
 import { IERC20Rebasing } from "../interfaces/blast/IERC20Rebasing.sol";
-import { ISablierV2BlastGovernor } from "../interfaces/blast/ISablierV2BlastGovernor.sol";
+import { ISablierV2Blast } from "../interfaces/blast/ISablierV2Blast.sol";
 
-/// @title SablierV2BlastGovernor
-/// @notice See the documentation in {ISablierV2BlastGovernor}
-abstract contract SablierV2BlastGovernor is
+/// @title SablierV2Blast
+/// @notice See the documentation in {ISablierV2Blast}
+abstract contract SablierV2Blast is
     Adminable, // 1 inherited component
-    ISablierV2BlastGovernor // 0 inherited component
+    ISablierV2Blast // 0 inherited component
 {
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierV2BlastGovernor
-    function getClaimableAssetYield(IERC20Rebasing asset) external view override returns (uint256 claimableYield) {
+    /// @inheritdoc ISablierV2Blast
+    function getClaimableRebasingAssetYield(IERC20Rebasing asset)
+        external
+        view
+        override
+        returns (uint256 claimableYield)
+    {
         claimableYield = asset.getClaimableAmount(address(this));
     }
 
-    /// @inheritdoc ISablierV2BlastGovernor
-    function getAssetConfiguration(IERC20Rebasing asset) external view override returns (YieldMode yieldMode) {
+    /// @inheritdoc ISablierV2Blast
+    function getRebasingAssetConfiguration(IERC20Rebasing asset) external view override returns (YieldMode yieldMode) {
         yieldMode = asset.getConfiguration(address(this));
     }
 
@@ -30,7 +35,7 @@ abstract contract SablierV2BlastGovernor is
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierV2BlastGovernor
+    /// @inheritdoc ISablierV2Blast
     function claimRebasingAssetYield(
         IERC20Rebasing asset,
         uint256 amount,
@@ -44,12 +49,12 @@ abstract contract SablierV2BlastGovernor is
         claimed = asset.claim(to, amount);
     }
 
-    /// @inheritdoc ISablierV2BlastGovernor
+    /// @inheritdoc ISablierV2Blast
     function configureRebasingAsset(IERC20Rebasing asset, YieldMode yieldMode) public override onlyAdmin {
         asset.configure(yieldMode);
     }
 
-    /// @inheritdoc ISablierV2BlastGovernor
+    /// @inheritdoc ISablierV2Blast
     function configureYieldAndGas(
         IBlast blast,
         YieldMode yieldMode,
