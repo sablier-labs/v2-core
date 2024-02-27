@@ -5,6 +5,8 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 import { Solarray } from "solarray/src/Solarray.sol";
 
+import { YieldMode } from "src/interfaces/blast/IBlast.sol";
+import { IERC20Rebasing } from "src/interfaces/blast/IERC20Rebasing.sol";
 import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
 
 import { Fork_Test } from "./Fork.t.sol";
@@ -377,5 +379,20 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         vars.actualNFTOwner = lockupLinear.ownerOf({ tokenId: vars.streamId });
         vars.expectedNFTOwner = params.recipient;
         assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "post-cancel NFT owner");
+    }
+
+    function testFork_LockupLinear_RebasingAssetConfiguration() external {
+        IERC20Rebasing rebasingAsset = IERC20Rebasing(address(ASSET));
+
+        // Make the admin the caller in this test suite.
+        changePrank({ msgSender: users.admin });
+
+        // Set the Claimable yield mode for `ASSET`.
+        lockupLinear.configureRebasingAsset({ asset: rebasingAsset, yieldMode: YieldMode.CLAIMABLE });
+
+        // Query the yield mode for `ASSET`.
+        YieldMode actualYieldMode = lockupLinear.getRebasingAssetConfiguration(rebasingAsset);
+        YieldMode expectedYieldMode = YieldMode.CLAIMABLE;
+        assertEq(uint8(actualYieldMode), uint8(expectedYieldMode));
     }
 }
