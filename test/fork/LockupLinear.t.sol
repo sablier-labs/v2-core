@@ -3,15 +3,19 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
+import { LibString } from "solady/src/utils/LibString.sol";
 import { Solarray } from "solarray/src/Solarray.sol";
 
 import { YieldMode } from "src/interfaces/blast/IBlast.sol";
 import { IERC20Rebasing } from "src/interfaces/blast/IERC20Rebasing.sol";
 import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
 
+import { ERC20RebasingMock } from "../mocks/blast/ERC20RebasingMock.sol";
 import { Fork_Test } from "./Fork.t.sol";
 
 abstract contract LockupLinear_Fork_Test is Fork_Test {
+    using LibString for string;
+
     /*//////////////////////////////////////////////////////////////////////////
                                     CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
@@ -381,18 +385,62 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "post-cancel NFT owner");
     }
 
-    function testFork_LockupLinear_RebasingAssetConfiguration() external {
-        IERC20Rebasing rebasingAsset = IERC20Rebasing(address(ASSET));
+    function testFork_LockupLinear_RebasingAsset() external {
+        address rebasingAsset = address(ASSET);
+
+        /*//////////////////////////////////////////////////////////////////////////
+                                CONFIGURE REBASING ASSET
+        //////////////////////////////////////////////////////////////////////////*/
 
         // Make the admin the caller in this test suite.
         changePrank({ msgSender: users.admin });
 
         // Set the Claimable yield mode for `ASSET`.
-        lockupLinear.configureRebasingAsset({ asset: rebasingAsset, yieldMode: YieldMode.CLAIMABLE });
+        lockupLinear.configureRebasingAsset({ asset: IERC20Rebasing(rebasingAsset), yieldMode: YieldMode.CLAIMABLE });
 
         // Query the yield mode for `ASSET`.
-        YieldMode actualYieldMode = lockupLinear.getRebasingAssetConfiguration(rebasingAsset);
+        YieldMode actualYieldMode = lockupLinear.getRebasingAssetConfiguration(IERC20Rebasing(rebasingAsset));
         YieldMode expectedYieldMode = YieldMode.CLAIMABLE;
         assertEq(uint8(actualYieldMode), uint8(expectedYieldMode));
+
+        /*//////////////////////////////////////////////////////////////////////////
+                                CLAIM REBASING ASSET YIELD
+        //////////////////////////////////////////////////////////////////////////*/
+
+        // Only run the claim tests if the rebasing asset is USDB. That's because WETH distributes yield very
+        // differently from USDB.
+        if (ERC20RebasingMock(rebasingAsset).symbol().eq("USDB")) {
+            // Mint some tokens to the lockupLinear.
+            changePrank({ msgSender: ERC20RebasingMock(rebasingAsset).bridge() });
+            ERC20RebasingMock(rebasingAsset).mint(address(lockupLinear), 1000e18);
+
+            // Add yield to the rebasing asset.
+            address l2Reporter = address(
+                uint160(ERC20RebasingMock(rebasingAsset).REPORTER())
+                    + uint160(0x1111000000000000000000000000000000001111)
+            );
+            changePrank({ msgSender: l2Reporter });
+            ERC20RebasingMock(rebasingAsset).addValue(100_000e18);
+
+            // Query the initial admin balance.
+            uint256 beforeClaimBalance = ASSET.balanceOf(users.admin);
+
+            // Query the claimable yield amount.
+            uint256 claimableYieldAmount = lockupLinear.getClaimableRebasingAssetYield(IERC20Rebasing(rebasingAsset));
+
+            // Claim and transfer the yield amount to admin.
+            changePrank({ msgSender: users.admin });
+            lockupLinear.claimRebasingAssetYield(IERC20Rebasing(rebasingAsset), claimableYieldAmount, users.admin);
+
+            // Query the final admin balance
+            uint256 afterClaimBalance = ASSET.balanceOf(users.admin);
+
+            // Assert that the admin's balance has been updated.
+            assertEq(beforeClaimBalance + claimableYieldAmount, afterClaimBalance);
+
+            // Check if the claimable yield is now 0.
+            claimableYieldAmount = lockupLinear.getClaimableRebasingAssetYield(IERC20Rebasing(rebasingAsset));
+            assertEq(claimableYieldAmount, 0);
+        }
     }
 }
