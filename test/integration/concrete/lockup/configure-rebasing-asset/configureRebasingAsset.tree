@@ -1,0 +1,5 @@
+configureRebasingAsset.t.sol
+├── when the caller is not the admin
+│   └── it should revert
+└── when the caller is the admin
+    └── it should set the yield mode for the asset

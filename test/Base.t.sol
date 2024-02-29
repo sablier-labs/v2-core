@@ -3,6 +3,7 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+import { IERC20Rebasing } from "../src/interfaces/blast/IERC20Rebasing.sol";
 import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";
 import { ISablierV2LockupTranched } from "../src/interfaces/ISablierV2LockupTranched.sol";
@@ -12,8 +13,10 @@ import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
 import { SablierV2LockupTranched } from "../src/SablierV2LockupTranched.sol";
 import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
-import { ERC20Mock } from "./mocks/erc20/ERC20Mock.sol";
+import { BlastMock } from "./mocks/blast/BlastMock.sol";
+import { ERC20RebasingMock } from "./mocks/blast/ERC20RebasingMock.sol";
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
+import { ERC20Mock } from "./mocks/erc20/ERC20Mock.sol";
 import { Noop } from "./mocks/Noop.sol";
 import { GoodRecipient } from "./mocks/hooks/GoodRecipient.sol";
 import { GoodSender } from "./mocks/hooks/GoodSender.sol";
@@ -38,8 +41,10 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
                                    TEST CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
+    BlastMock internal blastMock;
     ERC20Mock internal dai;
     Defaults internal defaults;
+    IERC20Rebasing internal erc20RebasingMock;
     GoodRecipient internal goodRecipient;
     GoodSender internal goodSender;
     ISablierV2LockupDynamic internal lockupDynamic;
@@ -61,8 +66,14 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         noop = new Noop();
         usdt = new ERC20MissingReturn("Tether USD", "USDT", 6);
 
+        // Deploy the blast contracts.
+        blastMock = new BlastMock();
+        erc20RebasingMock = new ERC20RebasingMock();
+
         // Label the base test contracts.
+        vm.label({ account: address(blastMock), newLabel: "Blast Mock" });
         vm.label({ account: address(dai), newLabel: "DAI" });
+        vm.label({ account: address(erc20RebasingMock), newLabel: "ERC20Rebasing Mock" });
         vm.label({ account: address(goodRecipient), newLabel: "Good Recipient" });
         vm.label({ account: address(goodSender), newLabel: "Good Sender" });
         vm.label({ account: address(noop), newLabel: "Noop" });

@@ -14,16 +14,16 @@ import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
 import { Errors } from "../libraries/Errors.sol";
 import { Lockup } from "../types/DataTypes.sol";
-import { Adminable } from "./Adminable.sol";
 import { NoDelegateCall } from "./NoDelegateCall.sol";
+import { SablierV2Blast } from "./SablierV2Blast.sol";
 
 /// @title SablierV2Lockup
 /// @notice See the documentation in {ISablierV2Lockup}.
 abstract contract SablierV2Lockup is
     NoDelegateCall, // 0 inherited components
-    Adminable, // 1 inherited components
     IERC4906, // 2 inherited components
-    ISablierV2Lockup, // 4 inherited components
+    SablierV2Blast, // 3 inherited components
+    ISablierV2Lockup, // 5 inherited components
     ERC721 // 6 inherited components
 {
     using SafeERC20 for IERC20;

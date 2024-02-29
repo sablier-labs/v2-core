@@ -55,7 +55,7 @@ jobs:
   test-fork:
     needs: ["lint", "build"]
     secrets:
-      RPC_URL_MAINNET: ${{ secrets.RPC_URL_MAINNET }}
+      RPC_URL_MAINNET: ${{ secrets.RPC_URL_BLAST }}
     uses: "sablier-labs/reusable-workflows/.github/workflows/forge-test.yml@main"
     with:
       foundry-fuzz-runs: 20

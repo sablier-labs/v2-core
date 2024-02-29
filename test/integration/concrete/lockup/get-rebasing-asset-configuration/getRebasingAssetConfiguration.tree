@@ -1,0 +1,7 @@
+getRebasingAssetConfiguration.t.sol
+├── given the rebasing asset's yield mode is set to automatic
+│   └── it should return the Automatic configuration
+├── given the rebasing asset's yield mode is set to void
+│   └── it should return the Void configuration
+└── given the rebasing asset's yield mode is set to Claimable
+    └── it should return the claimable configuration
