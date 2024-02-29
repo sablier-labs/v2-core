@@ -7,8 +7,8 @@ import { LockupDynamic_Fork_Test } from "../LockupDynamic.t.sol";
 import { LockupLinear_Fork_Test } from "../LockupLinear.t.sol";
 
 /// @dev A WETH token with rebasing yield deployed on Blast L2.
-IERC20 constant ASSET = IERC20(0x4200000000000000000000000000000000000023);
-address constant HOLDER = 0x50ED0a15C0aF3CaC9A2c46FbfAAbDD09b737087C;
+IERC20 constant ASSET = IERC20(0x4300000000000000000000000000000000000004);
+address constant HOLDER = 0x6301795aa55B90427CF74C18C8636E0443F2100b;
 
 contract BWETH_LockupDynamic_Fork_Test is LockupDynamic_Fork_Test(ASSET, HOLDER) { }
 
