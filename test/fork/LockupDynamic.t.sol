@@ -453,6 +453,9 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
             // Query the final admin balance
             uint256 afterClaimBalance = ASSET.balanceOf(users.admin);
 
+            // Assert that the claimable yield amount is greater than 0.
+            assertGt(claimableYieldAmount, 0);
+
             // Assert that the admin's balance has been updated.
             assertEq(beforeClaimBalance + claimableYieldAmount, afterClaimBalance);
 

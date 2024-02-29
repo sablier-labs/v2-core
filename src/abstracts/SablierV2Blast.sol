@@ -41,7 +41,7 @@ abstract contract SablierV2Blast is
         uint256 amount,
         address to
     )
-        public
+        external
         override
         onlyAdmin
         returns (uint256 claimed)
@@ -50,7 +50,7 @@ abstract contract SablierV2Blast is
     }
 
     /// @inheritdoc ISablierV2Blast
-    function configureRebasingAsset(IERC20Rebasing asset, YieldMode yieldMode) public override onlyAdmin {
+    function configureRebasingAsset(IERC20Rebasing asset, YieldMode yieldMode) external override onlyAdmin {
         asset.configure(yieldMode);
     }
 
@@ -61,7 +61,7 @@ abstract contract SablierV2Blast is
         GasMode gasMode,
         address governor
     )
-        public
+        external
         override
         onlyAdmin
     {
