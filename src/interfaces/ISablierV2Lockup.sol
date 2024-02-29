@@ -7,14 +7,14 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { Lockup } from "../types/DataTypes.sol";
-import { IAdminable } from "./IAdminable.sol";
+import { ISablierV2Blast } from "./blast/ISablierV2Blast.sol";
 import { ISablierV2NFTDescriptor } from "./ISablierV2NFTDescriptor.sol";
 
 /// @title ISablierV2Lockup
 /// @notice Common logic between all Sablier V2 Lockup contracts.
 interface ISablierV2Lockup is
-    IAdminable, // 0 inherited components
     IERC4906, // 2 inherited components
+    ISablierV2Blast, // 1 inherited components
     IERC721Metadata // 2 inherited components
 {
     /*//////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,5 @@
+getClaimableRebasingAssetYield.t.sol
+├── given the rebasing asset's yield mode is not Claimable
+│   └── it should revert
+└── given the rebasing asset's yield mode is Claimable
+    └── it should return the claimable amount

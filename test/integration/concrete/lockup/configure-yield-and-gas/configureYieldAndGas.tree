@@ -1,0 +1,7 @@
+configureYieldAndGas.t.sol
+├── when the caller is not the admin
+│   └── it should revert
+└── when the caller is the admin
+    ├── it should set the desired yield mode
+    ├── it should set the desired gas mode
+    └── it should set the desired governor address
