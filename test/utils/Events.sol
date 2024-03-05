@@ -4,9 +4,9 @@ pragma solidity >=0.8.22;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
-import { ISablierV2Comptroller } from "../../src/interfaces/ISablierV2Comptroller.sol";
-import { ISablierV2NFTDescriptor } from "../../src/interfaces/ISablierV2NFTDescriptor.sol";
-import { Lockup, LockupDynamic, LockupLinear } from "../../src/types/DataTypes.sol";
+import { ISablierV2Comptroller } from "src/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2NFTDescriptor } from "src/interfaces/ISablierV2NFTDescriptor.sol";
+import { Lockup, LockupDynamic, LockupLinear } from "src/types/DataTypes.sol";
 
 /// @notice Abstract contract containing all the events emitted by the protocol.
 abstract contract Events {

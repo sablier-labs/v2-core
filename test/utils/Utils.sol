@@ -7,7 +7,7 @@ import { PRBMathUtils } from "@prb/math/test/utils/Utils.sol";
 import { Vm } from "@prb/test/src/PRBTest.sol";
 import { StdUtils } from "forge-std/src/StdUtils.sol";
 
-import { LockupDynamic } from "../../src/types/DataTypes.sol";
+import { LockupDynamic } from "src/types/DataTypes.sol";
 
 abstract contract Utils is StdUtils, PRBMathUtils {
     /// @dev The virtual address of the Foundry VM.
