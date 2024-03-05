@@ -3,7 +3,7 @@
   bytecode_hash = "none"
   emv_version = "paris"
   ffi = true
-  fs_permissions = [{ access = "read", path = "out-optimized" }]
+  fs_permissions = [{ access = "read", path = "out-optimized" }, {access="read", path="./out"}, {access="read-write", path="./cache"}]
   gas_reports = [
     "SablierV2Comptroller",
     "SablierV2LockupDynamic",
@@ -18,6 +18,9 @@
   solc = "0.8.23"
   src = "src"
   test = "test"
+  libs = ["node_modules", "lib"]
+  build_info = true
+  extra_output = ['storageLayout']
 
 [profile.default.fuzz]
   max_test_rejects = 1_000_000 # Number of times `vm.assume` can fail
