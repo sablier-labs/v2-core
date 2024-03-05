@@ -52,22 +52,6 @@ contract BaseScript is Script, Sphinx {
         } else {
             maxCount = 500;
         }
-
-        // Sets Sphinx.
-        sphinxConfig.mainnets = [
-            Network.arbitrum,
-            Network.avalanche,
-            Network.bnb,
-            Network.gnosis,
-            Network.ethereum,
-            Network.optimism,
-            Network.polygon
-        ];
-        sphinxConfig.owners = [from];
-        sphinxConfig.threshold = 1;
-        sphinxConfig.orgId = vm.envOr(SPHINX_API_KEY, "sphinx-org-id");
-        sphinxConfig.projectName = "v2-core";
-        sphinxConfig.testnets = [Network.sepolia];
     }
 
     /// @dev The presence of the salt instructs Forge to deploy contracts via this deterministic CREATE2 factory:
@@ -90,5 +74,23 @@ contract BaseScript is Script, Sphinx {
         string memory create2Salt = string.concat("ChainID ", chainId, ", Version ", version);
         console2.log("The CREATE2 salt is \"%s\"", create2Salt);
         return bytes32(abi.encodePacked(create2Salt));
+    }
+
+    function configureSphinx() public override {
+        // Sets Sphinx.
+        sphinxConfig.mainnets = [
+            "arbitrum",
+            "avalanche",
+            "bnb",
+            "gnosis",
+            "ethereum",
+            "optimism",
+            "polygon"
+        ];
+        sphinxConfig.owners = [<YOUR_EOA_ADDRESS>];
+        sphinxConfig.threshold = 1;
+        sphinxConfig.orgId = <YOUR_ORG_ID>;
+        sphinxConfig.projectName = "v2-core";
+        sphinxConfig.testnets = ["sepolia"];
     }
 }
