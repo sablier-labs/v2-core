@@ -19,13 +19,6 @@ library Errors {
     error DelegateCall();
 
     /*//////////////////////////////////////////////////////////////////////////
-                                  SABLIER-V2-BASE
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Thrown when trying to claim protocol revenues for an asset with no accrued revenues.
-    error SablierV2Base_NoProtocolRevenues(IERC20 asset);
-
-    /*//////////////////////////////////////////////////////////////////////////
                                  SABLIER-V2-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
@@ -46,9 +39,6 @@ library Errors {
 
     /// @notice Thrown when trying to withdraw an amount greater than the withdrawable amount.
     error SablierV2Lockup_Overdraw(uint256 streamId, uint128 amount, uint128 withdrawableAmount);
-
-    /// @notice Thrown when the protocol fee exceeds the maximum allowed fee.
-    error SablierV2Lockup_ProtocolFeeTooHigh(UD60x18 protocolFee, UD60x18 maxFee);
 
     /// @notice Thrown when trying to cancel or renounce a canceled stream.
     error SablierV2Lockup_StreamCanceled(uint256 streamId);

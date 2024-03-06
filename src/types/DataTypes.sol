@@ -32,7 +32,7 @@ library Lockup {
     /// of the asset's decimals.
     /// @dev Because the deposited and the withdrawn amount are often read together, declaring them in
     /// the same slot saves gas.
-    /// @param deposited The initial amount deposited in the stream, net of fees.
+    /// @param deposited The initial amount deposited in the stream, net of broker fee.
     /// @param withdrawn The cumulative amount withdrawn from the stream.
     /// @param refunded The amount refunded to the sender. Unless the stream was canceled, this is always zero.
     struct Amounts {
@@ -43,14 +43,12 @@ library Lockup {
         uint128 refunded;
     }
 
-    /// @notice Struct encapsulating the deposit amount, the protocol fee amount, and the broker fee amount,
-    /// all denoted in units of the asset's decimals.
+    /// @notice Struct encapsulating the deposit amount and the broker fee amount, all denoted in units
+    /// of the asset's decimals.
     /// @param deposit The amount to deposit in the stream.
-    /// @param protocolFee The protocol fee amount.
     /// @param brokerFee The broker fee amount.
     struct CreateAmounts {
         uint128 deposit;
-        uint128 protocolFee;
         uint128 brokerFee;
     }
 
@@ -105,7 +103,7 @@ library LockupDynamic {
     /// same as `msg.sender`.
     /// @param recipient The address receiving the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be paid, including the stream deposit and any potential
-    /// fees, all denoted in units of the asset's decimals.
+    /// broker fee, all denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
@@ -130,7 +128,7 @@ library LockupDynamic {
     /// same as `msg.sender`.
     /// @param recipient The address receiving the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be paid, including the stream deposit and any potential
-    /// fees, all denoted in units of the asset's decimals.
+    /// broker fee, all denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
@@ -204,7 +202,7 @@ library LockupLinear {
     /// same as `msg.sender`.
     /// @param recipient The address receiving the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be paid, including the stream deposit and any potential
-    /// fees, all denoted in units of the asset's decimals.
+    /// broker fee, all denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
@@ -227,7 +225,7 @@ library LockupLinear {
     /// same as `msg.sender`.
     /// @param recipient The address receiving the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be paid, including the stream deposit and any potential
-    /// fees, all denoted in units of the asset's decimals.
+    /// broker fee, all denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
@@ -289,7 +287,7 @@ library LockupTranched {
     /// same as `msg.sender`.
     /// @param recipient The address receiving the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be paid, including the stream deposit and any potential
-    /// fees, all denoted in units of the asset's decimals.
+    /// broker fee, all denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
@@ -314,7 +312,7 @@ library LockupTranched {
     /// same as `msg.sender`.
     /// @param recipient The address receiving the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be paid, including the stream deposit and any potential
-    /// fees, all denoted in units of the asset's decimals.
+    /// broker fee, all denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.

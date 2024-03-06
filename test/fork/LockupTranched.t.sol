@@ -37,7 +37,6 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         address sender;
         address recipient;
         uint128 withdrawAmount;
-        UD60x18 protocolFee;
         uint40 startTime;
         uint40 warpTimestamp;
         LockupTranched.Tranche[] tranches;
@@ -66,14 +65,11 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         uint256 actualBrokerBalance;
         uint256 actualHolderBalance;
         uint256 actualNextStreamId;
-        uint256 actualProtocolRevenues;
         Lockup.CreateAmounts createAmounts;
         uint256 expectedBrokerBalance;
         uint256 expectedHolderBalance;
-        uint256 expectedProtocolRevenues;
         uint256 expectedNextStreamId;
         uint256 initialBrokerBalance;
-        uint256 initialProtocolRevenues;
         uint128 totalAmount;
         // Withdraw vars
         uint128 actualWithdrawnAmount;
@@ -92,7 +88,6 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
     /// - It should perform all expected ERC-20 transfers.
     /// - It should create the stream.
     /// - It should bump the next stream id.
-    /// - It should record the protocol fee.
     /// - It should mint the NFT.
     /// - It should emit a {CreateLockupTranchedStream} event.
     /// - It may make a withdrawal.
@@ -109,32 +104,25 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
     /// - Start time in the present
     /// - Start time in the future
     /// - Start time equal and not equal to the first tranche timestamp
-    /// - Multiple values for the broker fee, including zero
-    /// - Multiple values for the protocol fee, including zero
+    /// - Multiple values for the broker fee, including zero.
     /// - Multiple values for the withdraw amount, including zero
     /// - The whole gamut of stream statuses
     function testForkFuzz_LockupTranched_CreateWithdrawCancel(Params memory params) external {
         checkUsers(params.sender, params.recipient, params.broker.account, address(lockupTranched));
         vm.assume(params.tranches.length != 0);
-        params.broker.fee = _bound(params.broker.fee, 0, MAX_FEE);
-        params.protocolFee = _bound(params.protocolFee, 0, MAX_FEE);
+        params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
         params.startTime = boundUint40(params.startTime, 0, defaults.START_TIME());
 
         // Fuzz the tranche timestamps.
         fuzzTrancheTimestamps(params.tranches, params.startTime);
 
-        // Fuzz the tranche amounts and calculate the create amounts (total, deposit, protocol fee, and broker fee).
+        // Fuzz the tranche amounts and calculate the create amounts (total, deposit, and broker fee).
         Vars memory vars;
         (vars.totalAmount, vars.createAmounts) = fuzzTranchedStreamAmounts({
             upperBound: uint128(initialHolderBalance),
             tranches: params.tranches,
-            protocolFee: params.protocolFee,
             brokerFee: params.broker.fee
         });
-
-        // Set the fuzzed protocol fee.
-        changePrank({ msgSender: users.admin });
-        comptroller.setProtocolFee({ asset: ASSET, newProtocolFee: params.protocolFee });
 
         // Make the holder the caller.
         changePrank(HOLDER);
@@ -142,9 +130,6 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         /*//////////////////////////////////////////////////////////////////////////
                                             CREATE
         //////////////////////////////////////////////////////////////////////////*/
-
-        // Load the pre-create protocol revenues.
-        vars.initialProtocolRevenues = lockupTranched.protocolRevenues(ASSET);
 
         // Load the pre-create asset balances.
         vars.balances =
@@ -226,11 +211,6 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         vars.expectedNextStreamId = vars.streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "post-create nextStreamId");
 
-        // Assert that the protocol fee has been recorded.
-        vars.actualProtocolRevenues = lockupTranched.protocolRevenues(ASSET);
-        vars.expectedProtocolRevenues = vars.initialProtocolRevenues + vars.createAmounts.protocolFee;
-        assertEq(vars.actualProtocolRevenues, vars.expectedProtocolRevenues, "post-create protocolRevenues");
-
         // Assert that the NFT has been minted.
         vars.actualNFTOwner = lockupTranched.ownerOf({ tokenId: vars.streamId });
         vars.expectedNFTOwner = params.recipient;
@@ -244,8 +224,7 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         vars.actualBrokerBalance = vars.balances[2];
 
         // Assert that the contract's balance has been updated.
-        vars.expectedLockupTranchedBalance =
-            vars.initialLockupTranchedBalance + vars.createAmounts.deposit + vars.createAmounts.protocolFee;
+        vars.expectedLockupTranchedBalance = vars.initialLockupTranchedBalance + vars.createAmounts.deposit;
         assertEq(
             vars.actualLockupTranchedBalance,
             vars.expectedLockupTranchedBalance,
