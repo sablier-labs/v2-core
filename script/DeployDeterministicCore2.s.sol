@@ -22,7 +22,7 @@ contract DeployDeterministicCore2 is BaseScript {
     )
         public
         virtual
-        broadcast
+        sphinx
         returns (
             SablierV2LockupDynamic lockupDynamic,
             SablierV2LockupLinear lockupLinear,

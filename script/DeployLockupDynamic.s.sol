@@ -13,7 +13,7 @@ contract DeployLockupDynamic is BaseScript {
     )
         public
         virtual
-        broadcast
+        sphinx
         returns (SablierV2LockupDynamic lockupDynamic)
     {
         lockupDynamic = new SablierV2LockupDynamic(initialAdmin, initialNFTDescriptor, maxCount);

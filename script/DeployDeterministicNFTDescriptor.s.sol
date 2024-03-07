@@ -8,7 +8,7 @@ import { BaseScript } from "./Base.s.sol";
 /// @dev Deploys {SablierV2NFTDescriptor} at a deterministic address across chains.
 /// @dev Reverts if the contract has already been deployed.
 contract DeployDeterministicNFTDescriptor is BaseScript {
-    function run() public virtual broadcast returns (SablierV2NFTDescriptor nftDescriptor) {
+    function run() public virtual sphinx returns (SablierV2NFTDescriptor nftDescriptor) {
         bytes32 salt = constructCreate2Salt();
         nftDescriptor = new SablierV2NFTDescriptor{ salt: salt }();
     }

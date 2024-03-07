@@ -18,7 +18,7 @@ contract DeployCore is BaseScript {
     function run(address initialAdmin)
         public
         virtual
-        broadcast
+        sphinx
         returns (
             SablierV2LockupDynamic lockupDynamic,
             SablierV2LockupLinear lockupLinear,

@@ -15,7 +15,7 @@ contract DeployDeterministicLockupLinear is BaseScript {
     )
         public
         virtual
-        broadcast
+        sphinx
         returns (SablierV2LockupLinear lockupLinear)
     {
         bytes32 salt = constructCreate2Salt();

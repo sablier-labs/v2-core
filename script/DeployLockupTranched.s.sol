@@ -13,7 +13,7 @@ contract DeployLockupTranched is BaseScript {
     )
         public
         virtual
-        broadcast
+        sphinx
         returns (SablierV2LockupTranched lockupTranched)
     {
         lockupTranched = new SablierV2LockupTranched(initialAdmin, initialNFTDescriptor, maxCount);
