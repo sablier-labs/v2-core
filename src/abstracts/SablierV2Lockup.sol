@@ -23,7 +23,7 @@ abstract contract SablierV2Lockup is
     Adminable, // 1 inherited components
     NoDelegateCall, // 0 inherited components
     IERC4906, // 2 inherited components
-    ISablierV2Lockup, // 5 inherited components
+    ISablierV2Lockup, // 4 inherited components
     ERC721 // 6 inherited components
 {
     using SafeERC20 for IERC20;
