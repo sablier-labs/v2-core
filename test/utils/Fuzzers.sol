@@ -46,7 +46,7 @@ abstract contract Fuzzers is Constants, Utils {
         }
     }
 
-    /// @dev Fuzzes the segment amounts and calculates the create amounts (total, deposit, and broker fee).
+    /// @dev Fuzzes the segment amounts and calculate the total and create amounts (deposit and broker fee).
     function fuzzDynamicStreamAmounts(
         uint128 upperBound,
         LockupDynamic.SegmentWithDuration[] memory segments,
@@ -63,7 +63,7 @@ abstract contract Fuzzers is Constants, Utils {
         }
     }
 
-    /// @dev Fuzzes the segment amounts and calculates the create amounts (total, deposit, and broker fee).
+    /// @dev Fuzzes the segment amounts and calculate the total and create amounts (deposit and broker fee).
     function fuzzDynamicStreamAmounts(
         uint128 upperBound,
         LockupDynamic.Segment[] memory segments,
@@ -181,7 +181,7 @@ abstract contract Fuzzers is Constants, Utils {
         }
     }
 
-    /// @dev Fuzzes the tranche amounts and calculates the create amounts (total, deposit, and broker fee).
+    /// @dev Fuzzes the tranche amounts and calculates the total and create amounts (deposit and broker fee).
     function fuzzTranchedStreamAmounts(
         uint128 upperBound,
         LockupTranched.TrancheWithDuration[] memory tranches,
@@ -198,7 +198,7 @@ abstract contract Fuzzers is Constants, Utils {
         }
     }
 
-    /// @dev Fuzzes the tranche amounts and calculates the create amounts (total, deposit, and broker fee).
+    /// @dev Fuzzes the tranche amounts and calculates the total and create amounts (deposit and broker fee).
     function fuzzTranchedStreamAmounts(
         uint128 upperBound,
         LockupTranched.Tranche[] memory tranches,

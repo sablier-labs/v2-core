@@ -115,7 +115,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         // Fuzz the segment timestamps.
         fuzzSegmentTimestamps(params.segments, params.startTime);
 
-        // Fuzz the segment amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the segment amounts and calculate the total and create amounts (deposit and broker fee).
         Vars memory vars;
         (vars.totalAmount, vars.createAmounts) = fuzzDynamicStreamAmounts({
             upperBound: uint128(initialHolderBalance),

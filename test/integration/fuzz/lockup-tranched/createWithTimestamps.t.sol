@@ -198,7 +198,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         // Fuzz the tranche timestamps.
         fuzzTrancheTimestamps(params.tranches, params.startTime);
 
-        // Fuzz the tranche amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the tranche amounts and calculate the total and create amounts (deposit and broker fee).
         Vars memory vars;
         (vars.totalAmount, vars.createAmounts) = fuzzTranchedStreamAmounts({
             upperBound: MAX_UINT128,

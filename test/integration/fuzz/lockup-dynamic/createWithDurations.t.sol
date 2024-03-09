@@ -47,7 +47,7 @@ contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is
         Vars memory vars;
         fuzzSegmentDurations(segments);
 
-        // Fuzz the segment amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the segment amounts and calculate the total and create amounts (deposit and broker fee).
         (vars.totalAmount, vars.createAmounts) = fuzzDynamicStreamAmounts(segments);
 
         // Make the Sender the stream's funder (recall that the Sender is the default caller).

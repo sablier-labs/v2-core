@@ -2,7 +2,6 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 import { Solarray } from "solarray/src/Solarray.sol";
 
 import { Broker, Lockup, LockupTranched } from "src/types/DataTypes.sol";
@@ -116,7 +115,7 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         // Fuzz the tranche timestamps.
         fuzzTrancheTimestamps(params.tranches, params.startTime);
 
-        // Fuzz the tranche amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the tranche amounts and calculate the total and create amounts (deposit and broker fee).
         Vars memory vars;
         (vars.totalAmount, vars.createAmounts) = fuzzTranchedStreamAmounts({
             upperBound: uint128(initialHolderBalance),

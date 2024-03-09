@@ -47,7 +47,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
         Vars memory vars;
         fuzzTrancheDurations(tranches);
 
-        // Fuzz the tranche amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the tranche amounts and calculate the total and create amounts (deposit and broker fee).
         (vars.totalAmount, vars.createAmounts) = fuzzTranchedStreamAmounts(tranches);
 
         // Make the Sender the stream's funder (recall that the Sender is the default caller).

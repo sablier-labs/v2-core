@@ -67,7 +67,7 @@ contract LockupTranchedCreateHandler is BaseHandler {
         // Fuzz the durations.
         fuzzTrancheDurations(params.tranches);
 
-        // Fuzz the tranche amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the tranche amounts and calculate the total amount.
         (params.totalAmount,) = fuzzTranchedStreamAmounts({
             upperBound: 1_000_000_000e18,
             tranches: params.tranches,
@@ -114,7 +114,7 @@ contract LockupTranchedCreateHandler is BaseHandler {
         // Fuzz the tranche timestamps.
         fuzzTrancheTimestamps(params.tranches, params.startTime);
 
-        // Fuzz the tranche amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the tranche amounts and calculate the total amount.
         (params.totalAmount,) = fuzzTranchedStreamAmounts({
             upperBound: 1_000_000_000e18,
             tranches: params.tranches,

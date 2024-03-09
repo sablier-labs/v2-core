@@ -28,10 +28,10 @@ struct Broker {
 
 /// @notice Namespace for the structs used in both {SablierV2LockupLinear} and {SablierV2LockupDynamic}.
 library Lockup {
-    /// @notice Struct encapsulating the deposit, withdrawn, and refunded amounts, all denoted in units
-    /// of the asset's decimals.
-    /// @dev Because the deposited and the withdrawn amount are often read together, declaring them in
-    /// the same slot saves gas.
+    /// @notice Struct encapsulating the deposit, withdrawn, and refunded amounts, all denoted in units of the asset's
+    /// decimals.
+    /// @dev Because the deposited and the withdrawn amount are often read together, declaring them in the same slot
+    /// saves gas.
     /// @param deposited The initial amount deposited in the stream, net of broker fee.
     /// @param withdrawn The cumulative amount withdrawn from the stream.
     /// @param refunded The amount refunded to the sender. Unless the stream was canceled, this is always zero.
@@ -43,8 +43,8 @@ library Lockup {
         uint128 refunded;
     }
 
-    /// @notice Struct encapsulating the deposit amount and the broker fee amount, all denoted in units
-    /// of the asset's decimals.
+    /// @notice Struct encapsulating the deposit amount and the broker fee amount, all denoted in units of the asset's
+    /// decimals.
     /// @param deposit The amount to deposit in the stream.
     /// @param brokerFee The broker fee amount.
     struct CreateAmounts {

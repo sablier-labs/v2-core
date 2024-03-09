@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
@@ -23,7 +22,7 @@ library Errors {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when the broker fee exceeds the maximum allowed fee.
-    error SablierV2Lockup_BrokerFeeTooHigh(UD60x18 brokerFee, UD60x18 maxFee);
+    error SablierV2Lockup_BrokerFeeTooHigh(UD60x18 brokerFee, UD60x18 maxBrokerFee);
 
     /// @notice Thrown when trying to create a stream with a zero deposit amount.
     error SablierV2Lockup_DepositAmountZero();

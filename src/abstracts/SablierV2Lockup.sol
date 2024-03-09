@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.22;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
-import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
-import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
 import { ISablierV2Recipient } from "../interfaces/hooks/ISablierV2Recipient.sol";
 import { ISablierV2Sender } from "../interfaces/hooks/ISablierV2Sender.sol";
+import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
+import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
 import { Errors } from "../libraries/Errors.sol";
 import { Lockup } from "../types/DataTypes.sol";
-import { NoDelegateCall } from "./NoDelegateCall.sol";
 import { Adminable } from "./Adminable.sol";
+import { NoDelegateCall } from "./NoDelegateCall.sol";
 
 /// @title SablierV2Lockup
 /// @notice See the documentation in {ISablierV2Lockup}.

@@ -13,8 +13,8 @@ library Helpers {
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Checks that broker fee is greater than `maxBrokerFee`, the broker fee amount, and the deposit amount from
-    /// the total amount.
+    /// @dev Checks that broker fee is not greater than `maxBrokerFee` and then calculates the broker fee amount and the
+    /// deposit amount from the total amount.
     function checkAndCalculateBrokerFee(
         uint128 totalAmount,
         UD60x18 brokerFee,

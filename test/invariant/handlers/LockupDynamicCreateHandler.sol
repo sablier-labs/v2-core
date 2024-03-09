@@ -67,7 +67,7 @@ contract LockupDynamicCreateHandler is BaseHandler {
         // Fuzz the durations.
         fuzzSegmentDurations(params.segments);
 
-        // Fuzz the segment amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the segment amounts and calculate the total amount.
         (params.totalAmount,) = fuzzDynamicStreamAmounts({
             upperBound: 1_000_000_000e18,
             segments: params.segments,
@@ -114,7 +114,7 @@ contract LockupDynamicCreateHandler is BaseHandler {
         // Fuzz the segment timestamps.
         fuzzSegmentTimestamps(params.segments, params.startTime);
 
-        // Fuzz the segment amounts and calculate the create amounts (total, deposit, and broker fee).
+        // Fuzz the segment amounts and calculate the total amount.
         (params.totalAmount,) = fuzzDynamicStreamAmounts({
             upperBound: 1_000_000_000e18,
             segments: params.segments,
