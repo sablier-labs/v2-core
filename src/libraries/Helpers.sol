@@ -13,7 +13,7 @@ library Helpers {
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Checks that broker fee is not greater than `maxBrokerFee` and then calculates the broker fee amount and the
+    /// @dev Checks the broker fee is not greater than `maxBrokerFee`, and then calculates the broker fee amount and the
     /// deposit amount from the total amount.
     function checkAndCalculateBrokerFee(
         uint128 totalAmount,
@@ -41,7 +41,7 @@ library Helpers {
         // Assert that the total amount is strictly greater than the broker fee amount.
         assert(totalAmount > amounts.brokerFee);
 
-        // Calculate the deposit amount (the amount to stream, net of broker fee).
+        // Calculate the deposit amount (the amount to stream, net of the broker fee).
         amounts.deposit = totalAmount - amounts.brokerFee;
     }
 

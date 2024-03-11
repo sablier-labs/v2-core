@@ -18,7 +18,7 @@ interface ISablierV2LockupTranched is ISablierV2Lockup {
     /// @param funder The address which has funded the stream.
     /// @param sender The address from which to stream the assets, who will have the ability to cancel the stream.
     /// @param recipient The address toward which to stream the assets.
-    /// @param amounts Struct containing (i) the deposit amount, and (ii) the broker fee amount, all denoted
+    /// @param amounts Struct containing (i) the deposit amount, and (ii) the broker fee amount, both denoted
     /// in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset used for streaming.
     /// @param cancelable Boolean indicating whether the stream will be cancelable or not.

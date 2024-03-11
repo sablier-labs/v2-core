@@ -20,8 +20,8 @@ import { NoDelegateCall } from "./NoDelegateCall.sol";
 /// @title SablierV2Lockup
 /// @notice See the documentation in {ISablierV2Lockup}.
 abstract contract SablierV2Lockup is
-    Adminable, // 1 inherited components
     NoDelegateCall, // 0 inherited components
+    Adminable, // 1 inherited components
     IERC4906, // 2 inherited components
     ISablierV2Lockup, // 4 inherited components
     ERC721 // 6 inherited components
