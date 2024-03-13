@@ -26,6 +26,6 @@ contract DeployCorePrecompiles is BaseScript {
             ISablierV2NFTDescriptor nftDescriptor
         )
     {
-        (lockupDynamic, lockupLinear, lockupTranched, nftDescriptor) = new Precompiles().deployCore(initialAdmin);
+        // (lockupDynamic, lockupLinear, lockupTranched, nftDescriptor) = new Precompiles().deployCore(initialAdmin);
     }
 }
