@@ -184,9 +184,9 @@ contract Precompiles {
     /// @notice Deploys all V2 Core contracts in the following order:
     ///
     /// 1. {SablierV2NFTDescriptor}
-    /// 2. {SablierV2LockupLinear}
-    /// 3. {SablierV2LockupTranched}
-    /// 4. {SablierV2LockupDynamic}
+    /// 2. {SablierV2LockupDynamic}
+    /// 3. {SablierV2LockupLinear}
+    /// 4. {SablierV2LockupTranched}
     function deployCore(address initialAdmin)
         public
         returns (
