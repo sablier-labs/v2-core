@@ -25,6 +25,8 @@
   "files": [
     "artifacts",
     "precompiles",
+    "script/Base.s.sol",
+    "script/DeployCorePrecompiles.s.sol",
     "src",
     "test/utils",
     "CHANGELOG.md",

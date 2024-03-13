@@ -8,7 +8,7 @@ import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 
 import { BaseScript } from "./Base.s.sol";
 
-/// @notice Deploys all V2 Core contract in the following order:
+/// @notice Deploys all V2 Core contracts in the following order:
 ///
 /// 1. {SablierV2NFTDescriptor}
 /// 2. {SablierV2LockupDynamic}
