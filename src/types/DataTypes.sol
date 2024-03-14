@@ -182,6 +182,7 @@ library LockupDynamic {
     /// @dev It contains the same data as the `Lockup.Stream` struct, plus the segments.
     struct StreamLD {
         address sender;
+        address recipient;
         uint40 startTime;
         uint40 endTime;
         bool isCancelable;
@@ -267,6 +268,7 @@ library LockupLinear {
     /// @dev It contains the same data as the `Lockup.Stream` struct, plus the cliff value.
     struct StreamLL {
         address sender;
+        address recipient;
         uint40 startTime;
         bool isCancelable;
         bool wasCanceled;
@@ -345,6 +347,7 @@ library LockupTranched {
     /// @dev It contains the same data as the `Lockup.Stream` struct, plus the tranches.
     struct StreamLT {
         address sender;
+        address recipient;
         uint40 startTime;
         uint40 endTime;
         bool isCancelable;
