@@ -14,6 +14,9 @@ contract BaseScript is Script, Sphinx {
     /// @dev The Avalanche chain ID.
     uint256 internal constant AVALANCHE_CHAIN_ID = 43_114;
 
+    /// @dev The project name for the Sphinx plugin.
+    string internal constant SPHINX_PROJECT_NAME = "test-test";
+
     /// @dev Included to enable compilation of the script without a $MNEMONIC environment variable.
     string internal constant TEST_MNEMONIC = "test test test test test test test test test test test junk";
 
@@ -30,6 +33,9 @@ contract BaseScript is Script, Sphinx {
     /// @dev Used to derive the broadcaster's address if $EOA is not defined.
     string internal mnemonic;
 
+    /// @dev The project name for the Sphinx plugin.
+    string internal sphinxProjectName;
+
     /// @dev Initializes the transaction broadcaster like this:
     ///
     /// - If $EOA is defined, use it.
@@ -45,6 +51,7 @@ contract BaseScript is Script, Sphinx {
             mnemonic = vm.envOr({ name: "MNEMONIC", defaultValue: TEST_MNEMONIC });
             (broadcaster,) = deriveRememberKey({ mnemonic: mnemonic, index: 0 });
         }
+        sphinxProjectName = vm.envOr({ name: "SPHINX_PROJECT_NAME", defaultValue: SPHINX_PROJECT_NAME });
 
         // Sets `maxCount` to 300 for Avalanche, and 500 for all other chains.
         if (block.chainid == AVALANCHE_CHAIN_ID) {
@@ -68,7 +75,7 @@ contract BaseScript is Script, Sphinx {
         sphinxConfig.mainnets = ["arbitrum", "avalanche", "bnb", "gnosis", "ethereum", "optimism", "polygon"];
         sphinxConfig.orgId = vm.envOr({ name: "SPHINX_ORG_ID", defaultValue: TEST_MNEMONIC });
         sphinxConfig.owners = [broadcaster];
-        sphinxConfig.projectName = "v2-core";
+        sphinxConfig.projectName = sphinxProjectName;
         sphinxConfig.testnets = ["sepolia"];
         sphinxConfig.threshold = 1;
     }
