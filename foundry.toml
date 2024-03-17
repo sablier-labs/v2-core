@@ -1,6 +1,5 @@
 [profile.default]
   auto_detect_solc = false
-  build_info = true
   bytecode_hash = "none"
   emv_version = "paris"
   extra_output = ['storageLayout']

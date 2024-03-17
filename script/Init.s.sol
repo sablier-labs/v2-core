@@ -25,7 +25,7 @@ contract Init is BaseScript {
         IERC20 asset
     )
         public
-        sphinx
+        broadcast
     {
         address sender = broadcaster;
         address recipient = vm.addr(vm.deriveKey({ mnemonic: mnemonic, index: 1 }));
