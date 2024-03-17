@@ -17,7 +17,7 @@ import { BaseScript } from "./Base.s.sol";
 ///
 /// @dev Reverts if any contract has already been deployed.
 contract DeployDeterministicCore is BaseScript {
-    // Deploy using forge script
+    /// @dev Deploy using Forge.
     function runBroadcast(address initialAdmin)
         public
         virtual
@@ -32,7 +32,7 @@ contract DeployDeterministicCore is BaseScript {
         (lockupDynamic, lockupLinear, lockupTranched, nftDescriptor) = _run(initialAdmin);
     }
 
-    // Deploy using Sphinx plugin
+    /// @dev Deploy using Sphinx.
     function runSphinx(address initialAdmin)
         public
         virtual

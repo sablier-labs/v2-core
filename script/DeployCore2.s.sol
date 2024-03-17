@@ -14,7 +14,7 @@ import { BaseScript } from "./Base.s.sol";
 /// 2. {SablierV2LockupLinear}
 /// 3. {SablierV2LockupTranched}
 contract DeployCore2 is BaseScript {
-    // Deploy using forge script
+    /// @dev Deploy using Forge CLI.
     function runBroadcast(
         address initialAdmin,
         ISablierV2NFTDescriptor nftDescriptor
@@ -31,7 +31,7 @@ contract DeployCore2 is BaseScript {
         (lockupDynamic, lockupLinear, lockupTranched) = _run(initialAdmin, nftDescriptor);
     }
 
-    // Deploy using Sphinx plugin
+    /// @dev Deploy using Sphinx CLI.
     function runSphinx(
         address initialAdmin,
         ISablierV2NFTDescriptor nftDescriptor

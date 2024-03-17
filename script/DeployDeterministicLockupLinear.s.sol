@@ -9,7 +9,7 @@ import { BaseScript } from "./Base.s.sol";
 /// @dev Deploys {SablierV2LockupLinear} at a deterministic address across chains.
 /// @dev Reverts if the contract has already been deployed.
 contract DeployDeterministicLockupLinear is BaseScript {
-    // Deploy using forge script
+    /// @dev Deploy using Forge CLI.
     function runBroadcast(
         address initialAdmin,
         ISablierV2NFTDescriptor initialNFTDescriptor
@@ -22,7 +22,7 @@ contract DeployDeterministicLockupLinear is BaseScript {
         lockupLinear = _run(initialAdmin, initialNFTDescriptor);
     }
 
-    // Deploy using Sphinx plugin
+    /// @dev Deploy using Sphinx CLI.
     function runSphinx(
         address initialAdmin,
         ISablierV2NFTDescriptor initialNFTDescriptor
