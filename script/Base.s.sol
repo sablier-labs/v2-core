@@ -41,6 +41,7 @@ contract BaseScript is Script, Sphinx {
     /// - If $EOA is defined, use it.
     /// - Otherwise, derive the broadcaster address from $MNEMONIC.
     /// - If $MNEMONIC is not defined, default to a test mnemonic.
+    /// - If $SPHINX_PROJECT_NAME is not defined, default to a test project name.
     ///
     /// The use case for $EOA is to specify the broadcaster key and its address via the command line.
     constructor() {
