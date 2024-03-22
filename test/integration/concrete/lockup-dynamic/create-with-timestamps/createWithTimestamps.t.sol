@@ -199,7 +199,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenSegmentTimestampsOrdered
     {
         uint40 endTime = defaults.END_TIME();
-        vm.warp({ timestamp: endTime });
+        vm.warp({ newTimestamp: endTime });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_EndTimeNotInTheFuture.selector, endTime, endTime));
         createDefaultStream();
     }

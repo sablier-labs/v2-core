@@ -45,7 +45,7 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         changePrank({ msgSender: caller });
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.START_TIME() + timeJump });
+        vm.warp({ newTimestamp: defaults.START_TIME() + timeJump });
 
         // Bound the ongoing withdraw amount.
         uint128 ongoingWithdrawableAmount = lockup.withdrawableAmountOf(ongoingStreamId);

@@ -43,7 +43,7 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
     /// contract, the streaming starts after the start time.
     modifier givenStatusStreaming() {
         // Warp to the future, after the stream's start time but before the stream's end time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 

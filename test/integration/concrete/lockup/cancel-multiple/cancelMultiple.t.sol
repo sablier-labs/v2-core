@@ -42,14 +42,14 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
     }
 
     function test_RevertGiven_AllStreamsCold() external whenNotDelegateCalled whenArrayCountNotZero givenNoNull {
-        vm.warp({ timestamp: defaults.END_TIME() });
+        vm.warp({ newTimestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, testStreamIds[0]));
         lockup.cancelMultiple({ streamIds: testStreamIds });
     }
 
     function test_RevertGiven_SomeStreamsCold() external whenNotDelegateCalled whenArrayCountNotZero givenNoNull {
         uint256 earlyStreamId = createDefaultStreamWithEndTime({ endTime: defaults.CLIFF_TIME() + 1 seconds });
-        vm.warp({ timestamp: defaults.CLIFF_TIME() + 1 seconds });
+        vm.warp({ newTimestamp: defaults.CLIFF_TIME() + 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, earlyStreamId));
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(testStreamIds[0], earlyStreamId) });
     }
@@ -168,7 +168,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         givenAllStreamsCancelable
     {
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Expect the assets to be refunded to the stream's sender.
         uint128 senderAmount0 = lockup.refundableAmountOf(testStreamIds[0]);

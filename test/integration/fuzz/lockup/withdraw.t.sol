@@ -28,7 +28,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         changePrank({ msgSender: caller });
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Make the withdrawal.
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.WITHDRAW_AMOUNT() });
@@ -65,7 +65,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         changePrank({ msgSender: users.operator });
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Make the withdrawal.
         lockup.withdraw({ streamId: defaultStreamId, to: to, amount: defaults.WITHDRAW_AMOUNT() });
@@ -103,7 +103,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         vm.assume(to != address(0));
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.START_TIME() + timeJump });
+        vm.warp({ newTimestamp: defaults.START_TIME() + timeJump });
 
         // Cancel the stream.
         changePrank({ msgSender: users.sender });
@@ -170,7 +170,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         vm.assume(to != address(0));
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.START_TIME() + timeJump });
+        vm.warp({ newTimestamp: defaults.START_TIME() + timeJump });
 
         // Bound the withdraw amount.
         uint128 withdrawableAmount = lockup.withdrawableAmountOf(defaultStreamId);

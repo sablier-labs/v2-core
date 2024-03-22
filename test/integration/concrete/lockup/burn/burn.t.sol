@@ -51,7 +51,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         givenNotNull
         givenStreamHasNotBeenDepleted
     {
-        vm.warp({ timestamp: getBlockTimestamp() - 1 seconds });
+        vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
@@ -62,7 +62,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         givenNotNull
         givenStreamHasNotBeenDepleted
     {
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
@@ -73,7 +73,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         givenNotNull
         givenStreamHasNotBeenDepleted
     {
-        vm.warp({ timestamp: defaults.END_TIME() });
+        vm.warp({ newTimestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
@@ -84,7 +84,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         givenNotNull
         givenStreamHasNotBeenDepleted
     {
-        vm.warp({ timestamp: defaults.CLIFF_TIME() });
+        vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         changePrank({ msgSender: users.sender });
         lockup.cancel(streamId);
         changePrank({ msgSender: users.recipient });
@@ -93,7 +93,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
     }
 
     modifier givenStreamHasBeenDepleted(uint256 streamId_) {
-        vm.warp({ timestamp: defaults.END_TIME() });
+        vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: streamId_, to: users.recipient });
         _;
     }

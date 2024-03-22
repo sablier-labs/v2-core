@@ -40,7 +40,7 @@ contract TokenURI_LockupTranched_Integration_Concrete_Test is LockupTranched_Int
 
     modifier givenNFTExists() {
         defaultStreamId = createDefaultStream();
-        vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
+        vm.warp({ newTimestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
         _;
     }
 

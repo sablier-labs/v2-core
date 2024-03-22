@@ -245,7 +245,7 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
 
         // Simulate the passage of time.
         params.warpTimestamp = boundUint40(params.warpTimestamp, vars.range.start, vars.range.end + 100 seconds);
-        vm.warp({ timestamp: params.warpTimestamp });
+        vm.warp({ newTimestamp: params.warpTimestamp });
 
         // Bound the withdraw amount.
         vars.withdrawableAmount = lockupTranched.withdrawableAmountOf(vars.streamId);

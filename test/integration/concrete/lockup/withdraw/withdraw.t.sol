@@ -36,7 +36,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
     }
 
     function test_RevertGiven_StreamDepleted() external whenNotDelegateCalled givenNotNull {
-        vm.warp({ timestamp: defaults.END_TIME() });
+        vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
@@ -172,7 +172,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         changePrank({ msgSender: users.operator });
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Make the withdrawal.
         lockup.withdraw({ streamId: defaultStreamId, to: users.operator, amount: defaults.WITHDRAW_AMOUNT() });
@@ -240,7 +240,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         uint256 streamId = createDefaultStreamWithSender(address(reentrantSender));
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Halve the withdraw amount so that the recipient can re-entry and make another withdrawal.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT() / 2;
@@ -330,7 +330,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         changePrank({ msgSender: address(0xCAFE) });
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Make the withdrawal.
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.WITHDRAW_AMOUNT() });
@@ -352,7 +352,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenWithdrawalAddressIsRecipient
     {
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Make the withdrawal.
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.WITHDRAW_AMOUNT() });
@@ -380,7 +380,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenCallerSender
     {
         // Warp to the stream's end.
-        vm.warp({ timestamp: defaults.END_TIME() });
+        vm.warp({ newTimestamp: defaults.END_TIME() });
 
         // Make the withdrawal.
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.DEPOSIT_AMOUNT() });
@@ -402,7 +402,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     modifier givenEndTimeInTheFuture() {
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
@@ -590,7 +590,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
     function test_Withdraw_CallerRecipient(uint256 streamId, address sender) internal {
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.WARP_26_PERCENT() });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Set the withdraw amount to the default amount.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();

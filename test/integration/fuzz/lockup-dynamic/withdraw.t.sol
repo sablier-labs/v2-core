@@ -79,7 +79,7 @@ contract Withdraw_LockupDynamic_Integration_Fuzz_Test is
         vars.streamId = lockupDynamic.createWithTimestamps(createParams);
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: defaults.START_TIME() + params.timeJump });
+        vm.warp({ newTimestamp: defaults.START_TIME() + params.timeJump });
 
         // Query the withdrawable amount.
         vars.withdrawableAmount = lockupDynamic.withdrawableAmountOf(vars.streamId);

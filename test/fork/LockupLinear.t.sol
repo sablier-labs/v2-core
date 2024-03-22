@@ -231,7 +231,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
 
         // Simulate the passage of time.
         params.warpTimestamp = boundUint40(params.warpTimestamp, params.range.cliff, params.range.end + 100 seconds);
-        vm.warp({ timestamp: params.warpTimestamp });
+        vm.warp({ newTimestamp: params.warpTimestamp });
 
         // Bound the withdraw amount.
         vars.withdrawableAmount = lockupLinear.withdrawableAmountOf(vars.streamId);

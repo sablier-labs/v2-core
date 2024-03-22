@@ -40,7 +40,7 @@ contract TokenURI_LockupLinear_Integration_Concrete_Test is LockupLinear_Integra
 
     modifier givenNFTExists() {
         defaultStreamId = createDefaultStream();
-        vm.warp({ timestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
+        vm.warp({ newTimestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
         _;
     }
 

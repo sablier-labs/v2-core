@@ -46,7 +46,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
 
         // Simulate the passage of time.
         uint40 currentTime = defaults.START_TIME() + timeJump;
-        vm.warp({ timestamp: currentTime });
+        vm.warp({ newTimestamp: currentTime });
 
         // Run the test.
         uint128 actualWithdrawableAmount = lockupDynamic.withdrawableAmountOf(streamId);
@@ -95,7 +95,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
 
         // Simulate the passage of time.
-        vm.warp({ timestamp: currentTime });
+        vm.warp({ newTimestamp: currentTime });
 
         // Make the withdrawal.
         lockupDynamic.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });

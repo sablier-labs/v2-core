@@ -28,21 +28,21 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
     }
 
     function test_RevertGiven_StatusDepleted() external whenNotDelegateCalled givenNotNull givenStreamCold {
-        vm.warp({ timestamp: defaults.END_TIME() });
+        vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamDepleted.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
     function test_RevertGiven_StatusCanceled() external whenNotDelegateCalled givenNotNull givenStreamCold {
-        vm.warp({ timestamp: defaults.CLIFF_TIME() });
+        vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamCanceled.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
     function test_RevertGiven_StatusSettled() external whenNotDelegateCalled givenNotNull givenStreamCold {
-        vm.warp({ timestamp: defaults.END_TIME() });
+        vm.warp({ newTimestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_StreamSettled.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
@@ -95,7 +95,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
     function test_Cancel_StatusPending() external {
         // Warp to the past.
-        vm.warp({ timestamp: getBlockTimestamp() - 1 seconds });
+        vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
 
         // Cancel the stream.
         lockup.cancel(defaultStreamId);

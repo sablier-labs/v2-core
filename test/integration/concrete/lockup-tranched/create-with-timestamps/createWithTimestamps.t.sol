@@ -200,7 +200,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenTrancheTimestampsOrdered
     {
         uint40 endTime = defaults.END_TIME();
-        vm.warp({ timestamp: endTime });
+        vm.warp({ newTimestamp: endTime });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_EndTimeNotInTheFuture.selector, endTime, endTime));
         createDefaultStream();
     }
