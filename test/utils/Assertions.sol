@@ -11,13 +11,13 @@ abstract contract Assertions is PRBMathAssertions {
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    event LogNamedArray(string key, LockupDynamic.Segment[] segments);
+    event log_named_array(string key, LockupDynamic.Segment[] segments);
 
-    event LogNamedArray(string key, LockupTranched.Tranche[] tranches);
+    event log_named_array(string key, LockupTranched.Tranche[] tranches);
 
-    event LogNamedUint128(string key, uint128 value);
+    event log_named_uint128(string key, uint128 value);
 
-    event LogNamedUint40(string key, uint40 value);
+    event log_named_uint40(string key, uint40 value);
 
     /*//////////////////////////////////////////////////////////////////////////
                                      ASSERTIONS
@@ -109,8 +109,8 @@ abstract contract Assertions is PRBMathAssertions {
     function assertEq(LockupDynamic.Segment[] memory a, LockupDynamic.Segment[] memory b) internal {
         if (keccak256(abi.encode(a)) != keccak256(abi.encode(b))) {
             emit log("Error: a == b not satisfied [LockupDynamic.Segment[]]");
-            emit LogNamedArray("   Left", a);
-            emit LogNamedArray("  Right", b);
+            emit log_named_array("   Left", a);
+            emit log_named_array("  Right", b);
             fail();
         }
     }
@@ -127,8 +127,8 @@ abstract contract Assertions is PRBMathAssertions {
     function assertEq(LockupTranched.Tranche[] memory a, LockupTranched.Tranche[] memory b) internal {
         if (keccak256(abi.encode(a)) != keccak256(abi.encode(b))) {
             emit log("Error: a == b not satisfied [LockupTranched.Tranche[]]");
-            emit LogNamedArray("   Left", a);
-            emit LogNamedArray("  Right", b);
+            emit log_named_array("   Left", a);
+            emit log_named_array("  Right", b);
             fail();
         }
     }
@@ -161,8 +161,8 @@ abstract contract Assertions is PRBMathAssertions {
     function assertEqUint128(uint128 a, uint128 b) internal {
         if (a != b) {
             emit log("Error: a == b not satisfied [uint128]");
-            emit LogNamedUint128("   Left", a);
-            emit LogNamedUint128("  Right", b);
+            emit log_named_uint128("   Left", a);
+            emit log_named_uint128("  Right", b);
             fail();
         }
     }
@@ -179,8 +179,8 @@ abstract contract Assertions is PRBMathAssertions {
     function assertEqUint40(uint40 a, uint40 b) internal {
         if (a != b) {
             emit log("Error: a == b not satisfied [uint40]");
-            emit LogNamedUint40("   Left", a);
-            emit LogNamedUint40("  Right", b);
+            emit log_named_uint40("   Left", a);
+            emit log_named_uint40("  Right", b);
             fail();
         }
     }

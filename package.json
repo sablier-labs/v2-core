@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "5.0.0",
-    "@prb/math": "github:smol-ninja/prb-math#test/forge-std-v1.8.1"
+    "@prb/math": "github:PaulRBerg/prb-math"
   },
   "devDependencies": {
     "@sphinx-labs/plugins": "^0.30.6",
