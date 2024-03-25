@@ -52,7 +52,7 @@
     "web3"
   ],
   "peerDependencies": {
-    "@prb/math": "4.0.x"
+    "@prb/math": "github:PaulRBerg/prb-math"
   },
   "publishConfig": {
     "access": "public"
