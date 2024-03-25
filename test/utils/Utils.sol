@@ -3,11 +3,11 @@ pragma solidity >=0.8.22;
 
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { PRBMathUtils } from "@prb/math/test/utils/Utils.sol";
+import { CommonBase } from "forge-std/src/Base.sol";
 
 import { LockupDynamic, LockupTranched } from "../../src/types/DataTypes.sol";
-import { BaseVm } from "./BaseVm.sol";
 
-abstract contract Utils is BaseVm, PRBMathUtils {
+abstract contract Utils is CommonBase, PRBMathUtils {
     /// @dev Bounds a `uint128` number.
     function boundUint128(uint128 x, uint128 min, uint128 max) internal pure returns (uint128) {
         return uint128(_bound(uint256(x), uint256(min), uint256(max)));
