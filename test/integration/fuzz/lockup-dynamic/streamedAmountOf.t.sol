@@ -19,7 +19,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         LockupDynamic_Integration_Fuzz_Test.setUp();
         StreamedAmountOf_Integration_Shared_Test.setUp();
 
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
     }
 
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:

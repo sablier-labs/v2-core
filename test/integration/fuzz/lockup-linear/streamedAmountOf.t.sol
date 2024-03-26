@@ -21,7 +21,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is
         StreamedAmountOf_Integration_Shared_Test.setUp();
         defaultStreamId = createDefaultStream();
 
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
     }
 
     function testFuzz_StreamedAmountOf_CliffTimeInTheFuture(uint40 timeJump)

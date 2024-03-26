@@ -48,7 +48,7 @@ abstract contract CancelMultiple_Integration_Shared_Test is Lockup_Integration_S
         _;
         vm.warp({ newTimestamp: originalTime });
         createTestStreams();
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
         _;
     }
 

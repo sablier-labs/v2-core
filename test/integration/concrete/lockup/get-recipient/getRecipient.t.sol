@@ -28,7 +28,7 @@ abstract contract GetRecipient_Integration_Concrete_Test is Integration_Test, Lo
         vm.warp({ newTimestamp: defaults.END_TIME() });
 
         // Make the Recipient the caller.
-        changePrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient });
 
         // Deplete the stream.
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });

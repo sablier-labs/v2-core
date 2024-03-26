@@ -90,7 +90,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         address unknownCaller = address(0xCAFE);
 
         // Make Eve the caller in this test.
-        changePrank({ msgSender: unknownCaller });
+        resetPrank({ msgSender: unknownCaller });
 
         // Run the test.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
@@ -115,7 +115,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenWithdrawalAddressNotRecipient
     {
         // Make the Sender the caller in this test.
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
 
         // Run the test.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
@@ -169,7 +169,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });
 
         // Make the operator the caller in this test.
-        changePrank({ msgSender: users.operator });
+        resetPrank({ msgSender: users.operator });
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -327,7 +327,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenWithdrawalAddressIsRecipient
     {
         // Make the unknown address the caller in this test.
-        changePrank({ msgSender: address(0xCAFE) });
+        resetPrank({ msgSender: address(0xCAFE) });
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -364,7 +364,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
     }
 
     modifier whenCallerSender() {
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
         _;
     }
 

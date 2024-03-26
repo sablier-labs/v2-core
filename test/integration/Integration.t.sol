@@ -31,7 +31,7 @@ abstract contract Integration_Test is Base_Test {
         labelContracts();
 
         // Make the Admin the default caller in this test suite.
-        changePrank({ msgSender: users.admin });
+        resetPrank({ msgSender: users.admin });
     }
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -11,7 +11,7 @@ contract TransferAdmin_Unit_Fuzz_Test is Adminable_Unit_Shared_Test {
         assumeNotPrecompile(eve);
 
         // Make Eve the caller in this test.
-        changePrank(eve);
+        resetPrank(eve);
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, eve));

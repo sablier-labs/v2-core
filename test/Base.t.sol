@@ -99,7 +99,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
 
     /// @dev Approves all V2 Core contracts to spend assets from the address passed.
     function approveProtocol(address from) internal {
-        changePrank({ msgSender: from });
+        resetPrank({ msgSender: from });
         dai.approve({ spender: address(lockupLinear), value: MAX_UINT256 });
         dai.approve({ spender: address(lockupDynamic), value: MAX_UINT256 });
         dai.approve({ spender: address(lockupTranched), value: MAX_UINT256 });

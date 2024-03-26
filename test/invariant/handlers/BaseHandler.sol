@@ -80,7 +80,7 @@ abstract contract BaseHandler is Constants, Fuzzers, StdCheats {
 
     /// @dev Makes the provided sender the caller.
     modifier useNewSender(address sender) {
-        changePrank(sender);
+        resetPrank(sender);
         _;
     }
 }

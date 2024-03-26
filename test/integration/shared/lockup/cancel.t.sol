@@ -8,7 +8,7 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
 
     function setUp() public virtual override {
         defaultStreamId = createDefaultStream();
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
     }
 
     modifier whenNotDelegateCalled() {

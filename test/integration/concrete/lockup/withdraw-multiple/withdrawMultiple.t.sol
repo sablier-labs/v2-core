@@ -183,11 +183,11 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         vm.warp({ newTimestamp: earlyStopTime });
 
         // Cancel the 3rd stream.
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
         lockup.cancel(testStreamIds[2]);
 
         // Run the test with the caller provided in {whenCallerAuthorizedAllStreams}.
-        changePrank({ msgSender: caller });
+        resetPrank({ msgSender: caller });
 
         // Expect the withdrawals to be made.
         expectCallToTransfer({ to: users.recipient, value: testAmounts[0] });

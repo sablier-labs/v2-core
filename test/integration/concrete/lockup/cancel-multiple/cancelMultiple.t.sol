@@ -63,7 +63,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         whenCallerUnauthorized
     {
         // Make Eve the caller in this test.
-        changePrank({ msgSender: users.eve });
+        resetPrank({ msgSender: users.eve });
 
         // Run the test.
         vm.expectRevert(
@@ -81,7 +81,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         whenCallerUnauthorized
     {
         // Make the Recipient the caller in this test.
-        changePrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient });
 
         // Run the test.
         vm.expectRevert(
@@ -98,7 +98,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         givenAllStreamsWarm
         whenCallerUnauthorized
     {
-        changePrank({ msgSender: users.eve });
+        resetPrank({ msgSender: users.eve });
 
         // Create a stream with Eve as the stream's sender.
         uint256 eveStreamId = createDefaultStreamWithSender(users.eve);
@@ -120,7 +120,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         whenCallerUnauthorized
     {
         // Make the Recipient the caller in this test.
-        changePrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient });
 
         // Run the test.
         vm.expectRevert(

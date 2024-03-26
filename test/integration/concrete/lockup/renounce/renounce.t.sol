@@ -70,7 +70,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
 
     function test_RevertWhen_CallerNotSender() external whenNotDelegateCalled givenStreamWarm {
         // Make Eve the caller in this test.
-        changePrank({ msgSender: users.eve });
+        resetPrank({ msgSender: users.eve });
 
         // Run the test.
         vm.expectRevert(

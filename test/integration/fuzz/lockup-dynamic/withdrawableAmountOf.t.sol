@@ -20,7 +20,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         LockupDynamic_Integration_Fuzz_Test.setUp();
         WithdrawableAmountOf_Integration_Shared_Test.setUp();
 
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
     }
 
     modifier whenStartTimeInThePast() {

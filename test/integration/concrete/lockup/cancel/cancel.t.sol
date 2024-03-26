@@ -55,7 +55,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenCallerUnauthorized
     {
         // Make Eve the caller in this test.
-        changePrank({ msgSender: users.eve });
+        resetPrank({ msgSender: users.eve });
 
         // Run the test.
         vm.expectRevert(
@@ -72,7 +72,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenCallerUnauthorized
     {
         // Make the Recipient the caller in this test.
-        changePrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient });
 
         // Run the test.
         vm.expectRevert(

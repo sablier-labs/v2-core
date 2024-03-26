@@ -72,4 +72,10 @@ abstract contract Utils is CommonBase, PRBMathUtils {
         string memory profile = vm.envOr({ name: "FOUNDRY_PROFILE", defaultValue: string("default") });
         return Strings.equal(profile, "test-optimized");
     }
+
+    /// @dev Stops the active prank and sets a new one.
+    function resetPrank(address msgSender) internal {
+        vm.stopPrank();
+        vm.startPrank(msgSender);
+    }
 }

@@ -29,7 +29,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
 
     function test_RevertWhen_CallerNotCurrentRecipient() external whenNotDelegateCalled givenNotNull {
         // Make Eve the caller in this test.
-        changePrank({ msgSender: users.eve });
+        resetPrank({ msgSender: users.eve });
 
         // Run the test.
         vm.expectRevert(

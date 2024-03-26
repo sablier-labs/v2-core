@@ -69,7 +69,7 @@ contract Withdraw_LockupTranched_Integration_Fuzz_Test is
         deal({ token: address(dai), to: vars.funder, give: vars.totalAmount });
 
         // Make the Sender the caller.
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
 
         // Create the stream with the fuzzed tranches.
         LockupTranched.CreateWithTimestamps memory createParams = defaults.createWithTimestampsLT();
@@ -93,7 +93,7 @@ contract Withdraw_LockupTranched_Integration_Fuzz_Test is
         vars.withdrawAmount = boundUint128(vars.withdrawAmount, 1, vars.withdrawableAmount);
 
         // Make the Recipient the caller.
-        changePrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient });
 
         // Expect the assets to be transferred to the fuzzed `to` address.
         expectCallToTransfer({ to: params.to, value: vars.withdrawAmount });

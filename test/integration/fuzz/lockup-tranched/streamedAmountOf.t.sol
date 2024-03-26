@@ -19,7 +19,7 @@ contract StreamedAmountOf_LockupTranched_Integration_Fuzz_Test is
         LockupTranched_Integration_Fuzz_Test.setUp();
         StreamedAmountOf_Integration_Shared_Test.setUp();
 
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
     }
 
     modifier givenMultipleTranches() {

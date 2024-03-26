@@ -34,7 +34,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
     }
 
     modifier whenCliffTimeNotInTheFuture() {
-        changePrank({ msgSender: users.sender });
+        resetPrank({ msgSender: users.sender });
         _;
     }
 
