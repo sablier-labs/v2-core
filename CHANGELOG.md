@@ -4,12 +4,37 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Common Changelog](https://common-changelog.org/).
 
+[1.2.0]: https://github.com/sablier-labs/v2-core/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/sablier-labs/v2-core/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/sablier-labs/v2-core/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/sablier-labs/v2-core/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/sablier-labs/v2-core/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/sablier-labs/v2-core/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/sablier-labs/v2-core/releases/tag/v1.0.0
+
+## [1.2.0] - 2024-03-21
+
+### Changed
+
+- **Breaking:** Move common logic into `Lockup` contract ([#813](https://github.com/sablier-labs/v2-core/pull/813),
+  [#850](https://github.com/sablier-labs/v2-core/pull/850), [#784](https://github.com/sablier-labs/v2-core/pull/784))
+- Make `withdraw` function callable by any account ([#785](https://github.com/sablier-labs/v2-core/pull/785))
+- Remove `to` in `withdrawMultiple` function ([#785](https://github.com/sablier-labs/v2-core/pull/785))
+- Rename functions in `ISablierV2Recipient` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
+- Upgrade to OpenZeppelin v5.0.0 ([#806](https://github.com/sablier-labs/v2-core/pull/806))
+- Switch to bun for dependency management ([#775](https://github.com/sablier-labs/v2-core/pull/775))
+- Use pragma solidity >=0.8.22 ([#783](https://github.com/sablier-labs/v2-core/pull/783))
+- Bump package version for NPM release
+
+### Added
+
+- Add support for Lockup tranched stream ([#817](https://github.com/sablier-labs/v2-core/pull/817))
+- Add `ISablierV2Sender` hook to be called during withdraw ([#781](https://github.com/sablier-labs/v2-core/pull/781))
+
+### Removed
+
+- **Breaking:** remove protocol fee ([#839](https://github.com/sablier-labs/v2-core/pull/839))
+- Remove flash loan abstract contract ([#779](https://github.com/sablier-labs/v2-core/pull/779))
 
 ## [1.1.2] - 2023-12-19
 
