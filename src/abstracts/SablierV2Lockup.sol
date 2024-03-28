@@ -464,7 +464,7 @@ abstract contract SablierV2Lockup is
     function _calculateStreamedAmount(uint256 streamId) internal view virtual returns (uint128);
 
     /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party.
-    /// @param streamId The stream id for the query.
+    /// @param streamId The stream ID for the query.
     function _isCallerStreamRecipientOrApproved(uint256 streamId) internal view returns (bool) {
         address recipient = _ownerOf(streamId);
         return msg.sender == recipient || isApprovedForAll({ owner: recipient, operator: msg.sender })
@@ -472,7 +472,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @notice Checks whether `msg.sender` is the stream's sender.
-    /// @param streamId The stream id for the query.
+    /// @param streamId The stream ID for the query.
     function _isCallerStreamSender(uint256 streamId) internal view returns (bool) {
         return msg.sender == _streams[streamId].sender;
     }

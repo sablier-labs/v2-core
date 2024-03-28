@@ -290,7 +290,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         }
         assertEq(vars.actualStatus, vars.expectedStatus);
 
-        // Assert that the next stream id has been bumped.
+        // Assert that the next stream ID has been bumped.
         vars.actualNextStreamId = lockupTranched.nextStreamId();
         vars.expectedNextStreamId = streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "nextStreamId");

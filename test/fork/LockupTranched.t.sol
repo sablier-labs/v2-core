@@ -86,7 +86,7 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
     ///
     /// - It should perform all expected ERC-20 transfers.
     /// - It should create the stream.
-    /// - It should bump the next stream id.
+    /// - It should bump the next stream ID.
     /// - It should mint the NFT.
     /// - It should emit a {CreateLockupTranchedStream} event.
     /// - It may make a withdrawal.
@@ -206,7 +206,7 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         }
         assertEq(vars.actualStatus, vars.expectedStatus, "post-create stream status");
 
-        // Assert that the next stream id has been bumped.
+        // Assert that the next stream ID has been bumped.
         vars.actualNextStreamId = lockupTranched.nextStreamId();
         vars.expectedNextStreamId = vars.streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "post-create nextStreamId");

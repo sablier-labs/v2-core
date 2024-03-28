@@ -33,7 +33,7 @@ library Errors {
     /// @notice Thrown when trying to transfer Stream NFT when transferability is disabled.
     error SablierV2Lockup_NotTransferable(uint256 tokenId);
 
-    /// @notice Thrown when the id references a null stream.
+    /// @notice Thrown when the ID references a null stream.
     error SablierV2Lockup_Null(uint256 streamId);
 
     /// @notice Thrown when trying to withdraw an amount greater than the withdrawable amount.

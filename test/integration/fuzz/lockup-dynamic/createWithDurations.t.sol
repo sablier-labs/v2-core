@@ -119,7 +119,7 @@ contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is
         vars.expectedStatus = vars.isSettled ? Lockup.Status.SETTLED : Lockup.Status.STREAMING;
         assertEq(vars.actualStatus, vars.expectedStatus);
 
-        // Assert that the next stream id has been bumped.
+        // Assert that the next stream ID has been bumped.
         vars.actualNextStreamId = lockupDynamic.nextStreamId();
         vars.expectedNextStreamId = streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "nextStreamId");

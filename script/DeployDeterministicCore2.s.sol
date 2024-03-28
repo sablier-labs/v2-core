@@ -16,7 +16,7 @@ import { BaseScript } from "./Base.s.sol";
 ///
 /// @dev Reverts if any contract has already been deployed.
 contract DeployDeterministicCore2 is BaseScript {
-    /// @dev Deploy using Forge CLI.
+    /// @dev Deploy via Forge.
     function runBroadcast(
         address initialAdmin,
         ISablierV2NFTDescriptor nftDescriptor
@@ -33,7 +33,7 @@ contract DeployDeterministicCore2 is BaseScript {
         (lockupDynamic, lockupLinear, lockupTranched) = _run(initialAdmin, nftDescriptor);
     }
 
-    /// @dev Deploy using Sphinx CLI.
+    /// @dev Deploy via Sphinx.
     function runSphinx(
         address initialAdmin,
         ISablierV2NFTDescriptor nftDescriptor

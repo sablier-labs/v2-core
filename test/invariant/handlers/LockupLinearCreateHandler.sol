@@ -73,7 +73,7 @@ contract LockupLinearCreateHandler is BaseHandler {
         params.asset = asset;
         uint256 streamId = lockupLinear.createWithDurations(params);
 
-        // Store the stream id.
+        // Store the stream ID.
         lockupStore.pushStreamId(streamId, params.sender, params.recipient);
     }
 
@@ -116,7 +116,7 @@ contract LockupLinearCreateHandler is BaseHandler {
         params.asset = asset;
         uint256 streamId = lockupLinear.createWithTimestamps(params);
 
-        // Store the stream id.
+        // Store the stream ID.
         lockupStore.pushStreamId(streamId, params.sender, params.recipient);
     }
 }

@@ -44,7 +44,7 @@ contract SablierV2LockupTranched is
     /// @inheritdoc ISablierV2LockupTranched
     uint256 public immutable override MAX_TRANCHE_COUNT;
 
-    /// @dev Stream tranches mapped by stream ids.
+    /// @dev Stream tranches mapped by stream IDs.
     mapping(uint256 id => LockupTranched.Tranche[] tranches) internal _tranches;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -171,7 +171,7 @@ contract SablierV2LockupTranched is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierV2Lockup
-    /// @dev The streaming function is:
+    /// @dev The distribution function is:
     ///
     /// $$
     /// f(x) = \Sigma(eta)
@@ -184,7 +184,7 @@ contract SablierV2LockupTranched is
         uint40 currentTime = uint40(block.timestamp);
         LockupTranched.Tranche[] memory tranches = _tranches[streamId];
 
-        // If the first timestamp in the tranches is in the future, return zero.
+        // If the first tranche's timestamp is in the future, return zero.
         if (tranches[0].timestamp > currentTime) {
             return 0;
         }
@@ -225,7 +225,7 @@ contract SablierV2LockupTranched is
         // Checks: validate the user-provided parameters.
         Helpers.checkCreateWithTimestamps(createAmounts.deposit, params.tranches, MAX_TRANCHE_COUNT, params.startTime);
 
-        // Load the stream id in a variable.
+        // Load the stream ID in a variable.
         streamId = nextStreamId;
 
         // Effects: create the stream.
@@ -249,7 +249,7 @@ contract SablierV2LockupTranched is
                 _tranches[streamId].push(params.tranches[i]);
             }
 
-            // Effects: bump the next stream id.
+            // Effects: bump the next stream ID.
             // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
             nextStreamId = streamId + 1;
         }

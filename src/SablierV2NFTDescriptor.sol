@@ -194,7 +194,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     /// @notice Generates a pseudo-random HSL color by hashing together the `chainid`, the `sablier` address,
     /// and the `streamId`. This will be used as the accent color for the SVG.
     function generateAccentColor(address sablier, uint256 streamId) internal view returns (string memory) {
-        // The chain id is part of the hash so that the generated color is different across chains.
+        // The chain ID is part of the hash so that the generated color is different across chains.
         uint256 chainId = block.chainid;
 
         // Hash the parameters to generate a pseudo-random bit field, which will be used as entropy.

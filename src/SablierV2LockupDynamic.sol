@@ -49,7 +49,7 @@ contract SablierV2LockupDynamic is
     /// @inheritdoc ISablierV2LockupDynamic
     uint256 public immutable override MAX_SEGMENT_COUNT;
 
-    /// @dev Stream segments mapped by stream ids.
+    /// @dev Stream segments mapped by stream IDs.
     mapping(uint256 id => LockupDynamic.Segment[] segments) internal _segments;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -176,7 +176,7 @@ contract SablierV2LockupDynamic is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierV2Lockup
-    /// @dev The streaming function is:
+    /// @dev The distribution function is:
     ///
     /// $$
     /// f(x) = x^{exp} * csa + \Sigma(esa)
@@ -323,7 +323,7 @@ contract SablierV2LockupDynamic is
         // Checks: validate the user-provided parameters.
         Helpers.checkCreateWithTimestamps(createAmounts.deposit, params.segments, MAX_SEGMENT_COUNT, params.startTime);
 
-        // Load the stream id in a variable.
+        // Load the stream ID in a variable.
         streamId = nextStreamId;
 
         // Effects: create the stream.
@@ -347,7 +347,7 @@ contract SablierV2LockupDynamic is
                 _segments[streamId].push(params.segments[i]);
             }
 
-            // Effects: bump the next stream id.
+            // Effects: bump the next stream ID.
             // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
             nextStreamId = streamId + 1;
         }
