@@ -43,7 +43,7 @@ contract SablierV2LockupLinear is
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Cliff times mapped by stream ids.
+    /// @dev Cliff times mapped by stream IDs.
     mapping(uint256 id => uint40 cliff) internal _cliffs;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ contract SablierV2LockupLinear is
         notNull(streamId)
         returns (LockupLinear.StreamLL memory stream)
     {
-        // Retrieve the lockup stream from storage.
+        // Retrieve the Lockup stream from storage.
         Lockup.Stream memory lockupStream = _streams[streamId];
 
         // Settled streams cannot be canceled.
@@ -177,7 +177,7 @@ contract SablierV2LockupLinear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierV2Lockup
-    /// @dev The streaming function is:
+    /// @dev The distribution function is:
     ///
     /// $$
     /// f(x) = x * d + c
@@ -247,7 +247,7 @@ contract SablierV2LockupLinear is
         // Checks: validate the user-provided parameters.
         Helpers.checkCreateWithTimestamps(createAmounts.deposit, params.range);
 
-        // Load the stream id.
+        // Load the stream ID.
         streamId = nextStreamId;
 
         // Effects: create the stream.
@@ -269,7 +269,7 @@ contract SablierV2LockupLinear is
             _cliffs[streamId] = params.range.cliff;
         }
 
-        // Effects: bump the next stream id.
+        // Effects: bump the next stream ID.
         // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
         unchecked {
             nextStreamId = streamId + 1;

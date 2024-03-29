@@ -100,7 +100,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         expectedStream.cliffTime = 0;
         assertEq(actualStream, expectedStream);
 
-        // Assert that the next stream id has been bumped.
+        // Assert that the next stream ID has been bumped.
         uint256 actualNextStreamId = lockupLinear.nextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
@@ -290,7 +290,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         Lockup.Status expectedStatus = Lockup.Status.PENDING;
         assertEq(actualStatus, expectedStatus);
 
-        // Assert that the next stream id has been bumped.
+        // Assert that the next stream ID has been bumped.
         uint256 actualNextStreamId = lockupLinear.nextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");

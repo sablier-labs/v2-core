@@ -18,7 +18,8 @@ contract Precompiles {
                                      CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    uint256 internal constant MAX_COUNT = 500;
+    uint256 internal constant MAX_SEGMENT_COUNT = 500;
+    uint256 internal constant MAX_TRANCHE_COUNT = 500;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      BYTECODES
@@ -43,7 +44,7 @@ contract Precompiles {
     /// - A default value is passed for `maxSegmentCount`.
     /// - A dummy {SablierV2NFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupDynamic(address initialAdmin) public returns (ISablierV2LockupDynamic lockupDynamic) {
-        uint256 maxSegmentCount = MAX_COUNT;
+        uint256 maxSegmentCount = MAX_SEGMENT_COUNT;
         lockupDynamic = deployLockupDynamic(initialAdmin, maxSegmentCount);
     }
 
@@ -69,7 +70,7 @@ contract Precompiles {
         public
         returns (ISablierV2LockupDynamic lockupDynamic)
     {
-        lockupDynamic = deployLockupDynamic(initialAdmin, nftDescriptor, MAX_COUNT);
+        lockupDynamic = deployLockupDynamic(initialAdmin, nftDescriptor, MAX_SEGMENT_COUNT);
     }
 
     /// @notice Deploys {SablierV2LockupDynamic} from precompiled bytecode.
@@ -121,7 +122,7 @@ contract Precompiles {
     /// - A default value is passed for `maxTrancheCount`.
     /// - A dummy {SablierV2NFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupTranched(address initialAdmin) public returns (ISablierV2LockupTranched lockupTranched) {
-        uint256 maxTrancheCount = MAX_COUNT;
+        uint256 maxTrancheCount = MAX_TRANCHE_COUNT;
         lockupTranched = deployLockupTranched(initialAdmin, maxTrancheCount);
     }
 
@@ -147,7 +148,7 @@ contract Precompiles {
         public
         returns (ISablierV2LockupTranched lockupTranched)
     {
-        lockupTranched = deployLockupTranched(initialAdmin, nftDescriptor, MAX_COUNT);
+        lockupTranched = deployLockupTranched(initialAdmin, nftDescriptor, MAX_TRANCHE_COUNT);
     }
 
     /// @notice Deploys {SablierV2LockupTranched} from precompiled bytecode.

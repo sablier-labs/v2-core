@@ -44,7 +44,7 @@ contract SablierV2LockupTranched is
     /// @inheritdoc ISablierV2LockupTranched
     uint256 public immutable override MAX_TRANCHE_COUNT;
 
-    /// @dev Stream tranches mapped by stream ids.
+    /// @dev Stream tranches mapped by stream IDs.
     mapping(uint256 id => LockupTranched.Tranche[] tranches) internal _tranches;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ contract SablierV2LockupTranched is
         notNull(streamId)
         returns (LockupTranched.StreamLT memory stream)
     {
-        // Retrieve the lockup stream from storage.
+        // Retrieve the Lockup stream from storage.
         Lockup.Stream memory lockupStream = _streams[streamId];
 
         // Settled streams cannot be canceled.
@@ -171,7 +171,7 @@ contract SablierV2LockupTranched is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierV2Lockup
-    /// @dev The streaming function is:
+    /// @dev The distribution function is:
     ///
     /// $$
     /// f(x) = \Sigma(eta)
@@ -179,12 +179,12 @@ contract SablierV2LockupTranched is
     ///
     /// Where:
     ///
-    /// - $\Sigma(eta)$ is the sum of all elapsed tranches' amounts.
+    /// - $\Sigma(eta)$ is the sum of all vested tranches' amounts.
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
         uint40 currentTime = uint40(block.timestamp);
         LockupTranched.Tranche[] memory tranches = _tranches[streamId];
 
-        // If the first timestamp in the tranches is in the future, return zero.
+        // If the first tranche's timestamp is in the future, return zero.
         if (tranches[0].timestamp > currentTime) {
             return 0;
         }
@@ -194,16 +194,16 @@ contract SablierV2LockupTranched is
             return _streams[streamId].amounts.deposited;
         }
 
-        // Sum the amounts in all tranches that precede the current time.
+        // Sum the amounts in all tranches that have already been vested.
         // Using unchecked arithmetic is safe because the sum of the tranche amounts is equal to the total amount
         // at this point.
         uint128 streamedAmount = tranches[0].amount;
-        uint256 index = 1;
-        unchecked {
-            while (tranches[index].timestamp <= currentTime) {
-                streamedAmount += tranches[index].amount;
-                index += 1;
+        for (uint256 i = 1; i < tranches.length; ++i) {
+            // If a tranche's timestamp is equal to the current time, it is considered vested.
+            if (tranches[i].timestamp > currentTime) {
+                break;
             }
+            streamedAmount += tranches[i].amount;
         }
 
         return streamedAmount;
@@ -225,7 +225,7 @@ contract SablierV2LockupTranched is
         // Checks: validate the user-provided parameters.
         Helpers.checkCreateWithTimestamps(createAmounts.deposit, params.tranches, MAX_TRANCHE_COUNT, params.startTime);
 
-        // Load the stream id in a variable.
+        // Load the stream ID in a variable.
         streamId = nextStreamId;
 
         // Effects: create the stream.
@@ -249,7 +249,7 @@ contract SablierV2LockupTranched is
                 _tranches[streamId].push(params.tranches[i]);
             }
 
-            // Effects: bump the next stream id.
+            // Effects: bump the next stream ID.
             // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
             nextStreamId = streamId + 1;
         }

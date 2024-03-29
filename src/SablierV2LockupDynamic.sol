@@ -49,7 +49,7 @@ contract SablierV2LockupDynamic is
     /// @inheritdoc ISablierV2LockupDynamic
     uint256 public immutable override MAX_SEGMENT_COUNT;
 
-    /// @dev Stream segments mapped by stream ids.
+    /// @dev Stream segments mapped by stream IDs.
     mapping(uint256 id => LockupDynamic.Segment[] segments) internal _segments;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ contract SablierV2LockupDynamic is
         notNull(streamId)
         returns (LockupDynamic.StreamLD memory stream)
     {
-        // Retrieve the lockup stream from storage.
+        // Retrieve the Lockup stream from storage.
         Lockup.Stream memory lockupStream = _streams[streamId];
 
         // Settled streams cannot be canceled.
@@ -176,7 +176,7 @@ contract SablierV2LockupDynamic is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierV2Lockup
-    /// @dev The streaming function is:
+    /// @dev The distribution function is:
     ///
     /// $$
     /// f(x) = x^{exp} * csa + \Sigma(esa)
@@ -184,10 +184,10 @@ contract SablierV2LockupDynamic is
     ///
     /// Where:
     ///
-    /// - $x$ is the elapsed time divided by the total time in the current segment.
+    /// - $x$ is the elapsed time divided by the total duration of the current segment.
     /// - $exp$ is the current segment exponent.
     /// - $csa$ is the current segment amount.
-    /// - $\Sigma(esa)$ is the sum of all elapsed segments' amounts.
+    /// - $\Sigma(esa)$ is the sum of all vested segments' amounts.
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
         // If the start time is in the future, return zero.
         uint40 currentTime = uint40(block.timestamp);
@@ -251,14 +251,14 @@ contract SablierV2LockupDynamic is
             }
 
             // Calculate how much time has passed since the segment started, and the total time of the segment.
-            SD59x18 elapsedSegmentTime = (currentTime - previousTimestamp).intoSD59x18();
-            SD59x18 totalSegmentTime = (currentSegmentTimestamp - previousTimestamp).intoSD59x18();
+            SD59x18 segmentElapsedTime = (currentTime - previousTimestamp).intoSD59x18();
+            SD59x18 segmentDuration = (currentSegmentTimestamp - previousTimestamp).intoSD59x18();
 
-            // Divide the elapsed segment time by the total duration of the segment.
-            SD59x18 elapsedSegmentTimePercentage = elapsedSegmentTime.div(totalSegmentTime);
+            // Divide the vested segment's time by the total duration of the segment.
+            SD59x18 segmentElapsedTimePercentage = segmentElapsedTime.div(segmentDuration);
 
             // Calculate the streamed amount using the special formula.
-            SD59x18 multiplier = elapsedSegmentTimePercentage.pow(currentSegmentExponent);
+            SD59x18 multiplier = segmentElapsedTimePercentage.pow(currentSegmentExponent);
             SD59x18 segmentStreamedAmount = multiplier.mul(currentSegmentAmount);
 
             // Although the segment streamed amount should never exceed the total segment amount, this condition is
@@ -324,7 +324,7 @@ contract SablierV2LockupDynamic is
         // Checks: validate the user-provided parameters.
         Helpers.checkCreateWithTimestamps(createAmounts.deposit, params.segments, MAX_SEGMENT_COUNT, params.startTime);
 
-        // Load the stream id in a variable.
+        // Load the stream ID in a variable.
         streamId = nextStreamId;
 
         // Effects: create the stream.
@@ -348,7 +348,7 @@ contract SablierV2LockupDynamic is
                 _segments[streamId].push(params.segments[i]);
             }
 
-            // Effects: bump the next stream id.
+            // Effects: bump the next stream ID.
             // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
             nextStreamId = streamId + 1;
         }

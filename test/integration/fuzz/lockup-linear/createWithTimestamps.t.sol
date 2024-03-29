@@ -193,7 +193,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         vars.expectedStatus = params.range.start > getBlockTimestamp() ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
         assertEq(vars.actualStatus, vars.expectedStatus);
 
-        // Assert that the next stream id has been bumped.
+        // Assert that the next stream ID has been bumped.
         vars.actualNextStreamId = lockupLinear.nextStreamId();
         vars.expectedNextStreamId = streamId + 1;
         assertEq(vars.actualNextStreamId, vars.expectedNextStreamId, "nextStreamId");

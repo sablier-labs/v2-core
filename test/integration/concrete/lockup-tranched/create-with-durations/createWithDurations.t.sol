@@ -170,7 +170,7 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
         Lockup.Status expectedStatus = Lockup.Status.STREAMING;
         assertEq(actualStatus, expectedStatus);
 
-        // Assert that the next stream id has been bumped.
+        // Assert that the next stream ID has been bumped.
         uint256 actualNextStreamId = lockupTranched.nextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");

@@ -76,7 +76,7 @@ library Helpers {
             revert Errors.SablierV2LockupDynamic_SegmentCountTooHigh(segmentCount);
         }
 
-        // Checks: requirements of segments variables.
+        // Checks: requirements of segments.
         _checkSegments(segments, depositAmount, startTime);
     }
 
@@ -145,7 +145,7 @@ library Helpers {
             revert Errors.SablierV2LockupTranched_TrancheCountTooHigh(trancheCount);
         }
 
-        // Checks: requirements of tranches variables.
+        // Checks: requirements of tranches.
         _checkTranches(tranches, depositAmount, startTime);
     }
 
@@ -238,8 +238,8 @@ library Helpers {
 
         // Pre-declare the variables needed in the for loop.
         uint128 segmentAmountsSum;
-        uint40 currentTimestamp;
-        uint40 previousTimestamp;
+        uint40 currentSegmentTimestamp;
+        uint40 previousSegmentTimestamp;
 
         // Iterate over the segments to:
         //
@@ -251,22 +251,23 @@ library Helpers {
             segmentAmountsSum += segments[index].amount;
 
             // Checks: the current timestamp is strictly greater than the previous timestamp.
-            currentTimestamp = segments[index].timestamp;
-            if (currentTimestamp <= previousTimestamp) {
+            currentSegmentTimestamp = segments[index].timestamp;
+            if (currentSegmentTimestamp <= previousSegmentTimestamp) {
                 revert Errors.SablierV2LockupDynamic_SegmentTimestampsNotOrdered(
-                    index, previousTimestamp, currentTimestamp
+                    index, previousSegmentTimestamp, currentSegmentTimestamp
                 );
             }
 
             // Make the current timestamp the previous timestamp of the next loop iteration.
-            previousTimestamp = currentTimestamp;
+            previousSegmentTimestamp = currentSegmentTimestamp;
         }
 
         // Checks: the last timestamp is in the future.
-        // When the loop exits, the current timestamp is the last timestamp, i.e. the stream's end time.
+        // When the loop exits, the current segment's timestamp is the last segment's timestamp, i.e. the stream's end
+        // time. The variable is not renamed for gas efficiency purposes.
         uint40 currentTime = uint40(block.timestamp);
-        if (currentTime >= currentTimestamp) {
-            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, currentTimestamp);
+        if (currentTime >= currentSegmentTimestamp) {
+            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, currentSegmentTimestamp);
         }
 
         // Checks: the deposit amount is equal to the segment amounts sum.
@@ -300,8 +301,8 @@ library Helpers {
 
         // Pre-declare the variables needed in the for loop.
         uint128 trancheAmountsSum;
-        uint40 currentTimestamp;
-        uint40 previousTimestamp;
+        uint40 currentTrancheTimestamp;
+        uint40 previousTrancheTimestamp;
 
         // Iterate over the tranches to:
         //
@@ -313,22 +314,23 @@ library Helpers {
             trancheAmountsSum += tranches[index].amount;
 
             // Checks: the current timestamp is strictly greater than the previous timestamp.
-            currentTimestamp = tranches[index].timestamp;
-            if (currentTimestamp <= previousTimestamp) {
+            currentTrancheTimestamp = tranches[index].timestamp;
+            if (currentTrancheTimestamp <= previousTrancheTimestamp) {
                 revert Errors.SablierV2LockupTranched_TrancheTimestampsNotOrdered(
-                    index, previousTimestamp, currentTimestamp
+                    index, previousTrancheTimestamp, currentTrancheTimestamp
                 );
             }
 
             // Make the current timestamp the previous timestamp of the next loop iteration.
-            previousTimestamp = currentTimestamp;
+            previousTrancheTimestamp = currentTrancheTimestamp;
         }
 
         // Checks: the last timestamp is in the future.
-        // When the loop exits, the current timestamp is the last timestamp, i.e. the stream's end time.
+        // When the loop exits, the current tranche's timestamp is the last tranche's timestamp, i.e. the stream's end
+        // time. The variable is not renamed for gas efficiency purposes.
         uint40 currentTime = uint40(block.timestamp);
-        if (currentTime >= currentTimestamp) {
-            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, currentTimestamp);
+        if (currentTime >= currentTrancheTimestamp) {
+            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, currentTrancheTimestamp);
         }
 
         // Checks: the deposit amount is equal to the tranche amounts sum.

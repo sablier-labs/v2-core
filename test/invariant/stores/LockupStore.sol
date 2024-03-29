@@ -26,7 +26,7 @@ contract LockupStore {
         senders[streamId] = sender;
         recipients[streamId] = recipient;
 
-        // Update the last stream id.
+        // Update the last stream ID.
         lastStreamId = streamId;
     }
 

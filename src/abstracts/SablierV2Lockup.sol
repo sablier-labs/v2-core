@@ -388,7 +388,7 @@ abstract contract SablierV2Lockup is
             }) { } catch { }
         }
 
-        // Interactions: if `msg.sender` is not the sender, the sender is a contract and sender is different from the
+        // Interactions: if `msg.sender` is not the sender, the sender is a contract and is different from the
         // recipient, try to invoke the withdraw hook on it without reverting if the hook is not implemented, and also
         // without bubbling up any potential revert.
         if (msg.sender != sender && sender.code.length > 0 && sender != recipient) {
@@ -464,7 +464,7 @@ abstract contract SablierV2Lockup is
     function _calculateStreamedAmount(uint256 streamId) internal view virtual returns (uint128);
 
     /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party.
-    /// @param streamId The stream id for the query.
+    /// @param streamId The stream ID for the query.
     function _isCallerStreamRecipientOrApproved(uint256 streamId) internal view returns (bool) {
         address recipient = _ownerOf(streamId);
         return msg.sender == recipient || isApprovedForAll({ owner: recipient, operator: msg.sender })
@@ -472,7 +472,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @notice Checks whether `msg.sender` is the stream's sender.
-    /// @param streamId The stream id for the query.
+    /// @param streamId The stream ID for the query.
     function _isCallerStreamSender(uint256 streamId) internal view returns (bool) {
         return msg.sender == _streams[streamId].sender;
     }
