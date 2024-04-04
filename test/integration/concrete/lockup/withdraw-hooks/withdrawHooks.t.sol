@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: UNLICENSED
-// solhint-disable max-line-length
 pragma solidity >=0.8.22 <0.9.0;
 
 import { ISablierV2Recipient } from "src/interfaces/hooks/ISablierV2Recipient.sol";
@@ -9,8 +8,11 @@ import { Integration_Test } from "../../../Integration.t.sol";
 import { Withdraw_Integration_Shared_Test } from "../../../shared/lockup/withdraw.t.sol";
 
 abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, Withdraw_Integration_Shared_Test {
+    uint128 internal withdrawAmount;
+
     function setUp() public virtual override(Integration_Test, Withdraw_Integration_Shared_Test) {
         Withdraw_Integration_Shared_Test.setUp();
+        withdrawAmount = defaults.WITHDRAW_AMOUNT();
     }
 
     modifier givenDifferentSenderAndRecipient() {
@@ -25,7 +27,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
     {
         address unknownCaller = address(0xCAFE);
 
-        // Create the stream with sender and recipient as contracts.
+        // Create the stream with both the sender and the recipient as contracts.
         uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
 
         // Make `unknownCaller` the caller in this test.
@@ -33,9 +35,6 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
-        // Set the withdraw amount to the default amount.
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
 
         // Expect a call to the recipient hook.
         vm.expectCall({
@@ -66,7 +65,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         givenRecipientContract
         givenDifferentSenderAndRecipient
     {
-        // Create the stream with sender and recipient as contracts.
+        // Create the stream with both the sender and the recipient as contracts.
         uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
 
         // Approve the operator to handle the stream.
@@ -78,9 +77,6 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
-        // Set the withdraw amount to the default amount.
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
 
         // Expect a call to the recipient hook.
         vm.expectCall({
@@ -111,7 +107,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         givenRecipientContract
         givenDifferentSenderAndRecipient
     {
-        // Create the stream with sender and recipient as contracts.
+        // Create the stream with both the sender and the recipient as contracts.
         uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
 
         // Make the sender the caller in this test.
@@ -119,9 +115,6 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
-        // Set the withdraw amount to the default amount.
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
 
         // Expect 1 call to the recipient hook.
         vm.expectCall({
@@ -133,7 +126,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             count: 1
         });
 
-        // Expect 0 calls to the sender hook.
+        // Expect no calls to the sender hook.
         vm.expectCall({
             callee: address(goodSender),
             data: abi.encodeCall(
@@ -153,7 +146,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         givenRecipientContract
         givenDifferentSenderAndRecipient
     {
-        // Create the stream with sender and recipient as contracts.
+        // Create the stream with both the sender and the recipient as contracts.
         uint256 streamId = createDefaultStreamWithUsers(address(goodRecipient), address(goodSender));
 
         // Make the recipient the caller in this test.
@@ -162,10 +155,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
-        // Set the withdraw amount to the default amount.
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
-
-        // Expect 0 calls to the recipient hook.
+        // Expect no calls to the recipient hook.
         vm.expectCall({
             callee: address(goodRecipient),
             data: abi.encodeCall(
@@ -196,17 +186,14 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
     function test_WithdrawHooks_SenderHook_CallerUnknown() external givenSenderContract givenSameSenderAndRecipient {
         address unknownCaller = address(0xCAFE);
 
-        // Create the stream with recipient which is same as the sender contract.
-        uint256 streamId = createDefaultStreamToSender(address(goodSender));
+        // Create the stream with the recipient as the sender.
+        uint256 streamId = createDefaultStreamWithIdenticalUsers(address(goodSender));
 
         // Make unknownCaller the caller in this test.
         changePrank({ msgSender: unknownCaller });
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
-        // Set the withdraw amount to the default amount.
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
 
         // Expect a call to the sender hook.
         vm.expectCall({
@@ -227,7 +214,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         givenSameSenderAndRecipient
     {
         // Create the stream with recipient which is same as the sender contract.
-        uint256 streamId = createDefaultStreamToSender(address(goodSender));
+        uint256 streamId = createDefaultStreamWithIdenticalUsers(address(goodSender));
 
         // Approve the operator to handle the stream.
         changePrank({ msgSender: address(goodSender) });
@@ -238,9 +225,6 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
-        // Set the withdraw amount to the default amount.
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
 
         // Expect a call to the sender hook.
         vm.expectCall({
@@ -257,7 +241,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
     function test_WithdrawHooks_SenderHook_CallerSender() external givenSenderContract givenSameSenderAndRecipient {
         // Create the stream with the sender as the recipient.
-        uint256 streamId = createDefaultStreamToSender(address(goodSender));
+        uint256 streamId = createDefaultStreamWithIdenticalUsers(address(goodSender));
 
         // Approve the operator to handle the stream.
         changePrank({ msgSender: address(goodSender) });
@@ -265,10 +249,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
-        // Set the withdraw amount to the default amount.
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
-
-        // Expect 0 calls to the sender hook.
+        // Expect no calls to the sender hook.
         vm.expectCall({
             callee: address(goodSender),
             data: abi.encodeCall(

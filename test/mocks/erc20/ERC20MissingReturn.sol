@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
 /// @notice An implementation of ERC-20 that does not return a boolean in {transfer} and {transferFrom}.

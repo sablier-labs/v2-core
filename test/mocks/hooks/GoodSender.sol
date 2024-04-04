@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
 import { ISablierV2Sender } from "../../../src/interfaces/hooks/ISablierV2Sender.sol";

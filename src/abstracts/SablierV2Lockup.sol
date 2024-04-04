@@ -102,7 +102,7 @@ abstract contract SablierV2Lockup is
 
     /// @inheritdoc ISablierV2Lockup
     function getRecipient(uint256 streamId) external view override returns (address recipient) {
-        // Checks: the stream NFT exists and return the owner, which is the stream's recipient.
+        // Check the stream NFT exists and return the owner, which is the stream's recipient.
         recipient = _requireOwned({ tokenId: streamId });
     }
 
@@ -509,15 +509,15 @@ abstract contract SablierV2Lockup is
         return _calculateStreamedAmount(streamId);
     }
 
-    /// @notice Overrides the internal ERC-721 `_update` function to check that the stream is transferable and emit
-    /// an ERC-4906 event.
+    /// @notice Overrides the {ERC-721._update} function to check that the stream is transferable, and emits an
+    /// ERC-4906 event.
     /// @dev There are two cases when the transferable flag is ignored:
-    /// - If `from` is 0, then the update is a mint and is allowed.
+    /// - If the current owner is 0, then the update is a mint and is allowed.
     /// - If `to` is 0, then the update is a burn and is also allowed.
     /// @param to The address of the new recipient of the stream.
-    /// @param streamId Id of the stream to update.
-    /// @param auth Optional parameter. If the value is non 0, the upstream implementation of this function will check
-    /// that `auth` is either the recipient of the stream, or an approved third party.
+    /// @param streamId ID of the stream to update.
+    /// @param auth Optional parameter. If the value is non-zero, the upstream implementation of this function will
+    /// check that `auth` is either the recipient of the stream, or an approved third party.
     /// @return The original recipient of the `streamId` before the update.
     function _update(
         address to,
@@ -531,7 +531,7 @@ abstract contract SablierV2Lockup is
     {
         address from = _ownerOf(streamId);
 
-        if (!_streams[streamId].isTransferable && from != address(0) && to != address(0)) {
+        if (from != address(0) && to != address(0) && !_streams[streamId].isTransferable) {
             revert Errors.SablierV2Lockup_NotTransferable(streamId);
         }
 
