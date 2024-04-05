@@ -42,7 +42,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             data: abi.encodeCall(
                 ISablierV2Recipient.onLockupStreamWithdrawn,
                 (streamId, unknownCaller, address(goodRecipient), withdrawAmount)
-                ),
+            ),
             count: 1
         });
 
@@ -51,7 +51,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             callee: address(goodSender),
             data: abi.encodeCall(
                 ISablierV2Sender.onLockupStreamWithdrawn, (streamId, unknownCaller, address(goodRecipient), withdrawAmount)
-                ),
+            ),
             count: 1
         });
 
@@ -84,7 +84,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             data: abi.encodeCall(
                 ISablierV2Recipient.onLockupStreamWithdrawn,
                 (streamId, users.operator, address(goodRecipient), withdrawAmount)
-                ),
+            ),
             count: 1
         });
 
@@ -93,7 +93,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             callee: address(goodSender),
             data: abi.encodeCall(
                 ISablierV2Sender.onLockupStreamWithdrawn, (streamId, users.operator, address(goodRecipient), withdrawAmount)
-                ),
+            ),
             count: 1
         });
 
@@ -122,7 +122,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             data: abi.encodeCall(
                 ISablierV2Recipient.onLockupStreamWithdrawn,
                 (streamId, address(goodSender), address(goodRecipient), withdrawAmount)
-                ),
+            ),
             count: 1
         });
 
@@ -132,7 +132,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             data: abi.encodeCall(
                 ISablierV2Sender.onLockupStreamWithdrawn,
                 (streamId, address(goodSender), address(goodRecipient), withdrawAmount)
-                ),
+            ),
             count: 0
         });
 
@@ -161,7 +161,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             data: abi.encodeCall(
                 ISablierV2Recipient.onLockupStreamWithdrawn,
                 (streamId, address(goodRecipient), address(goodRecipient), withdrawAmount)
-                ),
+            ),
             count: 0
         });
 
@@ -171,7 +171,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             data: abi.encodeCall(
                 ISablierV2Sender.onLockupStreamWithdrawn,
                 (streamId, address(goodRecipient), address(goodRecipient), withdrawAmount)
-                ),
+            ),
             count: 1
         });
 
@@ -200,7 +200,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             callee: address(goodSender),
             data: abi.encodeCall(
                 ISablierV2Sender.onLockupStreamWithdrawn, (streamId, unknownCaller, address(goodSender), withdrawAmount)
-                ),
+            ),
             count: 1
         });
 
@@ -231,7 +231,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             callee: address(goodSender),
             data: abi.encodeCall(
                 ISablierV2Sender.onLockupStreamWithdrawn, (streamId, users.operator, address(goodSender), withdrawAmount)
-                ),
+            ),
             count: 1
         });
 
@@ -255,7 +255,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
             data: abi.encodeCall(
                 ISablierV2Sender.onLockupStreamWithdrawn,
                 (streamId, address(goodSender), address(goodSender), withdrawAmount)
-                ),
+            ),
             count: 0
         });
 

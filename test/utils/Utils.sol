@@ -73,6 +73,11 @@ abstract contract Utils is CommonBase, PRBMathUtils {
         return Strings.equal(profile, "test-optimized");
     }
 
+    /// @dev Returns the largest of two `uint40` numbers.
+    function maxUint40(uint40 a, uint40 b) internal pure returns (uint40) {
+        return a > b ? a : b;
+    }
+
     /// @dev Stops the active prank and sets a new one.
     function resetPrank(address msgSender) internal {
         vm.stopPrank();

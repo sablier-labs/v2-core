@@ -12,15 +12,15 @@ createWithTimestamps.t.sol
          │  └── it should revert
          └── when the start time is not zero
             ├── when the cliff time is zero
-            │  ├── when the start time is greater than the end time
+            │  ├── when the start time is not less than the end time
             │  │  └── it should revert
-            │  └── when the start time is not greater than the end time
+            │  └── when the start time is less than the end time
             │     └── it should create the stream
             └── when the cliff time is greater than zero
                ├── when the start time is not less than the cliff time
                │  └── it should revert
-               └── when the start time is not greater than the cliff time
-                  ├── when the cliff time is less than the end time
+               └── when the start time is less than the cliff time
+                  ├── when the cliff time is not less than the end time
                   │  └── it should revert
                   └── when the cliff time is less than the end time
                      ├── when the end time is not in the future

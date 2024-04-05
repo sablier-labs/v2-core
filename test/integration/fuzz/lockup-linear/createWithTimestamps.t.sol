@@ -22,7 +22,21 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         CreateWithTimestamps_Integration_Shared_Test.setUp();
     }
 
-    function testFuzz_RevertWhen_StartTimeGreaterThanCliffTime(uint40 startTime)
+    function testFuzz_RevertWhen_BrokerFeeTooHigh(Broker memory broker)
+        external
+        whenNotDelegateCalled
+        whenRecipientNonZeroAddress
+        whenDepositAmountNotZero
+    {
+        vm.assume(broker.account != address(0));
+        broker.fee = _bound(broker.fee, MAX_BROKER_FEE + ud(1), MAX_UD60x18);
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierV2Lockup_BrokerFeeTooHigh.selector, broker.fee, MAX_BROKER_FEE)
+        );
+        createDefaultStreamWithBroker(broker);
+    }
+
+    function testFuzz_RevertWhen_StartTimeNotLessThanCliffTime(uint40 startTime)
         external
         whenNotDelegateCalled
         whenRecipientNonZeroAddress
@@ -45,7 +59,6 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         whenNotDelegateCalled
         whenRecipientNonZeroAddress
         whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
     {
         uint40 startTime = defaults.START_TIME();
         endTime = boundUint40(endTime, startTime + 1 seconds, startTime + 2 weeks);
@@ -57,23 +70,6 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
             )
         );
         createDefaultStreamWithRange(LockupLinear.Range({ start: startTime, cliff: cliffTime, end: endTime }));
-    }
-
-    function testFuzz_RevertWhen_BrokerFeeTooHigh(Broker memory broker)
-        external
-        whenNotDelegateCalled
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotGreaterThanCliffTime
-        whenCliffTimeLessThanEndTime
-        whenEndTimeInTheFuture
-    {
-        vm.assume(broker.account != address(0));
-        broker.fee = _bound(broker.fee, MAX_BROKER_FEE + ud(1), MAX_UD60x18);
-        vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2Lockup_BrokerFeeTooHigh.selector, broker.fee, MAX_BROKER_FEE)
-        );
-        createDefaultStreamWithBroker(broker);
     }
 
     struct Vars {
@@ -95,6 +91,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
     /// - Start time in the present
     /// - Start time in the future
     /// - Start time lower than and equal to cliff time
+    /// - Cliff time zero and not zero
     /// - Multiple values for the cliff time and the end time
     /// - Multiple values for the broker fee, including zero
     function testFuzz_CreateWithTimestamps(
@@ -105,7 +102,6 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         whenNotDelegateCalled
         whenDepositAmountNotZero
         whenStartTimeNotZero
-        whenStartTimeNotGreaterThanCliffTime
         whenCliffTimeLessThanEndTime
         whenEndTimeInTheFuture
         whenBrokerFeeNotTooHigh
@@ -116,10 +112,17 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         vm.assume(params.totalAmount != 0);
         params.range.start =
             boundUint40(params.range.start, defaults.START_TIME(), defaults.START_TIME() + 10_000 seconds);
-        params.range.cliff = boundUint40(params.range.cliff, params.range.start + 1 seconds, params.range.start + 52 weeks);
-        params.range.end = boundUint40(params.range.end, params.range.cliff + 1 seconds, MAX_UNIX_TIMESTAMP);
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
         params.transferable = true;
+
+        // The cliff time must be either zero or greater than the start time.
+        if (params.range.cliff > 0) {
+            params.range.cliff =
+                boundUint40(params.range.cliff, params.range.start + 1 seconds, params.range.start + 52 weeks);
+            params.range.end = boundUint40(params.range.end, params.range.cliff + 1 seconds, MAX_UNIX_TIMESTAMP);
+        } else {
+            params.range.end = boundUint40(params.range.end, params.range.start + 1 seconds, MAX_UNIX_TIMESTAMP);
+        }
 
         // Calculate the fee amounts and the deposit amount.
         Vars memory vars;

@@ -59,11 +59,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithRange(LockupLinear.Range({ start: 0, cliff: cliffTime, end: endTime }));
     }
 
-    modifier whenCliffTimeZero() {
-        _;
-    }
-
-    function test_RevertWhen_StartTimeGreaterThanEndTime()
+    function test_RevertWhen_StartTimeNotLessThanEndTime()
         external
         whenNotDelegateCalled
         whenRecipientNonZeroAddress
@@ -82,7 +78,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithRange(LockupLinear.Range({ start: startTime, cliff: 0, end: endTime }));
     }
 
-    function test_CreateWithTimestamps_CliffTimeZero()
+    function test_CreateWithTimestamps_StartTimeLessThanEndTime()
         external
         whenNotDelegateCalled
         whenRecipientNonZeroAddress
@@ -111,10 +107,6 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }
 
-    modifier whenCliffTimeGreaterThanZero() {
-        _;
-    }
-
     function test_RevertWhen_StartTimeGreaterThanCliffTime()
         external
         whenNotDelegateCalled
@@ -122,6 +114,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotZero
         whenCliffTimeGreaterThanZero
+        whenStartTimeLessThanEndTime
     {
         uint40 startTime = defaults.CLIFF_TIME();
         uint40 cliffTime = defaults.START_TIME();
@@ -141,7 +134,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotZero
         whenCliffTimeGreaterThanZero
-        whenStartTimeNotGreaterThanCliffTime
+        whenStartTimeLessThanEndTime
     {
         uint40 startTime = defaults.START_TIME();
         uint40 cliffTime = defaults.END_TIME();
@@ -161,7 +154,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotZero
         whenCliffTimeGreaterThanZero
-        whenStartTimeNotGreaterThanCliffTime
+        whenStartTimeLessThanEndTime
         whenCliffTimeLessThanEndTime
         whenEndTimeInTheFuture
     {
@@ -178,7 +171,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotZero
         whenCliffTimeGreaterThanZero
-        whenStartTimeNotGreaterThanCliffTime
+        whenStartTimeLessThanEndTime
         whenCliffTimeLessThanEndTime
         whenEndTimeInTheFuture
     {
@@ -196,7 +189,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotZero
         whenCliffTimeGreaterThanZero
-        whenStartTimeNotGreaterThanCliffTime
+        whenStartTimeLessThanEndTime
         whenCliffTimeLessThanEndTime
         whenEndTimeInTheFuture
         whenBrokerFeeNotTooHigh
@@ -213,7 +206,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotZero
         whenCliffTimeGreaterThanZero
-        whenStartTimeNotGreaterThanCliffTime
+        whenStartTimeLessThanEndTime
         whenCliffTimeLessThanEndTime
         whenEndTimeInTheFuture
         whenBrokerFeeNotTooHigh
@@ -228,7 +221,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         whenDepositAmountNotZero
         whenStartTimeNotZero
         whenCliffTimeGreaterThanZero
-        whenStartTimeNotGreaterThanCliffTime
+        whenStartTimeLessThanEndTime
         whenCliffTimeLessThanEndTime
         whenEndTimeInTheFuture
         whenBrokerFeeNotTooHigh

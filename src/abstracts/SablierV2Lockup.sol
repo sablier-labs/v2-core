@@ -516,8 +516,8 @@ abstract contract SablierV2Lockup is
     /// - If `to` is 0, then the update is a burn and is also allowed.
     /// @param to The address of the new recipient of the stream.
     /// @param streamId ID of the stream to update.
-    /// @param auth Optional parameter. If the value is non-zero, the upstream implementation of this function will
-    /// check that `auth` is either the recipient of the stream, or an approved third party.
+    /// @param auth Optional parameter. If the value is not zero, the overridden implementation will check that
+    /// `auth` is either the recipient of the stream, or an approved third party.
     /// @return The original recipient of the `streamId` before the update.
     function _update(
         address to,
@@ -575,7 +575,7 @@ abstract contract SablierV2Lockup is
         // Effect: make the stream not cancelable anymore, because a stream can only be canceled once.
         _streams[streamId].isCancelable = false;
 
-        // Effect: If there are no assets left for the recipient to withdraw, mark the stream as depleted.
+        // Effect: if there are no assets left for the recipient to withdraw, mark the stream as depleted.
         if (recipientAmount == 0) {
             _streams[streamId].isDepleted = true;
         }

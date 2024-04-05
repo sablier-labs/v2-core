@@ -28,6 +28,28 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
+    function test_RevertWhen_CliffDurationCalculationOverflows() external whenNotDelegateCalled {
+        uint40 startTime = getBlockTimestamp();
+        uint40 cliffDuration = MAX_UINT40 - startTime + 2 seconds;
+        uint40 totalDuration = defaults.TOTAL_DURATION();
+
+        // Calculate the end time. Needs to be "unchecked" to avoid an overflow.
+        uint40 cliffTime;
+        unchecked {
+            cliffTime = startTime + cliffDuration;
+        }
+
+        // Expect the relevant error to be thrown.
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierV2LockupLinear_StartTimeNotLessThanCliffTime.selector, startTime, cliffTime
+            )
+        );
+
+        // Create the stream.
+        createDefaultStreamWithDurations(LockupLinear.Durations({ cliff: cliffDuration, total: totalDuration }));
+    }
+
     function test_RevertWhen_TotalDurationCalculationOverflows()
         external
         whenNotDelegateCalled

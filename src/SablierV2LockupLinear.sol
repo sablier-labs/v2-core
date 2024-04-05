@@ -134,15 +134,13 @@ contract SablierV2LockupLinear is
         LockupLinear.Range memory range;
         range.start = uint40(block.timestamp);
 
-        // Calculate the cliff time and the end time. It is safe to use unchecked arithmetic because
-        // {_create} will nonetheless check that the end time is greater than the cliff time,
-        // and also that the cliff time, if set, is greater than or equal to the start time.
+        // Calculate the cliff time and the end time. It is safe to use unchecked arithmetic because {_create} will
+        // nonetheless check that the end time is greater than the cliff time, and also that the cliff time, if set,
+        // is greater than or equal to the start time.
         unchecked {
-            // If the cliff duration is greater than zero, calculate the cliff time.
             if (params.durations.cliff > 0) {
                 range.cliff = range.start + params.durations.cliff;
             }
-
             range.end = range.start + params.durations.total;
         }
 
@@ -261,7 +259,7 @@ contract SablierV2LockupLinear is
             wasCanceled: false
         });
 
-        // Effect: set the cliff time if it is greater than 0.
+        // Effect: set the cliff time if it is greater than zero.
         if (params.range.cliff > 0) {
             _cliffs[streamId] = params.range.cliff;
         }

@@ -92,12 +92,7 @@ library Helpers {
             revert Errors.SablierV2Lockup_StartTimeZero();
         }
 
-        // Check: the start time is strictly less than the end time.
-        if (range.start >= range.end) {
-            revert Errors.SablierV2LockupLinear_StartTimeNotLessThanEndTime(range.start, range.end);
-        }
-
-        // A cliff time of zero means there is no cliff, so we only perform the following checks if it is not zero.
+        // Since a cliff time of zero means there is no cliff, the following checks are performed only if it's not zero.
         if (range.cliff > 0) {
             // Check: the start time is strictly less than the cliff time.
             if (range.start >= range.cliff) {
@@ -108,6 +103,11 @@ library Helpers {
             if (range.cliff >= range.end) {
                 revert Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime(range.cliff, range.end);
             }
+        }
+
+        // Check: the start time is strictly less than the end time.
+        if (range.start >= range.end) {
+            revert Errors.SablierV2LockupLinear_StartTimeNotLessThanEndTime(range.start, range.end);
         }
 
         // Check: the end time is in the future.

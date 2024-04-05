@@ -245,7 +245,7 @@ contract SablierV2LockupDynamic is
                 // time as the previous timestamp.
                 previousTimestamp = stream.startTime;
             } else {
-                // Otherwise, when the current segment's index is greater than 0, it implies that the segment is not
+                // Otherwise, when the current segment's index is greater than zero, it implies that the segment is not
                 // the first. In this case, use the previous segment's timestamp.
                 previousTimestamp = segments[index - 1].timestamp;
             }
@@ -339,8 +339,8 @@ contract SablierV2LockupDynamic is
             uint256 segmentCount = params.segments.length;
             stream.endTime = params.segments[segmentCount - 1].timestamp;
 
-            // Effect: store the segments. Since Solidity lacks a syntax for copying arrays directly from memory
-            // to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
+            // Effect: store the tranches. Since Solidity lacks a syntax for copying arrays of structs directly from
+            // memory to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
             for (uint256 i = 0; i < segmentCount; ++i) {
                 _segments[streamId].push(params.segments[i]);
             }

@@ -26,7 +26,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         whenCliffDurationCalculationDoesNotOverflow
     {
         uint40 startTime = getBlockTimestamp();
-        durations.cliff = boundUint40(durations.cliff, 0, MAX_UINT40 - startTime);
+        durations.cliff = boundUint40(durations.cliff, 1 seconds, MAX_UINT40 - startTime);
         durations.total = boundUint40(durations.total, MAX_UINT40 - startTime + 1 seconds, MAX_UINT40);
 
         // Calculate the cliff time and the end time. Needs to be "unchecked" to allow an overflow.
@@ -40,7 +40,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         // Expect the relevant error to be thrown.
         vm.expectRevert(
             abi.encodeWithSelector(
-                Errors.SablierV2LockupLinear_StartTimeNotLessThanEndTime.selector, startTime, endTime
+                Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime.selector, cliffTime, endTime
             )
         );
 
@@ -54,7 +54,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         whenCliffDurationCalculationDoesNotOverflow
         whenTotalDurationCalculationDoesNotOverflow
     {
-        durations.total = boundUint40(durations.total, 1, MAX_UNIX_TIMESTAMP);
+        durations.total = boundUint40(durations.total, 1 seconds, MAX_UNIX_TIMESTAMP);
         vm.assume(durations.cliff < durations.total);
 
         // Make the Sender the stream's funder (recall that the Sender is the default caller).
