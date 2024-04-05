@@ -24,6 +24,11 @@
   src = "src"
   test = "test"
 
+# Compile only the production code and the test mocks with via IR
+[profile.fork-multichain]
+  max_test_rejects = 1_000_000 # Number of times `vm.assume` can fail
+  runs = 1
+
 [profile.default.fuzz]
   max_test_rejects = 1_000_000 # Number of times `vm.assume` can fail
   runs = 50

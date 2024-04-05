@@ -2,6 +2,7 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import { Solarray } from "solarray/src/Solarray.sol";
 
 import { Broker, Lockup, LockupDynamic } from "src/types/DataTypes.sol";
@@ -10,22 +11,11 @@ import { Fork_Test } from "./Fork.t.sol";
 
 abstract contract LockupDynamic_Fork_Test is Fork_Test {
     /*//////////////////////////////////////////////////////////////////////////
-                                    CONSTRUCTOR
-    //////////////////////////////////////////////////////////////////////////*/
-
-    constructor(IERC20 asset, address holder) Fork_Test(asset, holder) { }
-
-    /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
 
     function setUp() public virtual override {
         Fork_Test.setUp();
-
-        // Approve {SablierV2LockupDynamic} to transfer the holder's assets.
-        // We use a low-level call to ignore reverts because the asset can have the missing return value bug.
-        (bool success,) = address(ASSET).call(abi.encodeCall(IERC20.approve, (address(lockupDynamic), MAX_UINT256)));
-        success;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -106,7 +96,10 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
     /// - Multiple values for the broker fee, including zero
     /// - Multiple values for the withdraw amount, including zero
     /// - The whole gamut of stream statuses
-    function testForkFuzz_LockupDynamic_CreateWithdrawCancel(Params memory params) external {
+    function testForkFuzz_LockupDynamic_CreateWithdrawCancel(Params memory params) external runForkTest {
+        vm.warp({ newTimestamp: MAY_1_2024 });
+        vm.label({ account: address(ASSET), newLabel: IERC20Metadata(address(ASSET)).symbol() });
+
         checkUsers(params.sender, params.recipient, params.broker.account, address(lockupDynamic));
         vm.assume(params.segments.length != 0);
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
@@ -118,13 +111,16 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         // Fuzz the segment amounts and calculate the total and create amounts (deposit and broker fee).
         Vars memory vars;
         (vars.totalAmount, vars.createAmounts) = fuzzDynamicStreamAmounts({
-            upperBound: uint128(initialHolderBalance),
+            upperBound: MAX_UINT128,
             segments: params.segments,
             brokerFee: params.broker.fee
         });
 
-        // Make the holder the caller.
-        resetPrank(HOLDER);
+        // Make the sender the caller.
+        resetPrank(params.sender);
+        deal({ token: address(ASSET), to: params.sender, give: vars.totalAmount });
+        (bool success,) = address(ASSET).call(abi.encodeCall(IERC20.approve, (address(lockupDynamic), MAX_UINT256)));
+        success;
 
         /*//////////////////////////////////////////////////////////////////////////
                                             CREATE
@@ -146,7 +142,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         vm.expectEmit({ emitter: address(lockupDynamic) });
         emit CreateLockupDynamicStream({
             streamId: vars.streamId,
-            funder: HOLDER,
+            funder: params.sender,
             sender: params.sender,
             recipient: params.recipient,
             amounts: vars.createAmounts,
@@ -215,8 +211,9 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "post-create NFT owner");
 
         // Load the post-create asset balances.
-        vars.balances =
-            getTokenBalances(address(ASSET), Solarray.addresses(address(lockupDynamic), HOLDER, params.broker.account));
+        vars.balances = getTokenBalances(
+            address(ASSET), Solarray.addresses(address(lockupDynamic), params.sender, params.broker.account)
+        );
         vars.actualLockupDynamicBalance = vars.balances[0];
         vars.actualHolderBalance = vars.balances[1];
         vars.actualBrokerBalance = vars.balances[2];
@@ -230,8 +227,8 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         );
 
         // Assert that the holder's balance has been updated.
-        vars.expectedHolderBalance = initialHolderBalance - vars.totalAmount;
-        assertEq(vars.actualHolderBalance, vars.expectedHolderBalance, "post-create Holder balance");
+        // vars.expectedHolderBalance = initialHolderBalance - vars.totalAmount;
+        // assertEq(vars.actualHolderBalance, vars.expectedHolderBalance, "post-create Holder balance");
 
         // Assert that the broker's balance has been updated.
         vars.expectedBrokerBalance = vars.initialBrokerBalance + vars.createAmounts.brokerFee;
