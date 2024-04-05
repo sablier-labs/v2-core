@@ -339,8 +339,8 @@ contract SablierV2LockupDynamic is
             uint256 segmentCount = params.segments.length;
             stream.endTime = params.segments[segmentCount - 1].timestamp;
 
-            // Effect: store the segments. Since Solidity lacks a syntax for copying arrays directly from
-            // memory to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
+            // Effect: store the segments. Since Solidity lacks a syntax for copying arrays directly from memory
+            // to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
             for (uint256 i = 0; i < segmentCount; ++i) {
                 _segments[streamId].push(params.segments[i]);
             }

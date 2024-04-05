@@ -46,4 +46,3 @@ createWithTimestamps.t.sol
                                  ├── it should emit a {MetadataUpdate} event
                                  ├── it should perform the ERC-20 transfers
                                  └── it should emit a {CreateLockupLinearStream} event
-

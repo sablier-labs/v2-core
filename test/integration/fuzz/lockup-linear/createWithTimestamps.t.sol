@@ -48,7 +48,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         whenStartTimeNotGreaterThanCliffTime
     {
         uint40 startTime = defaults.START_TIME();
-        endTime = boundUint40(endTime, startTime + 1, startTime + 2 weeks);
+        endTime = boundUint40(endTime, startTime + 1 seconds, startTime + 2 weeks);
         cliffTime = boundUint40(cliffTime, endTime, MAX_UNIX_TIMESTAMP);
 
         vm.expectRevert(
@@ -116,7 +116,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         vm.assume(params.totalAmount != 0);
         params.range.start =
             boundUint40(params.range.start, defaults.START_TIME(), defaults.START_TIME() + 10_000 seconds);
-        params.range.cliff = boundUint40(params.range.cliff, params.range.start + 1, params.range.start + 52 weeks);
+        params.range.cliff = boundUint40(params.range.cliff, params.range.start + 1 seconds, params.range.start + 52 weeks);
         params.range.end = boundUint40(params.range.end, params.range.cliff + 1 seconds, MAX_UNIX_TIMESTAMP);
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
         params.transferable = true;

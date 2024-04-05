@@ -113,7 +113,8 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         uint40 currentTime = getBlockTimestamp();
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
         params.range.start = boundUint40(params.range.start, currentTime - 1000 seconds, currentTime + 10_000 seconds);
-        params.range.cliff = boundUint40(params.range.cliff, params.range.start + 1, params.range.start + 52 weeks);
+        params.range.cliff =
+            boundUint40(params.range.cliff, params.range.start + 1 seconds, params.range.start + 52 weeks);
         params.totalAmount = boundUint128(params.totalAmount, 1, uint128(initialHolderBalance));
 
         // Bound the end time so that it is always greater than both the current time and the cliff time (this is

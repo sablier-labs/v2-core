@@ -180,7 +180,7 @@ library LockupDynamic {
     }
 
     /// @notice Struct encapsulating the full details of a stream.
-    /// @dev It contains the same data as the `Lockup.Stream` struct, plus the recipient and the segments.
+    /// @dev Extends `Lockup.Stream` by including the recipient and the segments.
     struct StreamLD {
         address sender;
         address recipient;
@@ -265,7 +265,7 @@ library LockupLinear {
     }
 
     /// @notice Struct encapsulating the full details of a stream.
-    /// @dev It contains the same data as the `Lockup.Stream` struct, plus the recipient and the cliff value.
+    /// @dev Extends `Lockup.Stream` by including the recipient and the cliff time.
     struct StreamLL {
         address sender;
         address recipient;
@@ -343,7 +343,7 @@ library LockupTranched {
     }
 
     /// @notice Struct encapsulating the full details of a stream.
-    /// @dev It contains the same data as the `Lockup.Stream` struct, plus the recipient and the tranches.
+    /// @dev Extends `Lockup.Stream` by including the recipient and the tranches.
     struct StreamLT {
         address sender;
         address recipient;

@@ -241,8 +241,8 @@ contract SablierV2LockupTranched is
             uint256 trancheCount = params.tranches.length;
             stream.endTime = params.tranches[trancheCount - 1].timestamp;
 
-            // Effect: store the tranches. Since Solidity lacks a syntax for copying arrays directly from
-            // memory to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
+            // Effect: store the tranches. Since Solidity lacks a syntax for copying arrays directly from memory
+            // to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
             for (uint256 i = 0; i < trancheCount; ++i) {
                 _tranches[streamId].push(params.tranches[i]);
             }
