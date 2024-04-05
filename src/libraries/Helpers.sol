@@ -29,7 +29,7 @@ library Helpers {
             return Lockup.CreateAmounts(0, 0);
         }
 
-        // Checks: the broker fee is not greater than `maxBrokerFee`.
+        // Check: the broker fee is not greater than `maxBrokerFee`.
         if (brokerFee.gt(maxBrokerFee)) {
             revert Errors.SablierV2Lockup_BrokerFeeTooHigh(brokerFee, maxBrokerFee);
         }
@@ -55,59 +55,59 @@ library Helpers {
         internal
         view
     {
-        // Checks: the deposit amount is not zero.
+        // Check: the deposit amount is not zero.
         if (depositAmount == 0) {
             revert Errors.SablierV2Lockup_DepositAmountZero();
         }
 
-        // Checks: the start time is not zero.
+        // Check: the start time is not zero.
         if (startTime == 0) {
             revert Errors.SablierV2Lockup_StartTimeZero();
         }
 
-        // Checks: the segment count is not zero.
+        // Check: the segment count is not zero.
         uint256 segmentCount = segments.length;
         if (segmentCount == 0) {
             revert Errors.SablierV2LockupDynamic_SegmentCountZero();
         }
 
-        // Checks: the segment count is not greater than the maximum allowed.
+        // Check: the segment count is not greater than the maximum allowed.
         if (segmentCount > maxSegmentCount) {
             revert Errors.SablierV2LockupDynamic_SegmentCountTooHigh(segmentCount);
         }
 
-        // Checks: requirements of segments.
+        // Check: requirements of segments.
         _checkSegments(segments, depositAmount, startTime);
     }
 
     /// @dev Checks the parameters of the {SablierV2LockupLinear-_createWithTimestamps} function.
     function checkCreateLockupLinear(uint128 depositAmount, LockupLinear.Range memory range) internal view {
-        // Checks: the deposit amount is not zero.
+        // Check: the deposit amount is not zero.
         if (depositAmount == 0) {
             revert Errors.SablierV2Lockup_DepositAmountZero();
         }
 
-        // Checks: the start time is not zero.
+        // Check: the start time is not zero.
         if (range.start == 0) {
             revert Errors.SablierV2Lockup_StartTimeZero();
         }
 
-        // Checks: the start time is strictly less than the end time.
+        // Check: the start time is strictly less than the end time.
         if (range.start >= range.end) {
             revert Errors.SablierV2LockupLinear_StartTimeNotLessThanEndTime(range.start, range.end);
         }
 
-        // Checks: the start time is strictly less than the cliff time when cliff time is not zero.
+        // Check: the start time is strictly less than the cliff time when cliff time is not zero.
         if (range.cliff > 0 && range.start >= range.cliff) {
             revert Errors.SablierV2LockupLinear_StartTimeNotLessThanCliffTime(range.start, range.cliff);
         }
 
-        // Checks: the cliff time is strictly less than the end time.
+        // Check: the cliff time is strictly less than the end time.
         if (range.cliff >= range.end) {
             revert Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime(range.cliff, range.end);
         }
 
-        // Checks: the end time is in the future.
+        // Check: the end time is in the future.
         uint40 currentTime = uint40(block.timestamp);
         if (currentTime >= range.end) {
             revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, range.end);
@@ -124,28 +124,28 @@ library Helpers {
         internal
         view
     {
-        // Checks: the deposit amount is not zero.
+        // Check: the deposit amount is not zero.
         if (depositAmount == 0) {
             revert Errors.SablierV2Lockup_DepositAmountZero();
         }
 
-        // Checks: the start time is not zero.
+        // Check: the start time is not zero.
         if (startTime == 0) {
             revert Errors.SablierV2Lockup_StartTimeZero();
         }
 
-        // Checks: the tranche count is not zero.
+        // Check: the tranche count is not zero.
         uint256 trancheCount = tranches.length;
         if (trancheCount == 0) {
             revert Errors.SablierV2LockupTranched_TrancheCountZero();
         }
 
-        // Checks: the tranche count is not greater than the maximum allowed.
+        // Check: the tranche count is not greater than the maximum allowed.
         if (trancheCount > maxTrancheCount) {
             revert Errors.SablierV2LockupTranched_TrancheCountTooHigh(trancheCount);
         }
 
-        // Checks: requirements of tranches.
+        // Check: requirements of tranches.
         _checkTranches(tranches, depositAmount, startTime);
     }
 
@@ -229,7 +229,7 @@ library Helpers {
         private
         view
     {
-        // Checks: the start time is strictly less than the first segment timestamp.
+        // Check: the start time is strictly less than the first segment timestamp.
         if (startTime >= segments[0].timestamp) {
             revert Errors.SablierV2LockupDynamic_StartTimeNotLessThanFirstSegmentTimestamp(
                 startTime, segments[0].timestamp
@@ -250,7 +250,7 @@ library Helpers {
             // Add the current segment amount to the sum.
             segmentAmountsSum += segments[index].amount;
 
-            // Checks: the current timestamp is strictly greater than the previous timestamp.
+            // Check: the current timestamp is strictly greater than the previous timestamp.
             currentSegmentTimestamp = segments[index].timestamp;
             if (currentSegmentTimestamp <= previousSegmentTimestamp) {
                 revert Errors.SablierV2LockupDynamic_SegmentTimestampsNotOrdered(
@@ -262,7 +262,7 @@ library Helpers {
             previousSegmentTimestamp = currentSegmentTimestamp;
         }
 
-        // Checks: the last timestamp is in the future.
+        // Check: the last timestamp is in the future.
         // When the loop exits, the current segment's timestamp is the last segment's timestamp, i.e. the stream's end
         // time. The variable is not renamed for gas efficiency purposes.
         uint40 currentTime = uint40(block.timestamp);
@@ -270,7 +270,7 @@ library Helpers {
             revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, currentSegmentTimestamp);
         }
 
-        // Checks: the deposit amount is equal to the segment amounts sum.
+        // Check: the deposit amount is equal to the segment amounts sum.
         if (depositAmount != segmentAmountsSum) {
             revert Errors.SablierV2LockupDynamic_DepositAmountNotEqualToSegmentAmountsSum(
                 depositAmount, segmentAmountsSum
@@ -292,7 +292,7 @@ library Helpers {
         private
         view
     {
-        // Checks: the start time is strictly less than the first tranche timestamp.
+        // Check: the start time is strictly less than the first tranche timestamp.
         if (startTime >= tranches[0].timestamp) {
             revert Errors.SablierV2LockupTranched_StartTimeNotLessThanFirstTrancheTimestamp(
                 startTime, tranches[0].timestamp
@@ -313,7 +313,7 @@ library Helpers {
             // Add the current tranche amount to the sum.
             trancheAmountsSum += tranches[index].amount;
 
-            // Checks: the current timestamp is strictly greater than the previous timestamp.
+            // Check: the current timestamp is strictly greater than the previous timestamp.
             currentTrancheTimestamp = tranches[index].timestamp;
             if (currentTrancheTimestamp <= previousTrancheTimestamp) {
                 revert Errors.SablierV2LockupTranched_TrancheTimestampsNotOrdered(
@@ -325,7 +325,7 @@ library Helpers {
             previousTrancheTimestamp = currentTrancheTimestamp;
         }
 
-        // Checks: the last timestamp is in the future.
+        // Check: the last timestamp is in the future.
         // When the loop exits, the current tranche's timestamp is the last tranche's timestamp, i.e. the stream's end
         // time. The variable is not renamed for gas efficiency purposes.
         uint40 currentTime = uint40(block.timestamp);
@@ -333,7 +333,7 @@ library Helpers {
             revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, currentTrancheTimestamp);
         }
 
-        // Checks: the deposit amount is equal to the tranche amounts sum.
+        // Check: the deposit amount is equal to the tranche amounts sum.
         if (depositAmount != trancheAmountsSum) {
             revert Errors.SablierV2LockupTranched_DepositAmountNotEqualToTrancheAmountsSum(
                 depositAmount, trancheAmountsSum

@@ -237,17 +237,17 @@ contract SablierV2LockupLinear is
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
     function _create(LockupLinear.CreateWithTimestamps memory params) internal returns (uint256 streamId) {
-        // Checks: check the broker fee and calculate the amounts.
+        // Check: verify the broker fee and calculate the amounts.
         Lockup.CreateAmounts memory createAmounts =
             Helpers.checkAndCalculateBrokerFee(params.totalAmount, params.broker.fee, MAX_BROKER_FEE);
 
-        // Checks: validate the user-provided parameters.
+        // Check: validate the user-provided parameters.
         Helpers.checkCreateLockupLinear(createAmounts.deposit, params.range);
 
         // Load the stream ID.
         streamId = nextStreamId;
 
-        // Effects: create the stream.
+        // Effect: create the stream.
         _streams[streamId] = Lockup.Stream({
             amounts: Lockup.Amounts({ deposited: createAmounts.deposit, refunded: 0, withdrawn: 0 }),
             asset: params.asset,
@@ -261,24 +261,24 @@ contract SablierV2LockupLinear is
             wasCanceled: false
         });
 
-        // Effects: set the cliff time if it is greater than 0.
+        // Effect: set the cliff time if it is greater than 0.
         if (params.range.cliff > 0) {
             _cliffs[streamId] = params.range.cliff;
         }
 
-        // Effects: bump the next stream ID.
+        // Effect: bump the next stream ID.
         // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
         unchecked {
             nextStreamId = streamId + 1;
         }
 
-        // Effects: mint the NFT to the recipient.
+        // Effect: mint the NFT to the recipient.
         _mint({ to: params.recipient, tokenId: streamId });
 
-        // Interactions: transfer the deposit amount.
+        // Interaction: transfer the deposit amount.
         params.asset.safeTransferFrom({ from: msg.sender, to: address(this), value: createAmounts.deposit });
 
-        // Interactions: pay the broker fee, if not zero.
+        // Interaction: pay the broker fee, if not zero.
         if (createAmounts.brokerFee > 0) {
             params.asset.safeTransferFrom({ from: msg.sender, to: params.broker.account, value: createAmounts.brokerFee });
         }

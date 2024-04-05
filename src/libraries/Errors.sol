@@ -107,10 +107,11 @@ library Errors {
     /// @notice Thrown when trying to create a stream with a cliff time not strictly less than the end time.
     error SablierV2LockupLinear_CliffTimeNotLessThanEndTime(uint40 cliffTime, uint40 endTime);
 
-    /// @notice Thrown when trying to create a stream with a start time greater than the cliff time.
+    /// @notice Thrown when trying to create a stream with a start time not strictly less than the cliff time, when the
+    /// cliff time does not have a zero value.
     error SablierV2LockupLinear_StartTimeNotLessThanCliffTime(uint40 startTime, uint40 cliffTime);
 
-    /// @notice Thrown when trying to create a stream with a start time greater than the end time.
+    /// @notice Thrown when trying to create a stream with a start time not strictly less than the end time.
     error SablierV2LockupLinear_StartTimeNotLessThanEndTime(uint40 startTime, uint40 endTime);
 
     /*//////////////////////////////////////////////////////////////////////////

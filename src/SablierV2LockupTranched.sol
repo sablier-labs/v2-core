@@ -216,17 +216,17 @@ contract SablierV2LockupTranched is
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
     function _create(LockupTranched.CreateWithTimestamps memory params) internal returns (uint256 streamId) {
-        // Checks: check the broker fee and calculate the amounts.
+        // Check: verify the broker fee and calculate the amounts.
         Lockup.CreateAmounts memory createAmounts =
             Helpers.checkAndCalculateBrokerFee(params.totalAmount, params.broker.fee, MAX_BROKER_FEE);
 
-        // Checks: validate the user-provided parameters.
+        // Check: validate the user-provided parameters.
         Helpers.checkCreateLockupTranched(createAmounts.deposit, params.tranches, MAX_TRANCHE_COUNT, params.startTime);
 
         // Load the stream ID in a variable.
         streamId = nextStreamId;
 
-        // Effects: create the stream.
+        // Effect: create the stream.
         Lockup.Stream storage stream = _streams[streamId];
         stream.amounts.deposited = createAmounts.deposit;
         stream.asset = params.asset;
@@ -241,24 +241,24 @@ contract SablierV2LockupTranched is
             uint256 trancheCount = params.tranches.length;
             stream.endTime = params.tranches[trancheCount - 1].timestamp;
 
-            // Effects: store the tranches. Since Solidity lacks a syntax for copying arrays directly from
+            // Effect: store the tranches. Since Solidity lacks a syntax for copying arrays directly from
             // memory to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
             for (uint256 i = 0; i < trancheCount; ++i) {
                 _tranches[streamId].push(params.tranches[i]);
             }
 
-            // Effects: bump the next stream ID.
+            // Effect: bump the next stream ID.
             // Using unchecked arithmetic because these calculations cannot realistically overflow, ever.
             nextStreamId = streamId + 1;
         }
 
-        // Effects: mint the NFT to the recipient.
+        // Effect: mint the NFT to the recipient.
         _mint({ to: params.recipient, tokenId: streamId });
 
-        // Interactions: transfer the deposit amount.
+        // Interaction: transfer the deposit amount.
         params.asset.safeTransferFrom({ from: msg.sender, to: address(this), value: createAmounts.deposit });
 
-        // Interactions: pay the broker fee, if not zero.
+        // Interaction: pay the broker fee, if not zero.
         if (createAmounts.brokerFee > 0) {
             params.asset.safeTransferFrom({ from: msg.sender, to: params.broker.account, value: createAmounts.brokerFee });
         }
