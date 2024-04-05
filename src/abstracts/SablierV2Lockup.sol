@@ -459,8 +459,8 @@ abstract contract SablierV2Lockup is
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Calculates the streamed amount of the stream without looking up the stream's status, which is
-    /// implemented by child contracts, it can vary depending on the model.
+    /// @notice Calculates the streamed amount of the stream without looking up the stream's status.
+    /// @dev This function is implemented by child contracts, so the logic varies depending on the model.
     function _calculateStreamedAmount(uint256 streamId) internal view virtual returns (uint128);
 
     /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party.

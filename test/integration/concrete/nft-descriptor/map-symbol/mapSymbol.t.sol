@@ -19,14 +19,14 @@ contract MapSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_Concre
     }
 
     function test_MapSymbol_LockupDynamic() external view givenKnownNFT {
-        string memory actualStreamingModel = nftDescriptorMock.mapSymbol_(lockupDynamic);
-        string memory expectedStreamingModel = "Lockup Dynamic";
-        assertEq(actualStreamingModel, expectedStreamingModel, "streamingModel");
+        string memory actualSablierModel = nftDescriptorMock.mapSymbol_(lockupDynamic);
+        string memory expectedSablierModel = "Lockup Dynamic";
+        assertEq(actualSablierModel, expectedSablierModel, "sablierModel");
     }
 
     function test_MapSymbol_LockupLinear() external view givenKnownNFT {
-        string memory actualStreamingModel = nftDescriptorMock.mapSymbol_(lockupLinear);
-        string memory expectedStreamingModel = "Lockup Linear";
-        assertEq(actualStreamingModel, expectedStreamingModel, "streamingModel");
+        string memory actualSablierModel = nftDescriptorMock.mapSymbol_(lockupLinear);
+        string memory expectedSablierModel = "Lockup Linear";
+        assertEq(actualSablierModel, expectedSablierModel, "sablierModel");
     }
 }

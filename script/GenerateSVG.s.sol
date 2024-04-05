@@ -39,10 +39,10 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
                 assetSymbol: "DAI",
                 duration: calculateDurationInDays({ startTime: 0, endTime: duration * 1 days }),
                 sablierAddress: LOCKUP_LINEAR.toHexString(),
+                sablierModel: "Lockup Linear",
                 progress: stringifyPercentage(progress),
                 progressNumerical: progress,
-                status: status,
-                streamingModel: "Lockup Linear"
+                status: status
             })
         );
     }
