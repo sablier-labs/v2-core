@@ -49,7 +49,7 @@ contract SablierV2LockupDynamic is
     /// @inheritdoc ISablierV2LockupDynamic
     uint256 public immutable override MAX_SEGMENT_COUNT;
 
-    /// @dev Stream segments mapped by stream IDs.
+    /// @dev Stream segments mapped by stream IDs. This complements the `_streams` mapping in {SablierV2Lockup}.
     mapping(uint256 id => LockupDynamic.Segment[] segments) internal _segments;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ contract SablierV2LockupDynamic is
         LockupDynamic.Segment[] memory segments = Helpers.calculateSegmentTimestamps(params.segments);
 
         // Checks, Effects and Interactions: create the stream.
-        streamId = _createWithTimestamps(
+        streamId = _create(
             LockupDynamic.CreateWithTimestamps({
                 sender: params.sender,
                 recipient: params.recipient,
@@ -168,7 +168,7 @@ contract SablierV2LockupDynamic is
         returns (uint256 streamId)
     {
         // Checks, Effects and Interactions: create the stream.
-        streamId = _createWithTimestamps(params);
+        streamId = _create(params);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -313,16 +313,13 @@ contract SablierV2LockupDynamic is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _createWithTimestamps(LockupDynamic.CreateWithTimestamps memory params)
-        internal
-        returns (uint256 streamId)
-    {
+    function _create(LockupDynamic.CreateWithTimestamps memory params) internal returns (uint256 streamId) {
         // Checks: check the broker fee and calculate the amounts.
         Lockup.CreateAmounts memory createAmounts =
             Helpers.checkAndCalculateBrokerFee(params.totalAmount, params.broker.fee, MAX_BROKER_FEE);
 
         // Checks: validate the user-provided parameters.
-        Helpers.checkCreateWithTimestamps(createAmounts.deposit, params.segments, MAX_SEGMENT_COUNT, params.startTime);
+        Helpers.checkCreateLockupDynamic(createAmounts.deposit, params.segments, MAX_SEGMENT_COUNT, params.startTime);
 
         // Load the stream ID in a variable.
         streamId = nextStreamId;

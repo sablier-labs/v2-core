@@ -46,7 +46,7 @@ library Helpers {
     }
 
     /// @dev Checks the parameters of the {SablierV2LockupDynamic-_createWithTimestamps} function.
-    function checkCreateWithTimestamps(
+    function checkCreateLockupDynamic(
         uint128 depositAmount,
         LockupDynamic.Segment[] memory segments,
         uint256 maxSegmentCount,
@@ -81,7 +81,7 @@ library Helpers {
     }
 
     /// @dev Checks the parameters of the {SablierV2LockupLinear-_createWithTimestamps} function.
-    function checkCreateWithTimestamps(uint128 depositAmount, LockupLinear.Range memory range) internal view {
+    function checkCreateLockupLinear(uint128 depositAmount, LockupLinear.Range memory range) internal view {
         // Checks: the deposit amount is not zero.
         if (depositAmount == 0) {
             revert Errors.SablierV2Lockup_DepositAmountZero();
@@ -115,7 +115,7 @@ library Helpers {
     }
 
     /// @dev Checks the parameters of the {SablierV2LockupTranched-_createWithTimestamps} function.
-    function checkCreateWithTimestamps(
+    function checkCreateLockupTranched(
         uint128 depositAmount,
         LockupTranched.Tranche[] memory tranches,
         uint256 maxTrancheCount,

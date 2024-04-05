@@ -43,7 +43,7 @@ contract SablierV2LockupLinear is
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Cliff times mapped by stream IDs.
+    /// @dev Cliff times mapped by stream IDs. This complements the `_streams` mapping in {SablierV2Lockup}.
     mapping(uint256 id => uint40 cliff) internal _cliffs;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ contract SablierV2LockupLinear is
         range.start = uint40(block.timestamp);
 
         // Calculate the cliff time and the end time. It is safe to use unchecked arithmetic because
-        // {_createWithTimestamps} will nonetheless check that the end time is greater than the cliff time,
+        // {_create} will nonetheless check that the end time is greater than the cliff time,
         // and also that the cliff time, if set, is greater than or equal to the start time.
         unchecked {
             // If the cliff duration is greater than zero, calculate the cliff time.
@@ -147,7 +147,7 @@ contract SablierV2LockupLinear is
         }
 
         // Checks, Effects and Interactions: create the stream.
-        streamId = _createWithTimestamps(
+        streamId = _create(
             LockupLinear.CreateWithTimestamps({
                 sender: params.sender,
                 recipient: params.recipient,
@@ -169,7 +169,7 @@ contract SablierV2LockupLinear is
         returns (uint256 streamId)
     {
         // Checks, Effects and Interactions: create the stream.
-        streamId = _createWithTimestamps(params);
+        streamId = _create(params);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -236,16 +236,13 @@ contract SablierV2LockupLinear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _createWithTimestamps(LockupLinear.CreateWithTimestamps memory params)
-        internal
-        returns (uint256 streamId)
-    {
+    function _create(LockupLinear.CreateWithTimestamps memory params) internal returns (uint256 streamId) {
         // Checks: check the broker fee and calculate the amounts.
         Lockup.CreateAmounts memory createAmounts =
             Helpers.checkAndCalculateBrokerFee(params.totalAmount, params.broker.fee, MAX_BROKER_FEE);
 
         // Checks: validate the user-provided parameters.
-        Helpers.checkCreateWithTimestamps(createAmounts.deposit, params.range);
+        Helpers.checkCreateLockupLinear(createAmounts.deposit, params.range);
 
         // Load the stream ID.
         streamId = nextStreamId;

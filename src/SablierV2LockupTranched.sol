@@ -44,7 +44,8 @@ contract SablierV2LockupTranched is
     /// @inheritdoc ISablierV2LockupTranched
     uint256 public immutable override MAX_TRANCHE_COUNT;
 
-    /// @dev Stream tranches mapped by stream IDs.
+    /// @dev Stream tranches mapped by stream IDs. This complements the `_streams` mapping in {SablierV2Lockup}.
+    mapping(uint256 id => uint40 cliff) internal _cliffs;
     mapping(uint256 id => LockupTranched.Tranche[] tranches) internal _tranches;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -140,7 +141,7 @@ contract SablierV2LockupTranched is
         LockupTranched.Tranche[] memory tranches = Helpers.calculateTrancheTimestamps(params.tranches);
 
         // Checks, Effects and Interactions: create the stream.
-        streamId = _createWithTimestamps(
+        streamId = _create(
             LockupTranched.CreateWithTimestamps({
                 sender: params.sender,
                 recipient: params.recipient,
@@ -163,7 +164,7 @@ contract SablierV2LockupTranched is
         returns (uint256 streamId)
     {
         // Checks, Effects and Interactions: create the stream.
-        streamId = _createWithTimestamps(params);
+        streamId = _create(params);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -214,16 +215,13 @@ contract SablierV2LockupTranched is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _createWithTimestamps(LockupTranched.CreateWithTimestamps memory params)
-        internal
-        returns (uint256 streamId)
-    {
+    function _create(LockupTranched.CreateWithTimestamps memory params) internal returns (uint256 streamId) {
         // Checks: check the broker fee and calculate the amounts.
         Lockup.CreateAmounts memory createAmounts =
             Helpers.checkAndCalculateBrokerFee(params.totalAmount, params.broker.fee, MAX_BROKER_FEE);
 
         // Checks: validate the user-provided parameters.
-        Helpers.checkCreateWithTimestamps(createAmounts.deposit, params.tranches, MAX_TRANCHE_COUNT, params.startTime);
+        Helpers.checkCreateLockupTranched(createAmounts.deposit, params.tranches, MAX_TRANCHE_COUNT, params.startTime);
 
         // Load the stream ID in a variable.
         streamId = nextStreamId;
