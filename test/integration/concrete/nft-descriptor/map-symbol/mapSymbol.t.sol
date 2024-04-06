@@ -29,4 +29,10 @@ contract MapSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_Concre
         string memory expectedSablierModel = "Lockup Linear";
         assertEq(actualSablierModel, expectedSablierModel, "sablierModel");
     }
+
+    function test_MapSymbol_LockupTranched() external view givenKnownNFT {
+        string memory actualSablierModel = nftDescriptorMock.mapSymbol_(lockupTranched);
+        string memory expectedSablierModel = "Lockup Tranched";
+        assertEq(actualSablierModel, expectedSablierModel, "sablierModel");
+    }
 }

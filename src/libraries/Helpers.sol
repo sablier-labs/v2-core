@@ -45,7 +45,7 @@ library Helpers {
         amounts.deposit = totalAmount - amounts.brokerFee;
     }
 
-    /// @dev Checks the parameters of the {SablierV2LockupDynamic-_createWithTimestamps} function.
+    /// @dev Checks the parameters of the {SablierV2LockupDynamic-_create} function.
     function checkCreateLockupDynamic(
         uint128 depositAmount,
         LockupDynamic.Segment[] memory segments,
@@ -80,7 +80,7 @@ library Helpers {
         _checkSegments(segments, depositAmount, startTime);
     }
 
-    /// @dev Checks the parameters of the {SablierV2LockupLinear-_createWithTimestamps} function.
+    /// @dev Checks the parameters of the {SablierV2LockupLinear-_create} function.
     function checkCreateLockupLinear(uint128 depositAmount, LockupLinear.Range memory range) internal view {
         // Check: the deposit amount is not zero.
         if (depositAmount == 0) {
@@ -117,7 +117,7 @@ library Helpers {
         }
     }
 
-    /// @dev Checks the parameters of the {SablierV2LockupTranched-_createWithTimestamps} function.
+    /// @dev Checks the parameters of the {SablierV2LockupTranched-_create} function.
     function checkCreateLockupTranched(
         uint128 depositAmount,
         LockupTranched.Tranche[] memory tranches,
@@ -164,8 +164,8 @@ library Helpers {
         // Make the current time the stream's start time.
         uint40 startTime = uint40(block.timestamp);
 
-        // It is safe to use unchecked arithmetic because {_createWithTimestamps} will nonetheless check the soundness
-        // of the calculated segment timestamps.
+        // It is safe to use unchecked arithmetic because {SablierV2LockupDynamic-_create} will nonetheless check the
+        // soundness of the calculated segment timestamps.
         unchecked {
             // Precompute the first segment because of the need to add the start time to the first segment duration.
             segmentsWithTimestamps[0] = LockupDynamic.Segment({
@@ -197,8 +197,8 @@ library Helpers {
         // Make the current time the stream's start time.
         uint40 startTime = uint40(block.timestamp);
 
-        // It is safe to use unchecked arithmetic because {_createWithTimestamps} will nonetheless check the soundness
-        // of the calculated tranche timestamps.
+        // It is safe to use unchecked arithmetic because {SablierV2LockupTranched-_create} will nonetheless check the
+        // soundness of the calculated tranche timestamps.
         unchecked {
             // Precompute the first tranche because of the need to add the start time to the first tranche duration.
             tranchesWithTimestamps[0] =
