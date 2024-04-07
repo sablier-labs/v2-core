@@ -23,9 +23,9 @@ contract Defaults is Constants {
     uint40 public constant CLIFF_DURATION = 2500 seconds;
     uint128 public constant DEPOSIT_AMOUNT = 10_000e18;
     uint40 public immutable END_TIME;
-    uint256 public constant MAX_SEGMENT_COUNT = 2000;
+    uint256 public constant MAX_SEGMENT_COUNT = 500;
     uint40 public immutable MAX_SEGMENT_DURATION;
-    uint256 public constant MAX_TRANCHE_COUNT = 2000;
+    uint256 public constant MAX_TRANCHE_COUNT = 500;
     uint128 public constant REFUND_AMOUNT = DEPOSIT_AMOUNT - CLIFF_AMOUNT;
     uint256 public SEGMENT_COUNT;
     uint40 public immutable START_TIME;
