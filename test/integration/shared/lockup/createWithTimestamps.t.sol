@@ -7,7 +7,7 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
     uint256 internal streamId;
 
     function setUp() public virtual override {
-        streamId = lockupLinear.nextStreamId();
+        streamId = lockup.nextStreamId();
     }
 
     modifier whenAssetContract() {
@@ -62,11 +62,11 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenSegmentCountNotZero() {
+    modifier whenSegmentCountNotTooHigh() {
         _;
     }
 
-    modifier whenSegmentCountNotTooHigh() {
+    modifier whenSegmentCountNotZero() {
         _;
     }
 

@@ -7,7 +7,7 @@ abstract contract CreateWithDurations_Integration_Shared_Test is Lockup_Integrat
     uint256 internal streamId;
 
     function setUp() public virtual override {
-        streamId = lockupDynamic.nextStreamId();
+        streamId = lockup.nextStreamId();
     }
 
     modifier whenCliffDurationCalculationDoesNotOverflow() {
