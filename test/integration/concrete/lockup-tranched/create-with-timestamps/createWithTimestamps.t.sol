@@ -11,8 +11,7 @@ import { ISablierV2LockupTranched } from "src/interfaces/ISablierV2LockupTranche
 import { Errors } from "src/libraries/Errors.sol";
 import { Broker, Lockup, LockupTranched } from "src/types/DataTypes.sol";
 
-import { CreateWithTimestamps_Integration_Shared_Test } from
-    "../../../shared/lockup-tranched/createWithTimestamps.t.sol";
+import { CreateWithTimestamps_Integration_Shared_Test } from "../../../shared/lockup/createWithTimestamps.t.sol";
 import { LockupTranched_Integration_Concrete_Test } from "../LockupTranched.t.sol";
 
 contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is

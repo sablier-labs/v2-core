@@ -6,7 +6,7 @@ import { MAX_UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 import { Errors } from "src/libraries/Errors.sol";
 import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
 
-import { CreateWithTimestamps_Integration_Shared_Test } from "../../shared/lockup-linear/createWithTimestamps.t.sol";
+import { CreateWithTimestamps_Integration_Shared_Test } from "../../shared/lockup/createWithTimestamps.t.sol";
 import { LockupLinear_Integration_Fuzz_Test } from "./LockupLinear.t.sol";
 
 contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is

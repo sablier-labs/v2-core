@@ -3,7 +3,7 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Lockup, LockupDynamic } from "src/types/DataTypes.sol";
 
-import { CreateWithDurations_Integration_Shared_Test } from "../../shared/lockup-dynamic/createWithDurations.t.sol";
+import { CreateWithDurations_Integration_Shared_Test } from "../../shared/lockup/createWithDurations.t.sol";
 import { LockupDynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
 
 contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is

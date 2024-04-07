@@ -10,7 +10,7 @@ import { ISablierV2LockupLinear } from "src/interfaces/ISablierV2LockupLinear.so
 import { Errors } from "src/libraries/Errors.sol";
 import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
 
-import { CreateWithTimestamps_Integration_Shared_Test } from "../../../shared/lockup-linear/createWithTimestamps.t.sol";
+import { CreateWithTimestamps_Integration_Shared_Test } from "../../../shared/lockup/createWithTimestamps.t.sol";
 import { LockupLinear_Integration_Concrete_Test } from "../LockupLinear.t.sol";
 
 contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is

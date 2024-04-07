@@ -4,7 +4,7 @@ pragma solidity >=0.8.22 <0.9.0;
 import { Errors } from "src/libraries/Errors.sol";
 import { Lockup, LockupLinear } from "src/types/DataTypes.sol";
 
-import { CreateWithDurations_Integration_Shared_Test } from "../../shared/lockup-linear/createWithDurations.t.sol";
+import { CreateWithDurations_Integration_Shared_Test } from "../../shared/lockup/createWithDurations.t.sol";
 import { LockupLinear_Integration_Fuzz_Test } from "./LockupLinear.t.sol";
 
 contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is

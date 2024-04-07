@@ -5,7 +5,7 @@ import { ISablierV2LockupTranched } from "src/interfaces/ISablierV2LockupTranche
 import { Errors } from "src/libraries/Errors.sol";
 import { Lockup, LockupTranched } from "src/types/DataTypes.sol";
 
-import { CreateWithDurations_Integration_Shared_Test } from "../../../shared/lockup-tranched/createWithDurations.t.sol";
+import { CreateWithDurations_Integration_Shared_Test } from "../../../shared/lockup/createWithDurations.t.sol";
 import { LockupTranched_Integration_Concrete_Test } from "../LockupTranched.t.sol";
 
 contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is

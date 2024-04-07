@@ -7,7 +7,7 @@ import { ISablierV2LockupDynamic } from "src/interfaces/ISablierV2LockupDynamic.
 import { Errors } from "src/libraries/Errors.sol";
 import { Lockup, LockupDynamic } from "src/types/DataTypes.sol";
 
-import { CreateWithDurations_Integration_Shared_Test } from "../../../shared/lockup-dynamic/createWithDurations.t.sol";
+import { CreateWithDurations_Integration_Shared_Test } from "../../../shared/lockup/createWithDurations.t.sol";
 import { LockupDynamic_Integration_Concrete_Test } from "../LockupDynamic.t.sol";
 
 contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is

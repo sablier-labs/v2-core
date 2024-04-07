@@ -7,7 +7,7 @@ import { stdError } from "forge-std/src/StdError.sol";
 import { Errors } from "src/libraries/Errors.sol";
 import { Broker, Lockup, LockupDynamic } from "src/types/DataTypes.sol";
 
-import { CreateWithTimestamps_Integration_Shared_Test } from "../../shared/lockup-dynamic/createWithTimestamps.t.sol";
+import { CreateWithTimestamps_Integration_Shared_Test } from "../../shared/lockup/createWithTimestamps.t.sol";
 import { LockupDynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
 
 contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
