@@ -45,7 +45,6 @@ contract SablierV2LockupTranched is
     uint256 public immutable override MAX_TRANCHE_COUNT;
 
     /// @dev Stream tranches mapped by stream IDs. This complements the `_streams` mapping in {SablierV2Lockup}.
-    mapping(uint256 id => uint40 cliff) internal _cliffs;
     mapping(uint256 id => LockupTranched.Tranche[] tranches) internal _tranches;
 
     /*//////////////////////////////////////////////////////////////////////////
