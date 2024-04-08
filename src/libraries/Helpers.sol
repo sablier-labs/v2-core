@@ -13,6 +13,68 @@ library Helpers {
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @dev Calculate the timestamps and return the segments.
+    function calculateSegmentTimestamps(LockupDynamic.SegmentWithDuration[] memory segments)
+        internal
+        view
+        returns (LockupDynamic.Segment[] memory segmentsWithTimestamps)
+    {
+        uint256 segmentCount = segments.length;
+        segmentsWithTimestamps = new LockupDynamic.Segment[](segmentCount);
+
+        // Make the current time the stream's start time.
+        uint40 startTime = uint40(block.timestamp);
+
+        // It is safe to use unchecked arithmetic because {SablierV2LockupDynamic-_create} will nonetheless check the
+        // correctness of the calculated segment timestamps.
+        unchecked {
+            // The first segment is precomputed because it is needed in the for loop below.
+            segmentsWithTimestamps[0] = LockupDynamic.Segment({
+                amount: segments[0].amount,
+                exponent: segments[0].exponent,
+                timestamp: startTime + segments[0].duration
+            });
+
+            // Copy the segment amounts and exponents, and calculate the segment timestamps.
+            for (uint256 i = 1; i < segmentCount; ++i) {
+                segmentsWithTimestamps[i] = LockupDynamic.Segment({
+                    amount: segments[i].amount,
+                    exponent: segments[i].exponent,
+                    timestamp: segmentsWithTimestamps[i - 1].timestamp + segments[i].duration
+                });
+            }
+        }
+    }
+
+    /// @dev Calculate the timestamps and return the tranches.
+    function calculateTrancheTimestamps(LockupTranched.TrancheWithDuration[] memory tranches)
+        internal
+        view
+        returns (LockupTranched.Tranche[] memory tranchesWithTimestamps)
+    {
+        uint256 trancheCount = tranches.length;
+        tranchesWithTimestamps = new LockupTranched.Tranche[](trancheCount);
+
+        // Make the current time the stream's start time.
+        uint40 startTime = uint40(block.timestamp);
+
+        // It is safe to use unchecked arithmetic because {SablierV2LockupTranched-_create} will nonetheless check the
+        // correctness of the calculated tranche timestamps.
+        unchecked {
+            // The first tranche is precomputed because it is needed in the for loop below.
+            tranchesWithTimestamps[0] =
+                LockupTranched.Tranche({ amount: tranches[0].amount, timestamp: startTime + tranches[0].duration });
+
+            // Copy the tranche amounts and calculate the tranche timestamps.
+            for (uint256 i = 1; i < trancheCount; ++i) {
+                tranchesWithTimestamps[i] = LockupTranched.Tranche({
+                    amount: tranches[i].amount,
+                    timestamp: tranchesWithTimestamps[i - 1].timestamp + tranches[i].duration
+                });
+            }
+        }
+    }
+
     /// @dev Checks the broker fee is not greater than `maxBrokerFee`, and then calculates the broker fee amount and the
     /// deposit amount from the total amount.
     function checkAndCalculateBrokerFee(
@@ -150,68 +212,6 @@ library Helpers {
 
         // Check: requirements of tranches.
         _checkTranches(tranches, depositAmount, startTime);
-    }
-
-    /// @dev Calculate the timestamps and return the segments.
-    function calculateSegmentTimestamps(LockupDynamic.SegmentWithDuration[] memory segments)
-        internal
-        view
-        returns (LockupDynamic.Segment[] memory segmentsWithTimestamps)
-    {
-        uint256 segmentCount = segments.length;
-        segmentsWithTimestamps = new LockupDynamic.Segment[](segmentCount);
-
-        // Make the current time the stream's start time.
-        uint40 startTime = uint40(block.timestamp);
-
-        // It is safe to use unchecked arithmetic because {SablierV2LockupDynamic-_create} will nonetheless check the
-        // correctness of the calculated segment timestamps.
-        unchecked {
-            // The first segment is precomputed because it is needed in the for loop below.
-            segmentsWithTimestamps[0] = LockupDynamic.Segment({
-                amount: segments[0].amount,
-                exponent: segments[0].exponent,
-                timestamp: startTime + segments[0].duration
-            });
-
-            // Copy the segment amounts and exponents, and calculate the segment timestamps.
-            for (uint256 i = 1; i < segmentCount; ++i) {
-                segmentsWithTimestamps[i] = LockupDynamic.Segment({
-                    amount: segments[i].amount,
-                    exponent: segments[i].exponent,
-                    timestamp: segmentsWithTimestamps[i - 1].timestamp + segments[i].duration
-                });
-            }
-        }
-    }
-
-    /// @dev Calculate the timestamps and return the tranches.
-    function calculateTrancheTimestamps(LockupTranched.TrancheWithDuration[] memory tranches)
-        internal
-        view
-        returns (LockupTranched.Tranche[] memory tranchesWithTimestamps)
-    {
-        uint256 trancheCount = tranches.length;
-        tranchesWithTimestamps = new LockupTranched.Tranche[](trancheCount);
-
-        // Make the current time the stream's start time.
-        uint40 startTime = uint40(block.timestamp);
-
-        // It is safe to use unchecked arithmetic because {SablierV2LockupTranched-_create} will nonetheless check the
-        // correctness of the calculated tranche timestamps.
-        unchecked {
-            // The first tranche is precomputed because it is needed in the for loop below.
-            tranchesWithTimestamps[0] =
-                LockupTranched.Tranche({ amount: tranches[0].amount, timestamp: startTime + tranches[0].duration });
-
-            // Copy the tranche amounts and calculate the tranche timestamps.
-            for (uint256 i = 1; i < trancheCount; ++i) {
-                tranchesWithTimestamps[i] = LockupTranched.Tranche({
-                    amount: tranches[i].amount,
-                    timestamp: tranchesWithTimestamps[i - 1].timestamp + tranches[i].duration
-                });
-            }
-        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////

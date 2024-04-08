@@ -251,9 +251,9 @@ contract SablierV2LockupLinear is
             asset: params.asset,
             endTime: params.range.end,
             isCancelable: params.cancelable,
-            isTransferable: params.transferable,
             isDepleted: false,
             isStream: true,
+            isTransferable: params.transferable,
             sender: params.sender,
             startTime: params.range.start,
             wasCanceled: false

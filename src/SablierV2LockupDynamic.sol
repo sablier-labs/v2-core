@@ -119,9 +119,9 @@ contract SablierV2LockupDynamic is
             asset: lockupStream.asset,
             endTime: lockupStream.endTime,
             isCancelable: lockupStream.isCancelable,
-            isTransferable: lockupStream.isTransferable,
             isDepleted: lockupStream.isDepleted,
             isStream: lockupStream.isStream,
+            isTransferable: lockupStream.isTransferable,
             recipient: _ownerOf(streamId),
             segments: _segments[streamId],
             sender: lockupStream.sender,
@@ -329,8 +329,8 @@ contract SablierV2LockupDynamic is
         stream.amounts.deposited = createAmounts.deposit;
         stream.asset = params.asset;
         stream.isCancelable = params.cancelable;
-        stream.isTransferable = params.transferable;
         stream.isStream = true;
+        stream.isTransferable = params.transferable;
         stream.sender = params.sender;
         stream.startTime = params.startTime;
 

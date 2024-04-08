@@ -103,9 +103,9 @@ contract SablierV2LockupTranched is
             asset: lockupStream.asset,
             endTime: lockupStream.endTime,
             isCancelable: lockupStream.isCancelable,
-            isTransferable: lockupStream.isTransferable,
             isDepleted: lockupStream.isDepleted,
             isStream: lockupStream.isStream,
+            isTransferable: lockupStream.isTransferable,
             recipient: _ownerOf(streamId),
             sender: lockupStream.sender,
             startTime: lockupStream.startTime,
@@ -199,7 +199,7 @@ contract SablierV2LockupTranched is
         // at this point.
         uint128 streamedAmount = tranches[0].amount;
         for (uint256 i = 1; i < tranches.length; ++i) {
-            // If a tranche's timestamp is equal to the current time, it is considered vested.
+            // If a tranche's timestamp is less than or equal to the current time, it has vested.
             if (tranches[i].timestamp > blockTimestamp) {
                 break;
             }
@@ -232,8 +232,8 @@ contract SablierV2LockupTranched is
         stream.amounts.deposited = createAmounts.deposit;
         stream.asset = params.asset;
         stream.isCancelable = params.cancelable;
-        stream.isTransferable = params.transferable;
         stream.isStream = true;
+        stream.isTransferable = params.transferable;
         stream.sender = params.sender;
         stream.startTime = params.startTime;
 
