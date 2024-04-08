@@ -206,10 +206,10 @@ contract SablierV2LockupLinear is
             // Calculate how much time has passed since the stream started, and the stream's total duration.
             uint256 startTime = uint256(_streams[streamId].startTime);
             UD60x18 elapsedTime = ud(blockTimestamp - startTime);
-            UD60x18 totalTime = ud(endTime - startTime);
+            UD60x18 totalDuration = ud(endTime - startTime);
 
             // Divide the elapsed time by the stream's total duration.
-            UD60x18 elapsedTimePercentage = elapsedTime.div(totalTime);
+            UD60x18 elapsedTimePercentage = elapsedTime.div(totalDuration);
 
             // Cast the deposited amount to UD60x18.
             UD60x18 depositedAmount = ud(_streams[streamId].amounts.deposited);

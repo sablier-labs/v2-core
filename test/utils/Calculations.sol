@@ -29,8 +29,8 @@ abstract contract Calculations {
         }
         unchecked {
             UD60x18 elapsedTime = ud(blockTimestamp - defaults.START_TIME());
-            UD60x18 totalTime = ud(defaults.TOTAL_DURATION());
-            UD60x18 elapsedTimePercentage = elapsedTime.div(totalTime);
+            UD60x18 totalDuration = ud(defaults.TOTAL_DURATION());
+            UD60x18 elapsedTimePercentage = elapsedTime.div(totalDuration);
             return elapsedTimePercentage.mul(ud(depositAmount)).intoUint128();
         }
     }
