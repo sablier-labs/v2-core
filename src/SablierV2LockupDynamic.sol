@@ -224,7 +224,7 @@ contract SablierV2LockupDynamic is
             Lockup.Stream memory stream = _streams[streamId];
             LockupDynamic.Segment[] memory segments = _segments[streamId];
 
-            // Sum the amounts in all segments that precede the current time.
+            // Sum the amounts in all segments that precede the block timestamp.
             uint128 previousSegmentAmounts;
             uint40 currentSegmentTimestamp = segments[0].timestamp;
             uint256 index = 0;

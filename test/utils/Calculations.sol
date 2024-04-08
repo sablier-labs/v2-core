@@ -117,7 +117,7 @@ abstract contract Calculations {
             return depositAmount;
         }
 
-        // Sum the amounts in all tranches that precede the current time.
+        // Sum the amounts in all tranches that precede the block timestamp.
         uint128 streamedAmount = tranches[0].amount;
         uint40 currentTrancheTimestamp = tranches[1].timestamp;
         uint256 index = 1;

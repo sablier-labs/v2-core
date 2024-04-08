@@ -22,7 +22,7 @@ library Helpers {
         uint256 segmentCount = segments.length;
         segmentsWithTimestamps = new LockupDynamic.Segment[](segmentCount);
 
-        // Make the current time the stream's start time.
+        // Make the block timestamp the stream's start time.
         uint40 startTime = uint40(block.timestamp);
 
         // It is safe to use unchecked arithmetic because {SablierV2LockupDynamic-_create} will nonetheless check the
@@ -55,7 +55,7 @@ library Helpers {
         uint256 trancheCount = tranches.length;
         tranchesWithTimestamps = new LockupTranched.Tranche[](trancheCount);
 
-        // Make the current time the stream's start time.
+        // Make the block timestamp the stream's start time.
         uint40 startTime = uint40(block.timestamp);
 
         // It is safe to use unchecked arithmetic because {SablierV2LockupTranched-_create} will nonetheless check the

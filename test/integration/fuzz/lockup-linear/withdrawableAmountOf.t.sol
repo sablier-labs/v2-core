@@ -105,7 +105,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
         depositAmount = boundUint128(depositAmount, 10_000, MAX_UINT128);
 
-        // Define the current time.
+        // Define the block timestamp.
         uint40 blockTimestamp = defaults.START_TIME() + timeJump;
 
         // Bound the withdraw amount.

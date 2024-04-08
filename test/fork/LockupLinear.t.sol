@@ -126,7 +126,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
             params.range.cliff =
                 boundUint40(params.range.cliff, params.range.start + 1 seconds, params.range.start + 52 weeks);
         }
-        // Bound the end time so that it is always greater than both the current time and the cliff time (as this is
+        // Bound the end time so that it is always greater than both the block timestamp and the cliff time (as this is
         // a protocol requirement).
         vars.endTimeLowerBound = maxUint40(params.range.start, params.range.cliff);
         params.range.end = boundUint40(

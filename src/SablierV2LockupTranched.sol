@@ -200,7 +200,7 @@ contract SablierV2LockupTranched is
         uint128 streamedAmount = tranches[0].amount;
         for (uint256 i = 1; i < tranches.length; ++i) {
             // The loop breaks at the first tranche with a timestamp in the future. A tranche is considered vested if
-            // its timestamp is less than or equal to the current time.
+            // its timestamp is less than or equal to the block timestamp.
             if (tranches[i].timestamp > blockTimestamp) {
                 break;
             }
