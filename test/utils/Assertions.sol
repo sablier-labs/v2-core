@@ -47,8 +47,8 @@ abstract contract Assertions is PRBMathAssertions {
         assertEq(a.endTime, b.endTime, "endTime");
         assertEq(a.isCancelable, b.isCancelable, "isCancelable");
         assertEq(a.isDepleted, b.isDepleted, "isDepleted");
-        assertEq(a.isTransferable, b.isTransferable, "isTransferable");
         assertEq(a.isStream, b.isStream, "isStream");
+        assertEq(a.isTransferable, b.isTransferable, "isTransferable");
         assertEq(a.recipient, b.recipient, "recipient");
         assertEq(a.segments, b.segments, "segments");
         assertEq(a.sender, b.sender, "sender");
@@ -64,8 +64,8 @@ abstract contract Assertions is PRBMathAssertions {
         assertEq(a.endTime, b.endTime, "endTime");
         assertEq(a.isCancelable, b.isCancelable, "isCancelable");
         assertEq(a.isDepleted, b.isDepleted, "isDepleted");
-        assertEq(a.isTransferable, b.isTransferable, "isTransferable");
         assertEq(a.isStream, b.isStream, "isStream");
+        assertEq(a.isTransferable, b.isTransferable, "isTransferable");
         assertEq(a.recipient, b.recipient, "recipient");
         assertEq(a.sender, b.sender, "sender");
         assertEq(a.startTime, b.startTime, "startTime");
@@ -78,8 +78,8 @@ abstract contract Assertions is PRBMathAssertions {
         assertEq(a.endTime, b.endTime, "endTime");
         assertEq(a.isCancelable, b.isCancelable, "isCancelable");
         assertEq(a.isDepleted, b.isDepleted, "isDepleted");
-        assertEq(a.isTransferable, b.isTransferable, "isTransferable");
         assertEq(a.isStream, b.isStream, "isStream");
+        assertEq(a.isTransferable, b.isTransferable, "isTransferable");
         assertEq(a.recipient, b.recipient, "recipient");
         assertEq(a.sender, b.sender, "sender");
         assertEq(a.startTime, b.startTime, "startTime");

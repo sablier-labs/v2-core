@@ -66,12 +66,12 @@ library Errors {
     /// @notice Thrown when trying to withdraw zero assets from a stream.
     error SablierV2Lockup_WithdrawAmountZero(uint256 streamId);
 
-    /// @notice Thrown when trying to withdraw from multiple streams and the number of stream ids does
+    /// @notice Thrown when trying to withdraw from multiple streams and the number of stream IDs does
     /// not match the number of withdraw amounts.
     error SablierV2Lockup_WithdrawArrayCountsNotEqual(uint256 streamIdsCount, uint256 amountsCount);
 
     /// @notice Thrown when trying to withdraw to the zero address.
-    error SablierV2Lockup_WithdrawToZeroAddress();
+    error SablierV2Lockup_WithdrawToZeroAddress(uint256 streamId);
 
     /*//////////////////////////////////////////////////////////////////////////
                              SABLIER-V2-LOCKUP-DYNAMIC

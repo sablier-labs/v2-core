@@ -137,7 +137,7 @@ interface ISablierV2Lockup is
     /// @dev This value is hard coded as a constant.
     function MAX_BROKER_FEE() external view returns (UD60x18);
 
-    /// @notice Counter for stream ids, used in the create functions.
+    /// @notice Counter for stream IDs, used in the create functions.
     function nextStreamId() external view returns (uint256);
 
     /// @notice Contract that generates the non-fungible token URI.
@@ -219,7 +219,7 @@ interface ISablierV2Lockup is
     /// Requirements:
     /// - All requirements from {cancel} must be met for each stream.
     ///
-    /// @param streamIds The ids of the streams to cancel.
+    /// @param streamIds The IDs of the streams to cancel.
     function cancelMultiple(uint256[] calldata streamIds) external;
 
     /// @notice Removes the right of the stream's sender to cancel the stream.
@@ -318,7 +318,7 @@ interface ISablierV2Lockup is
     /// - Each stream ID in the array must not reference a null or depleted stream.
     /// - Each amount in the array must be greater than zero and must not exceed the withdrawable amount.
     ///
-    /// @param streamIds The ids of the streams to withdraw from.
+    /// @param streamIds The IDs of the streams to withdraw from.
     /// @param amounts The amounts to withdraw, denoted in units of the asset's decimals.
     function withdrawMultiple(uint256[] calldata streamIds, uint128[] calldata amounts) external;
 }

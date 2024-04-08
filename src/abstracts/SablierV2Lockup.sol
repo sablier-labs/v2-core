@@ -272,7 +272,7 @@ abstract contract SablierV2Lockup is
 
     /// @inheritdoc ISablierV2Lockup
     function cancelMultiple(uint256[] calldata streamIds) external override noDelegateCall {
-        // Iterate over the provided array of stream ids and cancel each stream.
+        // Iterate over the provided array of stream IDs and cancel each stream.
         uint256 count = streamIds.length;
         for (uint256 i = 0; i < count; ++i) {
             // Effects and Interactions: cancel the stream.
@@ -347,7 +347,7 @@ abstract contract SablierV2Lockup is
 
         // Check: the withdrawal address is not zero.
         if (to == address(0)) {
-            revert Errors.SablierV2Lockup_WithdrawToZeroAddress();
+            revert Errors.SablierV2Lockup_WithdrawToZeroAddress(streamId);
         }
 
         // Check: the withdraw amount is not zero.
@@ -448,7 +448,7 @@ abstract contract SablierV2Lockup is
             revert Errors.SablierV2Lockup_WithdrawArrayCountsNotEqual(streamIdsCount, amountsCount);
         }
 
-        // Iterate over the provided array of stream ids and withdraw from each stream.
+        // Iterate over the provided array of stream IDs, and withdraw from each stream to the recipient.
         for (uint256 i = 0; i < streamIdsCount; ++i) {
             // Checks, Effects and Interactions: check the parameters and make the withdrawal.
             withdraw({ streamId: streamIds[i], to: _ownerOf(streamIds[i]), amount: amounts[i] });

@@ -98,8 +98,8 @@ abstract contract Calculations {
 
             SD59x18 elapsedTimePercentage = elapsedTime.div(totalDuration);
             SD59x18 multiplier = elapsedTimePercentage.pow(segment.exponent.intoSD59x18());
-            SD59x18 streamedAmountSd = multiplier.mul(segment.amount.intoSD59x18());
-            return uint128(streamedAmountSd.intoUint256());
+            SD59x18 streamedAmount = multiplier.mul(segment.amount.intoSD59x18());
+            return uint128(streamedAmount.intoUint256());
         }
     }
 

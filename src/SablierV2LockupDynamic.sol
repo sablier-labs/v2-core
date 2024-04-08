@@ -202,7 +202,7 @@ contract SablierV2LockupDynamic is
         }
 
         if (_segments[streamId].length > 1) {
-            // If there is more than one segment, it may be necessary to iterate over all of them.
+            // If there is more than one segment, it may be required to iterate over all of them.
             return _calculateStreamedAmountForMultipleSegments(streamId);
         } else {
             // Otherwise, there is only one segment, and the calculation is simpler.
@@ -245,16 +245,16 @@ contract SablierV2LockupDynamic is
                 // time as the previous timestamp.
                 previousTimestamp = stream.startTime;
             } else {
-                // Otherwise, when the current segment's index is greater than zero, it implies that the segment is not
+                // Otherwise, when the current segment's index is greater than zero, it means that the segment is not
                 // the first. In this case, use the previous segment's timestamp.
                 previousTimestamp = segments[index - 1].timestamp;
             }
 
-            // Calculate how much time has passed since the segment started, and the total time of the segment.
+            // Calculate how much time has passed since the segment started, and the total duration of the segment.
             SD59x18 elapsedTime = (blockTimestamp - previousTimestamp).intoSD59x18();
             SD59x18 segmentDuration = (currentSegmentTimestamp - previousTimestamp).intoSD59x18();
 
-            // Divide the vested segment's time by the total duration of the segment.
+            // Divide the elapsed time by the total duration of the segment.
             SD59x18 elapsedTimePercentage = elapsedTime.div(segmentDuration);
 
             // Calculate the streamed amount using the special formula.

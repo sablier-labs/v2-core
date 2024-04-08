@@ -268,9 +268,9 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         assertEq(actualStream.asset, dai, "asset");
         assertEq(actualStream.endTime, range.end, "endTime");
         assertEq(actualStream.isCancelable, vars.isCancelable, "isCancelable");
-        assertEq(actualStream.isTransferable, true, "isTransferable");
         assertEq(actualStream.isDepleted, false, "isStream");
         assertEq(actualStream.isStream, true, "isStream");
+        assertEq(actualStream.isTransferable, true, "isTransferable");
         assertEq(actualStream.recipient, params.recipient, "recipient");
         assertEq(actualStream.sender, params.sender, "sender");
         assertEq(actualStream.segments, params.segments, "segments");
