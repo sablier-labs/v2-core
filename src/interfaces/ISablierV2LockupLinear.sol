@@ -7,7 +7,7 @@ import { Lockup, LockupLinear } from "../types/DataTypes.sol";
 import { ISablierV2Lockup } from "./ISablierV2Lockup.sol";
 
 /// @title ISablierV2LockupLinear
-/// @notice Creates and manages Lockup streams with linear distribution functions.
+/// @notice Creates and manages Lockup streams with a linear distribution function.
 interface ISablierV2LockupLinear is ISablierV2Lockup {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS

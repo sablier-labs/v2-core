@@ -189,14 +189,14 @@ contract SablierV2LockupLinear is
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
         // If the cliff time is in the future, return zero.
         uint256 cliffTime = uint256(_cliffs[streamId]);
-        uint256 currentTime = block.timestamp;
-        if (cliffTime > currentTime) {
+        uint256 blockTimestamp = block.timestamp;
+        if (cliffTime > blockTimestamp) {
             return 0;
         }
 
         // If the end time is not in the future, return the deposited amount.
         uint256 endTime = uint256(_streams[streamId].endTime);
-        if (currentTime >= endTime) {
+        if (blockTimestamp >= endTime) {
             return _streams[streamId].amounts.deposited;
         }
 
@@ -205,7 +205,7 @@ contract SablierV2LockupLinear is
         unchecked {
             // Calculate how much time has passed since the stream started, and the stream's total duration.
             uint256 startTime = uint256(_streams[streamId].startTime);
-            UD60x18 elapsedTime = ud(currentTime - startTime);
+            UD60x18 elapsedTime = ud(blockTimestamp - startTime);
             UD60x18 totalTime = ud(endTime - startTime);
 
             // Divide the elapsed time by the stream's total duration.

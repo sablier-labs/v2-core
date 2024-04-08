@@ -51,7 +51,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         uint256 actualRecipientBalance;
         Lockup.Status actualStatus;
         uint256[] balances;
-        uint40 currentTime;
+        uint40 blockTimestamp;
         uint40 endTimeLowerBound;
         uint256 expectedLockupLinearBalance;
         uint256 expectedHolderBalance;
@@ -114,10 +114,10 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
 
         // Bound the parameters.
         Vars memory vars;
-        vars.currentTime = getBlockTimestamp();
+        vars.blockTimestamp = getBlockTimestamp();
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
         params.range.start =
-            boundUint40(params.range.start, vars.currentTime - 1000 seconds, vars.currentTime + 10_000 seconds);
+            boundUint40(params.range.start, vars.blockTimestamp - 1000 seconds, vars.blockTimestamp + 10_000 seconds);
         params.totalAmount = boundUint128(params.totalAmount, 1, uint128(initialHolderBalance));
 
         // The cliff time must be either zero or greater than the start time.
@@ -131,7 +131,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         vars.endTimeLowerBound = maxUint40(params.range.start, params.range.cliff);
         params.range.end = boundUint40(
             params.range.end,
-            (vars.endTimeLowerBound <= vars.currentTime ? vars.currentTime : vars.endTimeLowerBound) + 1 seconds,
+            (vars.endTimeLowerBound <= vars.blockTimestamp ? vars.blockTimestamp : vars.endTimeLowerBound) + 1 seconds,
             MAX_UNIX_TIMESTAMP
         );
 
@@ -202,7 +202,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
 
         // Assert that the stream's status is correct.
         vars.actualStatus = lockupLinear.statusOf(vars.streamId);
-        vars.expectedStatus = params.range.start > vars.currentTime ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
+        vars.expectedStatus = params.range.start > vars.blockTimestamp ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
         assertEq(vars.actualStatus, vars.expectedStatus, "post-create stream status");
 
         // Assert that the next stream ID has been bumped.

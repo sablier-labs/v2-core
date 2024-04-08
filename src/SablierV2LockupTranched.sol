@@ -181,16 +181,16 @@ contract SablierV2LockupTranched is
     ///
     /// - $\Sigma(eta)$ is the sum of all vested tranches' amounts.
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
-        uint40 currentTime = uint40(block.timestamp);
+        uint40 blockTimestamp = uint40(block.timestamp);
         LockupTranched.Tranche[] memory tranches = _tranches[streamId];
 
         // If the first tranche's timestamp is in the future, return zero.
-        if (tranches[0].timestamp > currentTime) {
+        if (tranches[0].timestamp > blockTimestamp) {
             return 0;
         }
 
         // If the end time is not in the future, return the deposited amount.
-        if (_streams[streamId].endTime <= currentTime) {
+        if (_streams[streamId].endTime <= blockTimestamp) {
             return _streams[streamId].amounts.deposited;
         }
 
@@ -200,10 +200,12 @@ contract SablierV2LockupTranched is
         uint128 streamedAmount = tranches[0].amount;
         for (uint256 i = 1; i < tranches.length; ++i) {
             // If a tranche's timestamp is equal to the current time, it is considered vested.
-            if (tranches[i].timestamp > currentTime) {
+            if (tranches[i].timestamp > blockTimestamp) {
                 break;
             }
-            streamedAmount += tranches[i].amount;
+            unchecked {
+                streamedAmount += tranches[i].amount;
+            }
         }
 
         return streamedAmount;

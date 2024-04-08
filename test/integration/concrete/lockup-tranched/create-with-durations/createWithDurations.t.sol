@@ -120,9 +120,9 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
         address funder = users.sender;
 
         // Declare the range.
-        uint40 currentTime = getBlockTimestamp();
+        uint40 blockTimestamp = getBlockTimestamp();
         LockupTranched.Range memory range =
-            LockupTranched.Range({ start: currentTime, end: currentTime + defaults.TOTAL_DURATION() });
+            LockupTranched.Range({ start: blockTimestamp, end: blockTimestamp + defaults.TOTAL_DURATION() });
 
         LockupTranched.TrancheWithDuration[] memory tranchesWithDurations = defaults.tranchesWithDurations();
         LockupTranched.Tranche[] memory tranches = defaults.tranches();

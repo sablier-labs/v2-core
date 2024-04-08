@@ -7,7 +7,7 @@ import { Lockup, LockupTranched } from "../types/DataTypes.sol";
 import { ISablierV2Lockup } from "./ISablierV2Lockup.sol";
 
 /// @title ISablierV2LockupTranched
-/// @notice Creates and manages Lockup streams with tranched distribution functions.
+/// @notice Creates and manages Lockup streams with a tranched distribution function.
 interface ISablierV2LockupTranched is ISablierV2Lockup {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS

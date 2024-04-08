@@ -111,9 +111,9 @@ library Helpers {
         }
 
         // Check: the end time is in the future.
-        uint40 currentTime = uint40(block.timestamp);
-        if (currentTime >= range.end) {
-            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, range.end);
+        uint40 blockTimestamp = uint40(block.timestamp);
+        if (blockTimestamp >= range.end) {
+            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(blockTimestamp, range.end);
         }
     }
 
@@ -268,9 +268,9 @@ library Helpers {
         // Check: the last timestamp is in the future.
         // When the loop exits, the current segment's timestamp is the last segment's timestamp, i.e. the stream's end
         // time. The variable is not renamed for gas efficiency purposes.
-        uint40 currentTime = uint40(block.timestamp);
-        if (currentTime >= currentSegmentTimestamp) {
-            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, currentSegmentTimestamp);
+        uint40 blockTimestamp = uint40(block.timestamp);
+        if (blockTimestamp >= currentSegmentTimestamp) {
+            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(blockTimestamp, currentSegmentTimestamp);
         }
 
         // Check: the deposit amount is equal to the segment amounts sum.
@@ -331,9 +331,9 @@ library Helpers {
         // Check: the last timestamp is in the future.
         // When the loop exits, the current tranche's timestamp is the last tranche's timestamp, i.e. the stream's end
         // time. The variable is not renamed for gas efficiency purposes.
-        uint40 currentTime = uint40(block.timestamp);
-        if (currentTime >= currentTrancheTimestamp) {
-            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(currentTime, currentTrancheTimestamp);
+        uint40 blockTimestamp = uint40(block.timestamp);
+        if (blockTimestamp >= currentTrancheTimestamp) {
+            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(blockTimestamp, currentTrancheTimestamp);
         }
 
         // Check: the deposit amount is equal to the tranche amounts sum.

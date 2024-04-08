@@ -88,11 +88,11 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         address funder = users.sender;
 
         // Declare the range.
-        uint40 currentTime = getBlockTimestamp();
+        uint40 blockTimestamp = getBlockTimestamp();
         LockupLinear.Range memory range = LockupLinear.Range({
-            start: currentTime,
-            cliff: currentTime + defaults.CLIFF_DURATION(),
-            end: currentTime + defaults.TOTAL_DURATION()
+            start: blockTimestamp,
+            cliff: blockTimestamp + defaults.CLIFF_DURATION(),
+            end: blockTimestamp + defaults.TOTAL_DURATION()
         });
 
         // Expect the assets to be transferred from the funder to {SablierV2LockupLinear}.

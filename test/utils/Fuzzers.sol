@@ -127,8 +127,8 @@ abstract contract Fuzzers is Constants, Utils {
         uint40 segmentCount = uint40(segments.length);
         if (segmentCount == 1) {
             // The end time must be in the future.
-            uint40 currentTime = getBlockTimestamp();
-            segments[0].timestamp = (startTime < currentTime ? currentTime : startTime) + 2 days;
+            uint40 blockTimestamp = getBlockTimestamp();
+            segments[0].timestamp = (startTime < blockTimestamp ? blockTimestamp : startTime) + 2 days;
             return;
         }
 
@@ -262,8 +262,8 @@ abstract contract Fuzzers is Constants, Utils {
         uint40 trancheCount = uint40(tranches.length);
         if (trancheCount == 1) {
             // The end time must be in the future.
-            uint40 currentTime = getBlockTimestamp();
-            tranches[0].timestamp = (startTime < currentTime ? currentTime : startTime) + 2 days;
+            uint40 blockTimestamp = getBlockTimestamp();
+            tranches[0].timestamp = (startTime < blockTimestamp ? blockTimestamp : startTime) + 2 days;
             return;
         }
 

@@ -92,9 +92,9 @@ contract LockupLinearCreateHandler is BaseHandler {
             return;
         }
 
-        uint40 currentTime = getBlockTimestamp();
+        uint40 blockTimestamp = getBlockTimestamp();
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
-        params.range.start = boundUint40(params.range.start, 1 seconds, currentTime);
+        params.range.start = boundUint40(params.range.start, 1 seconds, blockTimestamp);
         params.totalAmount = boundUint128(params.totalAmount, 1, 1_000_000_000e18);
 
         // The cliff time must be either zero or greater than the start time.
@@ -108,7 +108,7 @@ contract LockupLinearCreateHandler is BaseHandler {
         uint40 endTimeLowerBound = maxUint40(params.range.start, params.range.cliff);
         params.range.end = boundUint40(
             params.range.end,
-            (endTimeLowerBound <= currentTime ? currentTime : endTimeLowerBound) + 1 seconds,
+            (endTimeLowerBound <= blockTimestamp ? blockTimestamp : endTimeLowerBound) + 1 seconds,
             MAX_UNIX_TIMESTAMP
         );
 

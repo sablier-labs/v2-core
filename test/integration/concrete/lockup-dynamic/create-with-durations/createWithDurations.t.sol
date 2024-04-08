@@ -126,9 +126,9 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         address funder = users.sender;
 
         // Declare the range.
-        uint40 currentTime = getBlockTimestamp();
+        uint40 blockTimestamp = getBlockTimestamp();
         LockupDynamic.Range memory range =
-            LockupDynamic.Range({ start: currentTime, end: currentTime + defaults.TOTAL_DURATION() });
+            LockupDynamic.Range({ start: blockTimestamp, end: blockTimestamp + defaults.TOTAL_DURATION() });
 
         // Adjust the segments.
         LockupDynamic.SegmentWithDuration[] memory segmentsWithDurations = defaults.segmentsWithDurations();
