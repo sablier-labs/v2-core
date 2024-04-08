@@ -165,9 +165,9 @@ library Helpers {
         uint40 startTime = uint40(block.timestamp);
 
         // It is safe to use unchecked arithmetic because {SablierV2LockupDynamic-_create} will nonetheless check the
-        // soundness of the calculated segment timestamps.
+        // correctness of the calculated segment timestamps.
         unchecked {
-            // Precompute the first segment because of the need to add the start time to the first segment duration.
+            // The first segment is precomputed because it is needed in the for loop below.
             segmentsWithTimestamps[0] = LockupDynamic.Segment({
                 amount: segments[0].amount,
                 exponent: segments[0].exponent,
@@ -198,9 +198,9 @@ library Helpers {
         uint40 startTime = uint40(block.timestamp);
 
         // It is safe to use unchecked arithmetic because {SablierV2LockupTranched-_create} will nonetheless check the
-        // soundness of the calculated tranche timestamps.
+        // correctness of the calculated tranche timestamps.
         unchecked {
-            // Precompute the first tranche because of the need to add the start time to the first tranche duration.
+            // The first tranche is precomputed because it is needed in the for loop below.
             tranchesWithTimestamps[0] =
                 LockupTranched.Tranche({ amount: tranches[0].amount, timestamp: startTime + tranches[0].duration });
 
