@@ -103,14 +103,12 @@ library LockupDynamic {
     /// the same as `msg.sender`.
     /// @param recipient The address receiving the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be distributed, including the stream deposit and any
-    /// broker
-    /// fee, both denoted in units of the asset's decimals.
+    /// broker fee, both denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset to be distributed.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
     /// @param segments Segments with durations used to compose the dynamic distribution function. Timestamps are
-    /// calculated
-    /// by starting from `block.timestamp` and adding each duration to the previous timestamp.
+    /// calculated by starting from `block.timestamp` and adding each duration to the previous timestamp.
     /// @param broker Struct containing (i) the address of the broker assisting in creating the stream, and (ii) the
     /// percentage fee paid to the broker from `totalAmount`, denoted as a fixed-point number. Both can be set to zero.
     struct CreateWithDurations {
@@ -129,8 +127,7 @@ library LockupDynamic {
     /// the same as `msg.sender`.
     /// @param recipient The address receiving the assets.
     /// @param totalAmount The total amount of ERC-20 assets to be distributed, including the stream deposit and any
-    /// broker
-    /// fee, both denoted in units of the asset's decimals.
+    /// broker fee, both denoted in units of the asset's decimals.
     /// @param asset The contract address of the ERC-20 asset to be distributed.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
@@ -294,8 +291,7 @@ library LockupTranched {
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
     /// @param tranches Tranches with durations used to compose the tranched distribution function. Timestamps are
-    /// calculated
-    /// by starting from `block.timestamp` and adding each duration to the previous timestamp.
+    /// calculated by starting from `block.timestamp` and adding each duration to the previous timestamp.
     /// @param broker Struct containing (i) the address of the broker assisting in creating the stream, and (ii) the
     /// percentage fee paid to the broker from `totalAmount`, denoted as a fixed-point number. Both can be set to zero.
     struct CreateWithDurations {
