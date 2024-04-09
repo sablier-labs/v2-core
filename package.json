@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "5.0.2",
-    "@prb/math": "github:PaulRBerg/prb-math#a111d11"
+    "@prb/math": "github:PaulRBerg/prb-math#16419e5"
   },
   "devDependencies": {
     "@sphinx-labs/plugins": "^0.31.2",
