@@ -103,14 +103,9 @@ contract LockupLinearCreateHandler is BaseHandler {
                 boundUint40(params.range.cliff, params.range.start + 1 seconds, params.range.start + 52 weeks);
         }
 
-        // Bound the end time so that it is always greater than both the block timestamp and the cliff time (as this is
-        // a protocol requirement).
-        uint40 endTimeLowerBound = maxUint40(params.range.start, params.range.cliff);
-        params.range.end = boundUint40(
-            params.range.end,
-            (endTimeLowerBound <= blockTimestamp ? blockTimestamp : endTimeLowerBound) + 1 seconds,
-            MAX_UNIX_TIMESTAMP
-        );
+        // Bound the end time so that it is always greater than the start time, the cliff time, and the block timestamp.
+        uint40 endTimeLowerBound = maxOfThree(params.range.start, params.range.cliff, blockTimestamp);
+        params.range.end = boundUint40(params.range.end, endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
 
         // Mint enough assets to the Sender.
         deal({ token: address(asset), to: params.sender, give: asset.balanceOf(params.sender) + params.totalAmount });

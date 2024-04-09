@@ -124,7 +124,7 @@ abstract contract Assertions is PRBMathAssertions {
         }
     }
 
-    /// @dev Compares two {LockupTranched.Tranche[]} arrays.
+    /// @dev Compares two {LockupTranched.Tranche} arrays.
     function assertEq(LockupTranched.Tranche[] memory a, LockupTranched.Tranche[] memory b) internal {
         if (keccak256(abi.encode(a)) != keccak256(abi.encode(b))) {
             emit log("Error: a == b not satisfied [LockupTranched.Tranche[]]");
@@ -134,7 +134,7 @@ abstract contract Assertions is PRBMathAssertions {
         }
     }
 
-    /// @dev Compares two `LockupTranched.Tranche[]` arrays.
+    /// @dev Compares two {LockupTranched.Tranche} arrays.
     function assertEq(
         LockupTranched.Tranche[] memory a,
         LockupTranched.Tranche[] memory b,

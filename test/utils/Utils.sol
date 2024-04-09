@@ -73,9 +73,16 @@ abstract contract Utils is CommonBase, PRBMathUtils {
         return Strings.equal(profile, "test-optimized");
     }
 
-    /// @dev Returns the largest of two `uint40` numbers.
-    function maxUint40(uint40 a, uint40 b) internal pure returns (uint40) {
-        return a > b ? a : b;
+    /// @dev Returns the largest of the provided `uint40` numbers.
+    function maxOfThree(uint40 a, uint40 b, uint40 c) internal pure returns (uint40) {
+        uint40 max = a;
+        if (b > max) {
+            max = b;
+        }
+        if (c > max) {
+            max = c;
+        }
+        return max;
     }
 
     /// @dev Stops the active prank and sets a new one.
