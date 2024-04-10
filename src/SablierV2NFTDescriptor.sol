@@ -78,6 +78,13 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             })
         );
 
+        // Performs a low-level call to handle v2.0 contracts in which `isTransferable` is not implemented.
+        (bool success, bytes memory returnData) =
+            address(vars.sablier).staticcall(abi.encodeWithSignature("isTransferable(uint256)", streamId));
+
+        // Sets `isTransferable` to `true` for v2.0 contracts.
+        bool isTransferable = success ? abi.decode(returnData, (bool)) : true;
+
         // Generate the JSON metadata.
         vars.json = string.concat(
             '{"attributes":',
@@ -93,7 +100,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
                 sablierStringified: vars.sablierStringified,
                 assetAddress: vars.asset.toHexString(),
                 streamId: streamId.toString(),
-                isTransferable: vars.sablier.isTransferable(streamId)
+                isTransferable: isTransferable
             }),
             '","external_url":"https://sablier.com","name":"',
             generateName({ sablierModel: vars.sablierModel, streamId: streamId.toString() }),
