@@ -31,13 +31,16 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         address asset;
         string assetSymbol;
         uint128 depositedAmount;
+        bool isTransferable;
         string json;
+        bytes returnData;
         ISablierV2Lockup sablier;
         string sablierModel;
         string sablierStringified;
         string status;
         string svg;
         uint256 streamedPercentage;
+        bool success;
     }
 
     /// @inheritdoc ISablierV2NFTDescriptor
@@ -78,12 +81,12 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             })
         );
 
-        // Performs a low-level call to handle v2.0 contracts in which `isTransferable` is not implemented.
-        (bool success, bytes memory returnData) =
-            address(vars.sablier).staticcall(abi.encodeWithSignature("isTransferable(uint256)", streamId));
+        // Performs a low-level call to handle older deployments that miss the `isTransferable` function.
+        (vars.success, vars.returnData) =
+            address(vars.sablier).staticcall(abi.encodeCall(ISablierV2Lockup.isTransferable, (streamId)));
 
-        // Sets `isTransferable` to `true` for v2.0 contracts.
-        bool isTransferable = success ? abi.decode(returnData, (bool)) : true;
+        // When the call has failed, the stream NFT is assumed to be transferable.
+        vars.isTransferable = vars.success ? abi.decode(vars.returnData, (bool)) : true;
 
         // Generate the JSON metadata.
         vars.json = string.concat(
@@ -100,7 +103,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
                 sablierStringified: vars.sablierStringified,
                 assetAddress: vars.asset.toHexString(),
                 streamId: streamId.toString(),
-                isTransferable: isTransferable
+                isTransferable: vars.isTransferable
             }),
             '","external_url":"https://sablier.com","name":"',
             generateName({ sablierModel: vars.sablierModel, streamId: streamId.toString() }),

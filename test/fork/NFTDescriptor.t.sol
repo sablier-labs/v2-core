@@ -19,14 +19,14 @@ abstract contract NFTDescriptor_Fork_Test is Fork_Test {
                                       MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Loads v2.0 pre-deployed on Mainnet.
+    /// @dev Loads the Lockup V2.0 contracts pre-deployed on Mainnet.
     modifier loadDeployments_V2_0() {
         lockupDynamic = ISablierV2LockupDynamic(0x39EFdC3dbB57B2388CcC4bb40aC4CB1226Bc9E44);
         lockupLinear = ISablierV2LockupLinear(0xB10daee1FCF62243aE27776D7a92D39dC8740f95);
         _;
     }
 
-    /// @dev Loads v2.1 pre-deployed on Mainnet.
+    /// @dev Loads the Lockup V2.1 contracts pre-deployed on Mainnet.
     modifier loadDeployments_V2_1() {
         lockupDynamic = ISablierV2LockupDynamic(0x7CC7e125d83A581ff438608490Cc0f7bDff79127);
         lockupLinear = ISablierV2LockupLinear(0xAFb979d9afAd1aD27C5eFf4E27226E3AB9e5dCC9);
@@ -48,11 +48,11 @@ abstract contract NFTDescriptor_Fork_Test is Fork_Test {
     /// @dev Given enough fuzz runs, all the following scenarios will be fuzzed:
     /// - Multiple values of streamId.
     function testForkFuzz_TokenURI_LockupDynamic_V2_0(uint256 streamId) external loadDeployments_V2_0 {
-        streamId = bound(streamId, 1, lockupDynamic.nextStreamId() - 1);
+        streamId = _bound(streamId, 1, lockupDynamic.nextStreamId() - 1);
 
         string memory tokenURIBefore = lockupDynamic.tokenURI(streamId);
 
-        // Change the NFT descriptor for the previous versions of lockups to the newly deployed.
+        // Set the new NFT descriptor for the previous version of Lockup Dynamic.
         resetPrank({ msgSender: lockupDynamic.admin() });
         lockupDynamic.setNFTDescriptor(nftDescriptor);
 
@@ -65,11 +65,11 @@ abstract contract NFTDescriptor_Fork_Test is Fork_Test {
     /// @dev Given enough fuzz runs, all the following scenarios will be fuzzed:
     /// - Multiple values of streamId.
     function testForkFuzz_TokenURI_LockupDynamic_V2_1(uint256 streamId) external loadDeployments_V2_1 {
-        streamId = bound(streamId, 1, lockupDynamic.nextStreamId() - 1);
+        streamId = _bound(streamId, 1, lockupDynamic.nextStreamId() - 1);
 
         string memory tokenURIBefore = lockupDynamic.tokenURI(streamId);
 
-        // Change the NFT descriptor for the previous versions of lockups to the newly deployed.
+        // Set the new NFT descriptor for the previous version of Lockup Dynamic.
         resetPrank({ msgSender: lockupDynamic.admin() });
         lockupDynamic.setNFTDescriptor(nftDescriptor);
 
@@ -82,11 +82,11 @@ abstract contract NFTDescriptor_Fork_Test is Fork_Test {
     /// @dev Given enough fuzz runs, all the following scenarios will be fuzzed:
     /// - Multiple values of streamId.
     function testForkFuzz_TokenURI_LockupLinear_V2_0(uint256 streamId) external loadDeployments_V2_0 {
-        streamId = bound(streamId, 1, lockupLinear.nextStreamId() - 1);
+        streamId = _bound(streamId, 1, lockupLinear.nextStreamId() - 1);
 
         string memory tokenURIBefore = lockupLinear.tokenURI(streamId);
 
-        // Change the NFT descriptor for the previous versions of lockups to the newly deployed.
+        // Set the new NFT descriptor for the previous version of Lockup Linear.
         resetPrank({ msgSender: lockupLinear.admin() });
         lockupLinear.setNFTDescriptor(nftDescriptor);
 
@@ -99,11 +99,11 @@ abstract contract NFTDescriptor_Fork_Test is Fork_Test {
     /// @dev Given enough fuzz runs, all the following scenarios will be fuzzed:
     /// - Multiple values of streamId.
     function testForkFuzz_TokenURI_LockupLinear_V2_1(uint256 streamId) external loadDeployments_V2_1 {
-        streamId = bound(streamId, 1, lockupLinear.nextStreamId() - 1);
+        streamId = _bound(streamId, 1, lockupLinear.nextStreamId() - 1);
 
         string memory tokenURIBefore = lockupLinear.tokenURI(streamId);
 
-        // Change the NFT descriptor for the previous versions of lockups to the newly deployed.
+        // Set the new NFT descriptor for the previous version of Lockup Linear.
         resetPrank({ msgSender: lockupLinear.admin() });
         lockupLinear.setNFTDescriptor(nftDescriptor);
 
