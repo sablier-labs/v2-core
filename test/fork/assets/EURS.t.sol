@@ -10,7 +10,7 @@ import { NFTDescriptor_Fork_Test } from "../NFTDescriptor.t.sol";
 
 /// @dev An ERC-20 asset with 2 decimals.
 IERC20 constant ASSET = IERC20(0xdB25f211AB05b1c97D595516F45794528a807ad8);
-address constant HOLDER = 0x9712c160925403A9458BfC6bBD7D8a1E694C984a;
+address constant HOLDER = 0x1bee4F735062CD00841d6997964F187f5f5F5Ac9;
 
 contract EURS_LockupDynamic_Fork_Test is LockupDynamic_Fork_Test(ASSET, HOLDER) { }
 
