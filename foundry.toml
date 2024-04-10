@@ -26,7 +26,7 @@
 
 # Compile only the production code and the test mocks with via IR
 [profile.fork-multichain]
-  max_test_rejects = 1_000_000 # Number of times `vm.assume` can fail
+  max_test_rejects = 3_000_000 # Number of times `vm.assume` can fail
   runs = 1
 
 [profile.default.fuzz]

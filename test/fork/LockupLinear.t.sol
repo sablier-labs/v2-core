@@ -43,7 +43,6 @@ contract LockupLinear_Fork_Test is Fork_Test {
         Lockup.Status actualStatus;
         uint256[] balances;
         uint40 blockTimestamp;
-        uint40 endTimeLowerBound;
         uint256 expectedLockupLinearBalance;
         address expectedNFTOwner;
         uint256 expectedRecipientBalance;
@@ -99,26 +98,23 @@ contract LockupLinear_Fork_Test is Fork_Test {
     /// - Cliff time zero and not zero
     /// - Multiple values for the broker fee, including zero
     /// - The whole gamut of stream statuses
-    function testForkFuzz_LockupLinear_CreateWithdrawCancel(Params memory params) external runForkTest {
-        checkUsers(params.sender, params.recipient, params.broker.account, address(lockupLinear));
-
+    function testForkFuzz_LockupLinear_CreateWithdrawCancel(Params memory params) external {
         // Bound the parameters.
-        Vars memory vars;
-        vars.blockTimestamp = getBlockTimestamp();
+        uint40 blockTimestamp = getBlockTimestamp();
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
         params.range.start =
-            boundUint40(params.range.start, vars.blockTimestamp - 1000 seconds, vars.blockTimestamp + 10_000 seconds);
-        params.totalAmount = boundUint128(params.totalAmount, 1, MAX_UINT128);
+            boundUint40(params.range.start, blockTimestamp - 1000 seconds, blockTimestamp + 10_000 seconds);
+        params.totalAmount = boundUint128(params.totalAmount, 1, MAX_UINT128 - 1);
 
         // The cliff time must be either zero or greater than the start time.
-        vars.hasCliff = params.range.cliff > 0;
-        if (vars.hasCliff) {
+        bool hasCliff = params.range.cliff > 0;
+        if (hasCliff) {
             params.range.cliff =
                 boundUint40(params.range.cliff, params.range.start + 1 seconds, params.range.start + 52 weeks);
         }
         // Bound the end time so that it is always greater than the block timestamp, the start time, and the cliff time.
-        vars.endTimeLowerBound = maxOfThree(params.range.start, params.range.cliff, vars.blockTimestamp);
-        params.range.end = boundUint40(params.range.end, vars.endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
+        uint40 endTimeLowerBound = maxOfThree(params.range.start, params.range.cliff, blockTimestamp);
+        params.range.end = boundUint40(params.range.end, endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
 
         // Make the sender the caller.
         resetPrank(params.sender);
@@ -127,6 +123,8 @@ contract LockupLinear_Fork_Test is Fork_Test {
     }
 
     function _testForkFuzz_LockupLinear_CreateWithdrawCancel(Params memory params) internal runForkTest {
+        checkUsers(params.sender, params.recipient, params.broker.account, address(lockupLinear));
+
         deal({ token: address(ASSET), to: params.sender, give: params.totalAmount });
         vm.label({ account: address(ASSET), newLabel: IERC20Metadata(address(ASSET)).symbol() });
         (bool success,) = address(ASSET).call(abi.encodeCall(IERC20.approve, (address(lockupLinear), MAX_UINT256)));
@@ -198,7 +196,7 @@ contract LockupLinear_Fork_Test is Fork_Test {
 
         // Assert that the stream's status is correct.
         vars.actualStatus = lockupLinear.statusOf(vars.streamId);
-        vars.expectedStatus = params.range.start > vars.blockTimestamp ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
+        vars.expectedStatus = params.range.start > getBlockTimestamp() ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
         assertEq(vars.actualStatus, vars.expectedStatus, "post-create stream status");
 
         // Assert that the next stream ID has been bumped.

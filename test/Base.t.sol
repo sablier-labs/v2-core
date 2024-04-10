@@ -125,10 +125,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
     /// for contracts deployed via `CREATE` are based on the caller-and-nonce-hash).
     function deployCoreConditionally() internal {
         if (!isTestOptimizedProfile()) {
-            nftDescriptor = new SablierV2NFTDescriptor();
-            lockupDynamic = new SablierV2LockupDynamic(users.admin, nftDescriptor, defaults.MAX_SEGMENT_COUNT());
-            lockupLinear = new SablierV2LockupLinear(users.admin, nftDescriptor);
-            lockupTranched = new SablierV2LockupTranched(users.admin, nftDescriptor, defaults.MAX_TRANCHE_COUNT());
+            deployCoreNormally();
         } else {
             (lockupDynamic, lockupLinear, lockupTranched, nftDescriptor) =
                 deployOptimizedCore(users.admin, defaults.MAX_SEGMENT_COUNT(), defaults.MAX_TRANCHE_COUNT());
@@ -138,6 +135,14 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         vm.label({ account: address(lockupLinear), newLabel: "LockupLinear" });
         vm.label({ account: address(lockupTranched), newLabel: "LockupTranched" });
         vm.label({ account: address(nftDescriptor), newLabel: "NFTDescriptor" });
+    }
+
+    function deployCoreNormally() internal {
+        defaults = new Defaults();
+        nftDescriptor = new SablierV2NFTDescriptor();
+        lockupDynamic = new SablierV2LockupDynamic(users.admin, nftDescriptor, defaults.MAX_SEGMENT_COUNT());
+        lockupLinear = new SablierV2LockupLinear(users.admin, nftDescriptor);
+        lockupTranched = new SablierV2LockupTranched(users.admin, nftDescriptor, defaults.MAX_TRANCHE_COUNT());
     }
 
     /*//////////////////////////////////////////////////////////////////////////
