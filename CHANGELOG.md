@@ -4,12 +4,39 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Common Changelog](https://common-changelog.org/).
 
+[1.2.0]: https://github.com/sablier-labs/v2-core/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/sablier-labs/v2-core/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/sablier-labs/v2-core/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/sablier-labs/v2-core/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/sablier-labs/v2-core/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/sablier-labs/v2-core/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/sablier-labs/v2-core/releases/tag/v1.0.0
+
+## [1.2.0] - 2024-03-21
+
+### Changed
+
+- **Breaking:** Move common logic into `Lockup` contract ([#813](https://github.com/sablier-labs/v2-core/pull/813),
+  [#850](https://github.com/sablier-labs/v2-core/pull/850), [#784](https://github.com/sablier-labs/v2-core/pull/784))
+- Disallow zero `startTime` ([#852](https://github.com/sablier-labs/v2-core/pull/852))
+- Change permissions of `withdraw` function to public ([#785](https://github.com/sablier-labs/v2-core/pull/785))
+- Refactor functions name in `ISablierV2Recipient` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
+- Upgrade to OpenZeppelin v5 ([#806](https://github.com/sablier-labs/v2-core/pull/806))
+- Switch to Bun ([#775](https://github.com/sablier-labs/v2-core/pull/775))
+- Use solidity 0.8.22 ([#783](https://github.com/sablier-labs/v2-core/pull/783))
+
+### Added
+
+- Add Lockup Tranched stream ([#817](https://github.com/sablier-labs/v2-core/pull/817))
+- Add `ISablierV2Sender` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
+- Sphinx integration ([#840](https://github.com/sablier-labs/v2-core/pull/840))
+- Add `precompiles` in the NPM release ([#841](https://github.com/sablier-labs/v2-core/pull/841))
+
+### Removed
+
+- **Breaking:** remove protocol fee ([#839](https://github.com/sablier-labs/v2-core/pull/839))
+- Remove flash loan abstract contract ([#779](https://github.com/sablier-labs/v2-core/pull/779))
+- Remove `to` from `withdrawMultiple` function ([#785](https://github.com/sablier-labs/v2-core/pull/785))
 
 ## [1.1.2] - 2023-12-19
 
