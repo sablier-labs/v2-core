@@ -23,7 +23,6 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 - Refactor functions name in `ISablierV2Recipient` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
 - Upgrade to OpenZeppelin v5 ([#806](https://github.com/sablier-labs/v2-core/pull/806))
 - Switch to Bun ([#775](https://github.com/sablier-labs/v2-core/pull/775))
-- Use solidity 0.8.22 ([#783](https://github.com/sablier-labs/v2-core/pull/783))
 
 ### Added
 
