@@ -8,12 +8,19 @@ import { ISablierV2LockupLinear } from "src/interfaces/ISablierV2LockupLinear.so
 
 import { Fork_Test } from "./Fork.t.sol";
 
-abstract contract NFTDescriptor_Fork_Test is Fork_Test {
+contract NFTDescriptor_Fork_Test is Fork_Test {
+    /*//////////////////////////////////////////////////////////////////////////
+                                  STATE VARIABLES
+    //////////////////////////////////////////////////////////////////////////*/
+
+    IERC20 constant DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+    address constant DAI_HOLDER = 0x66F62574ab04989737228D18C3624f7FC1edAe14;
+
     /*//////////////////////////////////////////////////////////////////////////
                                     CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
 
-    constructor(IERC20 asset, address holder) Fork_Test(asset, holder) { }
+    constructor() Fork_Test(DAI, DAI_HOLDER) { }
 
     /*//////////////////////////////////////////////////////////////////////////
                                       MODIFIERS
