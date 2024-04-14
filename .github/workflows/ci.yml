@@ -10,6 +10,7 @@ on:
   push:
     branches:
       - "main"
+      - "staging"
       - "staging-blast"
 
 jobs:
