@@ -7,7 +7,7 @@ import { Sphinx } from "@sphinx-labs/contracts/SphinxPlugin.sol";
 
 import { console2 } from "forge-std/src/console2.sol";
 import { Script } from "forge-std/src/Script.sol";
-import { stdJson } from "forge-std/src/stdJson.sol";
+import { stdJson } from "forge-std/src/StdJson.sol";
 
 contract BaseScript is Script, Sphinx {
     using Strings for uint256;
