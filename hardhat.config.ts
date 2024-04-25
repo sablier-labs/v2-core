@@ -1,11 +1,8 @@
 import * as dotenv from "dotenv";
 
 import "@nomicfoundation/hardhat-foundry";
-import "@matterlabs/hardhat-zksync-verify";
-import "@matterlabs/hardhat-zksync-deploy";
-import "@matterlabs/hardhat-zksync-solc";
+import "@matterlabs/hardhat-zksync";
 import "@nomiclabs/hardhat-solhint";
-import "@matterlabs/hardhat-zksync-upgradable";
 import "@typechain/hardhat";
 import fs from "fs";
 import "hardhat-preprocessor";
@@ -43,7 +40,7 @@ const config: HardhatUserConfig = {
         enabled: true,
         runs: 1000,
       },
-      viaIR: true 
+      viaIR: true,
     },
     // @ts-ignore
   },
@@ -53,14 +50,14 @@ const config: HardhatUserConfig = {
       ethNetwork: "sepolia",
       zksync: true,
       verifyURL: "https://explorer.sepolia.era.zksync.dev/contract_verification",
-      chainId: 300
+      chainId: 300,
     },
     zkSyncMainnet: {
       url: "https://mainnet.era.zksync.io",
       ethNetwork: "mainnet",
       zksync: true,
       verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
-      chainId: 324
+      chainId: 324,
     },
   },
   preprocess: {
@@ -89,7 +86,7 @@ const config: HardhatUserConfig = {
         enabled: true,
         runs: 1000,
       },
-      viaIR: true 
+      viaIR: true,
     },
   },
 };
