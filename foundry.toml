@@ -7,7 +7,9 @@
     { access = "read", path = "./out" },
     { access = "read", path = "./out-optimized"},
     { access = "read", path = "package.json"},
-    { access = "read-write", path = "./cache" },
+    { access = "read-write", path = "./benchmarks"},
+    { access = "read-write", path = "./cache" }
+
   ]
   gas_reports = [
     "SablierV2LockupDynamic",
