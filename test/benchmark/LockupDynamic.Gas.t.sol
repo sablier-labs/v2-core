@@ -11,26 +11,49 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     function setUp() public override {
         super.setUp();
 
-        benchmarksFile = string.concat(benchmarksDir, "lockupDynamic.md");
+        benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupDynamic.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it
         vm.writeFile({
             path: benchmarksFile,
             data: string.concat(
-                "# Benchmarks for implementations of the SablierV2LockupDynamic contract\n\n",
+                "# Benchmarks for implementations in the LockupDynamic contract\n\n",
                 "| Implementation | Gas Usage |\n",
                 "| --- | --- |\n"
             )
         });
     }
 
-    function testGas_Burn() public givenCallerIsRecipient {
+    function testGas_Implementations() external {
+        // Set the caller to recipient for `burn` and change timestamp to end time
+        resetPrank({ msgSender: users.recipient });
         vm.warp({ newTimestamp: defaults.END_TIME() });
+        gasBurn();
 
-        lockupDynamic.withdraw(STREAM_ID, users.recipient, defaults.DEPOSIT_AMOUNT());
+        // Set the caller to sender for the next few calls and change timestamp to before end time
+        resetPrank({ msgSender: users.sender });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
+
+        gasCancel();
+        gasCreateWithDurations();
+        gasCreateWithTimestamps();
+        gasRenounce();
+        gasWithdraw();
+
+        // Set the caller to recipient for the next call
+        resetPrank({ msgSender: users.recipient });
+        gasWithdraw_ByRecipient();
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                        GAS BENCHMARKS FOR EACH IMPLEMENTATION
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function gasBurn() internal {
+        lockupDynamic.withdraw(STREAM_1, users.recipient, defaults.DEPOSIT_AMOUNT());
 
         uint256 beforeGas = gasleft();
-        lockupDynamic.burn(STREAM_ID);
+        lockupDynamic.burn(STREAM_1);
         uint256 afterGas = gasleft();
 
         dataToAppend = string.concat("| `burn` | ", vm.toString(beforeGas - afterGas), " |");
@@ -39,9 +62,9 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function testGas_Cancel() public {
+    function gasCancel() internal {
         uint256 beforeGas = gasleft();
-        lockupDynamic.cancel(STREAM_ID);
+        lockupDynamic.cancel(STREAM_2);
         uint256 afterGas = gasleft();
 
         dataToAppend = string.concat("| `cancel` | ", vm.toString(beforeGas - afterGas), " |");
@@ -50,20 +73,20 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function testGas_CreateWithDurations() public {
+    function gasCreateWithDurations() internal {
         LockupDynamic.CreateWithDurations memory params = defaults.createWithDurationsLD();
 
         uint256 beforeGas = gasleft();
         lockupDynamic.createWithDurations(params);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `createWithDurations (2 segments)` | ", vm.toString(beforeGas - afterGas), " |");
+        dataToAppend = string.concat("| `createWithDurations` (2 segments) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function testGas_CreateWithTimestamps() public {
+    function gasCreateWithTimestamps() internal {
         LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
 
         uint256 beforeGas = gasleft();
@@ -71,15 +94,15 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         uint256 afterGas = gasleft();
 
         dataToAppend =
-            string.concat("| `createWithTimestamps (2 segments)` | ", vm.toString(beforeGas - afterGas), " |");
+            string.concat("| `createWithTimestamps` (2 segments) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function testGas_Renounce() public {
+    function gasRenounce() internal {
         uint256 beforeGas = gasleft();
-        lockupDynamic.renounce(STREAM_ID);
+        lockupDynamic.renounce(STREAM_3);
         uint256 afterGas = gasleft();
 
         dataToAppend = string.concat("| `renounce` | ", vm.toString(beforeGas - afterGas), " |");
@@ -88,27 +111,23 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function testGas_Withdraw_ByRecipient() public givenCallerIsRecipient {
-        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
+    function gasWithdraw_ByRecipient() internal {
         uint256 beforeGas = gasleft();
-        lockupDynamic.withdraw(STREAM_ID, users.alice, defaults.WITHDRAW_AMOUNT());
+        lockupDynamic.withdraw(STREAM_4, users.alice, defaults.WITHDRAW_AMOUNT());
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `withdraw (by Recipient)` | ", vm.toString(beforeGas - afterGas), " |");
+        dataToAppend = string.concat("| `withdraw` (by Recipient) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function testGas_Withdraw() public {
-        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
+    function gasWithdraw() internal {
         uint256 beforeGas = gasleft();
-        lockupDynamic.withdraw(STREAM_ID, users.recipient, defaults.WITHDRAW_AMOUNT());
+        lockupDynamic.withdraw(STREAM_5, users.recipient, defaults.WITHDRAW_AMOUNT());
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `withdraw (by Anyone)` | ", vm.toString(beforeGas - afterGas), " |");
+        dataToAppend = string.concat("| `withdraw` (by Anyone) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);

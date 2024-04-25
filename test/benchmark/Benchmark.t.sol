@@ -9,7 +9,11 @@ abstract contract Benchmark_Test is Base_Test {
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
-    uint256 internal immutable STREAM_ID = 50;
+    uint256 internal immutable STREAM_1 = 50;
+    uint256 internal immutable STREAM_2 = 51;
+    uint256 internal immutable STREAM_3 = 52;
+    uint256 internal immutable STREAM_4 = 53;
+    uint256 internal immutable STREAM_5 = 54;
 
     /// @dev The directory where the benchmark files are stored.
     string internal benchmarksDir = "benchmarks/";
@@ -18,15 +22,6 @@ abstract contract Benchmark_Test is Base_Test {
     string internal benchmarksFile;
 
     string internal dataToAppend;
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                   MODIFIERS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    modifier givenCallerIsRecipient() {
-        resetPrank({ msgSender: users.recipient });
-        _;
-    }
 
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
