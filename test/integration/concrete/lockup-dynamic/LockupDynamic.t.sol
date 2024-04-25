@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
+import { ISablierV2Lockup } from "contracts/interfaces/ISablierV2Lockup.sol";
 
 import { LockupDynamic_Integration_Shared_Test } from "../../shared/lockup-dynamic/LockupDynamic.t.sol";
 import { Integration_Test } from "../../Integration.t.sol";

@@ -3,9 +3,9 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 
-import { NFTSVG } from "../src/libraries/NFTSVG.sol";
-import { SVGElements } from "../src/libraries/SVGElements.sol";
-import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
+import { NFTSVG } from "../contracts/libraries/NFTSVG.sol";
+import { SVGElements } from "../contracts/libraries/SVGElements.sol";
+import { SablierV2NFTDescriptor } from "../contracts/SablierV2NFTDescriptor.sol";
 
 import { BaseScript } from "./Base.s.sol";
 

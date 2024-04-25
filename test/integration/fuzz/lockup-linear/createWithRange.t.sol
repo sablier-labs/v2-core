@@ -3,8 +3,8 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { MAX_UD60x18, UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
-import { Errors } from "src/libraries/Errors.sol";
-import { Broker, Lockup, LockupLinear } from "src/types/DataTypes.sol";
+import { Errors } from "contracts/libraries/Errors.sol";
+import { Broker, Lockup, LockupLinear } from "contracts/types/DataTypes.sol";
 
 import { CreateWithRange_Integration_Shared_Test } from "../../shared/lockup-linear/createWithRange.t.sol";
 import { LockupLinear_Integration_Fuzz_Test } from "./LockupLinear.t.sol";

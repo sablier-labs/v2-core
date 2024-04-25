@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { Errors } from "src/libraries/Errors.sol";
+import { Errors } from "contracts/libraries/Errors.sol";
 
 import { Base_Test } from "../Base.t.sol";
 import { FaultyFlashLoanReceiver } from "../mocks/flash-loan/FaultyFlashLoanReceiver.sol";

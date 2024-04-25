@@ -2,11 +2,11 @@
 // solhint-disable max-line-length,no-inline-assembly,reason-string
 pragma solidity >=0.8.19;
 
-import { ISablierV2Comptroller } from "../../src/interfaces/ISablierV2Comptroller.sol";
-import { ISablierV2LockupDynamic } from "../../src/interfaces/ISablierV2LockupDynamic.sol";
-import { ISablierV2LockupLinear } from "../../src/interfaces/ISablierV2LockupLinear.sol";
-import { ISablierV2NFTDescriptor } from "../../src/interfaces/ISablierV2NFTDescriptor.sol";
-import { SablierV2NFTDescriptor } from "../../src/SablierV2NFTDescriptor.sol";
+import { ISablierV2Comptroller } from "../../contracts/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2LockupDynamic } from "../../contracts/interfaces/ISablierV2LockupDynamic.sol";
+import { ISablierV2LockupLinear } from "../../contracts/interfaces/ISablierV2LockupLinear.sol";
+import { ISablierV2NFTDescriptor } from "../../contracts/interfaces/ISablierV2NFTDescriptor.sol";
+import { SablierV2NFTDescriptor } from "../../contracts/SablierV2NFTDescriptor.sol";
 
 /// @notice This is useful for external integrations seeking to test against the exact deployed bytecode, as recompiling
 /// with via IR enabled would be time-consuming.

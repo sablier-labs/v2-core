@@ -3,9 +3,9 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 
-import { ISablierV2LockupDynamic } from "src/interfaces/ISablierV2LockupDynamic.sol";
-import { Errors } from "src/libraries/Errors.sol";
-import { Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import { ISablierV2LockupDynamic } from "contracts/interfaces/ISablierV2LockupDynamic.sol";
+import { Errors } from "contracts/libraries/Errors.sol";
+import { Lockup, LockupDynamic } from "contracts/types/DataTypes.sol";
 
 import { CreateWithDeltas_Integration_Shared_Test } from "../../../shared/lockup-dynamic/createWithDeltas.t.sol";
 import { LockupDynamic_Integration_Concrete_Test } from "../LockupDynamic.t.sol";

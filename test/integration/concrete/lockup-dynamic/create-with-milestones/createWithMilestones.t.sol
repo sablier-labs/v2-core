@@ -5,9 +5,9 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18, ud, ZERO } from "@prb/math/src/UD60x18.sol";
 import { stdError } from "forge-std/src/StdError.sol";
 
-import { ISablierV2LockupDynamic } from "src/interfaces/ISablierV2LockupDynamic.sol";
-import { Errors } from "src/libraries/Errors.sol";
-import { Broker, Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import { ISablierV2LockupDynamic } from "contracts/interfaces/ISablierV2LockupDynamic.sol";
+import { Errors } from "contracts/libraries/Errors.sol";
+import { Broker, Lockup, LockupDynamic } from "contracts/types/DataTypes.sol";
 
 import { CreateWithMilestones_Integration_Shared_Test } from "../../../shared/lockup-dynamic/createWithMilestones.t.sol";
 import { LockupDynamic_Integration_Concrete_Test } from "../LockupDynamic.t.sol";

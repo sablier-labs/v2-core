@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19;
 
-import { Adminable } from "../../src/abstracts/Adminable.sol";
-import { IAdminable } from "../../src/interfaces/IAdminable.sol";
+import { Adminable } from "../../contracts/abstracts/Adminable.sol";
+import { IAdminable } from "../../contracts/interfaces/IAdminable.sol";
 
 contract AdminableMock is Adminable {
     constructor(address initialAdmin) {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { SablierV2LockupDynamic } from "src/SablierV2LockupDynamic.sol";
+import { SablierV2LockupDynamic } from "contracts/SablierV2LockupDynamic.sol";
 
 import { LockupDynamic_Integration_Concrete_Test } from "./LockupDynamic.t.sol";
 

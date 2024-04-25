@@ -3,7 +3,7 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-import { Errors } from "src/libraries/Errors.sol";
+import { Errors } from "contracts/libraries/Errors.sol";
 
 import { NFTDescriptor_Integration_Concrete_Test } from "../NFTDescriptor.t.sol";
 

@@ -3,7 +3,7 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { ZERO } from "@prb/math/src/UD60x18.sol";
 
-import { Broker, LockupLinear } from "src/types/DataTypes.sol";
+import { Broker, LockupLinear } from "contracts/types/DataTypes.sol";
 
 import { StreamedAmountOf_Integration_Shared_Test } from "../../shared/lockup/streamedAmountOf.t.sol";
 import { LockupLinear_Integration_Fuzz_Test } from "./LockupLinear.t.sol";

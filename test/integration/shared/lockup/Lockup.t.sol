@@ -3,9 +3,9 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import { ISablierV2Base } from "src/interfaces/ISablierV2Base.sol";
-import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
-import { Broker } from "src/types/DataTypes.sol";
+import { ISablierV2Base } from "contracts/interfaces/ISablierV2Base.sol";
+import { ISablierV2Lockup } from "contracts/interfaces/ISablierV2Lockup.sol";
+import { Broker } from "contracts/types/DataTypes.sol";
 
 import { Base_Test } from "test/Base.t.sol";
 

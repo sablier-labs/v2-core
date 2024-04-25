@@ -4,14 +4,14 @@ pragma solidity >=0.8.19 <0.9.0;
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
-import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
-import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";
-import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescriptor.sol";
-import { SablierV2Comptroller } from "../src/SablierV2Comptroller.sol";
-import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
-import { SablierV2LockupLinear } from "../src/SablierV2LockupLinear.sol";
-import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
+import { ISablierV2Comptroller } from "../contracts/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2LockupDynamic } from "../contracts/interfaces/ISablierV2LockupDynamic.sol";
+import { ISablierV2LockupLinear } from "../contracts/interfaces/ISablierV2LockupLinear.sol";
+import { ISablierV2NFTDescriptor } from "../contracts/interfaces/ISablierV2NFTDescriptor.sol";
+import { SablierV2Comptroller } from "../contracts/SablierV2Comptroller.sol";
+import { SablierV2LockupDynamic } from "../contracts/SablierV2LockupDynamic.sol";
+import { SablierV2LockupLinear } from "../contracts/SablierV2LockupLinear.sol";
+import { SablierV2NFTDescriptor } from "../contracts/SablierV2NFTDescriptor.sol";
 
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
 import { GoodFlashLoanReceiver } from "./mocks/flash-loan/GoodFlashLoanReceiver.sol";

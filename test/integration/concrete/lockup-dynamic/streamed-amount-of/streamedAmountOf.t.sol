@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { LockupDynamic } from "src/types/DataTypes.sol";
+import { LockupDynamic } from "contracts/types/DataTypes.sol";
 
 import { LockupDynamic_Integration_Concrete_Test } from "../LockupDynamic.t.sol";
 import { StreamedAmountOf_Integration_Concrete_Test } from "../../lockup/streamed-amount-of/streamedAmountOf.t.sol";

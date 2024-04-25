@@ -7,10 +7,10 @@ import { ud60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { Solarray } from "solarray/src/Solarray.sol";
 
-import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
-import { ISablierV2LockupDynamic } from "../src/interfaces/ISablierV2LockupDynamic.sol";
-import { ISablierV2LockupLinear } from "../src/interfaces/ISablierV2LockupLinear.sol";
-import { Broker, LockupDynamic, LockupLinear } from "../src/types/DataTypes.sol";
+import { ISablierV2Comptroller } from "../contracts/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2LockupDynamic } from "../contracts/interfaces/ISablierV2LockupDynamic.sol";
+import { ISablierV2LockupLinear } from "../contracts/interfaces/ISablierV2LockupLinear.sol";
+import { Broker, LockupDynamic, LockupLinear } from "../contracts/types/DataTypes.sol";
 
 import { BaseScript } from "./Base.s.sol";
 

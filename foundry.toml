@@ -16,7 +16,7 @@
   script = "script"
   sender = "0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38"
   solc = "0.8.23"
-  src = "src"
+  src = "contracts"
   test = "test"
 
 [profile.default.fuzz]
@@ -45,8 +45,8 @@
     7737, # Disable inline assembly warnings
   ]
   out = "out-optimized"
-  script = "src"
-  test = "src"
+  script = "contracts"
+  test = "contracts"
   via_ir = true
 
 [profile.smt.model_checker]

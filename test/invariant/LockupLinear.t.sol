@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { Lockup, LockupLinear } from "src/types/DataTypes.sol";
+import { Lockup, LockupLinear } from "contracts/types/DataTypes.sol";
 
 import { Lockup_Invariant_Test } from "./Lockup.t.sol";
 import { LockupLinearHandler } from "./handlers/LockupLinearHandler.sol";

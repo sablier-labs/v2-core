@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.19;
 
-import { ISablierV2LockupRecipient } from "../../../src/interfaces/hooks/ISablierV2LockupRecipient.sol";
+import { ISablierV2LockupRecipient } from "../../../contracts/interfaces/hooks/ISablierV2LockupRecipient.sol";
 
 contract GoodRecipient is ISablierV2LockupRecipient {
     function onStreamCanceled(

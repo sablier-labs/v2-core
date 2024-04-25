@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { ISablierV2NFTDescriptor } from "src/interfaces/ISablierV2NFTDescriptor.sol";
-import { Errors } from "src/libraries/Errors.sol";
-import { SablierV2NFTDescriptor } from "src/SablierV2NFTDescriptor.sol";
+import { ISablierV2NFTDescriptor } from "contracts/interfaces/ISablierV2NFTDescriptor.sol";
+import { Errors } from "contracts/libraries/Errors.sol";
+import { SablierV2NFTDescriptor } from "contracts/SablierV2NFTDescriptor.sol";
 
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
 import { Integration_Test } from "../../../Integration.t.sol";

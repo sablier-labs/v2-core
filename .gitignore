@@ -2,6 +2,10 @@
 artifacts
 broadcast
 cache
+cache_hardhat/
+cache_hardhat-zk/
+deployments-zk/
+typechain-types/
 coverage
 deployments
 docs
@@ -9,6 +13,8 @@ node_modules
 out
 out-optimized
 out-svg
+artifacts-zk
+zkout/
 
 # files
 *.env

@@ -3,10 +3,10 @@ pragma solidity >=0.8.19 <0.9.0;
 
 import { StdCheats } from "forge-std/src/StdCheats.sol";
 
-import { ISablierV2Comptroller } from "../../src/interfaces/ISablierV2Comptroller.sol";
-import { ISablierV2LockupDynamic } from "../../src/interfaces/ISablierV2LockupDynamic.sol";
-import { ISablierV2LockupLinear } from "../../src/interfaces/ISablierV2LockupLinear.sol";
-import { ISablierV2NFTDescriptor } from "../../src/interfaces/ISablierV2NFTDescriptor.sol";
+import { ISablierV2Comptroller } from "../../contracts/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2LockupDynamic } from "../../contracts/interfaces/ISablierV2LockupDynamic.sol";
+import { ISablierV2LockupLinear } from "../../contracts/interfaces/ISablierV2LockupLinear.sol";
+import { ISablierV2NFTDescriptor } from "../../contracts/interfaces/ISablierV2NFTDescriptor.sol";
 
 abstract contract DeployOptimized is StdCheats {
     /// @dev Deploys {SablierV2Comptroller} from an optimized source compiled with `--via-ir`.

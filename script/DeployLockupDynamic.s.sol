@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.19 <0.9.0;
 
-import { ISablierV2Comptroller } from "../src/interfaces/ISablierV2Comptroller.sol";
-import { ISablierV2NFTDescriptor } from "../src/interfaces/ISablierV2NFTDescriptor.sol";
-import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
+import { ISablierV2Comptroller } from "../contracts/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2NFTDescriptor } from "../contracts/interfaces/ISablierV2NFTDescriptor.sol";
+import { SablierV2LockupDynamic } from "../contracts/SablierV2LockupDynamic.sol";
 
 import { BaseScript } from "./Base.s.sol";
 

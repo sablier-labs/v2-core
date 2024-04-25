@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
 
-import { SablierV2FlashLoan } from "src/abstracts/SablierV2FlashLoan.sol";
+import { SablierV2FlashLoan } from "contracts/abstracts/SablierV2FlashLoan.sol";
 
 import { FlashLoanMock } from "../../../mocks/flash-loan/FlashLoanMock.sol";
 import { Integration_Test } from "../../Integration.t.sol";

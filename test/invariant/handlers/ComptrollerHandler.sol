@@ -4,7 +4,7 @@ pragma solidity >=0.8.19 <0.9.0;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18, UNIT } from "@prb/math/src/UD60x18.sol";
 
-import { ISablierV2Comptroller } from "src/interfaces/ISablierV2Comptroller.sol";
+import { ISablierV2Comptroller } from "contracts/interfaces/ISablierV2Comptroller.sol";
 
 import { TimestampStore } from "../stores/TimestampStore.sol";
 import { BaseHandler } from "./BaseHandler.sol";

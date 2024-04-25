@@ -3,8 +3,8 @@ pragma solidity >=0.8.19;
 
 import { ud } from "@prb/math/src/UD60x18.sol";
 
-import { IERC3156FlashLender } from "src/interfaces/erc3156/IERC3156FlashLender.sol";
-import { Errors } from "src/libraries/Errors.sol";
+import { IERC3156FlashLender } from "contracts/interfaces/erc3156/IERC3156FlashLender.sol";
+import { Errors } from "contracts/libraries/Errors.sol";
 
 import { FlashLoanFunction_Integration_Shared_Test } from "../../../shared/flash-loan/flashLoanFunction.t.sol";
 
