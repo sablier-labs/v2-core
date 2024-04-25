@@ -12,6 +12,8 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     function setUp() public override {
         super.setUp();
 
+        lockup = lockupDynamic;
+
         benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupDynamic.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it
@@ -54,34 +56,10 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                        GAS BENCHMARKS FOR EACH IMPLEMENTATION
+                        GAS BENCHMARKS FOR CREATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    function gasBurn() internal {
-        lockupDynamic.withdraw(STREAM_1, users.recipient, defaults.DEPOSIT_AMOUNT());
-
-        uint256 beforeGas = gasleft();
-        lockupDynamic.burn(STREAM_1);
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `burn` | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasCancel() internal {
-        uint256 beforeGas = gasleft();
-        lockupDynamic.cancel(STREAM_2);
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `cancel` | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasCreateWithDurations(uint128 totalSegments) internal {
+    function gasCreateWithDurations(uint128 totalSegments) public {
         LockupDynamic.CreateWithDurations memory params = _createWithDurationParams(totalSegments);
 
         uint256 beforeGas = gasleft();
@@ -100,7 +78,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function gasCreateWithTimestamps(uint128 totalSegments) internal {
+    function gasCreateWithTimestamps(uint128 totalSegments) public {
         LockupDynamic.CreateWithTimestamps memory params = _createWithTimestampParams(totalSegments);
 
         uint256 beforeGas = gasleft();
@@ -114,39 +92,6 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
             vm.toString(beforeGas - afterGas),
             " |"
         );
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasRenounce() internal {
-        uint256 beforeGas = gasleft();
-        lockupDynamic.renounce(STREAM_3);
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `renounce` | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasWithdraw_ByRecipient() internal {
-        uint256 beforeGas = gasleft();
-        lockupDynamic.withdraw(STREAM_4, users.alice, defaults.WITHDRAW_AMOUNT());
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `withdraw` (by Recipient) | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasWithdraw() internal {
-        uint256 beforeGas = gasleft();
-        lockupDynamic.withdraw(STREAM_5, users.recipient, defaults.WITHDRAW_AMOUNT());
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `withdraw` (by Anyone) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);

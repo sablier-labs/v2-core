@@ -4,7 +4,7 @@
 | ------------------------------------- | --------- |
 | `burn`                                | 16898     |
 | `cancel`                              | 80408     |
-| `createWithDurations` (2 segments)    | 212672    |
+| `createWithDurations` (2 segments)    | 214672    |
 | `createWithDurations` (10 segments)   | 424973    |
 | `createWithDurations` (100 segments)  | 2914035   |
 | `createWithTimestamps` (2 segments)   | 199536    |

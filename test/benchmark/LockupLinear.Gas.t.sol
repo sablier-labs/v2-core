@@ -11,6 +11,8 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
     function setUp() public override {
         super.setUp();
 
+        lockup = lockupLinear;
+
         benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupLinear.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it
@@ -46,36 +48,10 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                        GAS BENCHMARKS FOR EACH IMPLEMENTATION
+                        GAS BENCHMARKS FOR CREATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    function gasBurn() internal {
-        vm.warp({ newTimestamp: defaults.END_TIME() });
-
-        lockupLinear.withdraw(STREAM_1, users.recipient, defaults.DEPOSIT_AMOUNT());
-
-        uint256 beforeGas = gasleft();
-        lockupLinear.burn(STREAM_1);
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `burn` | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasCancel() internal {
-        uint256 beforeGas = gasleft();
-        lockupLinear.cancel(STREAM_2);
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `cancel` | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasCreateWithDurations() internal {
+    function gasCreateWithDurations() public {
         LockupLinear.CreateWithDurations memory params = defaults.createWithDurationsLL();
 
         uint256 beforeGas = gasleft();
@@ -88,7 +64,7 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function gasCreateWithTimestamps() internal {
+    function gasCreateWithTimestamps() public {
         LockupLinear.CreateWithTimestamps memory params = defaults.createWithTimestampsLL();
 
         uint256 beforeGas = gasleft();
@@ -96,43 +72,6 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         uint256 afterGas = gasleft();
 
         dataToAppend = string.concat("| `createWithTimestamps` | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasRenounce() internal {
-        uint256 beforeGas = gasleft();
-        lockupLinear.renounce(STREAM_3);
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `renounce` | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasWithdraw_ByRecipient() internal {
-        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
-        uint256 beforeGas = gasleft();
-        lockupLinear.withdraw(STREAM_4, users.alice, defaults.WITHDRAW_AMOUNT());
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `withdraw` (by Recipient) | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
-    }
-
-    function gasWithdraw() internal {
-        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
-        uint256 beforeGas = gasleft();
-        lockupLinear.withdraw(STREAM_5, users.recipient, defaults.WITHDRAW_AMOUNT());
-        uint256 afterGas = gasleft();
-
-        dataToAppend = string.concat("| `withdraw` (by Anyone) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
