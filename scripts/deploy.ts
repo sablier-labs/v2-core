@@ -1,5 +1,5 @@
 import { Addressable } from "ethers";
-import hre, { ethers} from "hardhat";
+import hre, {ethers} from "hardhat";
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy";
 import { Wallet } from "zksync-ethers";
 
@@ -8,9 +8,7 @@ async function main() {
     const networkName = await hre.network.name;
     const chainId = Number(network.chainId);
 
-    const deployerAddressPV  = new Wallet(process.env.PV_KEY as string);
-    
-    
+    const deployerAddressPV  = new Wallet(process.env.PV_KEY as string);    
     const deployerAddress = deployerAddressPV.address;
 
     if (!deployerAddress) {
@@ -32,31 +30,31 @@ async function main() {
     const artifactLockupDynamic = await deployer.loadArtifact("SablierV2LockupDynamic");
     const artifactLockupLinear = await deployer.loadArtifact("SablierV2LockupLinear");
 
+    const safeMultisig = "0xaFeA787Ef04E280ad5Bb907363f214E4BAB9e288";
+
     // Deploy the SablierV2Comptroller contract
-    const comptroller = await deployer.deploy(artifactComptroller, [deployerAddress]);
-    const comptrollerAddress = comptroller.target;
+    const comptroller = await deployer.deploy(artifactComptroller, [safeMultisig]);
+    const comptrollerAddress = typeof comptroller.target === 'string' ? comptroller.target : comptroller.target.toString();
     console.log("SablierV2Comptroller deployed to:", comptrollerAddress);
-    await verifyContract(comptrollerAddress, [deployerAddress]);
+    await verifyContract(comptrollerAddress, [safeMultisig]);
 
     // Deploy the SablierV2NFTDescriptor contract
     const nftDescriptor = await deployer.deploy(artifactNFTDescriptor, []);
-    const nftDescriptorAddress = nftDescriptor.target;
+    const nftDescriptorAddress = typeof nftDescriptor.target === 'string' ? nftDescriptor.target : nftDescriptor.target.toString();
     console.log("SablierV2NFTDescriptor deployed to:", nftDescriptorAddress);
     await verifyContract(nftDescriptorAddress, []);
 
-
     // Deploy the SablierV2LockupDynamic contract
-    const maxSegmentCount = 300;
-    const dynamic = await deployer.deploy(artifactLockupDynamic, [deployerAddress, comptrollerAddress, nftDescriptorAddress, maxSegmentCount]);
-    const dynamicAddress = dynamic.target;
+    const dynamic = await deployer.deploy(artifactLockupDynamic, [safeMultisig, comptrollerAddress, nftDescriptorAddress, "300"]);
+    const dynamicAddress = typeof dynamic.target === 'string' ? dynamic.target : dynamic.target.toString();
     console.log("SablierV2LockupDynamic deployed to:", dynamicAddress);
-    await verifyContract(dynamicAddress, [deployerAddress, comptrollerAddress, nftDescriptorAddress, maxSegmentCount]);
+    await verifyContract(dynamicAddress, [safeMultisig, comptrollerAddress, nftDescriptorAddress, "300"]);
 
-    // // Deploy the SablierV2LockupLinear contract
-    const linear = await deployer.deploy(artifactLockupLinear, [deployerAddress, comptrollerAddress, nftDescriptorAddress]);
+    // Deploy the SablierV2LockupLinear contract
+    const linear = await deployer.deploy(artifactLockupLinear, [safeMultisig, comptrollerAddress, nftDescriptorAddress]);
     const linearAddress = linear.target;
     console.log("SablierV2LockupLinear deployed to:", linearAddress);
-    await verifyContract(linearAddress, [deployerAddress, deployerAddress, deployerAddress]);
+    await verifyContract(linearAddress, [safeMultisig, comptrollerAddress, nftDescriptorAddress]);
 }
 
 const verifyContract = async (
