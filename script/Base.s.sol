@@ -37,6 +37,12 @@ contract BaseScript is Script, Sphinx {
     /// @dev Used to derive the broadcaster's address if $EOA is not defined.
     string internal mnemonic;
 
+    /// @dev Maximum segment count mapped by the chain Id.
+    mapping(uint256 chainId => uint256 count) internal segmentsCountMap;
+
+    /// @dev Maximum tranche count mapped by the chain Id.
+    mapping(uint256 chainId => uint256 count) internal tranchesCountMap;
+
     /// @dev The project name for the Sphinx plugin.
     string internal sphinxProjectName;
 
@@ -58,14 +64,48 @@ contract BaseScript is Script, Sphinx {
         }
         sphinxProjectName = vm.envOr({ name: "SPHINX_PROJECT_NAME", defaultValue: TEST_SPHINX_PROJECT_NAME });
 
-        // Avalanche has a lower block gas limit than most other chains.
-        if (block.chainid == AVALANCHE_CHAIN_ID) {
-            maxSegmentCount = 300;
-            maxTrancheCount = 298;
-        } else {
-            maxSegmentCount = 500;
-            maxTrancheCount = 500;
-        }
+        // Avalanche chain ID.
+        segmentsCountMap[43_114] = 560;
+        tranchesCountMap[43_114] = 570;
+
+        // Base chain ID.
+        segmentsCountMap[8453] = 2220;
+        tranchesCountMap[8453] = 2310;
+
+        // Blast chain ID.
+        segmentsCountMap[238] = 1120;
+        tranchesCountMap[238] = 1160;
+
+        // BSC chain ID.
+        segmentsCountMap[56] = 4890;
+        tranchesCountMap[56] = 5200;
+
+        // Ethereum chain ID.
+        segmentsCountMap[1] = 1120;
+        tranchesCountMap[1] = 1160;
+
+        // Gnosis chain ID.
+        segmentsCountMap[100] = 630;
+        tranchesCountMap[100] = 650;
+
+        // Optimism chain ID.
+        segmentsCountMap[10] = 1120;
+        tranchesCountMap[10] = 1160;
+
+        // Polygon chain ID.
+        segmentsCountMap[137] = 1120;
+        tranchesCountMap[137] = 1160;
+
+        // Scroll chain ID.
+        segmentsCountMap[534_352] = 370;
+        tranchesCountMap[534_352] = 380;
+
+        // Sepolia chain ID.
+        segmentsCountMap[11_155_111] = 1120;
+        tranchesCountMap[11_155_111] = 1160;
+
+        maxSegmentCount = segmentsCountMap[block.chainid];
+        maxTrancheCount = tranchesCountMap[block.chainid];
     }
 
     modifier broadcast() {
