@@ -11,6 +11,8 @@ abstract contract Benchmark_Test is Base_Test {
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
+    uint128 internal immutable AMOUNT_PER_SEGMENT = 100e18;
+    uint128 internal immutable AMOUNT_PER_TRANCHE = 100e18;
     uint256 internal immutable STREAM_1 = 50;
     uint256 internal immutable STREAM_2 = 51;
     uint256 internal immutable STREAM_3 = 52;

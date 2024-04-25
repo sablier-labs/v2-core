@@ -4,7 +4,7 @@
 | ------------------------- | --------- |
 | `burn`                    | 16898     |
 | `cancel`                  | 57622     |
-| `createWithDurations`     | 162958    |
+| `createWithDurations`     | 162959    |
 | `createWithTimestamps`    | 151698    |
 | `renounce`                | 21847     |
 | `withdraw` (by Anyone)    | 35189     |

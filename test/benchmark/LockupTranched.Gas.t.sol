@@ -1,18 +1,29 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { LockupTranched } from "src/types/DataTypes.sol";
+import { ud } from "@prb/math/src/UD60x18.sol";
+import { Broker, LockupTranched } from "src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
 /// @notice Benchmark Test for the LockupTranched contract.
 /// @dev This contract creates a markdown file with the gas usage of each function in the benchmarks directory.
 contract LockupTranched_Gas_Test is Benchmark_Test {
+    /*//////////////////////////////////////////////////////////////////////////
+                                  SET-UP FUNCTION
+    //////////////////////////////////////////////////////////////////////////*/
     function setUp() public override {
         super.setUp();
 
         lockup = lockupTranched;
+    }
 
+    /*//////////////////////////////////////////////////////////////////////////
+                                   TEST FUNCTION
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function testGas_Implementations() external {
+        // Set the file path
         benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupTranched.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it
@@ -24,9 +35,7 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
                 "| --- | --- |\n"
             )
         });
-    }
 
-    function testGas_Implementations() external {
         // Set the caller to recipient for `burn` and change timestamp to end time
         resetPrank({ msgSender: users.recipient });
         vm.warp({ newTimestamp: defaults.END_TIME() });
@@ -58,26 +67,29 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
                         GAS BENCHMARKS FOR CREATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    function gasCreateWithDurations(uint128 totalTranches) public {
+    // The following function is also used in the estimation of `MAX_TRANCHE_COUNT`
+    function computeGas_CreateWithDurations(uint128 totalTranches) public returns (uint256 gasUsage) {
         LockupTranched.CreateWithDurations memory params = _createWithDurationParams(totalTranches);
 
         uint256 beforeGas = gasleft();
         lockupTranched.createWithDurations(params);
         uint256 afterGas = gasleft();
 
+        gasUsage = beforeGas - afterGas;
+    }
+
+    function gasCreateWithDurations(uint128 totalTranches) internal {
+        uint256 gas = computeGas_CreateWithDurations(totalTranches);
+
         dataToAppend = string.concat(
-            "| `createWithDurations` (",
-            vm.toString(totalTranches),
-            " tranches) | ",
-            vm.toString(beforeGas - afterGas),
-            " |"
+            "| `createWithDurations` (", vm.toString(totalTranches), " tranches) | ", vm.toString(gas), " |"
         );
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function gasCreateWithTimestamps(uint128 totalTranches) public {
+    function gasCreateWithTimestamps(uint128 totalTranches) internal {
         LockupTranched.CreateWithTimestamps memory params = _createWithTimestampParams(totalTranches);
 
         uint256 beforeGas = gasleft();
@@ -104,25 +116,24 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         view
         returns (LockupTranched.CreateWithDurations memory)
     {
-        uint128 amountInEachTranche = defaults.DEPOSIT_AMOUNT() / totalTranches;
         LockupTranched.TrancheWithDuration[] memory tranches_ = new LockupTranched.TrancheWithDuration[](totalTranches);
 
         // Populate tranches
         for (uint256 i = 0; i < totalTranches; ++i) {
             tranches_[i] = (
-                LockupTranched.TrancheWithDuration({ amount: amountInEachTranche, duration: defaults.CLIFF_DURATION() })
+                LockupTranched.TrancheWithDuration({ amount: AMOUNT_PER_TRANCHE, duration: defaults.CLIFF_DURATION() })
             );
         }
 
         return LockupTranched.CreateWithDurations({
             sender: users.sender,
             recipient: users.recipient,
-            totalAmount: defaults.TOTAL_AMOUNT(),
+            totalAmount: AMOUNT_PER_TRANCHE * totalTranches,
             asset: dai,
             cancelable: true,
             transferable: true,
             tranches: tranches_,
-            broker: defaults.broker()
+            broker: Broker({ account: users.broker, fee: ud(0) })
         });
     }
 
@@ -131,15 +142,13 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         view
         returns (LockupTranched.CreateWithTimestamps memory)
     {
-        uint128 amountInEachTranche = defaults.DEPOSIT_AMOUNT() / totalTranches;
-
         LockupTranched.Tranche[] memory tranches_ = new LockupTranched.Tranche[](totalTranches);
 
         // Populate tranches
         for (uint256 i = 0; i < totalTranches; ++i) {
             tranches_[i] = (
                 LockupTranched.Tranche({
-                    amount: amountInEachTranche,
+                    amount: AMOUNT_PER_TRANCHE,
                     timestamp: uint40(block.timestamp + defaults.CLIFF_DURATION() * (1 + i))
                 })
             );
@@ -148,13 +157,13 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         return LockupTranched.CreateWithTimestamps({
             sender: users.sender,
             recipient: users.recipient,
-            totalAmount: defaults.TOTAL_AMOUNT(),
+            totalAmount: AMOUNT_PER_TRANCHE * totalTranches,
             asset: dai,
             cancelable: true,
             transferable: true,
             startTime: uint40(block.timestamp),
             tranches: tranches_,
-            broker: defaults.broker()
+            broker: Broker({ account: users.broker, fee: ud(0) })
         });
     }
 }

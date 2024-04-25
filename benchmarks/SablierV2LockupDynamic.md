@@ -4,12 +4,12 @@
 | ------------------------------------- | --------- |
 | `burn`                                | 16898     |
 | `cancel`                              | 80408     |
-| `createWithDurations` (2 segments)    | 214672    |
-| `createWithDurations` (10 segments)   | 424973    |
-| `createWithDurations` (100 segments)  | 2914035   |
-| `createWithTimestamps` (2 segments)   | 199536    |
-| `createWithTimestamps` (10 segments)  | 414651    |
-| `createWithTimestamps` (100 segments) | 2839193   |
+| `createWithDurations` (2 segments)    | 203117    |
+| `createWithDurations` (10 segments)   | 418215    |
+| `createWithDurations` (100 segments)  | 2907239   |
+| `createWithTimestamps` (2 segments)   | 192781    |
+| `createWithTimestamps` (10 segments)  | 407894    |
+| `createWithTimestamps` (100 segments) | 2832400   |
 | `renounce`                            | 46588     |
 | `withdraw` (by Anyone)                | 57953     |
 | `withdraw` (by Recipient)             | 65125     |

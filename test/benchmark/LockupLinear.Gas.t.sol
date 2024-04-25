@@ -8,11 +8,21 @@ import { Benchmark_Test } from "./Benchmark.t.sol";
 /// @notice Benchmark Test for the LockupLinear contract.
 /// @dev This contract creates a markdown file with the gas usage of each function in the benchmarks directory.
 contract LockupLinear_Gas_Test is Benchmark_Test {
+    /*//////////////////////////////////////////////////////////////////////////
+                                  SET-UP FUNCTION
+    //////////////////////////////////////////////////////////////////////////*/
     function setUp() public override {
         super.setUp();
 
         lockup = lockupLinear;
+    }
 
+    /*//////////////////////////////////////////////////////////////////////////
+                                   TEST FUNCTION
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function testGas_Implementations() external {
+        // Set the file path
         benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupLinear.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it
@@ -24,9 +34,7 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
                 "| --- | --- |\n"
             )
         });
-    }
 
-    function testGas_Implementations() external {
         // Set the caller to recipient for `burn` and change timestamp to end time
         resetPrank({ msgSender: users.recipient });
         vm.warp({ newTimestamp: defaults.END_TIME() });
@@ -51,7 +59,7 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
                         GAS BENCHMARKS FOR CREATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    function gasCreateWithDurations() public {
+    function gasCreateWithDurations() internal {
         LockupLinear.CreateWithDurations memory params = defaults.createWithDurationsLL();
 
         uint256 beforeGas = gasleft();
@@ -64,7 +72,7 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function gasCreateWithTimestamps() public {
+    function gasCreateWithTimestamps() internal {
         LockupLinear.CreateWithTimestamps memory params = defaults.createWithTimestampsLL();
 
         uint256 beforeGas = gasleft();
