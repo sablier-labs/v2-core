@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
+import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 import { LockupDynamic } from "src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
@@ -35,8 +36,15 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         gasCancel();
-        gasCreateWithDurations();
-        gasCreateWithTimestamps();
+
+        // Create streams with different number of segments
+        gasCreateWithDurations({ totalSegments: 2 });
+        gasCreateWithDurations({ totalSegments: 10 });
+        gasCreateWithDurations({ totalSegments: 100 });
+        gasCreateWithTimestamps({ totalSegments: 2 });
+        gasCreateWithTimestamps({ totalSegments: 10 });
+        gasCreateWithTimestamps({ totalSegments: 100 });
+
         gasRenounce();
         gasWithdraw();
 
@@ -73,28 +81,39 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function gasCreateWithDurations() internal {
-        LockupDynamic.CreateWithDurations memory params = defaults.createWithDurationsLD();
+    function gasCreateWithDurations(uint128 totalSegments) internal {
+        LockupDynamic.CreateWithDurations memory params = _createWithDurationParams(totalSegments);
 
         uint256 beforeGas = gasleft();
         lockupDynamic.createWithDurations(params);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `createWithDurations` (2 segments) | ", vm.toString(beforeGas - afterGas), " |");
+        dataToAppend = string.concat(
+            "| `createWithDurations` (",
+            vm.toString(totalSegments),
+            " segments) | ",
+            vm.toString(beforeGas - afterGas),
+            " |"
+        );
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function gasCreateWithTimestamps() internal {
-        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
+    function gasCreateWithTimestamps(uint128 totalSegments) internal {
+        LockupDynamic.CreateWithTimestamps memory params = _createWithTimestampParams(totalSegments);
 
         uint256 beforeGas = gasleft();
         lockupDynamic.createWithTimestamps(params);
         uint256 afterGas = gasleft();
 
-        dataToAppend =
-            string.concat("| `createWithTimestamps` (2 segments) | ", vm.toString(beforeGas - afterGas), " |");
+        dataToAppend = string.concat(
+            "| `createWithTimestamps` (",
+            vm.toString(totalSegments),
+            " segments) | ",
+            vm.toString(beforeGas - afterGas),
+            " |"
+        );
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
@@ -131,5 +150,73 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                      HELPERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function _createWithDurationParams(uint128 totalSegments)
+        private
+        view
+        returns (LockupDynamic.CreateWithDurations memory)
+    {
+        uint128 amountInEachSegment = defaults.DEPOSIT_AMOUNT() / totalSegments;
+        LockupDynamic.SegmentWithDuration[] memory segments_ = new LockupDynamic.SegmentWithDuration[](totalSegments);
+
+        // Populate segments
+        for (uint256 i = 0; i < totalSegments; ++i) {
+            segments_[i] = (
+                LockupDynamic.SegmentWithDuration({
+                    amount: amountInEachSegment,
+                    exponent: ud2x18(0.5e18),
+                    duration: defaults.CLIFF_DURATION()
+                })
+            );
+        }
+
+        return LockupDynamic.CreateWithDurations({
+            sender: users.sender,
+            recipient: users.recipient,
+            totalAmount: defaults.TOTAL_AMOUNT(),
+            asset: dai,
+            cancelable: true,
+            transferable: true,
+            segments: segments_,
+            broker: defaults.broker()
+        });
+    }
+
+    function _createWithTimestampParams(uint128 totalSegments)
+        private
+        view
+        returns (LockupDynamic.CreateWithTimestamps memory)
+    {
+        uint128 amountInEachSegment = defaults.DEPOSIT_AMOUNT() / totalSegments;
+
+        LockupDynamic.Segment[] memory segments_ = new LockupDynamic.Segment[](totalSegments);
+
+        // Populate segments
+        for (uint256 i = 0; i < totalSegments; ++i) {
+            segments_[i] = (
+                LockupDynamic.Segment({
+                    amount: amountInEachSegment,
+                    exponent: ud2x18(0.5e18),
+                    timestamp: uint40(block.timestamp + defaults.CLIFF_DURATION() * (1 + i))
+                })
+            );
+        }
+
+        return LockupDynamic.CreateWithTimestamps({
+            sender: users.sender,
+            recipient: users.recipient,
+            totalAmount: defaults.TOTAL_AMOUNT(),
+            asset: dai,
+            cancelable: true,
+            transferable: true,
+            startTime: uint40(block.timestamp),
+            segments: segments_,
+            broker: defaults.broker()
+        });
     }
 }

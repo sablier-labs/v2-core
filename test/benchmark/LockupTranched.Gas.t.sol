@@ -35,8 +35,15 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         gasCancel();
-        gasCreateWithDurations();
-        gasCreateWithTimestamps();
+
+        // Create streams with different number of tranches
+        gasCreateWithDurations({ totalTranches: 2 });
+        gasCreateWithDurations({ totalTranches: 10 });
+        gasCreateWithDurations({ totalTranches: 100 });
+        gasCreateWithTimestamps({ totalTranches: 2 });
+        gasCreateWithTimestamps({ totalTranches: 10 });
+        gasCreateWithTimestamps({ totalTranches: 100 });
+
         gasRenounce();
         gasWithdraw();
 
@@ -75,29 +82,39 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function gasCreateWithDurations() internal {
-        LockupTranched.CreateWithDurations memory params = defaults.createWithDurationsLT();
+    function gasCreateWithDurations(uint128 totalTranches) internal {
+        LockupTranched.CreateWithDurations memory params = _createWithDurationParams(totalTranches);
 
         uint256 beforeGas = gasleft();
         lockupTranched.createWithDurations(params);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `createWithDurations` (3 tranches) | ", vm.toString(beforeGas - afterGas), " |");
+        dataToAppend = string.concat(
+            "| `createWithDurations` (",
+            vm.toString(totalTranches),
+            " tranches) | ",
+            vm.toString(beforeGas - afterGas),
+            " |"
+        );
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
     }
 
-    function gasCreateWithTimestamps() internal {
-        LockupTranched.CreateWithTimestamps memory params = defaults.createWithTimestampsLT();
+    function gasCreateWithTimestamps(uint128 totalTranches) internal {
+        LockupTranched.CreateWithTimestamps memory params = _createWithTimestampParams(totalTranches);
 
         uint256 beforeGas = gasleft();
         lockupTranched.createWithTimestamps(params);
         uint256 afterGas = gasleft();
 
-        dataToAppend =
-            string.concat("| `createWithTimestamps` (3 tranches) | ", vm.toString(beforeGas - afterGas), " |");
-
+        dataToAppend = string.concat(
+            "| `createWithTimestamps` (",
+            vm.toString(totalTranches),
+            " tranches) | ",
+            vm.toString(beforeGas - afterGas),
+            " |"
+        );
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
     }
@@ -137,5 +154,68 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
 
         // Append the data to the file
         _appendToFile(benchmarksFile, dataToAppend);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                      HELPERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function _createWithDurationParams(uint128 totalTranches)
+        private
+        view
+        returns (LockupTranched.CreateWithDurations memory)
+    {
+        uint128 amountInEachTranche = defaults.DEPOSIT_AMOUNT() / totalTranches;
+        LockupTranched.TrancheWithDuration[] memory tranches_ = new LockupTranched.TrancheWithDuration[](totalTranches);
+
+        // Populate tranches
+        for (uint256 i = 0; i < totalTranches; ++i) {
+            tranches_[i] = (
+                LockupTranched.TrancheWithDuration({ amount: amountInEachTranche, duration: defaults.CLIFF_DURATION() })
+            );
+        }
+
+        return LockupTranched.CreateWithDurations({
+            sender: users.sender,
+            recipient: users.recipient,
+            totalAmount: defaults.TOTAL_AMOUNT(),
+            asset: dai,
+            cancelable: true,
+            transferable: true,
+            tranches: tranches_,
+            broker: defaults.broker()
+        });
+    }
+
+    function _createWithTimestampParams(uint128 totalTranches)
+        private
+        view
+        returns (LockupTranched.CreateWithTimestamps memory)
+    {
+        uint128 amountInEachTranche = defaults.DEPOSIT_AMOUNT() / totalTranches;
+
+        LockupTranched.Tranche[] memory tranches_ = new LockupTranched.Tranche[](totalTranches);
+
+        // Populate tranches
+        for (uint256 i = 0; i < totalTranches; ++i) {
+            tranches_[i] = (
+                LockupTranched.Tranche({
+                    amount: amountInEachTranche,
+                    timestamp: uint40(block.timestamp + defaults.CLIFF_DURATION() * (1 + i))
+                })
+            );
+        }
+
+        return LockupTranched.CreateWithTimestamps({
+            sender: users.sender,
+            recipient: users.recipient,
+            totalAmount: defaults.TOTAL_AMOUNT(),
+            asset: dai,
+            cancelable: true,
+            transferable: true,
+            startTime: uint40(block.timestamp),
+            tranches: tranches_,
+            broker: defaults.broker()
+        });
     }
 }
