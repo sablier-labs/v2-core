@@ -59,6 +59,12 @@ const config: HardhatUserConfig = {
       verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
       chainId: 324,
     },
+    inMemoryNode: {
+      url: "http://127.0.0.1:8011",
+      ethNetwork: "localhost", // in-memory node doesn't support eth node; removing this line will cause an error
+      zksync: true,
+      chainId: 260,
+    },
   },
   preprocess: {
     eachLine: (hre) => ({
@@ -84,9 +90,9 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 1000,
+        mode: "z",
+        fallback_to_optimizing_for_size: true,
       },
-      viaIR: true,
     },
   },
 };
