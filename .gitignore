@@ -4,7 +4,6 @@ broadcast
 cache
 cache_hardhat/
 cache_hardhat-zk/
-deployments-zk/
 typechain-types/
 coverage
 deployments
