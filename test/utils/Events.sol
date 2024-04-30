@@ -63,7 +63,7 @@ abstract contract Events {
         bool cancelable,
         bool transferable,
         LockupDynamic.Segment[] segments,
-        LockupDynamic.Range range,
+        LockupDynamic.Timestamp timestamp,
         address broker
     );
 
@@ -80,12 +80,12 @@ abstract contract Events {
         IERC20 indexed asset,
         bool cancelable,
         bool transferable,
-        LockupLinear.Range range,
+        LockupLinear.Timestamp timestamp,
         address broker
     );
 
     /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-V2-LOCKUP-TRANCHED 
+                             SABLIER-V2-LOCKUP-TRANCHED
     //////////////////////////////////////////////////////////////////////////*/
 
     event CreateLockupTranchedStream(
@@ -98,7 +98,7 @@ abstract contract Events {
         bool cancelable,
         bool transferable,
         LockupTranched.Tranche[] tranches,
-        LockupTranched.Range range,
+        LockupTranched.Timestamp timestamp,
         address broker
     );
 }

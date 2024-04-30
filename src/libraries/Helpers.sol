@@ -143,39 +143,39 @@ library Helpers {
     }
 
     /// @dev Checks the parameters of the {SablierV2LockupLinear-_create} function.
-    function checkCreateLockupLinear(uint128 depositAmount, LockupLinear.Range memory range) internal view {
+    function checkCreateLockupLinear(uint128 depositAmount, LockupLinear.Timestamp memory timestamp) internal view {
         // Check: the deposit amount is not zero.
         if (depositAmount == 0) {
             revert Errors.SablierV2Lockup_DepositAmountZero();
         }
 
         // Check: the start time is not zero.
-        if (range.start == 0) {
+        if (timestamp.start == 0) {
             revert Errors.SablierV2Lockup_StartTimeZero();
         }
 
         // Since a cliff time of zero means there is no cliff, the following checks are performed only if it's not zero.
-        if (range.cliff > 0) {
+        if (timestamp.cliff > 0) {
             // Check: the start time is strictly less than the cliff time.
-            if (range.start >= range.cliff) {
-                revert Errors.SablierV2LockupLinear_StartTimeNotLessThanCliffTime(range.start, range.cliff);
+            if (timestamp.start >= timestamp.cliff) {
+                revert Errors.SablierV2LockupLinear_StartTimeNotLessThanCliffTime(timestamp.start, timestamp.cliff);
             }
 
             // Check: the cliff time is strictly less than the end time.
-            if (range.cliff >= range.end) {
-                revert Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime(range.cliff, range.end);
+            if (timestamp.cliff >= timestamp.end) {
+                revert Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime(timestamp.cliff, timestamp.end);
             }
         }
 
         // Check: the start time is strictly less than the end time.
-        if (range.start >= range.end) {
-            revert Errors.SablierV2LockupLinear_StartTimeNotLessThanEndTime(range.start, range.end);
+        if (timestamp.start >= timestamp.end) {
+            revert Errors.SablierV2LockupLinear_StartTimeNotLessThanEndTime(timestamp.start, timestamp.end);
         }
 
         // Check: the end time is in the future.
         uint40 blockTimestamp = uint40(block.timestamp);
-        if (blockTimestamp >= range.end) {
-            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(blockTimestamp, range.end);
+        if (blockTimestamp >= timestamp.end) {
+            revert Errors.SablierV2Lockup_EndTimeNotInTheFuture(blockTimestamp, timestamp.end);
         }
     }
 

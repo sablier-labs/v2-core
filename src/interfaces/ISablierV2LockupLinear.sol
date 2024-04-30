@@ -23,7 +23,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @param asset The contract address of the ERC-20 asset to be distributed.
     /// @param cancelable Boolean indicating whether the stream will be cancelable or not.
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
-    /// @param range Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as Unix
+    /// @param timestamp Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as Unix
     /// timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
     event CreateLockupLinearStream(
@@ -35,7 +35,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
         IERC20 indexed asset,
         bool cancelable,
         bool transferable,
-        LockupLinear.Range range,
+        LockupLinear.Timestamp timestamp,
         address broker
     );
 
@@ -49,17 +49,17 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @param streamId The stream ID for the query.
     function getCliffTime(uint256 streamId) external view returns (uint40 cliffTime);
 
-    /// @notice Retrieves the stream's range.
-    /// @dev Reverts if `streamId` references a null stream.
-    /// @param streamId The stream ID for the query.
-    /// @return range See the documentation in {DataTypes}.
-    function getRange(uint256 streamId) external view returns (LockupLinear.Range memory range);
-
     /// @notice Retrieves the full stream details.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
     /// @return stream See the documentation in {DataTypes}.
     function getStream(uint256 streamId) external view returns (LockupLinear.StreamLL memory stream);
+
+    /// @notice Retrieves the stream's start, cliff and end timestamps.
+    /// @dev Reverts if `streamId` references a null stream.
+    /// @param streamId The stream ID for the query.
+    /// @return timestamp See the documentation in {DataTypes}.
+    function getTimestamps(uint256 streamId) external view returns (LockupLinear.Timestamp memory timestamp);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
@@ -80,8 +80,8 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
         external
         returns (uint256 streamId);
 
-    /// @notice Creates a stream with the provided start time and end time as the range. The stream is
-    /// funded by `msg.sender` and is wrapped in an ERC-721 NFT.
+    /// @notice Creates a stream with the provided start time and end time. The stream is funded by `msg.sender` and is
+    /// wrapped in an ERC-721 NFT.
     ///
     /// @dev Emits a {Transfer} and {CreateLockupLinearStream} event.
     ///
@@ -93,9 +93,10 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// - Must not be delegate called.
     /// - `params.totalAmount` must be greater than zero.
     /// - If set, `params.broker.fee` must not be greater than `MAX_BROKER_FEE`.
-    /// - `params.range.start` must be greater than zero and less than `params.range.end`.
-    /// - If set, `params.range.cliff` must be greater than `params.range.start` and less than `params.range.end`.
-    /// - `params.range.end` must be in the future.
+    /// - `params.timestamps.start` must be greater than zero and less than `params.timestamp.end`.
+    /// - If set, `params.timestamp.cliff` must be greater than `params.timestamp.start` and less than
+    /// `params.timestamp.end`.
+    /// - `params.timestamp.end` must be in the future.
     /// - `params.recipient` must not be the zero address.
     /// - `msg.sender` must have allowed this contract to spend at least `params.totalAmount` assets.
     ///
