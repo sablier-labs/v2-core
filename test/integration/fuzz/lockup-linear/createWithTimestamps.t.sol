@@ -110,21 +110,21 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
     {
         vm.assume(funder != address(0) && params.recipient != address(0) && params.broker.account != address(0));
         vm.assume(params.totalAmount != 0);
-        params.timestamp.start =
-            boundUint40(params.timestamp.start, defaults.START_TIME(), defaults.START_TIME() + 10_000 seconds);
+        params.timestamps.start =
+            boundUint40(params.timestamps.start, defaults.START_TIME(), defaults.START_TIME() + 10_000 seconds);
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
         params.transferable = true;
 
         // The cliff time must be either zero or greater than the start time.
-        if (params.timestamp.cliff > 0) {
-            params.timestamp.cliff = boundUint40(
-                params.timestamp.cliff, params.timestamp.start + 1 seconds, params.timestamp.start + 52 weeks
+        if (params.timestamps.cliff > 0) {
+            params.timestamps.cliff = boundUint40(
+                params.timestamps.cliff, params.timestamps.start + 1 seconds, params.timestamps.start + 52 weeks
             );
-            params.timestamp.end =
-                boundUint40(params.timestamp.end, params.timestamp.cliff + 1 seconds, MAX_UNIX_TIMESTAMP);
+            params.timestamps.end =
+                boundUint40(params.timestamps.end, params.timestamps.cliff + 1 seconds, MAX_UNIX_TIMESTAMP);
         } else {
-            params.timestamp.end =
-                boundUint40(params.timestamp.end, params.timestamp.start + 1 seconds, MAX_UNIX_TIMESTAMP);
+            params.timestamps.end =
+                boundUint40(params.timestamps.end, params.timestamps.start + 1 seconds, MAX_UNIX_TIMESTAMP);
         }
 
         // Calculate the fee amounts and the deposit amount.
@@ -161,7 +161,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
             asset: dai,
             cancelable: params.cancelable,
             transferable: params.transferable,
-            timestamp: params.timestamp,
+            timestamps: params.timestamps,
             broker: params.broker.account
         });
 
@@ -174,7 +174,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
                 asset: dai,
                 cancelable: params.cancelable,
                 transferable: params.transferable,
-                timestamp: params.timestamp,
+                timestamps: params.timestamps,
                 broker: params.broker
             })
         );
@@ -183,21 +183,21 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);
         assertEq(actualStream.amounts, Lockup.Amounts(vars.createAmounts.deposit, 0, 0));
         assertEq(actualStream.asset, dai, "asset");
-        assertEq(actualStream.cliffTime, params.timestamp.cliff, "cliffTime");
-        assertEq(actualStream.endTime, params.timestamp.end, "endTime");
+        assertEq(actualStream.cliffTime, params.timestamps.cliff, "cliffTime");
+        assertEq(actualStream.endTime, params.timestamps.end, "endTime");
         assertEq(actualStream.isCancelable, params.cancelable, "isCancelable");
         assertEq(actualStream.isDepleted, false, "isStream");
         assertEq(actualStream.isStream, true, "isStream");
         assertEq(actualStream.isTransferable, true, "isTransferable");
         assertEq(actualStream.recipient, params.recipient, "recipient");
         assertEq(actualStream.sender, params.sender, "sender");
-        assertEq(actualStream.startTime, params.timestamp.start, "startTime");
+        assertEq(actualStream.startTime, params.timestamps.start, "startTime");
         assertEq(actualStream.wasCanceled, false, "wasCanceled");
 
         // Assert that the stream's status is correct.
         vars.actualStatus = lockupLinear.statusOf(streamId);
         vars.expectedStatus =
-            params.timestamp.start > getBlockTimestamp() ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
+            params.timestamps.start > getBlockTimestamp() ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
         assertEq(vars.actualStatus, vars.expectedStatus);
 
         // Assert that the next stream ID has been bumped.

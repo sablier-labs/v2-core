@@ -361,7 +361,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
             asset: IERC20(asset),
             cancelable: true,
             transferable: true,
-            timestamp: defaults.lockupTranchedTimestamps(),
+            timestamps: defaults.lockupTranchedTimestamps(),
             broker: users.broker
         });
 

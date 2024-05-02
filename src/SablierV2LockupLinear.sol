@@ -110,9 +110,9 @@ contract SablierV2LockupLinear is
         view
         override
         notNull(streamId)
-        returns (LockupLinear.Timestamp memory timestamp)
+        returns (LockupLinear.Timestamp memory timestamps)
     {
-        timestamp = LockupLinear.Timestamp({
+        timestamps = LockupLinear.Timestamp({
             start: _streams[streamId].startTime,
             cliff: _cliffs[streamId],
             end: _streams[streamId].endTime
@@ -131,17 +131,17 @@ contract SablierV2LockupLinear is
         returns (uint256 streamId)
     {
         // Set the current block timestamp as the stream's start time.
-        LockupLinear.Timestamp memory timestamp;
-        timestamp.start = uint40(block.timestamp);
+        LockupLinear.Timestamp memory timestamps;
+        timestamps.start = uint40(block.timestamp);
 
         // Calculate the cliff time and the end time. It is safe to use unchecked arithmetic because {_create} will
         // nonetheless check that the end time is greater than the cliff time, and also that the cliff time, if set,
         // is greater than or equal to the start time.
         unchecked {
             if (params.durations.cliff > 0) {
-                timestamp.cliff = timestamp.start + params.durations.cliff;
+                timestamps.cliff = timestamps.start + params.durations.cliff;
             }
-            timestamp.end = timestamp.start + params.durations.total;
+            timestamps.end = timestamps.start + params.durations.total;
         }
 
         // Checks, Effects and Interactions: create the stream.
@@ -153,7 +153,7 @@ contract SablierV2LockupLinear is
                 asset: params.asset,
                 cancelable: params.cancelable,
                 transferable: params.transferable,
-                timestamp: timestamp,
+                timestamps: timestamps,
                 broker: params.broker
             })
         );
@@ -240,7 +240,7 @@ contract SablierV2LockupLinear is
             Helpers.checkAndCalculateBrokerFee(params.totalAmount, params.broker.fee, MAX_BROKER_FEE);
 
         // Check: validate the user-provided parameters.
-        Helpers.checkCreateLockupLinear(createAmounts.deposit, params.timestamp);
+        Helpers.checkCreateLockupLinear(createAmounts.deposit, params.timestamps);
 
         // Load the stream ID.
         streamId = nextStreamId;
@@ -249,19 +249,19 @@ contract SablierV2LockupLinear is
         _streams[streamId] = Lockup.Stream({
             amounts: Lockup.Amounts({ deposited: createAmounts.deposit, refunded: 0, withdrawn: 0 }),
             asset: params.asset,
-            endTime: params.timestamp.end,
+            endTime: params.timestamps.end,
             isCancelable: params.cancelable,
             isDepleted: false,
             isStream: true,
             isTransferable: params.transferable,
             sender: params.sender,
-            startTime: params.timestamp.start,
+            startTime: params.timestamps.start,
             wasCanceled: false
         });
 
         // Effect: set the cliff time if it is greater than zero.
-        if (params.timestamp.cliff > 0) {
-            _cliffs[streamId] = params.timestamp.cliff;
+        if (params.timestamps.cliff > 0) {
+            _cliffs[streamId] = params.timestamps.cliff;
         }
 
         // Effect: bump the next stream ID.
@@ -291,7 +291,7 @@ contract SablierV2LockupLinear is
             asset: params.asset,
             cancelable: params.cancelable,
             transferable: params.transferable,
-            timestamp: params.timestamp,
+            timestamps: params.timestamps,
             broker: params.broker.account
         });
     }

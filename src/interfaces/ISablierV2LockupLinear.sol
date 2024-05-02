@@ -23,7 +23,8 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @param asset The contract address of the ERC-20 asset to be distributed.
     /// @param cancelable Boolean indicating whether the stream will be cancelable or not.
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
-    /// @param timestamp Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as Unix
+    /// @param timestamps Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as
+    /// Unix
     /// timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
     event CreateLockupLinearStream(
@@ -35,7 +36,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
         IERC20 indexed asset,
         bool cancelable,
         bool transferable,
-        LockupLinear.Timestamp timestamp,
+        LockupLinear.Timestamp timestamps,
         address broker
     );
 
@@ -58,8 +59,8 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @notice Retrieves the stream's start, cliff and end timestamps.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
-    /// @return timestamp See the documentation in {DataTypes}.
-    function getTimestamps(uint256 streamId) external view returns (LockupLinear.Timestamp memory timestamp);
+    /// @return timestamps See the documentation in {DataTypes}.
+    function getTimestamps(uint256 streamId) external view returns (LockupLinear.Timestamp memory timestamps);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
@@ -93,10 +94,10 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// - Must not be delegate called.
     /// - `params.totalAmount` must be greater than zero.
     /// - If set, `params.broker.fee` must not be greater than `MAX_BROKER_FEE`.
-    /// - `params.timestamps.start` must be greater than zero and less than `params.timestamp.end`.
-    /// - If set, `params.timestamp.cliff` must be greater than `params.timestamp.start` and less than
-    /// `params.timestamp.end`.
-    /// - `params.timestamp.end` must be in the future.
+    /// - `params.timestamps.start` must be greater than zero and less than `params.timestamps.end`.
+    /// - If set, `params.timestamps.cliff` must be greater than `params.timestamps.start` and less than
+    /// `params.timestamps.end`.
+    /// - `params.timestamps.end` must be in the future.
     /// - `params.recipient` must not be the zero address.
     /// - `msg.sender` must have allowed this contract to spend at least `params.totalAmount` assets.
     ///

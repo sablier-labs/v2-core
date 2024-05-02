@@ -63,7 +63,7 @@ abstract contract Events {
         bool cancelable,
         bool transferable,
         LockupDynamic.Segment[] segments,
-        LockupDynamic.Timestamp timestamp,
+        LockupDynamic.Timestamp timestamps,
         address broker
     );
 
@@ -80,7 +80,7 @@ abstract contract Events {
         IERC20 indexed asset,
         bool cancelable,
         bool transferable,
-        LockupLinear.Timestamp timestamp,
+        LockupLinear.Timestamp timestamps,
         address broker
     );
 
@@ -98,7 +98,7 @@ abstract contract Events {
         bool cancelable,
         bool transferable,
         LockupTranched.Tranche[] tranches,
-        LockupTranched.Timestamp timestamp,
+        LockupTranched.Timestamp timestamps,
         address broker
     );
 }

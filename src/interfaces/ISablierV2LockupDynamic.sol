@@ -24,7 +24,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @param cancelable Boolean indicating whether the stream will be cancelable or not.
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
     /// @param segments The segments the protocol uses to compose the dynamic distribution function.
-    /// @param timestamp Struct containing (i) the stream's start time and (ii) end time, both as Unix timestamps.
+    /// @param timestamps Struct containing (i) the stream's start time and (ii) end time, both as Unix timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
     event CreateLockupDynamicStream(
         uint256 streamId,
@@ -36,7 +36,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
         bool cancelable,
         bool transferable,
         LockupDynamic.Segment[] segments,
-        LockupDynamic.Timestamp timestamp,
+        LockupDynamic.Timestamp timestamps,
         address broker
     );
 
@@ -58,8 +58,8 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @notice Retrieves the stream's start and end timestamps.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
-    /// @return timestamp See the documentation in {DataTypes}.
-    function getTimestamps(uint256 streamId) external view returns (LockupDynamic.Timestamp memory timestamp);
+    /// @return timestamps See the documentation in {DataTypes}.
+    function getTimestamps(uint256 streamId) external view returns (LockupDynamic.Timestamp memory timestamps);
 
     /// @notice The maximum number of segments allowed in a stream.
     /// @dev This is initialized at construction time and cannot be changed later.

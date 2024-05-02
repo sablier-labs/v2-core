@@ -228,8 +228,8 @@ library LockupLinear {
     /// @param asset The contract address of the ERC-20 asset to be distributed.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
-    /// @param timestamp Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as Unix
-    /// timestamps.
+    /// @param timestamps Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as
+    /// Unix timestamps.
     /// @param broker Struct containing (i) the address of the broker assisting in creating the stream, and (ii) the
     /// percentage fee paid to the broker from `totalAmount`, denoted as a fixed-point number. Both can be set to zero.
     struct CreateWithTimestamps {
@@ -239,7 +239,7 @@ library LockupLinear {
         IERC20 asset;
         bool cancelable;
         bool transferable;
-        Timestamp timestamp;
+        Timestamp timestamps;
         Broker broker;
     }
 

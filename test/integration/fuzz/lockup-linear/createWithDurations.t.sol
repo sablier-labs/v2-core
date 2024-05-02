@@ -66,8 +66,8 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         // Expect the broker fee to be paid to the broker.
         expectCallToTransferFrom({ from: funder, to: users.broker, value: defaults.BROKER_FEE_AMOUNT() });
 
-        // Create the timestamp struct by calculating the start time, cliff time and the end time.
-        LockupLinear.Timestamp memory timestamp = LockupLinear.Timestamp({
+        // Create the timestamps struct by calculating the start time, cliff time and the end time.
+        LockupLinear.Timestamp memory timestamps = LockupLinear.Timestamp({
             start: getBlockTimestamp(),
             cliff: durations.cliff == 0 ? 0 : getBlockTimestamp() + durations.cliff,
             end: getBlockTimestamp() + durations.total
@@ -84,7 +84,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
             asset: dai,
             cancelable: true,
             transferable: true,
-            timestamp: timestamp,
+            timestamps: timestamps,
             broker: users.broker
         });
 
@@ -94,9 +94,9 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         // Assert that the stream has been created.
         LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);
         LockupLinear.StreamLL memory expectedStream = defaults.lockupLinearStream();
-        expectedStream.cliffTime = timestamp.cliff;
-        expectedStream.endTime = timestamp.end;
-        expectedStream.startTime = timestamp.start;
+        expectedStream.cliffTime = timestamps.cliff;
+        expectedStream.endTime = timestamps.end;
+        expectedStream.startTime = timestamps.start;
         assertEq(actualStream, expectedStream);
 
         // Assert that the stream's status is "STREAMING".

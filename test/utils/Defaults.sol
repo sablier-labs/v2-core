@@ -263,7 +263,7 @@ contract Defaults is Constants {
             asset: asset,
             cancelable: true,
             transferable: true,
-            timestamp: lockupLinearTimestamps(),
+            timestamps: lockupLinearTimestamps(),
             broker: broker()
         });
     }

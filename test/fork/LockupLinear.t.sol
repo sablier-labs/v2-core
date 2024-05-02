@@ -39,7 +39,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         uint128 totalAmount;
         uint128 withdrawAmount;
         uint40 warpTimestamp;
-        LockupLinear.Timestamp timestamp;
+        LockupLinear.Timestamp timestamps;
         Broker broker;
     }
 
@@ -116,21 +116,22 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         Vars memory vars;
         vars.blockTimestamp = getBlockTimestamp();
         params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
-        params.timestamp.start = boundUint40(
-            params.timestamp.start, vars.blockTimestamp - 1000 seconds, vars.blockTimestamp + 10_000 seconds
+        params.timestamps.start = boundUint40(
+            params.timestamps.start, vars.blockTimestamp - 1000 seconds, vars.blockTimestamp + 10_000 seconds
         );
         params.totalAmount = boundUint128(params.totalAmount, 1, uint128(initialHolderBalance));
 
         // The cliff time must be either zero or greater than the start time.
-        vars.hasCliff = params.timestamp.cliff > 0;
+        vars.hasCliff = params.timestamps.cliff > 0;
         if (vars.hasCliff) {
-            params.timestamp.cliff = boundUint40(
-                params.timestamp.cliff, params.timestamp.start + 1 seconds, params.timestamp.start + 52 weeks
+            params.timestamps.cliff = boundUint40(
+                params.timestamps.cliff, params.timestamps.start + 1 seconds, params.timestamps.start + 52 weeks
             );
         }
         // Bound the end time so that it is always greater than the block timestamp, the start time, and the cliff time.
-        vars.endTimeLowerBound = maxOfThree(params.timestamp.start, params.timestamp.cliff, vars.blockTimestamp);
-        params.timestamp.end = boundUint40(params.timestamp.end, vars.endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
+        vars.endTimeLowerBound = maxOfThree(params.timestamps.start, params.timestamps.cliff, vars.blockTimestamp);
+        params.timestamps.end =
+            boundUint40(params.timestamps.end, vars.endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
 
         // Make the holder the caller.
         resetPrank(HOLDER);
@@ -164,7 +165,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
             asset: ASSET,
             cancelable: true,
             transferable: true,
-            timestamp: params.timestamp,
+            timestamps: params.timestamps,
             broker: params.broker.account
         });
 
@@ -177,7 +178,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
                 asset: ASSET,
                 cancelable: true,
                 transferable: true,
-                timestamp: params.timestamp,
+                timestamps: params.timestamps,
                 broker: params.broker
             })
         );
@@ -186,21 +187,21 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(vars.streamId);
         assertEq(actualStream.amounts, Lockup.Amounts(vars.createAmounts.deposit, 0, 0));
         assertEq(actualStream.asset, ASSET, "asset");
-        assertEq(actualStream.cliffTime, params.timestamp.cliff, "cliffTime");
-        assertEq(actualStream.endTime, params.timestamp.end, "endTime");
+        assertEq(actualStream.cliffTime, params.timestamps.cliff, "cliffTime");
+        assertEq(actualStream.endTime, params.timestamps.end, "endTime");
         assertEq(actualStream.isCancelable, true, "isCancelable");
         assertEq(actualStream.isDepleted, false, "isDepleted");
         assertEq(actualStream.isStream, true, "isStream");
         assertEq(actualStream.isTransferable, true, "isTransferable");
         assertEq(actualStream.recipient, params.recipient, "recipient");
         assertEq(actualStream.sender, params.sender, "sender");
-        assertEq(actualStream.startTime, params.timestamp.start, "startTime");
+        assertEq(actualStream.startTime, params.timestamps.start, "startTime");
         assertEq(actualStream.wasCanceled, false, "wasCanceled");
 
         // Assert that the stream's status is correct.
         vars.actualStatus = lockupLinear.statusOf(vars.streamId);
         vars.expectedStatus =
-            params.timestamp.start > vars.blockTimestamp ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
+            params.timestamps.start > vars.blockTimestamp ? Lockup.Status.PENDING : Lockup.Status.STREAMING;
         assertEq(vars.actualStatus, vars.expectedStatus, "post-create stream status");
 
         // Assert that the next stream ID has been bumped.
@@ -239,8 +240,8 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         // Simulate the passage of time.
         params.warpTimestamp = boundUint40(
             params.warpTimestamp,
-            vars.hasCliff ? params.timestamp.cliff : params.timestamp.start + 1 seconds,
-            params.timestamp.end + 100 seconds
+            vars.hasCliff ? params.timestamps.cliff : params.timestamps.start + 1 seconds,
+            params.timestamps.end + 100 seconds
         );
         vm.warp({ newTimestamp: params.warpTimestamp });
 

@@ -109,9 +109,9 @@ contract SablierV2LockupTranched is
         view
         override
         notNull(streamId)
-        returns (LockupTranched.Timestamp memory timestamp)
+        returns (LockupTranched.Timestamp memory timestamps)
     {
-        timestamp = LockupTranched.Timestamp({ start: _streams[streamId].startTime, end: _streams[streamId].endTime });
+        timestamps = LockupTranched.Timestamp({ start: _streams[streamId].startTime, end: _streams[streamId].endTime });
     }
 
     /// @inheritdoc ISablierV2LockupTranched
@@ -276,7 +276,7 @@ contract SablierV2LockupTranched is
             cancelable: params.cancelable,
             transferable: params.transferable,
             tranches: params.tranches,
-            timestamp: LockupTranched.Timestamp({ start: stream.startTime, end: stream.endTime }),
+            timestamps: LockupTranched.Timestamp({ start: stream.startTime, end: stream.endTime }),
             broker: params.broker.account
         });
     }
