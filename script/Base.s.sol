@@ -64,6 +64,10 @@ contract BaseScript is Script, Sphinx {
         }
         sphinxProjectName = vm.envOr({ name: "SPHINX_PROJECT_NAME", defaultValue: TEST_SPHINX_PROJECT_NAME });
 
+        // Arbitrum chain ID
+        segmentsCountMap[42_161] = 1200;
+        tranchesCountMap[42_161] = 1240;
+
         // Avalanche chain ID.
         segmentsCountMap[43_114] = 560;
         tranchesCountMap[43_114] = 570;

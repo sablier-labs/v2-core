@@ -29,6 +29,7 @@ Flags:
 declare -A supported_chains
 
 # Define Block gas limits for each chain
+supported_chains["arbitrum"]=32000000
 supported_chains["avalanche"]=15000000
 supported_chains["base"]=60000000
 supported_chains["blast"]=30000000
