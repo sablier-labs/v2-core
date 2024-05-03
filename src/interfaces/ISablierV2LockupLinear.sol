@@ -24,8 +24,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @param cancelable Boolean indicating whether the stream will be cancelable or not.
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
     /// @param timestamps Struct containing (i) the stream's start time, (ii) cliff time, and (iii) end time, all as
-    /// Unix
-    /// timestamps.
+    /// Unix timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
     event CreateLockupLinearStream(
         uint256 streamId,
