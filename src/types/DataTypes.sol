@@ -188,7 +188,7 @@ library LockupDynamic {
     /// @notice Struct encapsulating the LockupDynamic timestamps.
     /// @param start The Unix timestamp indicating the stream's start.
     /// @param end The Unix timestamp indicating the stream's end.
-    struct Timestamp {
+    struct Timestamps {
         uint40 start;
         uint40 end;
     }
@@ -239,7 +239,7 @@ library LockupLinear {
         IERC20 asset;
         bool cancelable;
         bool transferable;
-        Timestamp timestamps;
+        Timestamps timestamps;
         Broker broker;
     }
 
@@ -272,7 +272,7 @@ library LockupLinear {
     /// @param start The Unix timestamp for the stream's start.
     /// @param cliff The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
     /// @param end The Unix timestamp for the stream's end.
-    struct Timestamp {
+    struct Timestamps {
         uint40 start;
         uint40 cliff;
         uint40 end;
@@ -350,7 +350,7 @@ library LockupTranched {
     /// @notice Struct encapsulating the LockupTranched timestamps.
     /// @param start The Unix timestamp indicating the stream's start.
     /// @param end The Unix timestamp indicating the stream's end.
-    struct Timestamp {
+    struct Timestamps {
         uint40 start;
         uint40 end;
     }

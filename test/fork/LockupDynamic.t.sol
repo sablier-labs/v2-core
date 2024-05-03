@@ -59,7 +59,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         bool isDepleted;
         bool isSettled;
         uint256 streamId;
-        LockupDynamic.Timestamp timestamps;
+        LockupDynamic.Timestamps timestamps;
         // Create vars
         uint256 actualBrokerBalance;
         uint256 actualHolderBalance;
@@ -137,7 +137,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
         vars.initialBrokerBalance = vars.balances[1];
 
         vars.streamId = lockupDynamic.nextStreamId();
-        vars.timestamps = LockupDynamic.Timestamp({
+        vars.timestamps = LockupDynamic.Timestamps({
             start: params.startTime,
             end: params.segments[params.segments.length - 1].timestamp
         });

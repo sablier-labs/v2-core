@@ -66,7 +66,7 @@ contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is
 
         // Create the timestamps struct.
         vars.segmentsWithTimestamps = getSegmentsWithTimestamps(segments);
-        LockupDynamic.Timestamp memory timestamps = LockupDynamic.Timestamp({
+        LockupDynamic.Timestamps memory timestamps = LockupDynamic.Timestamps({
             start: getBlockTimestamp(),
             end: vars.segmentsWithTimestamps[vars.segmentsWithTimestamps.length - 1].timestamp
         });

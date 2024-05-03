@@ -69,7 +69,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
                 Errors.SablierV2LockupLinear_CliffTimeNotLessThanEndTime.selector, cliffTime, endTime
             )
         );
-        createDefaultStreamWithTimestamps(LockupLinear.Timestamp({ start: startTime, cliff: cliffTime, end: endTime }));
+        createDefaultStreamWithTimestamps(LockupLinear.Timestamps({ start: startTime, cliff: cliffTime, end: endTime }));
     }
 
     struct Vars {

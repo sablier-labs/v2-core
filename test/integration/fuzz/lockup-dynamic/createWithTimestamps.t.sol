@@ -226,7 +226,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockupDynamic) });
-        LockupDynamic.Timestamp memory timestamps = LockupDynamic.Timestamp({
+        LockupDynamic.Timestamps memory timestamps = LockupDynamic.Timestamps({
             start: params.startTime,
             end: params.segments[params.segments.length - 1].timestamp
         });

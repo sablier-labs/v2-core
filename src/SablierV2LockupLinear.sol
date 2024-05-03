@@ -110,9 +110,9 @@ contract SablierV2LockupLinear is
         view
         override
         notNull(streamId)
-        returns (LockupLinear.Timestamp memory timestamps)
+        returns (LockupLinear.Timestamps memory timestamps)
     {
-        timestamps = LockupLinear.Timestamp({
+        timestamps = LockupLinear.Timestamps({
             start: _streams[streamId].startTime,
             cliff: _cliffs[streamId],
             end: _streams[streamId].endTime
@@ -131,7 +131,7 @@ contract SablierV2LockupLinear is
         returns (uint256 streamId)
     {
         // Set the current block timestamp as the stream's start time.
-        LockupLinear.Timestamp memory timestamps;
+        LockupLinear.Timestamps memory timestamps;
         timestamps.start = uint40(block.timestamp);
 
         // Calculate the cliff time and the end time. It is safe to use unchecked arithmetic because {_create} will

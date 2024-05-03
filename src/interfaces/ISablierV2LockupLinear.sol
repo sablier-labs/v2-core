@@ -36,7 +36,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
         IERC20 indexed asset,
         bool cancelable,
         bool transferable,
-        LockupLinear.Timestamp timestamps,
+        LockupLinear.Timestamps timestamps,
         address broker
     );
 
@@ -60,7 +60,7 @@ interface ISablierV2LockupLinear is ISablierV2Lockup {
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
     /// @return timestamps See the documentation in {DataTypes}.
-    function getTimestamps(uint256 streamId) external view returns (LockupLinear.Timestamp memory timestamps);
+    function getTimestamps(uint256 streamId) external view returns (LockupLinear.Timestamps memory timestamps);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS

@@ -39,7 +39,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         uint128 totalAmount;
         uint128 withdrawAmount;
         uint40 warpTimestamp;
-        LockupLinear.Timestamp timestamps;
+        LockupLinear.Timestamps timestamps;
         Broker broker;
     }
 

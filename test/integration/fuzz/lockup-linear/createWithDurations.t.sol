@@ -67,7 +67,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         expectCallToTransferFrom({ from: funder, to: users.broker, value: defaults.BROKER_FEE_AMOUNT() });
 
         // Create the timestamps struct by calculating the start time, cliff time and the end time.
-        LockupLinear.Timestamp memory timestamps = LockupLinear.Timestamp({
+        LockupLinear.Timestamps memory timestamps = LockupLinear.Timestamps({
             start: getBlockTimestamp(),
             cliff: durations.cliff == 0 ? 0 : getBlockTimestamp() + durations.cliff,
             end: getBlockTimestamp() + durations.total

@@ -36,7 +36,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
         bool cancelable,
         bool transferable,
         LockupDynamic.Segment[] segments,
-        LockupDynamic.Timestamp timestamps,
+        LockupDynamic.Timestamps timestamps,
         address broker
     );
 
@@ -59,7 +59,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
     /// @return timestamps See the documentation in {DataTypes}.
-    function getTimestamps(uint256 streamId) external view returns (LockupDynamic.Timestamp memory timestamps);
+    function getTimestamps(uint256 streamId) external view returns (LockupDynamic.Timestamps memory timestamps);
 
     /// @notice The maximum number of segments allowed in a stream.
     /// @dev This is initialized at construction time and cannot be changed later.

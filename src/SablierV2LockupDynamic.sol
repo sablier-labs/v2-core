@@ -125,9 +125,9 @@ contract SablierV2LockupDynamic is
         view
         override
         notNull(streamId)
-        returns (LockupDynamic.Timestamp memory timestamps)
+        returns (LockupDynamic.Timestamps memory timestamps)
     {
-        timestamps = LockupDynamic.Timestamp({ start: _streams[streamId].startTime, end: _streams[streamId].endTime });
+        timestamps = LockupDynamic.Timestamps({ start: _streams[streamId].startTime, end: _streams[streamId].endTime });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -372,7 +372,7 @@ contract SablierV2LockupDynamic is
             cancelable: params.cancelable,
             transferable: params.transferable,
             segments: params.segments,
-            timestamps: LockupDynamic.Timestamp({ start: stream.startTime, end: stream.endTime }),
+            timestamps: LockupDynamic.Timestamps({ start: stream.startTime, end: stream.endTime }),
             broker: params.broker.account
         });
     }

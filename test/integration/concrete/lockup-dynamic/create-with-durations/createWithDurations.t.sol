@@ -127,8 +127,8 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
 
         // Declare the timestamps.
         uint40 blockTimestamp = getBlockTimestamp();
-        LockupDynamic.Timestamp memory timestamps =
-            LockupDynamic.Timestamp({ start: blockTimestamp, end: blockTimestamp + defaults.TOTAL_DURATION() });
+        LockupDynamic.Timestamps memory timestamps =
+            LockupDynamic.Timestamps({ start: blockTimestamp, end: blockTimestamp + defaults.TOTAL_DURATION() });
 
         // Adjust the segments.
         LockupDynamic.SegmentWithDuration[] memory segmentsWithDurations = defaults.segmentsWithDurations();

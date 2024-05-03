@@ -227,7 +227,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockupTranched) });
-        LockupTranched.Timestamp memory timestamps = LockupTranched.Timestamp({
+        LockupTranched.Timestamps memory timestamps = LockupTranched.Timestamps({
             start: params.startTime,
             end: params.tranches[params.tranches.length - 1].timestamp
         });

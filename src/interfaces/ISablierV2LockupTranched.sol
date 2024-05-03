@@ -36,7 +36,7 @@ interface ISablierV2LockupTranched is ISablierV2Lockup {
         bool cancelable,
         bool transferable,
         LockupTranched.Tranche[] tranches,
-        LockupTranched.Timestamp timestamps,
+        LockupTranched.Timestamps timestamps,
         address broker
     );
 
@@ -54,7 +54,7 @@ interface ISablierV2LockupTranched is ISablierV2Lockup {
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
     /// @return timestamps See the documentation in {DataTypes}.
-    function getTimestamps(uint256 streamId) external view returns (LockupTranched.Timestamp memory timestamps);
+    function getTimestamps(uint256 streamId) external view returns (LockupTranched.Timestamps memory timestamps);
 
     /// @notice Retrieves the tranches used to compose the tranched distribution function.
     /// @dev Reverts if `streamId` references a null stream.

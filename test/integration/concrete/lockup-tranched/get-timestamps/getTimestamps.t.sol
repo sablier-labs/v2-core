@@ -19,8 +19,8 @@ contract GetTimestamps_LockupTranched_Integration_Concrete_Test is LockupTranche
 
     function test_GetTimestamps() external givenNotNull {
         uint256 streamId = createDefaultStream();
-        LockupTranched.Timestamp memory actualTimestamps = lockupTranched.getTimestamps(streamId);
-        LockupTranched.Timestamp memory expectedTimestamps = defaults.lockupTranchedTimestamps();
+        LockupTranched.Timestamps memory actualTimestamps = lockupTranched.getTimestamps(streamId);
+        LockupTranched.Timestamps memory expectedTimestamps = defaults.lockupTranchedTimestamps();
         assertEq(actualTimestamps, expectedTimestamps);
     }
 }

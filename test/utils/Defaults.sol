@@ -101,8 +101,8 @@ contract Defaults is Constants {
         });
     }
 
-    function lockupDynamicTimestamps() public view returns (LockupDynamic.Timestamp memory) {
-        return LockupDynamic.Timestamp({ start: START_TIME, end: END_TIME });
+    function lockupDynamicTimestamps() public view returns (LockupDynamic.Timestamps memory) {
+        return LockupDynamic.Timestamps({ start: START_TIME, end: END_TIME });
     }
 
     function lockupLinearStream() public view returns (LockupLinear.StreamLL memory) {
@@ -122,8 +122,8 @@ contract Defaults is Constants {
         });
     }
 
-    function lockupLinearTimestamps() public view returns (LockupLinear.Timestamp memory) {
-        return LockupLinear.Timestamp({ start: START_TIME, cliff: CLIFF_TIME, end: END_TIME });
+    function lockupLinearTimestamps() public view returns (LockupLinear.Timestamps memory) {
+        return LockupLinear.Timestamps({ start: START_TIME, cliff: CLIFF_TIME, end: END_TIME });
     }
 
     function lockupTranchedStream() public view returns (LockupTranched.StreamLT memory) {
@@ -143,8 +143,8 @@ contract Defaults is Constants {
         });
     }
 
-    function lockupTranchedTimestamps() public view returns (LockupTranched.Timestamp memory) {
-        return LockupTranched.Timestamp({ start: START_TIME, end: END_TIME });
+    function lockupTranchedTimestamps() public view returns (LockupTranched.Timestamps memory) {
+        return LockupTranched.Timestamps({ start: START_TIME, end: END_TIME });
     }
 
     function segments() public view returns (LockupDynamic.Segment[] memory segments_) {

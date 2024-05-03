@@ -89,7 +89,7 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
 
         // Declare the timestamps.
         uint40 blockTimestamp = getBlockTimestamp();
-        LockupLinear.Timestamp memory timestamps = LockupLinear.Timestamp({
+        LockupLinear.Timestamps memory timestamps = LockupLinear.Timestamps({
             start: blockTimestamp,
             cliff: blockTimestamp + defaults.CLIFF_DURATION(),
             end: blockTimestamp + defaults.TOTAL_DURATION()

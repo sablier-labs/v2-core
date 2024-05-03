@@ -19,8 +19,8 @@ contract GetTimestamps_LockupDynamic_Integration_Concrete_Test is LockupDynamic_
 
     function test_GetTimestamps() external givenNotNull {
         uint256 streamId = createDefaultStream();
-        LockupDynamic.Timestamp memory actualTimestamps = lockupDynamic.getTimestamps(streamId);
-        LockupDynamic.Timestamp memory expectedTimestamps = defaults.lockupDynamicTimestamps();
+        LockupDynamic.Timestamps memory actualTimestamps = lockupDynamic.getTimestamps(streamId);
+        LockupDynamic.Timestamps memory expectedTimestamps = defaults.lockupDynamicTimestamps();
         assertEq(actualTimestamps, expectedTimestamps);
     }
 }

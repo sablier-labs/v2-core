@@ -143,7 +143,7 @@ library Helpers {
     }
 
     /// @dev Checks the parameters of the {SablierV2LockupLinear-_create} function.
-    function checkCreateLockupLinear(uint128 depositAmount, LockupLinear.Timestamp memory timestamps) internal view {
+    function checkCreateLockupLinear(uint128 depositAmount, LockupLinear.Timestamps memory timestamps) internal view {
         // Check: the deposit amount is not zero.
         if (depositAmount == 0) {
             revert Errors.SablierV2Lockup_DepositAmountZero();

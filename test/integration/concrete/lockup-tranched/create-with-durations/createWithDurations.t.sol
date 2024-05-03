@@ -121,8 +121,8 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
 
         // Declare the timestamps.
         uint40 blockTimestamp = getBlockTimestamp();
-        LockupTranched.Timestamp memory timestamps =
-            LockupTranched.Timestamp({ start: blockTimestamp, end: blockTimestamp + defaults.TOTAL_DURATION() });
+        LockupTranched.Timestamps memory timestamps =
+            LockupTranched.Timestamps({ start: blockTimestamp, end: blockTimestamp + defaults.TOTAL_DURATION() });
 
         LockupTranched.TrancheWithDuration[] memory tranchesWithDurations = defaults.tranchesWithDurations();
         LockupTranched.Tranche[] memory tranches = defaults.tranches();

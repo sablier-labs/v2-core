@@ -134,7 +134,7 @@ abstract contract LockupDynamic_Integration_Shared_Test is Lockup_Integration_Sh
     }
 
     /// @dev Creates the default stream with the provided timestamps.
-    function createDefaultStreamWithTimestamps(LockupDynamic.Timestamp memory timestamps)
+    function createDefaultStreamWithTimestamps(LockupDynamic.Timestamps memory timestamps)
         internal
         returns (uint256 streamId)
     {

@@ -59,7 +59,7 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         bool isDepleted;
         bool isSettled;
         uint256 streamId;
-        LockupTranched.Timestamp timestamps;
+        LockupTranched.Timestamps timestamps;
         // Create vars
         uint256 actualBrokerBalance;
         uint256 actualHolderBalance;
@@ -137,7 +137,7 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         vars.initialBrokerBalance = vars.balances[1];
 
         vars.streamId = lockupTranched.nextStreamId();
-        vars.timestamps = LockupTranched.Timestamp({
+        vars.timestamps = LockupTranched.Timestamps({
             start: params.startTime,
             end: params.tranches[params.tranches.length - 1].timestamp
         });

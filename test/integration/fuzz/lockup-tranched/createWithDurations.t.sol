@@ -66,7 +66,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
 
         // Create the timestamps struct.
         vars.tranchesWithTimestamps = getTranchesWithTimestamps(tranches);
-        LockupTranched.Timestamp memory timestamps = LockupTranched.Timestamp({
+        LockupTranched.Timestamps memory timestamps = LockupTranched.Timestamps({
             start: getBlockTimestamp(),
             end: vars.tranchesWithTimestamps[vars.tranchesWithTimestamps.length - 1].timestamp
         });

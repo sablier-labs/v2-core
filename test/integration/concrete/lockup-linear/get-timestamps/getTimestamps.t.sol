@@ -19,8 +19,8 @@ contract GetTimestamps_LockupLinear_Integration_Concrete_Test is LockupLinear_In
 
     function test_GetTimestamps() external givenNotNull {
         uint256 streamId = createDefaultStream();
-        LockupLinear.Timestamp memory actualTimestamps = lockupLinear.getTimestamps(streamId);
-        LockupLinear.Timestamp memory expectedTimestamps = defaults.lockupLinearTimestamps();
+        LockupLinear.Timestamps memory actualTimestamps = lockupLinear.getTimestamps(streamId);
+        LockupLinear.Timestamps memory expectedTimestamps = defaults.lockupLinearTimestamps();
         assertEq(actualTimestamps, expectedTimestamps);
     }
 }
