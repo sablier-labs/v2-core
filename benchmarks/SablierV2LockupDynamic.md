@@ -10,6 +10,6 @@
 | `createWithTimestamps` (2 segments)   | 192781    |
 | `createWithTimestamps` (10 segments)  | 407894    |
 | `createWithTimestamps` (100 segments) | 2832400   |
-| `renounce`                            | 46588     |
+| `renounce`                            | 46610     |
 | `withdraw` (by Anyone)                | 57953     |
 | `withdraw` (by Recipient)             | 65125     |
