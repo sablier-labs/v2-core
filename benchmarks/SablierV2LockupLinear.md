@@ -1,4 +1,4 @@
-# Benchmarks for implementations in the LockupLinear contract
+# Benchmarks for LockupLinear
 
 | Implementation            | Gas Usage |
 | ------------------------- | --------- |

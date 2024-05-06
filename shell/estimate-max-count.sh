@@ -21,7 +21,7 @@ Commands:
 
 Flags:
   --all                     Include all chains
-  --chain <chain>            Run only for the specified chain
+  --chain <chain>           Run only for the specified chain
   --help, -h                Print help text
 "
 

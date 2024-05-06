@@ -25,7 +25,7 @@ abstract contract Benchmark_Test is Base_Test {
     /// @dev The path to the file where the benchmarks are stored.
     string internal benchmarksFile;
 
-    string internal dataToAppend;
+    string internal contentToAppend;
 
     ISablierV2Lockup internal lockup;
 
@@ -39,7 +39,7 @@ abstract contract Benchmark_Test is Base_Test {
         deal({ token: address(dai), to: users.sender, give: type(uint256).max });
         resetPrank({ msgSender: users.sender });
 
-        // Create the first stream in each Lockup contract to initialize all the variables
+        // Create the first streams in each Lockup contract to initialize all the variables.
         _createFewStreams();
     }
 
@@ -54,10 +54,10 @@ abstract contract Benchmark_Test is Base_Test {
         lockup.burn(STREAM_1);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `burn` | ", vm.toString(beforeGas - afterGas), " |");
+        contentToAppend = string.concat("| `burn` | ", vm.toString(beforeGas - afterGas), " |");
 
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        // Append the content to the file.
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 
     function gasCancel() internal {
@@ -65,10 +65,10 @@ abstract contract Benchmark_Test is Base_Test {
         lockup.cancel(STREAM_2);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `cancel` | ", vm.toString(beforeGas - afterGas), " |");
+        contentToAppend = string.concat("| `cancel` | ", vm.toString(beforeGas - afterGas), " |");
 
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        // Append the content to the file.
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 
     function gasRenounce() internal {
@@ -76,10 +76,10 @@ abstract contract Benchmark_Test is Base_Test {
         lockup.renounce(STREAM_3);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `renounce` | ", vm.toString(beforeGas - afterGas), " |");
+        contentToAppend = string.concat("| `renounce` | ", vm.toString(beforeGas - afterGas), " |");
 
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        // Append the content to the file.
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 
     function gasWithdraw_ByRecipient() internal {
@@ -87,10 +87,10 @@ abstract contract Benchmark_Test is Base_Test {
         lockup.withdraw(STREAM_4, users.alice, defaults.WITHDRAW_AMOUNT());
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `withdraw` (by Recipient) | ", vm.toString(beforeGas - afterGas), " |");
+        contentToAppend = string.concat("| `withdraw` (by Recipient) | ", vm.toString(beforeGas - afterGas), " |");
 
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        // Append the content to the file.
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 
     function gasWithdraw() internal {
@@ -98,10 +98,10 @@ abstract contract Benchmark_Test is Base_Test {
         lockup.withdraw(STREAM_5, users.recipient, defaults.WITHDRAW_AMOUNT());
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `withdraw` (by Anyone) | ", vm.toString(beforeGas - afterGas), " |");
+        contentToAppend = string.concat("| `withdraw` (by Anyone) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

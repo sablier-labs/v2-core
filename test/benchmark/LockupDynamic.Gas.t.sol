@@ -7,8 +7,8 @@ import { Broker, LockupDynamic } from "src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
-/// @notice Benchmark Test for the LockupDynamic contract.
-/// @dev This contract creates a markdown file with the gas usage of each function in the benchmarks directory.
+/// @notice Tests used to benchmark LockupDynamic.
+/// @dev This contract creates a Markdown file with the gas usage of each function.
 contract LockupDynamic_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
@@ -24,25 +24,21 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function testGas_Implementations() external {
-        // Set the file path
+        // Set the file path.
         benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupDynamic.md");
 
-        // Create the file if it doesn't exist, otherwise overwrite it
+        // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
             path: benchmarksFile,
-            data: string.concat(
-                "# Benchmarks for implementations in the LockupDynamic contract\n\n",
-                "| Implementation | Gas Usage |\n",
-                "| --- | --- |\n"
-            )
+            data: string.concat("# Benchmarks for LockupDynamic\n\n", "| Implementation | Gas Usage |\n", "| --- | --- |\n")
         });
 
-        // Set the caller to recipient for `burn` and change timestamp to end time
+        // Set the caller to the Recipient for `burn` and change timestamp to the end time
         resetPrank({ msgSender: users.recipient });
         vm.warp({ newTimestamp: defaults.END_TIME() });
         gasBurn();
 
-        // Set the caller to sender for the next few calls and change timestamp to before end time
+        // Set the caller to the Sender for the next calls and change timestamp to before end time
         resetPrank({ msgSender: users.sender });
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
@@ -59,7 +55,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         gasRenounce();
         gasWithdraw();
 
-        // Set the caller to recipient for the next call
+        // Set the caller to the Recipient for the next call
         resetPrank({ msgSender: users.recipient });
         gasWithdraw_ByRecipient();
     }
@@ -68,7 +64,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
                         GAS BENCHMARKS FOR CREATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    // The following function is also used in the estimation of `MAX_SEGMENT_COUNT`
+    // The following function is also used in the estimation of `MAX_SEGMENT_COUNT`.
     function computeGas_CreateWithDurations(uint128 totalSegments) public returns (uint256 gasUsage) {
         LockupDynamic.CreateWithDurations memory params = _createWithDurationParams(totalSegments);
 
@@ -82,12 +78,12 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     function gasCreateWithDurations(uint128 totalSegments) internal {
         uint256 gas = computeGas_CreateWithDurations(totalSegments);
 
-        dataToAppend = string.concat(
+        contentToAppend = string.concat(
             "| `createWithDurations` (", vm.toString(totalSegments), " segments) | ", vm.toString(gas), " |"
         );
 
         // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 
     function gasCreateWithTimestamps(uint128 totalSegments) internal {
@@ -97,7 +93,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         lockupDynamic.createWithTimestamps(params);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat(
+        contentToAppend = string.concat(
             "| `createWithTimestamps` (",
             vm.toString(totalSegments),
             " segments) | ",
@@ -106,7 +102,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         );
 
         // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -120,7 +116,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     {
         LockupDynamic.SegmentWithDuration[] memory segments_ = new LockupDynamic.SegmentWithDuration[](totalSegments);
 
-        // Populate segments
+        // Populate segments.
         for (uint256 i = 0; i < totalSegments; ++i) {
             segments_[i] = (
                 LockupDynamic.SegmentWithDuration({
@@ -150,13 +146,13 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     {
         LockupDynamic.Segment[] memory segments_ = new LockupDynamic.Segment[](totalSegments);
 
-        // Populate segments
+        // Populate segments.
         for (uint256 i = 0; i < totalSegments; ++i) {
             segments_[i] = (
                 LockupDynamic.Segment({
                     amount: AMOUNT_PER_SEGMENT,
                     exponent: ud2x18(0.5e18),
-                    timestamp: uint40(block.timestamp + defaults.CLIFF_DURATION() * (1 + i))
+                    timestamp: getBlockTimestamp() + uint40(defaults.CLIFF_DURATION() * (1 + i))
                 })
             );
         }
@@ -168,7 +164,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
             asset: dai,
             cancelable: true,
             transferable: true,
-            startTime: uint40(block.timestamp),
+            startTime: getBlockTimestamp(),
             segments: segments_,
             broker: Broker({ account: users.broker, fee: ud(0) })
         });

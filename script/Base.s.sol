@@ -38,10 +38,10 @@ contract BaseScript is Script, Sphinx {
     string internal mnemonic;
 
     /// @dev Maximum segment count mapped by the chain Id.
-    mapping(uint256 chainId => uint256 count) internal segmentsCountMap;
+    mapping(uint256 chainId => uint256 count) internal segmentCountMap;
 
     /// @dev Maximum tranche count mapped by the chain Id.
-    mapping(uint256 chainId => uint256 count) internal tranchesCountMap;
+    mapping(uint256 chainId => uint256 count) internal trancheCountMap;
 
     /// @dev The project name for the Sphinx plugin.
     string internal sphinxProjectName;
@@ -65,51 +65,51 @@ contract BaseScript is Script, Sphinx {
         sphinxProjectName = vm.envOr({ name: "SPHINX_PROJECT_NAME", defaultValue: TEST_SPHINX_PROJECT_NAME });
 
         // Arbitrum chain ID
-        segmentsCountMap[42_161] = 1200;
-        tranchesCountMap[42_161] = 1240;
+        segmentCountMap[42_161] = 1200;
+        trancheCountMap[42_161] = 1240;
 
         // Avalanche chain ID.
-        segmentsCountMap[43_114] = 560;
-        tranchesCountMap[43_114] = 570;
+        segmentCountMap[43_114] = 560;
+        trancheCountMap[43_114] = 570;
 
         // Base chain ID.
-        segmentsCountMap[8453] = 2220;
-        tranchesCountMap[8453] = 2310;
+        segmentCountMap[8453] = 2220;
+        trancheCountMap[8453] = 2310;
 
         // Blast chain ID.
-        segmentsCountMap[238] = 1120;
-        tranchesCountMap[238] = 1160;
+        segmentCountMap[238] = 1120;
+        trancheCountMap[238] = 1160;
 
         // BSC chain ID.
-        segmentsCountMap[56] = 4890;
-        tranchesCountMap[56] = 5200;
+        segmentCountMap[56] = 4890;
+        trancheCountMap[56] = 5200;
 
         // Ethereum chain ID.
-        segmentsCountMap[1] = 1120;
-        tranchesCountMap[1] = 1160;
+        segmentCountMap[1] = 1120;
+        trancheCountMap[1] = 1160;
 
         // Gnosis chain ID.
-        segmentsCountMap[100] = 630;
-        tranchesCountMap[100] = 650;
+        segmentCountMap[100] = 630;
+        trancheCountMap[100] = 650;
 
         // Optimism chain ID.
-        segmentsCountMap[10] = 1120;
-        tranchesCountMap[10] = 1160;
+        segmentCountMap[10] = 1120;
+        trancheCountMap[10] = 1160;
 
         // Polygon chain ID.
-        segmentsCountMap[137] = 1120;
-        tranchesCountMap[137] = 1160;
+        segmentCountMap[137] = 1120;
+        trancheCountMap[137] = 1160;
 
         // Scroll chain ID.
-        segmentsCountMap[534_352] = 370;
-        tranchesCountMap[534_352] = 380;
+        segmentCountMap[534_352] = 370;
+        trancheCountMap[534_352] = 380;
 
         // Sepolia chain ID.
-        segmentsCountMap[11_155_111] = 1120;
-        tranchesCountMap[11_155_111] = 1160;
+        segmentCountMap[11_155_111] = 1120;
+        trancheCountMap[11_155_111] = 1160;
 
-        maxSegmentCount = segmentsCountMap[block.chainid];
-        maxTrancheCount = tranchesCountMap[block.chainid];
+        maxSegmentCount = segmentCountMap[block.chainid];
+        maxTrancheCount = trancheCountMap[block.chainid];
     }
 
     modifier broadcast() {

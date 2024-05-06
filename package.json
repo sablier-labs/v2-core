@@ -59,7 +59,7 @@
   },
   "repository": "github.com/sablier-labs/v2-core",
   "scripts": {
-    "benchmark:write:optimized": "bun run build:optimized && forge test --mt \"testGas\" && bun run prettier:write",
+    "benchmark": "bun run build:optimized && forge test --mt \"testGas\" && bun run prettier:write",
     "build": "forge build",
     "build:optimized": "FOUNDRY_PROFILE=optimized forge build",
     "build:smt": "FOUNDRY_PROFILE=smt forge build",

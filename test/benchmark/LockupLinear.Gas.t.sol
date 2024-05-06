@@ -5,8 +5,8 @@ import { LockupLinear } from "src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
-/// @notice Benchmark Test for the LockupLinear contract.
-/// @dev This contract creates a markdown file with the gas usage of each function in the benchmarks directory.
+/// @notice Tests used to benchmark LockupLinear.
+/// @dev This contract creates a Markdown file with the gas usage of each function.
 contract LockupLinear_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
@@ -22,25 +22,21 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function testGas_Implementations() external {
-        // Set the file path
+        // Set the file path.
         benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupLinear.md");
 
-        // Create the file if it doesn't exist, otherwise overwrite it
+        // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
             path: benchmarksFile,
-            data: string.concat(
-                "# Benchmarks for implementations in the LockupLinear contract\n\n",
-                "| Implementation | Gas Usage |\n",
-                "| --- | --- |\n"
-            )
+            data: string.concat("# Benchmarks for LockupLinear\n\n", "| Implementation | Gas Usage |\n", "| --- | --- |\n")
         });
 
-        // Set the caller to recipient for `burn` and change timestamp to end time
+        // Set the caller to the Recipient for `burn` and change timestamp to the end time.
         resetPrank({ msgSender: users.recipient });
         vm.warp({ newTimestamp: defaults.END_TIME() });
         gasBurn();
 
-        // Set the caller to sender for the next few calls and change timestamp to before end time
+        // Set the caller to the Sender for the next calls and change timestamp to before end time.
         resetPrank({ msgSender: users.sender });
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
@@ -50,7 +46,7 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         gasRenounce();
         gasWithdraw();
 
-        // Set the caller to recipient for the next call
+        // Set the caller to the Recipient for the next call.
         resetPrank({ msgSender: users.recipient });
         gasWithdraw_ByRecipient();
     }
@@ -66,10 +62,10 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         lockupLinear.createWithDurations(params);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `createWithDurations` | ", vm.toString(beforeGas - afterGas), " |");
+        contentToAppend = string.concat("| `createWithDurations` | ", vm.toString(beforeGas - afterGas), " |");
 
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        // Append the content to the file.
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 
     function gasCreateWithTimestamps() internal {
@@ -79,9 +75,9 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         lockupLinear.createWithTimestamps(params);
         uint256 afterGas = gasleft();
 
-        dataToAppend = string.concat("| `createWithTimestamps` | ", vm.toString(beforeGas - afterGas), " |");
+        contentToAppend = string.concat("| `createWithTimestamps` | ", vm.toString(beforeGas - afterGas), " |");
 
-        // Append the data to the file
-        _appendToFile(benchmarksFile, dataToAppend);
+        // Append the content to the file.
+        _appendToFile(benchmarksFile, contentToAppend);
     }
 }
