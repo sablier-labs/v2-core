@@ -104,50 +104,50 @@ contract BaseScript is Script, Sphinx {
         return bytes32(abi.encodePacked(create2Salt));
     }
 
-    /// @dev Populates the segment and tranche count map. Each values are derived using the `estimate-max-count` script.
+    /// @dev Populates the segment and tranche count map. All values are derived using the `estimate-max-count` script.
     function populateSegmentAndTranchCountMap() internal {
         // Arbitrum chain ID
-        segmentCountMap[42_161] = 1200;
-        trancheCountMap[42_161] = 1240;
+        segmentCountMap[42_161] = 1170;
+        trancheCountMap[42_161] = 1210;
 
         // Avalanche chain ID.
-        segmentCountMap[43_114] = 560;
-        trancheCountMap[43_114] = 570;
+        segmentCountMap[43_114] = 530;
+        trancheCountMap[43_114] = 540;
 
         // Base chain ID.
-        segmentCountMap[8453] = 2220;
-        trancheCountMap[8453] = 2310;
+        segmentCountMap[8453] = 2200;
+        trancheCountMap[8453] = 2290;
 
         // Blast chain ID.
-        segmentCountMap[238] = 1120;
-        trancheCountMap[238] = 1160;
+        segmentCountMap[238] = 1100;
+        trancheCountMap[238] = 1130;
 
         // BSC chain ID.
-        segmentCountMap[56] = 4890;
-        trancheCountMap[56] = 5200;
+        segmentCountMap[56] = 4870;
+        trancheCountMap[56] = 5180;
 
         // Ethereum chain ID.
-        segmentCountMap[1] = 1120;
-        trancheCountMap[1] = 1160;
+        segmentCountMap[1] = 1100;
+        trancheCountMap[1] = 1130;
 
         // Gnosis chain ID.
-        segmentCountMap[100] = 630;
-        trancheCountMap[100] = 650;
+        segmentCountMap[100] = 610;
+        trancheCountMap[100] = 620;
 
         // Optimism chain ID.
-        segmentCountMap[10] = 1120;
-        trancheCountMap[10] = 1160;
+        segmentCountMap[10] = 1100;
+        trancheCountMap[10] = 1130;
 
         // Polygon chain ID.
-        segmentCountMap[137] = 1120;
-        trancheCountMap[137] = 1160;
+        segmentCountMap[137] = 1100;
+        trancheCountMap[137] = 1130;
 
         // Scroll chain ID.
-        segmentCountMap[534_352] = 370;
-        trancheCountMap[534_352] = 380;
+        segmentCountMap[534_352] = 340;
+        trancheCountMap[534_352] = 350;
 
         // Sepolia chain ID.
-        segmentCountMap[11_155_111] = 1120;
-        trancheCountMap[11_155_111] = 1160;
+        segmentCountMap[11_155_111] = 1100;
+        trancheCountMap[11_155_111] = 1130;
     }
 }

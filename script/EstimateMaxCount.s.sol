@@ -19,6 +19,9 @@ contract EstimateMaxCount is BaseScript {
     /// @return gasUsed The gas consumed by the function when maximum number of segments are created.
     function estimateSegments(uint256 blockGasLimit) public virtual returns (uint128 count, uint256 gasUsed) {
         count = INITIAL_GUESS;
+
+        // Subtract `BUFFER_GAS` from `blockGasLimit` as an additional precaution to account for the dynamic gas for
+        // ether transfer on different chains.
         blockGasLimit -= BUFFER_GAS;
 
         LockupDynamic_Gas_Test lockupDynamicGasTest = new LockupDynamic_Gas_Test();
@@ -42,6 +45,10 @@ contract EstimateMaxCount is BaseScript {
     /// @return gasUsed The gas consumed by the function when maximum number of tranches are created.
     function estimateTranches(uint256 blockGasLimit) public virtual returns (uint128 count, uint256 gasUsed) {
         count = INITIAL_GUESS;
+
+        // Subtract `BUFFER_GAS` from `blockGasLimit` as an additional precaution to account for the dynamic gas for
+        // ether transfer on different chains.
+        blockGasLimit -= BUFFER_GAS;
 
         LockupTranched_Gas_Test lockupTranchedGasTest = new LockupTranched_Gas_Test();
         lockupTranchedGasTest.setUp();
