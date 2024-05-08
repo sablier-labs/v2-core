@@ -48,6 +48,9 @@ abstract contract Benchmark_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function gasBurn() internal {
+        // Set the caller to the Recipient for `burn` and change timestamp to the end time.
+        resetPrank({ msgSender: users.recipient });
+
         lockup.withdraw(STREAM_1, users.recipient, defaults.DEPOSIT_AMOUNT());
 
         uint256 beforeGas = gasleft();
@@ -61,6 +64,9 @@ abstract contract Benchmark_Test is Base_Test {
     }
 
     function gasCancel() internal {
+        // Set the caller to the Sender for the next calls and change timestamp to before end time
+        resetPrank({ msgSender: users.sender });
+
         uint256 beforeGas = gasleft();
         lockup.cancel(STREAM_2);
         uint256 afterGas = gasleft();
@@ -72,6 +78,9 @@ abstract contract Benchmark_Test is Base_Test {
     }
 
     function gasRenounce() internal {
+        // Set the caller to the Sender for the next calls and change timestamp to before end time.
+        resetPrank({ msgSender: users.sender });
+
         uint256 beforeGas = gasleft();
         lockup.renounce(STREAM_3);
         uint256 afterGas = gasleft();
@@ -83,8 +92,13 @@ abstract contract Benchmark_Test is Base_Test {
     }
 
     function gasWithdraw_ByRecipient() internal {
+        // Set the caller to the Recipient for the next call
+        resetPrank({ msgSender: users.recipient });
+
+        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
+
         uint256 beforeGas = gasleft();
-        lockup.withdraw(STREAM_4, users.alice, defaults.WITHDRAW_AMOUNT());
+        lockup.withdraw(STREAM_4, users.alice, withdrawAmount);
         uint256 afterGas = gasleft();
 
         contentToAppend = string.concat("| `withdraw` (by Recipient) | ", vm.toString(beforeGas - afterGas), " |");
@@ -94,8 +108,13 @@ abstract contract Benchmark_Test is Base_Test {
     }
 
     function gasWithdraw() internal {
+        // Set the caller to the Sender for the next calls and change timestamp to before end time.
+        resetPrank({ msgSender: users.sender });
+
+        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
+
         uint256 beforeGas = gasleft();
-        lockup.withdraw(STREAM_5, users.recipient, defaults.WITHDRAW_AMOUNT());
+        lockup.withdraw(STREAM_5, users.recipient, withdrawAmount);
         uint256 afterGas = gasleft();
 
         contentToAppend = string.concat("| `withdraw` (by Anyone) | ", vm.toString(beforeGas - afterGas), " |");

@@ -33,13 +33,9 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
             data: string.concat("# Benchmarks for LockupDynamic\n\n", "| Implementation | Gas Usage |\n", "| --- | --- |\n")
         });
 
-        // Set the caller to the Recipient for `burn` and change timestamp to the end time
-        resetPrank({ msgSender: users.recipient });
         vm.warp({ newTimestamp: defaults.END_TIME() });
         gasBurn();
 
-        // Set the caller to the Sender for the next calls and change timestamp to before end time
-        resetPrank({ msgSender: users.sender });
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         gasCancel();
@@ -55,8 +51,6 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         gasRenounce();
         gasWithdraw();
 
-        // Set the caller to the Recipient for the next call
-        resetPrank({ msgSender: users.recipient });
         gasWithdraw_ByRecipient();
     }
 
@@ -76,6 +70,9 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     }
 
     function gasCreateWithDurations(uint128 totalSegments) internal {
+        // Set the caller to the Sender for the next calls and change timestamp to before end time
+        resetPrank({ msgSender: users.sender });
+
         uint256 gas = computeGas_CreateWithDurations(totalSegments);
 
         contentToAppend = string.concat(
@@ -87,6 +84,9 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     }
 
     function gasCreateWithTimestamps(uint128 totalSegments) internal {
+        // Set the caller to the Sender for the next calls and change timestamp to before end time
+        resetPrank({ msgSender: users.sender });
+
         LockupDynamic.CreateWithTimestamps memory params = _createWithTimestampParams(totalSegments);
 
         uint256 beforeGas = gasleft();

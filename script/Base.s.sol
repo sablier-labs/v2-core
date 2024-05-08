@@ -13,6 +13,9 @@ contract BaseScript is Script, Sphinx {
     using Strings for uint256;
     using stdJson for string;
 
+    /// @dev The default value for `maxSegmentCount` and `maxTrancheCount`.
+    uint256 internal constant DEFAULT_MAX_COUNT = 500;
+
     /// @dev Included to enable compilation of the script without a $MNEMONIC environment variable.
     string internal constant TEST_MNEMONIC = "test test test test test test test test test test test junk";
 
@@ -64,9 +67,18 @@ contract BaseScript is Script, Sphinx {
         // Populate the segment and tranche count map.
         populateSegmentAndTranchCountMap();
 
-        // Load the maximum segment and tranche count for the current chain id.
-        maxSegmentCount = segmentCountMap[block.chainid];
-        maxTrancheCount = trancheCountMap[block.chainid];
+        // Load the maximum segment and tranche count for the current chain id. Set a default value if not found.
+        if (segmentCountMap[block.chainid] == 0) {
+            maxSegmentCount = DEFAULT_MAX_COUNT;
+        } else {
+            maxSegmentCount = segmentCountMap[block.chainid];
+        }
+
+        if (trancheCountMap[block.chainid] == 0) {
+            maxTrancheCount = DEFAULT_MAX_COUNT;
+        } else {
+            maxTrancheCount = trancheCountMap[block.chainid];
+        }
     }
 
     modifier broadcast() {

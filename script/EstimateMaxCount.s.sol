@@ -4,9 +4,7 @@ pragma solidity >=0.8.22 <0.9.0;
 import { LockupDynamic_Gas_Test } from "../test/benchmark/LockupDynamic.Gas.t.sol";
 import { LockupTranched_Gas_Test } from "../test/benchmark/LockupTranched.Gas.t.sol";
 
-import { BaseScript } from "./Base.s.sol";
-
-contract EstimateMaxCount is BaseScript {
+contract EstimateMaxCount {
     // Buffer gas units to be deducted from the block gas limit so that the max count never exceeds the block limit.
     uint256 public constant BUFFER_GAS = 1_000_000;
 

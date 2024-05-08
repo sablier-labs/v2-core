@@ -59,7 +59,7 @@
   },
   "repository": "github.com/sablier-labs/v2-core",
   "scripts": {
-    "benchmark": "bun run build:optimized && forge test --mt \"testGas\" && bun run prettier:write",
+    "benchmark": "bun run build:optimized && FOUNDRY_PROFILE=test-optimized forge test --mt testGas && bun run prettier:write",
     "build": "forge build",
     "build:optimized": "FOUNDRY_PROFILE=optimized forge build",
     "build:smt": "FOUNDRY_PROFILE=smt forge build",
@@ -72,8 +72,8 @@
     "prepack": "bun install && bash ./shell/prepare-artifacts.sh",
     "prettier:check": "prettier --check \"**/*.{json,md,svg,yml}\"",
     "prettier:write": "prettier --write \"**/*.{json,md,svg,yml}\"",
-    "test": "forge test",
-    "test:lite": "FOUNDRY_PROFILE=lite forge test",
-    "test:optimized": "bun run build:optimized && FOUNDRY_PROFILE=test-optimized forge test"
+    "test": "forge test --no-match-test testGas",
+    "test:lite": "FOUNDRY_PROFILE=lite forge test --no-match-test testGas",
+    "test:optimized": "bun run build:optimized && FOUNDRY_PROFILE=test-optimized forge test --no-match-test testGas"
   }
 }

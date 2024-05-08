@@ -2,10 +2,10 @@
 
 | Implementation            | Gas Usage |
 | ------------------------- | --------- |
-| `burn`                    | 15933     |
-| `cancel`                  | 53311     |
-| `createWithDurations`     | 154969    |
-| `createWithTimestamps`    | 143560    |
-| `renounce`                | 19562     |
-| `withdraw` (by Anyone)    | 30126     |
-| `withdraw` (by Recipient) | 40003     |
+| `burn`                    | 15538     |
+| `cancel`                  | 52082     |
+| `createWithDurations`     | 150168    |
+| `createWithTimestamps`    | 138965    |
+| `renounce`                | 19216     |
+| `withdraw` (by Anyone)    | 28851     |
+| `withdraw` (by Recipient) | 38755     |
