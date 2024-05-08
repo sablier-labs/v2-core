@@ -3,8 +3,8 @@ pragma solidity >=0.8.22;
 
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 import { ud } from "@prb/math/src/UD60x18.sol";
-import { Broker, LockupDynamic } from "src/types/DataTypes.sol";
 
+import { Broker, LockupDynamic } from "../src/types/DataTypes.sol";
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
 /// @notice Tests used to benchmark LockupDynamic.
@@ -25,11 +25,11 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
 
     function testGas_Implementations() external {
         // Set the file path.
-        benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupDynamic.md");
+        benchmarkResultsFile = string.concat(benchmarkResults, "SablierV2LockupDynamic.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
-            path: benchmarksFile,
+            path: benchmarkResultsFile,
             data: string.concat("# Benchmarks for LockupDynamic\n\n", "| Implementation | Gas Usage |\n", "| --- | --- |\n")
         });
 
@@ -50,7 +50,6 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
 
         gasRenounce();
         gasWithdraw();
-
         gasWithdraw_ByRecipient();
     }
 
@@ -80,7 +79,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         );
 
         // Append the data to the file
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasCreateWithTimestamps(uint128 totalSegments) internal {
@@ -102,7 +101,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         );
 
         // Append the data to the file
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -110,7 +109,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function _createWithDurationParams(uint128 totalSegments)
-        private
+        internal
         view
         returns (LockupDynamic.CreateWithDurations memory)
     {

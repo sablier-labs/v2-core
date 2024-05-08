@@ -2,7 +2,7 @@
 pragma solidity >=0.8.22;
 
 import { ud } from "@prb/math/src/UD60x18.sol";
-import { Broker, LockupTranched } from "src/types/DataTypes.sol";
+import { Broker, LockupTranched } from "../src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
@@ -25,11 +25,11 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
 
     function testGas_Implementations() external {
         // Set the file path.
-        benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupTranched.md");
+        benchmarkResultsFile = string.concat(benchmarkResults, "SablierV2LockupTranched.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
-            path: benchmarksFile,
+            path: benchmarkResultsFile,
             data: string.concat(
                 "# Benchmarks for LockupTranched\n\n", "| Implementation | Gas Usage |\n", "| --- | --- |\n"
             )
@@ -52,7 +52,6 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
 
         gasRenounce();
         gasWithdraw();
-
         gasWithdraw_ByRecipient();
     }
 
@@ -82,7 +81,7 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         );
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasCreateWithTimestamps(uint128 totalTranches) internal {
@@ -103,7 +102,7 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
             " |"
         );
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
+import { ISablierV2Lockup } from "../src/interfaces/ISablierV2Lockup.sol";
 
-import { Base_Test } from "../Base.t.sol";
+import { Base_Test } from "../test/Base.t.sol";
 
 /// @notice Benchmark contract with common logic needed by all tests.
 abstract contract Benchmark_Test is Base_Test {
@@ -20,10 +20,10 @@ abstract contract Benchmark_Test is Base_Test {
     uint256 internal immutable STREAM_5 = 54;
 
     /// @dev The directory where the benchmark files are stored.
-    string internal benchmarksDir = "benchmarks/";
+    string internal benchmarkResults = "benchmark/results/";
 
-    /// @dev The path to the file where the benchmarks are stored.
-    string internal benchmarksFile;
+    /// @dev The path to the file where the benchmark results are stored.
+    string internal benchmarkResultsFile;
 
     string internal contentToAppend;
 
@@ -60,7 +60,7 @@ abstract contract Benchmark_Test is Base_Test {
         contentToAppend = string.concat("| `burn` | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasCancel() internal {
@@ -74,7 +74,7 @@ abstract contract Benchmark_Test is Base_Test {
         contentToAppend = string.concat("| `cancel` | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasRenounce() internal {
@@ -88,7 +88,7 @@ abstract contract Benchmark_Test is Base_Test {
         contentToAppend = string.concat("| `renounce` | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasWithdraw_ByRecipient() internal {
@@ -104,7 +104,7 @@ abstract contract Benchmark_Test is Base_Test {
         contentToAppend = string.concat("| `withdraw` (by Recipient) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasWithdraw() internal {
@@ -120,7 +120,7 @@ abstract contract Benchmark_Test is Base_Test {
         contentToAppend = string.concat("| `withdraw` (by Anyone) | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the data to the file
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { LockupLinear } from "src/types/DataTypes.sol";
+import { LockupLinear } from "../src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
@@ -11,6 +11,7 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
+
     function setUp() public override {
         super.setUp();
 
@@ -23,11 +24,11 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
 
     function testGas_Implementations() external {
         // Set the file path.
-        benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupLinear.md");
+        benchmarkResultsFile = string.concat(benchmarkResults, "SablierV2LockupLinear.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
-            path: benchmarksFile,
+            path: benchmarkResultsFile,
             data: string.concat("# Benchmarks for LockupLinear\n\n", "| Implementation | Gas Usage |\n", "| --- | --- |\n")
         });
 
@@ -41,7 +42,6 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         gasCreateWithTimestamps();
         gasRenounce();
         gasWithdraw();
-
         gasWithdraw_ByRecipient();
     }
 
@@ -62,7 +62,7 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         contentToAppend = string.concat("| `createWithDurations` | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasCreateWithTimestamps() internal {
@@ -78,6 +78,6 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         contentToAppend = string.concat("| `createWithTimestamps` | ", vm.toString(beforeGas - afterGas), " |");
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 }
