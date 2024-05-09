@@ -14,11 +14,13 @@ contract EstimateMaxCount is Test {
     // Initial guess for the maximum number of segments/tranches.
     uint128 public constant INITIAL_GUESS = 240;
 
+    /// @dev Structure to group the block gas limit and chain id.
     struct ChainInfo {
         uint256 blockGasLimit;
         uint256 chainId;
     }
 
+    /// @dev All the chains to estimate the maximum number of segments/tranches.
     ChainInfo[] public chains;
 
     constructor() {

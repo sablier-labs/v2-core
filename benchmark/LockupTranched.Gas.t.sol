@@ -123,15 +123,17 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
             );
         }
 
+        uint128 depositAmount = AMOUNT_PER_SEGMENT * totalTranches;
+
         return LockupTranched.CreateWithDurations({
             sender: users.sender,
             recipient: users.recipient,
-            totalAmount: AMOUNT_PER_TRANCHE * totalTranches,
+            totalAmount: _calculateTotalAmount(depositAmount),
             asset: dai,
             cancelable: true,
             transferable: true,
             tranches: tranches_,
-            broker: Broker({ account: users.broker, fee: ud(0) })
+            broker: Broker({ account: users.broker, fee: defaults.BROKER_FEE() })
         });
     }
 
@@ -152,16 +154,18 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
             );
         }
 
+        uint128 depositAmount = AMOUNT_PER_SEGMENT * totalTranches;
+
         return LockupTranched.CreateWithTimestamps({
             sender: users.sender,
             recipient: users.recipient,
-            totalAmount: AMOUNT_PER_TRANCHE * totalTranches,
+            totalAmount: _calculateTotalAmount(depositAmount),
             asset: dai,
             cancelable: true,
             transferable: true,
             startTime: getBlockTimestamp(),
             tranches: tranches_,
-            broker: Broker({ account: users.broker, fee: ud(0) })
+            broker: Broker({ account: users.broker, fee: defaults.BROKER_FEE() })
         });
     }
 }

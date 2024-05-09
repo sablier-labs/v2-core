@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
+import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 import { ISablierV2Lockup } from "../src/interfaces/ISablierV2Lockup.sol";
 
 import { Base_Test } from "../test/Base.t.sol";
@@ -130,6 +131,14 @@ abstract contract Benchmark_Test is Base_Test {
     /// @dev Append a line to the file at given path.
     function _appendToFile(string memory path, string memory line) internal {
         vm.writeLine({ path: path, data: line });
+    }
+
+    /// @dev Calculates the total amount based on the deposit amount, which is the sum of all segments or tranches
+    /// amounts.
+    function _calculateTotalAmount(uint128 depositAmount) internal view returns (uint128) {
+        UD60x18 factor = ud(1e18);
+        UD60x18 totalAmount = ud(depositAmount).mul(factor).div(factor.sub(defaults.BROKER_FEE()));
+        return totalAmount.intoUint128();
     }
 
     function _createFewStreams() internal {

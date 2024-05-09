@@ -126,15 +126,17 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
             );
         }
 
+        uint128 depositAmount = AMOUNT_PER_SEGMENT * totalSegments;
+
         return LockupDynamic.CreateWithDurations({
             sender: users.sender,
             recipient: users.recipient,
-            totalAmount: AMOUNT_PER_SEGMENT * totalSegments,
+            totalAmount: _calculateTotalAmount(depositAmount),
             asset: dai,
             cancelable: true,
             transferable: true,
             segments: segments_,
-            broker: Broker({ account: users.broker, fee: ud(0) })
+            broker: Broker({ account: users.broker, fee: defaults.BROKER_FEE() })
         });
     }
 
@@ -156,16 +158,18 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
             );
         }
 
+        uint128 depositAmount = AMOUNT_PER_SEGMENT * totalSegments;
+
         return LockupDynamic.CreateWithTimestamps({
             sender: users.sender,
             recipient: users.recipient,
-            totalAmount: AMOUNT_PER_SEGMENT * totalSegments,
+            totalAmount: _calculateTotalAmount(depositAmount),
             asset: dai,
             cancelable: true,
             transferable: true,
             startTime: getBlockTimestamp(),
             segments: segments_,
-            broker: Broker({ account: users.broker, fee: ud(0) })
+            broker: Broker({ account: users.broker, fee: defaults.BROKER_FEE() })
         });
     }
 }
