@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { ud } from "@prb/math/src/UD60x18.sol";
 import { Broker, LockupTranched } from "../src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";

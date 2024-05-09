@@ -2,7 +2,6 @@
 pragma solidity >=0.8.22;
 
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
-import { ud } from "@prb/math/src/UD60x18.sol";
 
 import { Broker, LockupDynamic } from "../src/types/DataTypes.sol";
 import { Benchmark_Test } from "./Benchmark.t.sol";
