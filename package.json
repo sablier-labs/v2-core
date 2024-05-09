@@ -69,8 +69,8 @@
     "prepack": "bun install && bash ./shell/prepare-artifacts.sh",
     "prettier:check": "prettier --check \"**/*.{json,md,svg,yml}\"",
     "prettier:write": "prettier --write \"**/*.{json,md,svg,yml}\"",
-    "test": "forge test --no-match-test testGas",
-    "test:lite": "FOUNDRY_PROFILE=lite forge test --no-match-test testGas",
-    "test:optimized": "bun run build:optimized && FOUNDRY_PROFILE=test-optimized forge test --no-match-test testGas"
+    "test": "forge test",
+    "test:lite": "FOUNDRY_PROFILE=lite forge test",
+    "test:optimized": "bun run build:optimized && FOUNDRY_PROFILE=test-optimized forge test"
   }
 }
