@@ -19,6 +19,8 @@ abstract contract Benchmark_Test is Base_Test {
     uint256 internal immutable STREAM_3 = 52;
     uint256 internal immutable STREAM_4 = 53;
     uint256 internal immutable STREAM_5 = 54;
+    uint256 internal immutable STREAM_6 = 55;
+    uint256 internal immutable STREAM_7 = 56;
 
     /// @dev The directory where the benchmark files are stored.
     string internal benchmarkResults = "benchmark/results/";
@@ -52,13 +54,15 @@ abstract contract Benchmark_Test is Base_Test {
         // Set the caller to the Recipient for `burn` and change timestamp to the end time.
         resetPrank({ msgSender: users.recipient });
 
-        lockup.withdraw(STREAM_1, users.recipient, defaults.DEPOSIT_AMOUNT());
+        vm.warp({ newTimestamp: defaults.END_TIME() });
+
+        lockup.withdrawMax(STREAM_1, users.recipient);
 
         uint256 beforeGas = gasleft();
         lockup.burn(STREAM_1);
-        uint256 afterGas = gasleft();
 
-        contentToAppend = string.concat("| `burn` | ", vm.toString(beforeGas - afterGas), " |");
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
+        contentToAppend = string.concat("| `burn` | ", gasUsed, " |");
 
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
@@ -70,9 +74,10 @@ abstract contract Benchmark_Test is Base_Test {
 
         uint256 beforeGas = gasleft();
         lockup.cancel(STREAM_2);
-        uint256 afterGas = gasleft();
 
-        contentToAppend = string.concat("| `cancel` | ", vm.toString(beforeGas - afterGas), " |");
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
+
+        contentToAppend = string.concat("| `cancel` | ", gasUsed, " |");
 
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
@@ -84,41 +89,60 @@ abstract contract Benchmark_Test is Base_Test {
 
         uint256 beforeGas = gasleft();
         lockup.renounce(STREAM_3);
-        uint256 afterGas = gasleft();
 
-        contentToAppend = string.concat("| `renounce` | ", vm.toString(beforeGas - afterGas), " |");
-
-        // Append the content to the file.
-        _appendToFile(benchmarkResultsFile, contentToAppend);
-    }
-
-    function gasWithdraw_ByRecipient() internal {
-        // Set the caller to the Recipient for the next call
-        resetPrank({ msgSender: users.recipient });
-
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
-
-        uint256 beforeGas = gasleft();
-        lockup.withdraw(STREAM_4, users.alice, withdrawAmount);
-        uint256 afterGas = gasleft();
-
-        contentToAppend = string.concat("| `withdraw` (by Recipient) | ", vm.toString(beforeGas - afterGas), " |");
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
+        contentToAppend = string.concat("| `renounce` | ", gasUsed, " |");
 
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
-    function gasWithdraw() internal {
-        // Set the caller to the Sender for the next calls and change timestamp to before end time.
-        resetPrank({ msgSender: users.sender });
+    function gasWithdraw_ByRecipient(uint256 streamId1, uint256 streamId2, string memory extraInfo) internal {
+        gasWithdraw_AfterEndTime(streamId1, users.recipient, users.alice, extraInfo);
+        gasWithdraw_BeforeEndTime(streamId2, users.recipient, users.alice, extraInfo);
+    }
 
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
+    function gasWithdraw_ByAnyone(uint256 streamId1, uint256 streamId2, string memory extraInfo) internal {
+        gasWithdraw_AfterEndTime(streamId1, users.sender, users.recipient, extraInfo);
+        gasWithdraw_BeforeEndTime(streamId2, users.sender, users.recipient, extraInfo);
+    }
+
+    function gasWithdraw_AfterEndTime(uint256 streamId, address caller, address to, string memory extraInfo) internal {
+        extraInfo = string.concat(extraInfo, " (After End Time)");
+        uint256 warpTime = lockup.getEndTime(streamId) + 1;
+        vm.warp({ newTimestamp: warpTime });
+        gasWithdraw(streamId, caller, to, extraInfo);
+    }
+
+    function gasWithdraw_BeforeEndTime(
+        uint256 streamId,
+        address caller,
+        address to,
+        string memory extraInfo
+    )
+        internal
+    {
+        extraInfo = string.concat(extraInfo, " (Before End Time)");
+        uint256 warpTime = lockup.getEndTime(streamId) - 1;
+        vm.warp({ newTimestamp: warpTime });
+        gasWithdraw(streamId, caller, to, extraInfo);
+    }
+
+    function gasWithdraw(uint256 streamId, address caller, address to, string memory extraInfo) internal {
+        resetPrank({ msgSender: caller });
+
+        uint128 withdrawAmount = lockup.withdrawableAmountOf(streamId);
 
         uint256 beforeGas = gasleft();
-        lockup.withdraw(STREAM_5, users.recipient, withdrawAmount);
-        uint256 afterGas = gasleft();
+        lockup.withdraw(streamId, to, withdrawAmount);
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
 
-        contentToAppend = string.concat("| `withdraw` (by Anyone) | ", vm.toString(beforeGas - afterGas), " |");
+        bool isCallerRecipient = caller == users.recipient;
+        string memory s = isCallerRecipient
+            ? string.concat("| `withdraw` ", extraInfo, " (by Recipient) | ")
+            : string.concat("| `withdraw` ", extraInfo, " (by Anyone) | ");
+
+        contentToAppend = string.concat(s, gasUsed, " |");
 
         // Append the data to the file
         _appendToFile(benchmarkResultsFile, contentToAppend);
@@ -133,11 +157,15 @@ abstract contract Benchmark_Test is Base_Test {
         vm.writeLine({ path: path, data: line });
     }
 
-    /// @dev Calculates the total amount based on the deposit amount, which is the sum of all segments or tranches
-    /// amounts.
-    function _calculateTotalAmount(uint128 depositAmount) internal view returns (uint128) {
+    // /// @dev Calculates the total amount to be deposited in the stream, by accounting for the broker fee.
+    // function _calculateTotalAmount(uint128 depositAmount) internal view returns (uint128) {
+    //     return _calculateTotalAmount(depositAmount, defaults.BROKER_FEE());
+    // }
+
+    /// @dev Calculates the total amount to be deposited in the stream, by accounting for the broker fee.
+    function _calculateTotalAmount(uint128 depositAmount, UD60x18 brokerFee) internal pure returns (uint128) {
         UD60x18 factor = ud(1e18);
-        UD60x18 totalAmount = ud(depositAmount).mul(factor).div(factor.sub(defaults.BROKER_FEE()));
+        UD60x18 totalAmount = ud(depositAmount).mul(factor).div(factor.sub(brokerFee));
         return totalAmount.intoUint128();
     }
 

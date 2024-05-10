@@ -1,11 +1,19 @@
 # Benchmarks for LockupLinear
 
-| Implementation            | Gas Usage |
-| ------------------------- | --------- |
-| `burn`                    | 15538     |
-| `cancel`                  | 52082     |
-| `createWithDurations`     | 150168    |
-| `createWithTimestamps`    | 138968    |
-| `renounce`                | 19216     |
-| `withdraw` (by Anyone)    | 28851     |
-| `withdraw` (by Recipient) | 38755     |
+| Implementation                                              | Gas Usage |
+| ----------------------------------------------------------- | --------- |
+| `burn`                                                      | 15586     |
+| `cancel`                                                    | 52130     |
+| `createWithDurations` (Broker fee set) (cliff not set)      | 127827    |
+| `createWithDurations` (Broker fee not set) (cliff not set)  | 112288    |
+| `createWithDurations` (Broker fee set) (cliff set)          | 136615    |
+| `createWithDurations` (Broker fee not set) (cliff set)      | 131875    |
+| `createWithTimestamps` (Broker fee set) (cliff not set)     | 113925    |
+| `createWithTimestamps` (Broker fee not set) (cliff not set) | 109183    |
+| `createWithTimestamps` (Broker fee set) (cliff set)         | 136217    |
+| `createWithTimestamps` (Broker fee not set) (cliff set)     | 131472    |
+| `renounce`                                                  | 19264     |
+| `withdraw` (After End Time) (by Recipient)                  | 29618     |
+| `withdraw` (Before End Time) (by Recipient)                 | 19100     |
+| `withdraw` (After End Time) (by Anyone)                     | 24514     |
+| `withdraw` (Before End Time) (by Anyone)                    | 18796     |

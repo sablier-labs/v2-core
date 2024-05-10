@@ -42,7 +42,7 @@ contract EstimateMaxCount is Test {
         LockupDynamic_Gas_Test lockupDynamicGasTest = new LockupDynamic_Gas_Test();
         lockupDynamicGasTest.setUp();
 
-        for (uint256 i = 0; i < chains.length; i++) {
+        for (uint256 i = 0; i < chains.length; ++i) {
             uint128 count = INITIAL_GUESS;
 
             // Subtract `BUFFER_GAS` from `blockGasLimit` as an additional precaution to account for the dynamic gas for
@@ -50,14 +50,16 @@ contract EstimateMaxCount is Test {
             uint256 blockGasLimit = chains[i].blockGasLimit - BUFFER_GAS;
 
             uint256 gasConsumed = 0;
+            uint256 lastGasConsumed = 0;
             while (blockGasLimit > gasConsumed) {
                 count += 10;
+                lastGasConsumed = gasConsumed;
 
                 // Estimate the gas consumed by adding 10 segments
                 gasConsumed = lockupDynamicGasTest.computeGas_CreateWithDurations(count + 10);
             }
 
-            console2.log("count is: %d and gasUsed is: %d for chain id: %d", count, gasConsumed, chains[i].chainId);
+            console2.log("count is: %d and gasUsed is: %d for chain id: %d", count, lastGasConsumed, chains[i].chainId);
         }
     }
 
@@ -66,7 +68,7 @@ contract EstimateMaxCount is Test {
         LockupTranched_Gas_Test lockupTranchedGasTest = new LockupTranched_Gas_Test();
         lockupTranchedGasTest.setUp();
 
-        for (uint256 i = 0; i < chains.length; i++) {
+        for (uint256 i = 0; i < chains.length; ++i) {
             uint128 count = INITIAL_GUESS;
 
             // Subtract `BUFFER_GAS` from `blockGasLimit` as an additional precaution to account for the dynamic gas for
@@ -74,14 +76,16 @@ contract EstimateMaxCount is Test {
             uint256 blockGasLimit = chains[i].blockGasLimit - BUFFER_GAS;
 
             uint256 gasConsumed = 0;
+            uint256 lastGasConsumed = 0;
             while (blockGasLimit > gasConsumed) {
                 count += 10;
+                lastGasConsumed = gasConsumed;
 
-                // Estimate the gas consumed by adding 10 tranches
+                // Estimate the gas consumed by adding 10 segments
                 gasConsumed = lockupTranchedGasTest.computeGas_CreateWithDurations(count + 10);
             }
 
-            console2.log("count is: %d and gasUsed is: %d for chain id: %d", count, gasConsumed, chains[i].chainId);
+            console2.log("count is: %d and gasUsed is: %d for chain id: %d", count, lastGasConsumed, chains[i].chainId);
         }
     }
 }

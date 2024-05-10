@@ -9,7 +9,7 @@
 set -euo pipefail
 
 # Path to the Solidity file
-SOL_FILE="script/Base.s.sol"
+BASE_SCRIPT_FILE="script/Base.s.sol"
 
 # Compile the contracts with optimized profile
 bun run build:optimized
@@ -30,7 +30,7 @@ update_counts() {
 
         # Update the map for each chain ID using sd
         echo "Updating $map_name for chain ID $formatted_chain_id to $count"
-        sd "$map_name\[$formatted_chain_id\] = [0-9_]+;" "$map_name[$formatted_chain_id] = $count;" $SOL_FILE
+        sd "$map_name\[$formatted_chain_id\] = [0-9_]+;" "$map_name[$formatted_chain_id] = $count;" $BASE_SCRIPT_FILE
     done
 }
 
@@ -45,6 +45,6 @@ update_counts "Segments" "segmentCountMap"
 update_counts "Tranches" "trancheCountMap"
 
 # Reformat the code with Forge
-forge fmt $SOL_FILE
+forge fmt $BASE_SCRIPT_FILE
 
 echo "All mappings updated."

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
+import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
+
 import { Broker, LockupTranched } from "../src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
@@ -50,8 +52,19 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         gasCreateWithTimestamps({ totalTranches: 100 });
 
         gasRenounce();
-        gasWithdraw();
-        gasWithdraw_ByRecipient();
+
+        (uint256 streamId1, uint256 streamId2, uint256 streamId3, uint256 streamId4) =
+            _createFourStreams({ totalTranches: 2 });
+        gasWithdraw_ByRecipient(streamId1, streamId2, "(2 segments)");
+        gasWithdraw_ByAnyone(streamId3, streamId4, "(2 segments)");
+
+        (streamId1, streamId2, streamId3, streamId4) = _createFourStreams({ totalTranches: 10 });
+        gasWithdraw_ByRecipient(streamId1, streamId2, "(10 segments)");
+        gasWithdraw_ByAnyone(streamId3, streamId4, "(10 segments)");
+
+        (streamId1, streamId2, streamId3, streamId4) = _createFourStreams({ totalTranches: 100 });
+        gasWithdraw_ByRecipient(streamId1, streamId2, "(100 segments)");
+        gasWithdraw_ByAnyone(streamId3, streamId4, "(100 segments)");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -76,10 +89,24 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         uint256 gas = computeGas_CreateWithDurations(totalTranches);
 
         contentToAppend = string.concat(
-            "| `createWithDurations` (", vm.toString(totalTranches), " tranches) | ", vm.toString(gas), " |"
+            "| `createWithDurations` (",
+            vm.toString(totalTranches),
+            " tranches) (Broker fee set) | ",
+            vm.toString(gas),
+            " |"
         );
 
         // Append the content to the file.
+        _appendToFile(benchmarkResultsFile, contentToAppend);
+
+        uint256 beforeGas = gasleft();
+        lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches, ud(0)) });
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
+
+        contentToAppend = string.concat(
+            "| `createWithDurations` (", vm.toString(totalTranches), " tranches) (Broker fee not set) | ", gasUsed, " |"
+        );
+
         _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
@@ -87,19 +114,29 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         // Set the caller to the Sender for the next calls and change timestamp to before end time.
         resetPrank({ msgSender: users.sender });
 
-        LockupTranched.CreateWithTimestamps memory params = _createWithTimestampParams(totalTranches);
-
         uint256 beforeGas = gasleft();
-        lockupTranched.createWithTimestamps(params);
-        uint256 afterGas = gasleft();
+        lockupTranched.createWithTimestamps({ params: _createWithTimestampParams(totalTranches) });
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
+
+        contentToAppend = string.concat(
+            "| `createWithTimestamps` (", vm.toString(totalTranches), " tranches) (Broker fee set) | ", gasUsed, " |"
+        );
+
+        // Append the content to the file.
+        _appendToFile(benchmarkResultsFile, contentToAppend);
+
+        beforeGas = gasleft();
+        lockupTranched.createWithTimestamps({ params: _createWithTimestampParams(totalTranches, ud(0)) });
+        gasUsed = vm.toString(beforeGas - gasleft());
 
         contentToAppend = string.concat(
             "| `createWithTimestamps` (",
             vm.toString(totalTranches),
-            " tranches) | ",
-            vm.toString(beforeGas - afterGas),
+            " tranches) (Broker fee not set) | ",
+            gasUsed,
             " |"
         );
+
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
     }
@@ -108,7 +145,28 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
                                       HELPERS
     //////////////////////////////////////////////////////////////////////////*/
 
+    function _createFourStreams(uint128 totalTranches)
+        private
+        returns (uint256 streamId1, uint256 streamId2, uint256 streamId3, uint256 streamId4)
+    {
+        streamId1 = lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches) });
+        streamId2 = lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches) });
+        streamId3 = lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches) });
+        streamId4 = lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches) });
+    }
+
     function _createWithDurationParams(uint128 totalTranches)
+        private
+        view
+        returns (LockupTranched.CreateWithDurations memory)
+    {
+        return _createWithDurationParams(totalTranches, defaults.BROKER_FEE());
+    }
+
+    function _createWithDurationParams(
+        uint128 totalTranches,
+        UD60x18 brokerFee
+    )
         private
         view
         returns (LockupTranched.CreateWithDurations memory)
@@ -127,16 +185,27 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         return LockupTranched.CreateWithDurations({
             sender: users.sender,
             recipient: users.recipient,
-            totalAmount: _calculateTotalAmount(depositAmount),
+            totalAmount: _calculateTotalAmount(depositAmount, brokerFee),
             asset: dai,
             cancelable: true,
             transferable: true,
             tranches: tranches_,
-            broker: Broker({ account: users.broker, fee: defaults.BROKER_FEE() })
+            broker: Broker({ account: users.broker, fee: brokerFee })
         });
     }
 
     function _createWithTimestampParams(uint128 totalTranches)
+        private
+        view
+        returns (LockupTranched.CreateWithTimestamps memory)
+    {
+        return _createWithTimestampParams(totalTranches, defaults.BROKER_FEE());
+    }
+
+    function _createWithTimestampParams(
+        uint128 totalTranches,
+        UD60x18 brokerFee
+    )
         private
         view
         returns (LockupTranched.CreateWithTimestamps memory)
@@ -158,13 +227,13 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         return LockupTranched.CreateWithTimestamps({
             sender: users.sender,
             recipient: users.recipient,
-            totalAmount: _calculateTotalAmount(depositAmount),
+            totalAmount: _calculateTotalAmount(depositAmount, brokerFee),
             asset: dai,
             cancelable: true,
             transferable: true,
             startTime: getBlockTimestamp(),
             tranches: tranches_,
-            broker: Broker({ account: users.broker, fee: defaults.BROKER_FEE() })
+            broker: Broker({ account: users.broker, fee: brokerFee })
         });
     }
 }
