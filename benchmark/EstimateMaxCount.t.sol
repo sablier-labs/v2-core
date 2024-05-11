@@ -7,6 +7,12 @@ import { Test } from "forge-std/src/Test.sol";
 import { LockupDynamic_Gas_Test } from "./LockupDynamic.Gas.t.sol";
 import { LockupTranched_Gas_Test } from "./LockupTranched.Gas.t.sol";
 
+/// @notice Structure to group the block gas limit and chain id.
+struct ChainInfo {
+    uint256 blockGasLimit;
+    uint256 chainId;
+}
+
 contract EstimateMaxCount is Test {
     // Buffer gas units to be deducted from the block gas limit so that the max count never exceeds the block limit.
     uint256 public constant BUFFER_GAS = 1_000_000;
@@ -14,13 +20,7 @@ contract EstimateMaxCount is Test {
     // Initial guess for the maximum number of segments/tranches.
     uint128 public constant INITIAL_GUESS = 240;
 
-    /// @dev Structure to group the block gas limit and chain id.
-    struct ChainInfo {
-        uint256 blockGasLimit;
-        uint256 chainId;
-    }
-
-    /// @dev All the chains to estimate the maximum number of segments/tranches.
+    /// @dev List of chains with their block gas limit.
     ChainInfo[] public chains;
 
     constructor() {
@@ -55,11 +55,11 @@ contract EstimateMaxCount is Test {
                 count += 10;
                 lastGasConsumed = gasConsumed;
 
-                // Estimate the gas consumed by adding 10 segments
+                // Estimate the gas consumed by adding 10 segments.
                 gasConsumed = lockupDynamicGasTest.computeGas_CreateWithDurations(count + 10);
             }
 
-            console2.log("count is: %d and gasUsed is: %d for chain id: %d", count, lastGasConsumed, chains[i].chainId);
+            console2.log("count: %d and gasUsed: %d and chainId: %d", count, lastGasConsumed, chains[i].chainId);
         }
     }
 
@@ -81,11 +81,11 @@ contract EstimateMaxCount is Test {
                 count += 10;
                 lastGasConsumed = gasConsumed;
 
-                // Estimate the gas consumed by adding 10 segments
+                // Estimate the gas consumed by adding 10 tranches.
                 gasConsumed = lockupTranchedGasTest.computeGas_CreateWithDurations(count + 10);
             }
 
-            console2.log("count is: %d and gasUsed is: %d for chain id: %d", count, lastGasConsumed, chains[i].chainId);
+            console2.log("count: %d and gasUsed: %d and chainId: %d", count, lastGasConsumed, chains[i].chainId);
         }
     }
 }

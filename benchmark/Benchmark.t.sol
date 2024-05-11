@@ -47,7 +47,7 @@ abstract contract Benchmark_Test is Base_Test {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                    GAS BENCHMARKS FOR COMMON IMPLEMENTATIONS
+                      GAS FUNCTIONS FOR SHARED IMPLEMENTATIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     function gasBurn() internal {
@@ -62,6 +62,7 @@ abstract contract Benchmark_Test is Base_Test {
         lockup.burn(STREAM_1);
 
         string memory gasUsed = vm.toString(beforeGas - gasleft());
+
         contentToAppend = string.concat("| `burn` | ", gasUsed, " |");
 
         // Append the content to the file.
@@ -91,26 +92,41 @@ abstract contract Benchmark_Test is Base_Test {
         lockup.renounce(STREAM_3);
 
         string memory gasUsed = vm.toString(beforeGas - gasleft());
+
         contentToAppend = string.concat("| `renounce` | ", gasUsed, " |");
 
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
-    function gasWithdraw_ByRecipient(uint256 streamId1, uint256 streamId2, string memory extraInfo) internal {
-        gasWithdraw_AfterEndTime(streamId1, users.recipient, users.alice, extraInfo);
-        gasWithdraw_BeforeEndTime(streamId2, users.recipient, users.alice, extraInfo);
-    }
+    function gasWithdraw(uint256 streamId, address caller, address to, string memory extraInfo) internal {
+        resetPrank({ msgSender: caller });
 
-    function gasWithdraw_ByAnyone(uint256 streamId1, uint256 streamId2, string memory extraInfo) internal {
-        gasWithdraw_AfterEndTime(streamId1, users.sender, users.recipient, extraInfo);
-        gasWithdraw_BeforeEndTime(streamId2, users.sender, users.recipient, extraInfo);
+        uint128 withdrawAmount = lockup.withdrawableAmountOf(streamId);
+
+        uint256 beforeGas = gasleft();
+        lockup.withdraw(streamId, to, withdrawAmount);
+
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
+
+        // Check if caller is recipient or not.
+        bool isCallerRecipient = caller == users.recipient;
+
+        string memory s = isCallerRecipient
+            ? string.concat("| `withdraw` ", extraInfo, " (by Recipient) | ")
+            : string.concat("| `withdraw` ", extraInfo, " (by Anyone) | ");
+        contentToAppend = string.concat(s, gasUsed, " |");
+
+        // Append the data to the file.
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasWithdraw_AfterEndTime(uint256 streamId, address caller, address to, string memory extraInfo) internal {
         extraInfo = string.concat(extraInfo, " (After End Time)");
+
         uint256 warpTime = lockup.getEndTime(streamId) + 1;
         vm.warp({ newTimestamp: warpTime });
+
         gasWithdraw(streamId, caller, to, extraInfo);
     }
 
@@ -123,29 +139,21 @@ abstract contract Benchmark_Test is Base_Test {
         internal
     {
         extraInfo = string.concat(extraInfo, " (Before End Time)");
+
         uint256 warpTime = lockup.getEndTime(streamId) - 1;
         vm.warp({ newTimestamp: warpTime });
+
         gasWithdraw(streamId, caller, to, extraInfo);
     }
 
-    function gasWithdraw(uint256 streamId, address caller, address to, string memory extraInfo) internal {
-        resetPrank({ msgSender: caller });
+    function gasWithdraw_ByAnyone(uint256 streamId1, uint256 streamId2, string memory extraInfo) internal {
+        gasWithdraw_AfterEndTime(streamId1, users.sender, users.recipient, extraInfo);
+        gasWithdraw_BeforeEndTime(streamId2, users.sender, users.recipient, extraInfo);
+    }
 
-        uint128 withdrawAmount = lockup.withdrawableAmountOf(streamId);
-
-        uint256 beforeGas = gasleft();
-        lockup.withdraw(streamId, to, withdrawAmount);
-        string memory gasUsed = vm.toString(beforeGas - gasleft());
-
-        bool isCallerRecipient = caller == users.recipient;
-        string memory s = isCallerRecipient
-            ? string.concat("| `withdraw` ", extraInfo, " (by Recipient) | ")
-            : string.concat("| `withdraw` ", extraInfo, " (by Anyone) | ");
-
-        contentToAppend = string.concat(s, gasUsed, " |");
-
-        // Append the data to the file
-        _appendToFile(benchmarkResultsFile, contentToAppend);
+    function gasWithdraw_ByRecipient(uint256 streamId1, uint256 streamId2, string memory extraInfo) internal {
+        gasWithdraw_AfterEndTime(streamId1, users.recipient, users.alice, extraInfo);
+        gasWithdraw_BeforeEndTime(streamId2, users.recipient, users.alice, extraInfo);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -157,11 +165,6 @@ abstract contract Benchmark_Test is Base_Test {
         vm.writeLine({ path: path, data: line });
     }
 
-    // /// @dev Calculates the total amount to be deposited in the stream, by accounting for the broker fee.
-    // function _calculateTotalAmount(uint128 depositAmount) internal view returns (uint128) {
-    //     return _calculateTotalAmount(depositAmount, defaults.BROKER_FEE());
-    // }
-
     /// @dev Calculates the total amount to be deposited in the stream, by accounting for the broker fee.
     function _calculateTotalAmount(uint128 depositAmount, UD60x18 brokerFee) internal pure returns (uint128) {
         UD60x18 factor = ud(1e18);
@@ -169,6 +172,7 @@ abstract contract Benchmark_Test is Base_Test {
         return totalAmount.intoUint128();
     }
 
+    /// @dev Internal function to creates a few streams in each Lockup contract.
     function _createFewStreams() internal {
         for (uint128 i = 0; i < 100; ++i) {
             lockupDynamic.createWithTimestamps(defaults.createWithTimestampsLD());

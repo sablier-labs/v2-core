@@ -11,6 +11,13 @@ import { Benchmark_Test } from "./Benchmark.t.sol";
 /// @dev This contract creates a Markdown file with the gas usage of each function.
 contract LockupDynamic_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
+                                  STATE VARIABLES
+    //////////////////////////////////////////////////////////////////////////*/
+
+    uint128[] internal _segments = [2, 10, 100];
+    uint256[] internal _streamIdsForWithdraw = new uint256[](4);
+
+    /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
     function setUp() public override {
@@ -40,82 +47,91 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
 
         gasCancel();
 
-        // Create streams with different number of segments
-        gasCreateWithDurations({ totalSegments: 2 });
-        gasCreateWithDurations({ totalSegments: 10 });
-        gasCreateWithDurations({ totalSegments: 100 });
-        gasCreateWithTimestamps({ totalSegments: 2 });
-        gasCreateWithTimestamps({ totalSegments: 10 });
-        gasCreateWithTimestamps({ totalSegments: 100 });
-
         gasRenounce();
 
-        (uint256 streamId1, uint256 streamId2, uint256 streamId3, uint256 streamId4) =
-            _createFourStreams({ totalSegments: 2 });
+        // Create streams with different number of segments.
+        for (uint256 i; i < _segments.length; ++i) {
+            gasCreateWithDurations({ totalSegments: _segments[i] });
+            gasCreateWithTimestamps({ totalSegments: _segments[i] });
 
-        gasWithdraw_ByRecipient(streamId1, streamId2, "(2 segments)");
-        gasWithdraw_ByAnyone(streamId3, streamId4, "(2 segments)");
-
-        (streamId1, streamId2, streamId3, streamId4) = _createFourStreams({ totalSegments: 10 });
-        gasWithdraw_ByRecipient(streamId1, streamId2, "(10 segments)");
-        gasWithdraw_ByAnyone(streamId3, streamId4, "(10 segments)");
-
-        (streamId1, streamId2, streamId3, streamId4) = _createFourStreams({ totalSegments: 100 });
-        gasWithdraw_ByRecipient(streamId1, streamId2, "(100 segments)");
-        gasWithdraw_ByAnyone(streamId3, streamId4, "(100 segments)");
+            gasWithdraw_ByRecipient(
+                _streamIdsForWithdraw[0],
+                _streamIdsForWithdraw[1],
+                string.concat("(", vm.toString(_segments[i]), " segments)")
+            );
+            gasWithdraw_ByAnyone(
+                _streamIdsForWithdraw[2],
+                _streamIdsForWithdraw[3],
+                string.concat("(", vm.toString(_segments[i]), " segments)")
+            );
+        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                         GAS BENCHMARKS FOR CREATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    // The following function is also used in the estimation of `MAX_SEGMENT_COUNT`.
-    function computeGas_CreateWithDurations(uint128 totalSegments) public returns (uint256 gasUsage) {
-        LockupDynamic.CreateWithDurations memory params = _createWithDurationParams(totalSegments);
+    // The following function is used in the estimations of `MAX_SEGMENT_COUNT`.
+    function computeGas_CreateWithDurations(uint128 totalSegments) public returns (uint256 gasUsed) {
+        LockupDynamic.CreateWithDurations memory params =
+            _createWithDurationParams(totalSegments, defaults.BROKER_FEE());
 
         uint256 beforeGas = gasleft();
         lockupDynamic.createWithDurations(params);
-        uint256 afterGas = gasleft();
 
-        gasUsage = beforeGas - afterGas;
+        gasUsed = beforeGas - gasleft();
     }
 
     function gasCreateWithDurations(uint128 totalSegments) internal {
         // Set the caller to the Sender for the next calls and change timestamp to before end time.
         resetPrank({ msgSender: users.sender });
 
-        uint256 gas = computeGas_CreateWithDurations(totalSegments);
+        LockupDynamic.CreateWithDurations memory params =
+            _createWithDurationParams(totalSegments, defaults.BROKER_FEE());
+
+        uint256 beforeGas = gasleft();
+        lockupDynamic.createWithDurations(params);
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
 
         contentToAppend = string.concat(
-            "| `createWithDurations` (",
-            vm.toString(totalSegments),
-            " segments) (Broker fee set) | ",
-            vm.toString(gas),
-            " |"
+            "| `createWithDurations` (", vm.toString(totalSegments), " segments) (Broker fee set) | ", gasUsed, " |"
         );
 
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
 
-        uint256 beforeGas = gasleft();
-        lockupDynamic.createWithDurations({ params: _createWithDurationParams(totalSegments) });
-        string memory gasUsed = vm.toString(beforeGas - gasleft());
+        // Calculate gas usage without broker fee.
+        params = _createWithDurationParams(totalSegments, ud(0));
+
+        beforeGas = gasleft();
+        lockupDynamic.createWithDurations(params);
+        gasUsed = vm.toString(beforeGas - gasleft());
 
         contentToAppend = string.concat(
             "| `createWithDurations` (", vm.toString(totalSegments), " segments) (Broker fee not set) | ", gasUsed, " |"
         );
 
         _appendToFile(benchmarkResultsFile, contentToAppend);
+
+        // Store the last 2 streams IDs for withdraw gas benchmark.
+        _streamIdsForWithdraw[0] = lockupDynamic.nextStreamId() - 2;
+        _streamIdsForWithdraw[1] = lockupDynamic.nextStreamId() - 1;
+
+        // Create 2 more streams for withdraw gas benchmark.
+        _streamIdsForWithdraw[2] = lockupDynamic.createWithDurations(params);
+        _streamIdsForWithdraw[3] = lockupDynamic.createWithDurations(params);
     }
 
     function gasCreateWithTimestamps(uint128 totalSegments) internal {
         // Set the caller to the Sender for the next calls and change timestamp to before end time
         resetPrank({ msgSender: users.sender });
 
-        LockupDynamic.CreateWithTimestamps memory params = _createWithTimestampParams(totalSegments);
+        LockupDynamic.CreateWithTimestamps memory params =
+            _createWithTimestampParams(totalSegments, defaults.BROKER_FEE());
 
         uint256 beforeGas = gasleft();
         lockupDynamic.createWithTimestamps(params);
+
         string memory gasUsed = vm.toString(beforeGas - gasleft());
 
         contentToAppend = string.concat(
@@ -125,6 +141,7 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
         // Append the data to the file
         _appendToFile(benchmarkResultsFile, contentToAppend);
 
+        // Calculate gas usage without broker fee.
         params = _createWithTimestampParams(totalSegments, ud(0));
 
         beforeGas = gasleft();
@@ -146,24 +163,6 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                       HELPERS
     //////////////////////////////////////////////////////////////////////////*/
-
-    function _createFourStreams(uint128 totalSegments)
-        private
-        returns (uint256 streamId1, uint256 streamId2, uint256 streamId3, uint256 streamId4)
-    {
-        streamId1 = lockupDynamic.createWithDurations({ params: _createWithDurationParams(totalSegments) });
-        streamId2 = lockupDynamic.createWithDurations({ params: _createWithDurationParams(totalSegments) });
-        streamId3 = lockupDynamic.createWithDurations({ params: _createWithDurationParams(totalSegments) });
-        streamId4 = lockupDynamic.createWithDurations({ params: _createWithDurationParams(totalSegments) });
-    }
-
-    function _createWithDurationParams(uint128 totalSegments)
-        private
-        view
-        returns (LockupDynamic.CreateWithDurations memory)
-    {
-        return _createWithDurationParams(totalSegments, defaults.BROKER_FEE());
-    }
 
     function _createWithDurationParams(
         uint128 totalSegments,
@@ -198,14 +197,6 @@ contract LockupDynamic_Gas_Test is Benchmark_Test {
             segments: segments_,
             broker: Broker({ account: users.broker, fee: brokerFee })
         });
-    }
-
-    function _createWithTimestampParams(uint128 totalSegments)
-        private
-        view
-        returns (LockupDynamic.CreateWithTimestamps memory)
-    {
-        return _createWithTimestampParams(totalSegments, defaults.BROKER_FEE());
     }
 
     function _createWithTimestampParams(

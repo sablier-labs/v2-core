@@ -11,6 +11,13 @@ import { Benchmark_Test } from "./Benchmark.t.sol";
 /// @dev This contract creates a Markdown file with the gas usage of each function.
 contract LockupTranched_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
+                                  STATE VARIABLES
+    //////////////////////////////////////////////////////////////////////////*/
+
+    uint128[] internal _tranches = [2, 10, 100];
+    uint256[] internal _streamIdsForWithdraw = new uint256[](4);
+
+    /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
 
@@ -43,71 +50,79 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
 
         gasCancel();
 
-        // Create streams with different number of tranches.
-        gasCreateWithDurations({ totalTranches: 2 });
-        gasCreateWithDurations({ totalTranches: 10 });
-        gasCreateWithDurations({ totalTranches: 100 });
-        gasCreateWithTimestamps({ totalTranches: 2 });
-        gasCreateWithTimestamps({ totalTranches: 10 });
-        gasCreateWithTimestamps({ totalTranches: 100 });
-
         gasRenounce();
 
-        (uint256 streamId1, uint256 streamId2, uint256 streamId3, uint256 streamId4) =
-            _createFourStreams({ totalTranches: 2 });
-        gasWithdraw_ByRecipient(streamId1, streamId2, "(2 segments)");
-        gasWithdraw_ByAnyone(streamId3, streamId4, "(2 segments)");
+        // Create streams with different number of tranches.
+        for (uint256 i; i < _tranches.length; ++i) {
+            gasCreateWithDurations({ totalTranches: _tranches[i] });
+            gasCreateWithTimestamps({ totalTranches: _tranches[i] });
 
-        (streamId1, streamId2, streamId3, streamId4) = _createFourStreams({ totalTranches: 10 });
-        gasWithdraw_ByRecipient(streamId1, streamId2, "(10 segments)");
-        gasWithdraw_ByAnyone(streamId3, streamId4, "(10 segments)");
-
-        (streamId1, streamId2, streamId3, streamId4) = _createFourStreams({ totalTranches: 100 });
-        gasWithdraw_ByRecipient(streamId1, streamId2, "(100 segments)");
-        gasWithdraw_ByAnyone(streamId3, streamId4, "(100 segments)");
+            gasWithdraw_ByRecipient(
+                _streamIdsForWithdraw[0],
+                _streamIdsForWithdraw[1],
+                string.concat("(", vm.toString(_tranches[i]), " tranches)")
+            );
+            gasWithdraw_ByAnyone(
+                _streamIdsForWithdraw[2],
+                _streamIdsForWithdraw[3],
+                string.concat("(", vm.toString(_tranches[i]), " tranches)")
+            );
+        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                         GAS BENCHMARKS FOR CREATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    // The following function is also used in the estimation of `MAX_TRANCHE_COUNT`
-    function computeGas_CreateWithDurations(uint128 totalTranches) public returns (uint256 gasUsage) {
-        LockupTranched.CreateWithDurations memory params = _createWithDurationParams(totalTranches);
+    // The following function is used in the estimation of `MAX_TRANCHE_COUNT`
+    function computeGas_CreateWithDurations(uint128 totalTranches) public returns (uint256 gasUsed) {
+        LockupTranched.CreateWithDurations memory params =
+            _createWithDurationParams(totalTranches, defaults.BROKER_FEE());
 
         uint256 beforeGas = gasleft();
         lockupTranched.createWithDurations(params);
-        uint256 afterGas = gasleft();
 
-        gasUsage = beforeGas - afterGas;
+        gasUsed = beforeGas - gasleft();
     }
 
     function gasCreateWithDurations(uint128 totalTranches) internal {
         // Set the caller to the Sender for the next calls and change timestamp to before end time.
         resetPrank({ msgSender: users.sender });
 
-        uint256 gas = computeGas_CreateWithDurations(totalTranches);
+        LockupTranched.CreateWithDurations memory params =
+            _createWithDurationParams(totalTranches, defaults.BROKER_FEE());
+
+        uint256 beforeGas = gasleft();
+        lockupTranched.createWithDurations(params);
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
 
         contentToAppend = string.concat(
-            "| `createWithDurations` (",
-            vm.toString(totalTranches),
-            " tranches) (Broker fee set) | ",
-            vm.toString(gas),
-            " |"
+            "| `createWithDurations` (", vm.toString(totalTranches), " tranches) (Broker fee set) | ", gasUsed, " |"
         );
 
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
 
-        uint256 beforeGas = gasleft();
-        lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches, ud(0)) });
-        string memory gasUsed = vm.toString(beforeGas - gasleft());
+        // Calculate gas usage without broker fee.
+        params = _createWithDurationParams(totalTranches, ud(0));
+
+        beforeGas = gasleft();
+        lockupTranched.createWithDurations(params);
+        gasUsed = vm.toString(beforeGas - gasleft());
 
         contentToAppend = string.concat(
             "| `createWithDurations` (", vm.toString(totalTranches), " tranches) (Broker fee not set) | ", gasUsed, " |"
         );
 
         _appendToFile(benchmarkResultsFile, contentToAppend);
+
+        // Store the last 2 streams IDs for withdraw gas benchmark.
+        _streamIdsForWithdraw[0] = lockupTranched.nextStreamId() - 2;
+        _streamIdsForWithdraw[1] = lockupTranched.nextStreamId() - 1;
+
+        // Create 2 more streams for withdraw gas benchmark.
+        _streamIdsForWithdraw[2] = lockupTranched.createWithDurations(params);
+        _streamIdsForWithdraw[3] = lockupTranched.createWithDurations(params);
     }
 
     function gasCreateWithTimestamps(uint128 totalTranches) internal {
@@ -115,7 +130,8 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
         resetPrank({ msgSender: users.sender });
 
         uint256 beforeGas = gasleft();
-        lockupTranched.createWithTimestamps({ params: _createWithTimestampParams(totalTranches) });
+        lockupTranched.createWithTimestamps({ params: _createWithTimestampParams(totalTranches, defaults.BROKER_FEE()) });
+
         string memory gasUsed = vm.toString(beforeGas - gasleft());
 
         contentToAppend = string.concat(
@@ -144,24 +160,6 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                       HELPERS
     //////////////////////////////////////////////////////////////////////////*/
-
-    function _createFourStreams(uint128 totalTranches)
-        private
-        returns (uint256 streamId1, uint256 streamId2, uint256 streamId3, uint256 streamId4)
-    {
-        streamId1 = lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches) });
-        streamId2 = lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches) });
-        streamId3 = lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches) });
-        streamId4 = lockupTranched.createWithDurations({ params: _createWithDurationParams(totalTranches) });
-    }
-
-    function _createWithDurationParams(uint128 totalTranches)
-        private
-        view
-        returns (LockupTranched.CreateWithDurations memory)
-    {
-        return _createWithDurationParams(totalTranches, defaults.BROKER_FEE());
-    }
 
     function _createWithDurationParams(
         uint128 totalTranches,
@@ -192,14 +190,6 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
             tranches: tranches_,
             broker: Broker({ account: users.broker, fee: brokerFee })
         });
-    }
-
-    function _createWithTimestampParams(uint128 totalTranches)
-        private
-        view
-        returns (LockupTranched.CreateWithTimestamps memory)
-    {
-        return _createWithTimestampParams(totalTranches, defaults.BROKER_FEE());
     }
 
     function _createWithTimestampParams(

@@ -40,9 +40,13 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         gasCancel();
 
-        gasCreateWithDurations();
-        gasCreateWithTimestamps();
         gasRenounce();
+
+        gasCreateWithDurations({ cliffDuration: 0 });
+        gasCreateWithDurations({ cliffDuration: defaults.CLIFF_DURATION() });
+
+        gasCreateWithTimestamps({ cliffTime: 0 });
+        gasCreateWithTimestamps({ cliffTime: defaults.CLIFF_TIME() });
 
         gasWithdraw_ByRecipient(STREAM_4, STREAM_5, "");
         gasWithdraw_ByAnyone(STREAM_6, STREAM_7, "");
@@ -51,11 +55,6 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
                         GAS BENCHMARKS FOR CREATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
-
-    function gasCreateWithDurations() internal {
-        gasCreateWithDurations(0);
-        gasCreateWithDurations(defaults.CLIFF_DURATION());
-    }
 
     function gasCreateWithDurations(uint40 cliffDuration) internal {
         // Set the caller to the Sender for the next calls and change timestamp to before end time.
@@ -75,8 +74,10 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
 
+        // Calculate gas usage without broker fee.
         params.broker.fee = ud(0);
         params.totalAmount = _calculateTotalAmount(defaults.DEPOSIT_AMOUNT(), ud(0));
+
         beforeGas = gasleft();
         lockupLinear.createWithDurations(params);
         gasUsed = vm.toString(beforeGas - gasleft());
@@ -86,11 +87,6 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
 
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
-    }
-
-    function gasCreateWithTimestamps() internal {
-        gasCreateWithTimestamps(0);
-        gasCreateWithTimestamps(defaults.CLIFF_TIME());
     }
 
     function gasCreateWithTimestamps(uint40 cliffTime) internal {
@@ -112,8 +108,10 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         // Append the content to the file.
         _appendToFile(benchmarkResultsFile, contentToAppend);
 
+        // Calculate gas usage without broker fee.
         params.broker.fee = ud(0);
         params.totalAmount = _calculateTotalAmount(defaults.DEPOSIT_AMOUNT(), ud(0));
+
         beforeGas = gasleft();
         lockupLinear.createWithTimestamps(params);
         gasUsed = vm.toString(beforeGas - gasleft());

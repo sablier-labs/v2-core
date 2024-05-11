@@ -27,8 +27,8 @@ update_counts() {
 
     # Parse the output to extract counts and chain IDs
     while IFS= read -r line; do
-        local count=$(echo $line | awk '{print $3}')
-        local chain_id=$(echo $line | awk '{print $11}')
+        local count=$(echo $line | awk '{print $2}')
+        local chain_id=$(echo $line | awk '{print $8}')
         local formatted_chain_id=$(format_chain_id $chain_id)
 
         # Add the data to the table
@@ -36,7 +36,7 @@ update_counts() {
 
         # Update the map for each chain ID using sd
         sd "$map_name\[$formatted_chain_id\] = [0-9_]+;" "$map_name[$formatted_chain_id] = $count;" $BASE_SCRIPT_FILE
-    done < <(echo "$output" | grep 'count is:')
+    done < <(echo "$output" | grep 'count:')
 
     # Print the table using the column command
     echo -e $table | column -t -s ','

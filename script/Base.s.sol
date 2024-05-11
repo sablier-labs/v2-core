@@ -116,7 +116,7 @@ contract BaseScript is Script, Sphinx {
         return bytes32(abi.encodePacked(create2Salt));
     }
 
-    /// @dev Populates the segment and tranche count map. All values are derived using the `estimate-max-count` script.
+    /// @dev Populates the segment & tranche count map. Values are auto updated by the `update-script-counts.sh` script.
     function populateSegmentAndTranchCountMap() internal {
         // Arbitrum chain ID
         segmentCountMap[42_161] = 1170;
