@@ -37,7 +37,6 @@
 
 # Run only the code inside benchmark directory
 [profile.benchmark]
-  src = "benchmark"
   test = "benchmark"
 
 # Speed up compilation and tests during development
