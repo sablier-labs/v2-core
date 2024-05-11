@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { LockupLinear } from "src/types/DataTypes.sol";
+import { ud } from "@prb/math/src/UD60x18.sol";
+
+import { LockupLinear } from "../src/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
@@ -11,6 +13,7 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
+
     function setUp() public override {
         super.setUp();
 
@@ -23,11 +26,11 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
 
     function testGas_Implementations() external {
         // Set the file path.
-        benchmarksFile = string.concat(benchmarksDir, "SablierV2LockupLinear.md");
+        benchmarkResultsFile = string.concat(benchmarkResults, "SablierV2LockupLinear.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
-            path: benchmarksFile,
+            path: benchmarkResultsFile,
             data: string.concat("# Benchmarks for LockupLinear\n\n", "| Implementation | Gas Usage |\n", "| --- | --- |\n")
         });
 
@@ -35,14 +38,14 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         gasBurn();
 
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-
         gasCancel();
+
         gasCreateWithDurations();
         gasCreateWithTimestamps();
         gasRenounce();
-        gasWithdraw();
 
-        gasWithdraw_ByRecipient();
+        gasWithdraw_ByRecipient(STREAM_4, STREAM_5, "");
+        gasWithdraw_ByAnyone(STREAM_6, STREAM_7, "");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -50,34 +53,75 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function gasCreateWithDurations() internal {
+        gasCreateWithDurations(0);
+        gasCreateWithDurations(defaults.CLIFF_DURATION());
+    }
+
+    function gasCreateWithDurations(uint40 cliffDuration) internal {
         // Set the caller to the Sender for the next calls and change timestamp to before end time.
         resetPrank({ msgSender: users.sender });
 
         LockupLinear.CreateWithDurations memory params = defaults.createWithDurationsLL();
+        params.durations.cliff = cliffDuration;
 
         uint256 beforeGas = gasleft();
         lockupLinear.createWithDurations(params);
-        uint256 afterGas = gasleft();
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
 
-        contentToAppend = string.concat("| `createWithDurations` | ", vm.toString(beforeGas - afterGas), " |");
+        string memory cliffSetOrNot = cliffDuration == 0 ? " (cliff not set)" : " (cliff set)";
+
+        contentToAppend = string.concat("| `createWithDurations` (Broker fee set)", cliffSetOrNot, " | ", gasUsed, " |");
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
+
+        params.broker.fee = ud(0);
+        params.totalAmount = _calculateTotalAmount(defaults.DEPOSIT_AMOUNT(), ud(0));
+        beforeGas = gasleft();
+        lockupLinear.createWithDurations(params);
+        gasUsed = vm.toString(beforeGas - gasleft());
+
+        contentToAppend =
+            string.concat("| `createWithDurations` (Broker fee not set)", cliffSetOrNot, " | ", gasUsed, " |");
+
+        // Append the content to the file.
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 
     function gasCreateWithTimestamps() internal {
+        gasCreateWithTimestamps(0);
+        gasCreateWithTimestamps(defaults.CLIFF_TIME());
+    }
+
+    function gasCreateWithTimestamps(uint40 cliffTime) internal {
         // Set the caller to the Sender for the next calls and change timestamp to before end time.
         resetPrank({ msgSender: users.sender });
 
         LockupLinear.CreateWithTimestamps memory params = defaults.createWithTimestampsLL();
+        params.timestamps.cliff = cliffTime;
 
         uint256 beforeGas = gasleft();
         lockupLinear.createWithTimestamps(params);
-        uint256 afterGas = gasleft();
+        string memory gasUsed = vm.toString(beforeGas - gasleft());
 
-        contentToAppend = string.concat("| `createWithTimestamps` | ", vm.toString(beforeGas - afterGas), " |");
+        string memory cliffSetOrNot = cliffTime == 0 ? " (cliff not set)" : " (cliff set)";
+
+        contentToAppend =
+            string.concat("| `createWithTimestamps` (Broker fee set)", cliffSetOrNot, " | ", gasUsed, " |");
 
         // Append the content to the file.
-        _appendToFile(benchmarksFile, contentToAppend);
+        _appendToFile(benchmarkResultsFile, contentToAppend);
+
+        params.broker.fee = ud(0);
+        params.totalAmount = _calculateTotalAmount(defaults.DEPOSIT_AMOUNT(), ud(0));
+        beforeGas = gasleft();
+        lockupLinear.createWithTimestamps(params);
+        gasUsed = vm.toString(beforeGas - gasleft());
+
+        contentToAppend =
+            string.concat("| `createWithTimestamps` (Broker fee not set)", cliffSetOrNot, " | ", gasUsed, " |");
+
+        // Append the content to the file.
+        _appendToFile(benchmarkResultsFile, contentToAppend);
     }
 }
