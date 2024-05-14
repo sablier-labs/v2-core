@@ -2,9 +2,9 @@
 
 | Implementation                                             | Gas Usage |
 | ---------------------------------------------------------- | --------- |
-| `burn`                                                     | 15595     |
-| `cancel`                                                   | 69725     |
-| `renounce`                                                 | 38911     |
+| `burn`                                                     | 15704     |
+| `cancel`                                                   | 71840     |
+| `renounce`                                                 | 41020     |
 | `createWithDurations` (2 segments) (Broker fee set)        | 199085    |
 | `createWithDurations` (2 segments) (Broker fee not set)    | 183577    |
 | `createWithTimestamps` (2 segments) (Broker fee set)       | 183277    |

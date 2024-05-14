@@ -14,13 +14,7 @@ abstract contract Benchmark_Test is Base_Test {
 
     uint128 internal immutable AMOUNT_PER_SEGMENT = 100e18;
     uint128 internal immutable AMOUNT_PER_TRANCHE = 100e18;
-    uint256 internal immutable STREAM_1 = 50;
-    uint256 internal immutable STREAM_2 = 51;
-    uint256 internal immutable STREAM_3 = 52;
-    uint256 internal immutable STREAM_4 = 53;
-    uint256 internal immutable STREAM_5 = 54;
-    uint256 internal immutable STREAM_6 = 55;
-    uint256 internal immutable STREAM_7 = 56;
+    uint256[7] internal streamIds = [50, 51, 52, 53, 54, 55, 56];
 
     /// @dev The directory where the benchmark files are stored.
     string internal benchmarkResults = "benchmark/results/";
@@ -56,10 +50,10 @@ abstract contract Benchmark_Test is Base_Test {
 
         vm.warp({ newTimestamp: defaults.END_TIME() });
 
-        lockup.withdrawMax(STREAM_1, users.recipient);
+        lockup.withdrawMax(streamIds[0], users.recipient);
 
         uint256 beforeGas = gasleft();
-        lockup.burn(STREAM_1);
+        lockup.burn(streamIds[0]);
 
         string memory gasUsed = vm.toString(beforeGas - gasleft());
 
@@ -74,7 +68,7 @@ abstract contract Benchmark_Test is Base_Test {
         resetPrank({ msgSender: users.sender });
 
         uint256 beforeGas = gasleft();
-        lockup.cancel(STREAM_2);
+        lockup.cancel(streamIds[1]);
 
         string memory gasUsed = vm.toString(beforeGas - gasleft());
 
@@ -89,7 +83,7 @@ abstract contract Benchmark_Test is Base_Test {
         resetPrank({ msgSender: users.sender });
 
         uint256 beforeGas = gasleft();
-        lockup.renounce(STREAM_3);
+        lockup.renounce(streamIds[2]);
 
         string memory gasUsed = vm.toString(beforeGas - gasleft());
 

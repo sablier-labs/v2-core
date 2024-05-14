@@ -48,8 +48,8 @@ contract LockupLinear_Gas_Test is Benchmark_Test {
         gasCreateWithTimestamps({ cliffTime: 0 });
         gasCreateWithTimestamps({ cliffTime: defaults.CLIFF_TIME() });
 
-        gasWithdraw_ByRecipient(STREAM_4, STREAM_5, "");
-        gasWithdraw_ByAnyone(STREAM_6, STREAM_7, "");
+        gasWithdraw_ByRecipient(streamIds[3], streamIds[4], "");
+        gasWithdraw_ByAnyone(streamIds[5], streamIds[6], "");
     }
 
     /*//////////////////////////////////////////////////////////////////////////

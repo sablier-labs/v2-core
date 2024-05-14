@@ -2,9 +2,9 @@
 
 | Implementation                                             | Gas Usage |
 | ---------------------------------------------------------- | --------- |
-| `burn`                                                     | 15630     |
-| `cancel`                                                   | 59537     |
-| `renounce`                                                 | 26650     |
+| `burn`                                                     | 15739     |
+| `cancel`                                                   | 61652     |
+| `renounce`                                                 | 28759     |
 | `createWithDurations` (2 tranches) (Broker fee set)        | 198189    |
 | `createWithDurations` (2 tranches) (Broker fee not set)    | 182679    |
 | `createWithTimestamps` (2 tranches) (Broker fee set)       | 188124    |

@@ -67,17 +67,12 @@ contract BaseScript is Script, Sphinx {
         // Populate the segment and tranche count map.
         populateSegmentAndTranchCountMap();
 
-        // Load the maximum segment and tranche count for the current chain id. Set a default value if not found.
+        // If there is no maximum value set for a specific chain, set a default value.
         if (segmentCountMap[block.chainid] == 0) {
             maxSegmentCount = DEFAULT_MAX_COUNT;
-        } else {
-            maxSegmentCount = segmentCountMap[block.chainid];
         }
-
         if (trancheCountMap[block.chainid] == 0) {
             maxTrancheCount = DEFAULT_MAX_COUNT;
-        } else {
-            maxTrancheCount = trancheCountMap[block.chainid];
         }
     }
 
