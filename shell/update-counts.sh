@@ -22,7 +22,7 @@ update_counts() {
     local output=$(FOUNDRY_PROFILE=benchmark forge t --mt "test_Estimate${test_name}" -vv)
     echo -e "\nParsing output for $test_name..."
 
-    # Define a table with headers. This table is not put in the Solidity script file, 
+    # Define a table with headers. This table is not put in the Solidity script file,
     # but is used to be displayed in the terminal.
     local table="Category,Chain ID,New Max Count"
 
@@ -45,5 +45,8 @@ update_counts() {
 # Call the function with specific parameters for segments and tranches
 update_counts "Segments" "segmentCountMap"
 update_counts "Tranches" "trancheCountMap"
+
+# Reformat the code with Forge
+forge fmt $BASE_SCRIPT
 
 printf "\n\nAll mappings updated."

@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // solhint-disable no-console
-// forgefmt: disable-start
 pragma solidity >=0.8.22 <0.9.0;
 
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
@@ -85,6 +84,8 @@ contract BaseScript is Script {
 
     /// @dev Populates the segment & tranche count map. Values can be updated using the `update-counts.sh` script.
     function populateSegmentAndTrancheCountMap() internal {
+        // forgefmt: disable-start
+
         // Arbitrum chain ID
         segmentCountMap[42161] = 1170;
         trancheCountMap[42161] = 1210;
@@ -128,5 +129,7 @@ contract BaseScript is Script {
         // Sepolia chain ID.
         segmentCountMap[11155111] = 1100;
         trancheCountMap[11155111] = 1130;
+
+        // forgefmt: disable-end
     }
 }
