@@ -281,7 +281,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function renounce(uint256 streamId) external override noDelegateCall notNull(streamId) updateMetadata(streamId) {
+    function renounce(uint256 streamId) external override noDelegateCall notNull(streamId) {
         // Check: the stream is not cold.
         Lockup.Status status = _statusOf(streamId);
         if (status == Lockup.Status.DEPLETED) {
@@ -302,6 +302,9 @@ abstract contract SablierV2Lockup is
 
         // Log the renouncement.
         emit ISablierV2Lockup.RenounceLockupStream(streamId);
+
+        // Emits an ERC-4906 event to trigger an update of the NFT metadata.
+        emit MetadataUpdate({ _tokenId: streamId });
 
         // Interaction: if the recipient is a contract, try to invoke the renounce hook on the recipient without
         // reverting if the hook is not implemented, and also without bubbling up any potential revert.
@@ -329,17 +332,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function withdraw(
-        uint256 streamId,
-        address to,
-        uint128 amount
-    )
-        public
-        override
-        noDelegateCall
-        notNull(streamId)
-        updateMetadata(streamId)
-    {
+    function withdraw(uint256 streamId, address to, uint128 amount) public override noDelegateCall notNull(streamId) {
         // Check: the stream is not depleted.
         if (_streams[streamId].isDepleted) {
             revert Errors.SablierV2Lockup_StreamDepleted(streamId);
@@ -375,6 +368,9 @@ abstract contract SablierV2Lockup is
 
         // Effects and Interactions: make the withdrawal.
         _withdraw(streamId, to, amount);
+
+        // Emits an ERC-4906 event to trigger an update of the NFT metadata.
+        emit MetadataUpdate({ _tokenId: streamId });
 
         // Interaction: if `msg.sender` is not the recipient and the recipient is a contract, try to invoke the
         // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
