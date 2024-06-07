@@ -69,12 +69,6 @@ abstract contract SablierV2Lockup is
         _;
     }
 
-    /// @dev Emits an ERC-4906 event to trigger an update of the NFT metadata.
-    modifier updateMetadata(uint256 streamId) {
-        _;
-        emit MetadataUpdate({ _tokenId: streamId });
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                            USER-FACING CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -604,21 +598,15 @@ abstract contract SablierV2Lockup is
     /// @param auth Optional parameter. If the value is not zero, the overridden implementation will check that
     /// `auth` is either the recipient of the stream, or an approved third party.
     /// @return The original recipient of the `streamId` before the update.
-    function _update(
-        address to,
-        uint256 streamId,
-        address auth
-    )
-        internal
-        override
-        updateMetadata(streamId)
-        returns (address)
-    {
+    function _update(address to, uint256 streamId, address auth) internal override returns (address) {
         address from = _ownerOf(streamId);
 
         if (from != address(0) && to != address(0) && !_streams[streamId].isTransferable) {
             revert Errors.SablierV2Lockup_NotTransferable(streamId);
         }
+
+        // Emits an ERC-4906 event to trigger an update of the NFT metadata.
+        emit MetadataUpdate({ _tokenId: streamId });
 
         return super._update(to, streamId, auth);
     }
