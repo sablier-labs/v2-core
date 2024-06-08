@@ -297,7 +297,7 @@ abstract contract SablierV2Lockup is
         // Log the renouncement.
         emit ISablierV2Lockup.RenounceLockupStream(streamId);
 
-        // Emits an ERC-4906 event to trigger an update of the NFT metadata.
+        // Emit an ERC-4906 event to trigger an update of the NFT metadata.
         emit MetadataUpdate({ _tokenId: streamId });
 
         // Interaction: if the recipient is a contract, try to invoke the renounce hook on the recipient without
@@ -363,7 +363,7 @@ abstract contract SablierV2Lockup is
         // Effects and Interactions: make the withdrawal.
         _withdraw(streamId, to, amount);
 
-        // Emits an ERC-4906 event to trigger an update of the NFT metadata.
+        // Emit an ERC-4906 event to trigger an update of the NFT metadata.
         emit MetadataUpdate({ _tokenId: streamId });
 
         // Interaction: if `msg.sender` is not the recipient and the recipient is a contract, try to invoke the
@@ -562,7 +562,7 @@ abstract contract SablierV2Lockup is
         // Log the cancellation.
         emit ISablierV2Lockup.CancelLockupStream(streamId, sender, recipient, asset, senderAmount, recipientAmount);
 
-        // Emits an ERC-4906 event to trigger an update of the NFT metadata.
+        // Emit an ERC-4906 event to trigger an update of the NFT metadata.
         emit MetadataUpdate({ _tokenId: streamId });
 
         // Interaction: if the recipient is a contract, try to invoke the cancel hook on the recipient without
@@ -605,7 +605,7 @@ abstract contract SablierV2Lockup is
             revert Errors.SablierV2Lockup_NotTransferable(streamId);
         }
 
-        // Emits an ERC-4906 event to trigger an update of the NFT metadata.
+        // Emit an ERC-4906 event to trigger an update of the NFT metadata.
         emit MetadataUpdate({ _tokenId: streamId });
 
         return super._update(to, streamId, auth);
