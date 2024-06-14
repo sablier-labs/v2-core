@@ -26,7 +26,6 @@
     "precompiles",
     "src",
     "test/utils",
-    "!test/utils/*.t.sol",
     "CHANGELOG.md",
     "LICENSE-GPL.md"
   ],
