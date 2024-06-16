@@ -12,23 +12,25 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 [1.0.1]: https://github.com/sablier-labs/v2-core/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/sablier-labs/v2-core/releases/tag/v1.0.0
 
-## [1.2.0] - 2024-04-12
+## [1.2.0] - 2024-06-16
 
 ### Changed
 
 - **Breaking:** Move common logic into `Lockup` contract ([#813](https://github.com/sablier-labs/v2-core/pull/813),
   [#850](https://github.com/sablier-labs/v2-core/pull/850), [#784](https://github.com/sablier-labs/v2-core/pull/784))
-- Disallow zero `startTime` ([#852](https://github.com/sablier-labs/v2-core/pull/852))
+- Disallow zero `startTime` ([#852](https://github.com/sablier-labs/v2-core/pull/852),
+  [#941](https://github.com/sablier-labs/v2-core/pull/941))
 - Change permissions of `withdraw` function to public ([#785](https://github.com/sablier-labs/v2-core/pull/785))
 - Refactor functions name in `ISablierV2Recipient` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
 - Upgrade to OpenZeppelin v5 ([#806](https://github.com/sablier-labs/v2-core/pull/806))
+- Upgrade build dependencies ([#944](https://github.com/sablier-labs/v2-core/pull/944),
+  [#942](https://github.com/sablier-labs/v2-core/pull/942))
 - Switch to Bun ([#775](https://github.com/sablier-labs/v2-core/pull/775))
 
 ### Added
 
-- Add Lockup Tranched stream ([#817](https://github.com/sablier-labs/v2-core/pull/817))
+- Add Lockup Tranched contract ([#817](https://github.com/sablier-labs/v2-core/pull/817))
 - Add `ISablierV2Sender` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
-- Sphinx integration ([#840](https://github.com/sablier-labs/v2-core/pull/840))
 - Add `precompiles` in the NPM release ([#841](https://github.com/sablier-labs/v2-core/pull/841))
 
 ### Removed
