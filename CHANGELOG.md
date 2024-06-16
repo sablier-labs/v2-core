@@ -22,7 +22,7 @@ The format is based on [Common Changelog](https://common-changelog.org/).
   [#941](https://github.com/sablier-labs/v2-core/pull/941))
 - Change permissions of `withdraw` function to public ([#785](https://github.com/sablier-labs/v2-core/pull/785))
 - Refactor functions name in `ISablierV2Recipient` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
-- Upgrade to OpenZeppelin v5 ([#806](https://github.com/sablier-labs/v2-core/pull/806))
+- Bump OpenZeppelin to v5 ([#806](https://github.com/sablier-labs/v2-core/pull/806))
 - Bump build dependencies ([#944](https://github.com/sablier-labs/v2-core/pull/944),
   [#942](https://github.com/sablier-labs/v2-core/pull/942))
 - Switch to Bun ([#775](https://github.com/sablier-labs/v2-core/pull/775))
