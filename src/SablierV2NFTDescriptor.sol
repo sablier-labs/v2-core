@@ -341,13 +341,36 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
 
         string memory symbol = abi.decode(returnData, (string));
 
-        // The length check is a precautionary measure to help mitigate potential security threats from malicious assets
-        // injecting scripts in the symbol string.
+        // Check if the symbol is too long or contains non-alphanumeric characters, this measure helps mitigate
+        // potential security threats from malicious assets injecting scripts in the symbol string.
         if (bytes(symbol).length > 30) {
             return "Long Symbol";
         } else {
+            if (!isAlphanumeric(symbol)) {
+                return "Malicious Symbol";
+            }
             return symbol;
         }
+    }
+
+    /// @dev Returns whether the provided string contains only alphanumeric characters.
+    function isAlphanumeric(string memory str) internal pure returns (bool) {
+        // Convert the string to bytes to iterate over its characters.
+        bytes memory b = bytes(str);
+
+        uint256 count = b.length;
+        for (uint256 i; i < count; ++i) {
+            bytes1 char = b[i];
+            // Check if the character is alphanumeric.
+            if (
+                !(char >= 0x30 && char <= 0x39) // 0-9
+                    && !(char >= 0x41 && char <= 0x5A) // A-Z
+                    && !(char >= 0x61 && char <= 0x7A) // a-z
+            ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /// @notice Converts the provided fractional amount to a string prefixed by a dot.
