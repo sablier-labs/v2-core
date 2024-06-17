@@ -48,10 +48,10 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
         _;
     }
 
-    function test_SafeAssetSymbol_NotAlphanumeric() external whenERC20Contract givenSymbolString givenSymbolNotLong {
+    function test_SafeAssetSymbol_NonAlphanumeric() external whenERC20Contract givenSymbolString givenSymbolNotLong {
         ERC20Mock asset = new ERC20Mock({ name: "Token", symbol: "<svg/onload=alert(\"xss\")>" });
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
-        string memory expectedSymbol = "Malicious Symbol";
+        string memory expectedSymbol = "Non-Alphanumeric Symbol";
         assertEq(actualSymbol, expectedSymbol, "symbol");
     }
 

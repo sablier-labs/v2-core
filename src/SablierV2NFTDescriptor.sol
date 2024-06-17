@@ -302,6 +302,29 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         return string.concat("Sablier V2 ", sablierModel, " #", streamId);
     }
 
+    /// @notice Checks whether the provided string contains only alphanumeric characters and spaces.
+    /// @dev Note that this returns true for empty strings, but it is not a security concern.
+    function isAlphanumeric(string memory str) internal pure returns (bool) {
+        // Convert the string to bytes to iterate over its characters.
+        bytes memory b = bytes(str);
+
+        uint256 length = b.length;
+        for (uint256 i = 0; i < length; ++i) {
+            bytes1 char = b[i];
+
+            // Check if it's a space or an alphanumeric character.
+            if (
+                !(char == 0x20) // space
+                    && !(char >= 0x30 && char <= 0x39) // 0-9
+                    && !(char >= 0x41 && char <= 0x5A) // A-Z
+                    && !(char >= 0x61 && char <= 0x7A) // a-z
+            ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /// @notice Maps ERC-721 symbols to human-readable model names.
     /// @dev Reverts if the symbol is unknown.
     function mapSymbol(IERC721Metadata sablier) internal view returns (string memory) {
@@ -347,30 +370,10 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             return "Long Symbol";
         } else {
             if (!isAlphanumeric(symbol)) {
-                return "Malicious Symbol";
+                return "Non-Alphanumeric Symbol";
             }
             return symbol;
         }
-    }
-
-    /// @dev Returns whether the provided string contains only alphanumeric characters.
-    function isAlphanumeric(string memory str) internal pure returns (bool) {
-        // Convert the string to bytes to iterate over its characters.
-        bytes memory b = bytes(str);
-
-        uint256 count = b.length;
-        for (uint256 i; i < count; ++i) {
-            bytes1 char = b[i];
-            // Check if the character is alphanumeric.
-            if (
-                !(char >= 0x30 && char <= 0x39) // 0-9
-                    && !(char >= 0x41 && char <= 0x5A) // A-Z
-                    && !(char >= 0x61 && char <= 0x7A) // a-z
-            ) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /// @notice Converts the provided fractional amount to a string prefixed by a dot.
