@@ -16,15 +16,16 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 
 ### Changed
 
-- **Breaking:** Move common logic into `Lockup` contract ([#813](https://github.com/sablier-labs/v2-core/pull/813),
-  [#850](https://github.com/sablier-labs/v2-core/pull/850), [#784](https://github.com/sablier-labs/v2-core/pull/784))
-- Disallow zero `startTime` ([#852](https://github.com/sablier-labs/v2-core/pull/852),
+- **Breaking:** Move common logic into `Lockup` contract ([#784](https://github.com/sablier-labs/v2-core/pull/784),
+  [#813](https://github.com/sablier-labs/v2-core/pull/813), [#850](https://github.com/sablier-labs/v2-core/pull/850),
   [#941](https://github.com/sablier-labs/v2-core/pull/941))
+- Disallow zero `startTime` ([#813](https://github.com/sablier-labs/v2-core/pull/813),
+  [#852](https://github.com/sablier-labs/v2-core/pull/852))
 - Change permissions of `withdraw` function to public ([#785](https://github.com/sablier-labs/v2-core/pull/785))
 - Refactor functions name in `ISablierV2Recipient` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
 - Bump OpenZeppelin to v5 ([#806](https://github.com/sablier-labs/v2-core/pull/806))
-- Bump build dependencies ([#944](https://github.com/sablier-labs/v2-core/pull/944),
-  [#942](https://github.com/sablier-labs/v2-core/pull/942))
+- Bump build dependencies ([#942](https://github.com/sablier-labs/v2-core/pull/942),
+  [#944](https://github.com/sablier-labs/v2-core/pull/944))
 - Switch to Bun ([#775](https://github.com/sablier-labs/v2-core/pull/775))
 
 ### Added
