@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { NFTDescriptor_Integration_Concrete_Test } from "../NFTDescriptor.t.sol";
+import { NFTDescriptor_Integration_Shared_Test } from "../../../shared/nft-descriptor/NFTDescriptor.t.sol";
 
-contract IsAlphanumeric_Integration_Concrete_Test is NFTDescriptor_Integration_Concrete_Test {
+contract IsAlphanumeric_Integration_Concrete_Test is NFTDescriptor_Integration_Shared_Test {
     function test_IsAlphanumeric_EmptyString() external view {
         string memory symbol = "";
         bool result = nftDescriptorMock.isAlphanumeric_(symbol);
@@ -68,12 +68,7 @@ contract IsAlphanumeric_Integration_Concrete_Test is NFTDescriptor_Integration_C
         _;
     }
 
-    function test_IsAlphanumeric_ContainsOnlyAlphanumericCharacters()
-        external
-        view
-        whenNotEmptyString
-        whenOnlyAlphanumericCharacters
-    {
+    function test_IsAlphanumeric() external view whenNotEmptyString whenOnlyAlphanumericCharacters {
         string memory symbol = "foo";
         bool result = nftDescriptorMock.isAlphanumeric_(symbol);
         assertTrue(result, "isAlphanumeric");

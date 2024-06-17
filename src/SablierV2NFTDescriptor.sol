@@ -313,12 +313,11 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
             bytes1 char = b[i];
 
             // Check if it's a space or an alphanumeric character.
-            if (
-                !(char == 0x20) // space
-                    && !(char >= 0x30 && char <= 0x39) // 0-9
-                    && !(char >= 0x41 && char <= 0x5A) // A-Z
-                    && !(char >= 0x61 && char <= 0x7A) // a-z
-            ) {
+            bool isSpace = char == 0x20; // space
+            bool isDigit = char >= 0x30 && char <= 0x39; // 0-9
+            bool isUppercaseLetter = char >= 0x41 && char <= 0x5A; // A-Z
+            bool isLowercaseLetter = char >= 0x61 && char <= 0x7A; // a-z
+            if (!(isSpace || isDigit || isUppercaseLetter || isLowercaseLetter)) {
                 return false;
             }
         }
