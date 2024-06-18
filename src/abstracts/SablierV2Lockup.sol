@@ -184,13 +184,6 @@ abstract contract SablierV2Lockup is
         // Otherwise, the result is implicitly zero.
     }
 
-    /**
-     * @dev See {ERC721-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721, IERC165) returns (bool) {
-        return interfaceId == 0x49064906 || super.supportsInterface(interfaceId);
-    }
-
     /// @inheritdoc ISablierV2Lockup
     function statusOf(uint256 streamId) external view override notNull(streamId) returns (Lockup.Status status) {
         status = _statusOf(streamId);
@@ -205,6 +198,11 @@ abstract contract SablierV2Lockup is
         returns (uint128 streamedAmount)
     {
         streamedAmount = _streamedAmountOf(streamId);
+    }
+
+    /// @inheritdoc ERC721
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, IERC165) returns (bool) {
+        return interfaceId == 0x49064906 || super.supportsInterface(interfaceId);
     }
 
     /// @inheritdoc ERC721
