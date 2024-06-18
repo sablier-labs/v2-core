@@ -6,6 +6,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { ISablierV2Recipient } from "../interfaces/hooks/ISablierV2Recipient.sol";
@@ -181,6 +182,13 @@ abstract contract SablierV2Lockup is
             refundableAmount = _streams[streamId].amounts.deposited - _calculateStreamedAmount(streamId);
         }
         // Otherwise, the result is implicitly zero.
+    }
+
+    /**
+     * @dev See {ERC721-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, IERC165) returns (bool) {
+        return interfaceId == 0x49064906 || super.supportsInterface(interfaceId);
     }
 
     /// @inheritdoc ISablierV2Lockup
