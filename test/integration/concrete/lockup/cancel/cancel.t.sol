@@ -144,7 +144,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         vm.expectCall(
             address(noop),
             abi.encodeCall(
-                ISablierV2Recipient.onLockupStreamCanceled, (streamId, users.sender, senderAmount, recipientAmount)
+                ISablierV2Recipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
         );
 
@@ -177,7 +177,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         vm.expectCall(
             address(revertingRecipient),
             abi.encodeCall(
-                ISablierV2Recipient.onLockupStreamCanceled, (streamId, users.sender, senderAmount, recipientAmount)
+                ISablierV2Recipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
         );
 
@@ -211,7 +211,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         vm.expectCall(
             address(reentrantRecipient),
             abi.encodeCall(
-                ISablierV2Recipient.onLockupStreamCanceled, (streamId, users.sender, senderAmount, recipientAmount)
+                ISablierV2Recipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
         );
 
@@ -249,7 +249,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         vm.expectCall(
             address(goodRecipient),
             abi.encodeCall(
-                ISablierV2Recipient.onLockupStreamCanceled, (streamId, users.sender, senderAmount, recipientAmount)
+                ISablierV2Recipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
         );
 

@@ -6,7 +6,7 @@ pragma solidity >=0.8.22;
 /// @dev Implementation of this interface is optional. If a recipient contract doesn't implement this
 /// interface or implements it partially, the function execution will not revert.
 interface ISablierV2Recipient {
-    /// @notice Responds to sender-triggered cancellations.
+    /// @notice Responds to cancellations.
     ///
     /// @dev Notes:
     /// - This function may revert, but the Sablier contract will ignore the revert.
@@ -17,7 +17,7 @@ interface ISablierV2Recipient {
     /// decimals.
     /// @param recipientAmount The amount of assets left for the stream's recipient to withdraw, denoted in units of
     /// the asset's decimals.
-    function onLockupStreamCanceled(
+    function onSablierLockupCancel(
         uint256 streamId,
         address sender,
         uint128 senderAmount,
@@ -34,5 +34,5 @@ interface ISablierV2Recipient {
     /// @param caller The original `msg.sender` address that triggered the withdrawal.
     /// @param to The address receiving the withdrawn assets.
     /// @param amount The amount of assets withdrawn, denoted in units of the asset's decimals.
-    function onLockupStreamWithdrawn(uint256 streamId, address caller, address to, uint128 amount) external;
+    function onSablierLockupWithdraw(uint256 streamId, address caller, address to, uint128 amount) external;
 }

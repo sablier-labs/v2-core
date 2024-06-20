@@ -5,7 +5,7 @@ import { ISablierV2Lockup } from "../../../src/interfaces/ISablierV2Lockup.sol";
 import { ISablierV2Recipient } from "../../../src/interfaces/hooks/ISablierV2Recipient.sol";
 
 contract ReentrantRecipient is ISablierV2Recipient {
-    function onLockupStreamCanceled(
+    function onSablierLockupCancel(
         uint256 streamId,
         address sender,
         uint128 senderAmount,
@@ -20,7 +20,7 @@ contract ReentrantRecipient is ISablierV2Recipient {
         ISablierV2Lockup(msg.sender).cancel(streamId);
     }
 
-    function onLockupStreamWithdrawn(uint256 streamId, address caller, address to, uint128 amount) external {
+    function onSablierLockupWithdraw(uint256 streamId, address caller, address to, uint128 amount) external {
         streamId;
         caller;
         to;

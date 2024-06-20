@@ -4,7 +4,7 @@ pragma solidity >=0.8.22;
 import { ISablierV2Recipient } from "../../../src/interfaces/hooks/ISablierV2Recipient.sol";
 
 contract RevertingRecipient is ISablierV2Recipient {
-    function onLockupStreamCanceled(
+    function onSablierLockupCancel(
         uint256 streamId,
         address sender,
         uint128 senderAmount,
@@ -20,7 +20,7 @@ contract RevertingRecipient is ISablierV2Recipient {
         revert("You shall not pass");
     }
 
-    function onLockupStreamWithdrawn(uint256 streamId, address caller, address to, uint128 amount) external pure {
+    function onSablierLockupWithdraw(uint256 streamId, address caller, address to, uint128 amount) external pure {
         streamId;
         caller;
         to;

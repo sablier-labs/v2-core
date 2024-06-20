@@ -34,7 +34,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         vm.expectCall({
             callee: address(goodRecipient),
             data: abi.encodeCall(
-                ISablierV2Recipient.onLockupStreamWithdrawn,
+                ISablierV2Recipient.onSablierLockupWithdraw,
                 (streamId, unknownCaller, address(goodRecipient), withdrawAmount)
             ),
             count: 1
@@ -62,7 +62,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         vm.expectCall({
             callee: address(goodRecipient),
             data: abi.encodeCall(
-                ISablierV2Recipient.onLockupStreamWithdrawn,
+                ISablierV2Recipient.onSablierLockupWithdraw,
                 (streamId, users.operator, address(goodRecipient), withdrawAmount)
             ),
             count: 1
@@ -86,7 +86,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         vm.expectCall({
             callee: address(goodRecipient),
             data: abi.encodeCall(
-                ISablierV2Recipient.onLockupStreamWithdrawn,
+                ISablierV2Recipient.onSablierLockupWithdraw,
                 (streamId, users.sender, address(goodRecipient), withdrawAmount)
             ),
             count: 1
@@ -110,7 +110,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         vm.expectCall({
             callee: address(goodRecipient),
             data: abi.encodeCall(
-                ISablierV2Recipient.onLockupStreamWithdrawn,
+                ISablierV2Recipient.onSablierLockupWithdraw,
                 (streamId, address(goodRecipient), address(goodRecipient), withdrawAmount)
             ),
             count: 0

@@ -364,7 +364,7 @@ abstract contract SablierV2Lockup is
         // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
         // any potential revert.
         if (msg.sender != recipient && recipient.code.length > 0) {
-            try ISablierV2Recipient(recipient).onLockupStreamWithdrawn({
+            try ISablierV2Recipient(recipient).onSablierLockupWithdraw({
                 streamId: streamId,
                 caller: msg.sender,
                 to: to,
@@ -550,7 +550,7 @@ abstract contract SablierV2Lockup is
         // Interaction: if the recipient is a contract, try to invoke the cancel hook on the recipient without
         // reverting if the hook is not implemented, and without bubbling up any potential revert.
         if (recipient.code.length > 0) {
-            try ISablierV2Recipient(recipient).onLockupStreamCanceled({
+            try ISablierV2Recipient(recipient).onSablierLockupCancel({
                 streamId: streamId,
                 sender: sender,
                 senderAmount: senderAmount,

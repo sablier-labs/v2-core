@@ -487,7 +487,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
             vm.expectCall(
                 address(recipient),
                 abi.encodeCall(
-                    ISablierV2Recipient.onLockupStreamWithdrawn,
+                    ISablierV2Recipient.onSablierLockupWithdraw,
                     (streamId, users.sender, address(recipient), withdrawAmount)
                 )
             );
