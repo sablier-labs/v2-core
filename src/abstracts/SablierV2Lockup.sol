@@ -9,7 +9,6 @@ import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { ISablierV2Recipient } from "../interfaces/hooks/ISablierV2Recipient.sol";
-import { ISablierV2Sender } from "../interfaces/hooks/ISablierV2Sender.sol";
 import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
 import { Errors } from "../libraries/Errors.sol";
@@ -304,13 +303,6 @@ abstract contract SablierV2Lockup is
 
         // Emit an ERC-4906 event to trigger an update of the NFT metadata.
         emit MetadataUpdate({ _tokenId: streamId });
-
-        // Interaction: if the recipient is a contract, try to invoke the renounce hook on the recipient without
-        // reverting if the hook is not implemented, and also without bubbling up any potential revert.
-        address recipient = _ownerOf(streamId);
-        if (recipient.code.length > 0) {
-            try ISablierV2Recipient(recipient).onLockupStreamRenounced(streamId) { } catch { }
-        }
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -362,9 +354,6 @@ abstract contract SablierV2Lockup is
             revert Errors.SablierV2Lockup_Overdraw(streamId, amount, withdrawableAmount);
         }
 
-        // Retrieve the sender from storage.
-        address sender = _streams[streamId].sender;
-
         // Effects and Interactions: make the withdrawal.
         _withdraw(streamId, to, amount);
 
@@ -376,18 +365,6 @@ abstract contract SablierV2Lockup is
         // any potential revert.
         if (msg.sender != recipient && recipient.code.length > 0) {
             try ISablierV2Recipient(recipient).onLockupStreamWithdrawn({
-                streamId: streamId,
-                caller: msg.sender,
-                to: to,
-                amount: amount
-            }) { } catch { }
-        }
-
-        // Interaction: if `msg.sender` is not the sender, the sender is a contract and is different from the
-        // recipient, try to invoke the withdraw hook on it without reverting if the hook is not implemented, and also
-        // without bubbling up any potential revert.
-        if (msg.sender != sender && sender.code.length > 0 && sender != recipient) {
-            try ISablierV2Sender(sender).onLockupStreamWithdrawn({
                 streamId: streamId,
                 caller: msg.sender,
                 to: to,

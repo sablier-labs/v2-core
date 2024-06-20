@@ -16,7 +16,6 @@ import { ERC20Mock } from "./mocks/erc20/ERC20Mock.sol";
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
 import { Noop } from "./mocks/Noop.sol";
 import { GoodRecipient } from "./mocks/hooks/GoodRecipient.sol";
-import { GoodSender } from "./mocks/hooks/GoodSender.sol";
 import { Assertions } from "./utils/Assertions.sol";
 import { Calculations } from "./utils/Calculations.sol";
 import { Constants } from "./utils/Constants.sol";
@@ -41,7 +40,6 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
     ERC20Mock internal dai;
     Defaults internal defaults;
     GoodRecipient internal goodRecipient;
-    GoodSender internal goodSender;
     ISablierV2LockupDynamic internal lockupDynamic;
     ISablierV2LockupLinear internal lockupLinear;
     ISablierV2LockupTranched internal lockupTranched;
@@ -57,14 +55,12 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         // Deploy the base test contracts.
         dai = new ERC20Mock("Dai Stablecoin", "DAI");
         goodRecipient = new GoodRecipient();
-        goodSender = new GoodSender();
         noop = new Noop();
         usdt = new ERC20MissingReturn("Tether USD", "USDT", 6);
 
         // Label the base test contracts.
         vm.label({ account: address(dai), newLabel: "DAI" });
         vm.label({ account: address(goodRecipient), newLabel: "Good Recipient" });
-        vm.label({ account: address(goodSender), newLabel: "Good Sender" });
         vm.label({ account: address(noop), newLabel: "Noop" });
         vm.label({ account: address(usdt), newLabel: "USDT" });
 

@@ -19,10 +19,6 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         _;
     }
 
-    modifier givenSenderContract() {
-        _;
-    }
-
     modifier givenStreamNotDepleted() {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         _;
