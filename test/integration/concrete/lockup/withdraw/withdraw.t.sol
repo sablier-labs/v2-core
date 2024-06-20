@@ -399,9 +399,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         givenRecipientImplementsHook
     {
         // Create the stream with a reverting contract as the stream's recipient.
-        uint256 streamId = createDefaultStreamWithRecipient(address(revertingRecipient));
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientReverting));
 
-        _test_Withdraw_CallerSender(streamId, address(revertingRecipient));
+        _test_Withdraw_CallerSender(streamId, address(recipientReverting));
     }
 
     modifier whenRecipientDoesNotRevert() {
@@ -425,13 +425,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenRecipientDoesNotRevert
     {
         // Create the stream with a reentrant contract as the stream's recipient.
-        uint256 streamId = createDefaultStreamWithRecipient(address(reentrantRecipient));
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientReentrant));
 
         // Halve the withdraw amount so that the recipient can re-entry and make another withdrawal.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT() / 2;
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: streamId, to: address(reentrantRecipient), amount: withdrawAmount });
+        lockup.withdraw({ streamId: streamId, to: address(recipientReentrant), amount: withdrawAmount });
 
         // Assert that the stream's status is still "STREAMING".
         Lockup.Status actualStatus = lockup.statusOf(streamId);
@@ -466,9 +466,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoRecipientReentrancy
     {
         // Create the stream with a contract as the stream's recipient.
-        uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 
-        _test_Withdraw_CallerSender(streamId, address(goodRecipient));
+        _test_Withdraw_CallerSender(streamId, address(recipientGood));
     }
 
     /*//////////////////////////////////////////////////////////////////////////

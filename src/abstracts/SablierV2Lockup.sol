@@ -39,6 +39,9 @@ abstract contract SablierV2Lockup is
     /// @inheritdoc ISablierV2Lockup
     ISablierV2NFTDescriptor public override nftDescriptor;
 
+    /// @dev Mapping of contracts allowed be to run by Sablier when a stream is canceled or when assets are withdrawn.
+    mapping(ISablierRecipient recipient => bool allowed) internal _allowed;
+
     /// @dev Sablier V2 Lockup streams mapped by unsigned integers.
     mapping(uint256 id => Lockup.Stream stream) internal _streams;
 
@@ -128,6 +131,11 @@ abstract contract SablierV2Lockup is
         returns (uint128 withdrawnAmount)
     {
         withdrawnAmount = _streams[streamId].amounts.withdrawn;
+    }
+
+    /// @inheritdoc ISablierV2Lockup
+    function isAllowedToHook(ISablierRecipient recipient) external view returns (bool result) {
+        result = _allowed[recipient];
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -231,6 +239,25 @@ abstract contract SablierV2Lockup is
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc ISablierV2Lockup
+    function allowToHook(ISablierRecipient recipient) external override onlyAdmin {
+        // Check: non-zero code size.
+        if (address(recipient).code.length == 0) {
+            revert Errors.SablierV2Lockup_AllowToHookZeroCodeSize(recipient);
+        }
+
+        // Check: recipients implements the marker interface.
+        if (!recipient.IS_SABLIER_RECIPIENT()) {
+            revert Errors.SablierV2Lockup_AllowToHookIncorrectImplementation(recipient);
+        }
+
+        // Effect: put the recipient on the allowlist.
+        _allowed[recipient] = true;
+
+        // Log the allowlist addition.
+        emit ISablierV2Lockup.AllowToHook({ admin: msg.sender, recipient: recipient });
+    }
 
     /// @inheritdoc ISablierV2Lockup
     function burn(uint256 streamId) external override noDelegateCall notNull(streamId) {

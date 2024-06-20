@@ -99,7 +99,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
 
     function test_Renounce() external whenNotDelegateCalled givenStreamWarm whenCallerSender givenStreamCancelable {
         // Create the stream with a contract as the stream's recipient.
-        uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });

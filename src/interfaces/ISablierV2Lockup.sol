@@ -6,6 +6,8 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
+import { ISablierRecipient } from "./ISablierRecipient.sol";
+
 import { Lockup } from "../types/DataTypes.sol";
 import { IAdminable } from "./IAdminable.sol";
 import { ISablierV2NFTDescriptor } from "./ISablierV2NFTDescriptor.sol";
@@ -20,6 +22,11 @@ interface ISablierV2Lockup is
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Emitted when the admin allows a new recipient contract to hook to Sablier.
+    /// @param admin The address of the current contract admin.
+    /// @param recipient The address of the recipient contract put on the allowlist.
+    event AllowToHook(address admin, ISablierRecipient recipient);
 
     /// @notice Emitted when a stream is canceled.
     /// @param streamId The ID of the stream.
@@ -103,6 +110,11 @@ interface ISablierV2Lockup is
     /// @param streamId The stream ID for the query.
     function getWithdrawnAmount(uint256 streamId) external view returns (uint128 withdrawnAmount);
 
+    /// @notice Retrieves a flag indicating whether the provided address is a contract allowed to hook to Sablier
+    /// when a stream is canceled or when assets are withdrawn.
+    /// @dev See {ISablierRecipient} for more information.
+    function isAllowedToHook(ISablierRecipient recipient) external view returns (bool result);
+
     /// @notice Retrieves a flag indicating whether the stream can be canceled. When the stream is cold, this
     /// flag is always `false`.
     /// @dev Reverts if `streamId` references a null stream.
@@ -181,6 +193,23 @@ interface ISablierV2Lockup is
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Allows a recipient contract to hook to Sablier when a stream is canceled or when assets are withdrawn.
+    /// Useful for implementing contracts that hold streams on behalf of users, such as vaults or staking contracts.
+    ///
+    /// @dev Emits a {AllowToHook} event.
+    ///
+    /// Notes:
+    /// - Does not revert if the contract is already on the allowlist.
+    /// - This is an irreversible operation. The contract cannot be removed from the allowlist.
+    ///
+    /// Requirements:
+    /// - `msg.sender` must be the contract admin.
+    /// - `recipient` must have a non-zero code size.
+    /// - `recipient` must implement {ISablierRecipient}.
+    ///
+    /// @param recipient The address of the contract to allow for hooks.
+    function allowToHook(ISablierRecipient recipient) external;
 
     /// @notice Burns the NFT associated with the stream.
     ///

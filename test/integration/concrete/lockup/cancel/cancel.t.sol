@@ -169,13 +169,13 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         givenRecipientImplementsHook
     {
         // Create the stream with a reverting contract as the stream's recipient.
-        uint256 streamId = createDefaultStreamWithRecipient(address(revertingRecipient));
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientReverting));
 
         // Expect a call to the hook.
         uint128 senderAmount = lockup.refundableAmountOf(streamId);
         uint128 recipientAmount = lockup.withdrawableAmountOf(streamId);
         vm.expectCall(
-            address(revertingRecipient),
+            address(recipientReverting),
             abi.encodeCall(
                 ISablierRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
@@ -203,13 +203,13 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenRecipientDoesNotRevert
     {
         // Create the stream with a reentrant contract as the recipient.
-        uint256 streamId = createDefaultStreamWithRecipient(address(reentrantRecipient));
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientReentrant));
 
         // Expect a call to the hook.
         uint128 senderAmount = lockup.refundableAmountOf(streamId);
         uint128 recipientAmount = lockup.withdrawableAmountOf(streamId);
         vm.expectCall(
-            address(reentrantRecipient),
+            address(recipientReentrant),
             abi.encodeCall(
                 ISablierRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
@@ -238,7 +238,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoRecipientReentrancy
     {
         // Create the stream.
-        uint256 streamId = createDefaultStreamWithRecipient(address(goodRecipient));
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 
         // Expect the assets to be refunded to the Sender.
         uint128 senderAmount = lockup.refundableAmountOf(streamId);
@@ -247,7 +247,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         // Expect a call to the hook.
         uint128 recipientAmount = lockup.withdrawableAmountOf(streamId);
         vm.expectCall(
-            address(goodRecipient),
+            address(recipientGood),
             abi.encodeCall(
                 ISablierRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
@@ -255,7 +255,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit CancelLockupStream(streamId, users.sender, address(goodRecipient), dai, senderAmount, recipientAmount);
+        emit CancelLockupStream(streamId, users.sender, address(recipientGood), dai, senderAmount, recipientAmount);
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: streamId });
 
@@ -278,7 +278,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
         // Assert that the NFT has not been burned.
         address actualNFTOwner = lockup.ownerOf({ tokenId: streamId });
-        address expectedNFTOwner = address(goodRecipient);
+        address expectedNFTOwner = address(recipientGood);
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }
 }

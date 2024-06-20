@@ -4,6 +4,8 @@ pragma solidity >=0.8.22;
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
+import { ISablierRecipient } from "../interfaces/ISablierRecipient.sol";
+
 /// @title Errors
 /// @notice Library containing all custom errors the protocol may revert with.
 library Errors {
@@ -20,6 +22,12 @@ library Errors {
     /*//////////////////////////////////////////////////////////////////////////
                                  SABLIER-V2-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when trying to allow for hooks a contract that doesn't implement the interface correctly.
+    error SablierV2Lockup_AllowToHookIncorrectImplementation(ISablierRecipient recipient);
+
+    /// @notice Thrown when trying to allow for hooks an address with no code.
+    error SablierV2Lockup_AllowToHookZeroCodeSize(ISablierRecipient recipient);
 
     /// @notice Thrown when the broker fee exceeds the maximum allowed fee.
     error SablierV2Lockup_BrokerFeeTooHigh(UD60x18 brokerFee, UD60x18 maxBrokerFee);

@@ -22,7 +22,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         address unknownCaller = address(0xCAFE);
 
         // Create the test stream.
-        uint256 streamId = createDefaultStreamWithUsers({ recipient: address(goodRecipient), sender: users.sender });
+        uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
         // Make the unknown address the caller in this test.
         resetPrank({ msgSender: unknownCaller });
@@ -32,23 +32,23 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
         // Expect a call to the recipient hook.
         vm.expectCall({
-            callee: address(goodRecipient),
+            callee: address(recipientGood),
             data: abi.encodeCall(
-                ISablierRecipient.onSablierLockupWithdraw, (streamId, unknownCaller, address(goodRecipient), withdrawAmount)
+                ISablierRecipient.onSablierLockupWithdraw, (streamId, unknownCaller, address(recipientGood), withdrawAmount)
             ),
             count: 1
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
+        lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
     function test_WithdrawHooks_CallerApprovedOperator1() external givenDifferentSenderAndRecipient {
         // Create the test stream.
-        uint256 streamId = createDefaultStreamWithUsers({ recipient: address(goodRecipient), sender: users.sender });
+        uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
         // Approve the operator to handle the stream.
-        resetPrank({ msgSender: address(goodRecipient) });
+        resetPrank({ msgSender: address(recipientGood) });
         lockup.approve({ to: users.operator, tokenId: streamId });
 
         // Make the operator the caller in this test.
@@ -59,21 +59,21 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
         // Expect a call to the recipient hook.
         vm.expectCall({
-            callee: address(goodRecipient),
+            callee: address(recipientGood),
             data: abi.encodeCall(
                 ISablierRecipient.onSablierLockupWithdraw,
-                (streamId, users.operator, address(goodRecipient), withdrawAmount)
+                (streamId, users.operator, address(recipientGood), withdrawAmount)
             ),
             count: 1
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
+        lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
     function test_WithdrawHooks_CallerSender1() external givenDifferentSenderAndRecipient {
         // Create the test stream.
-        uint256 streamId = createDefaultStreamWithUsers({ recipient: address(goodRecipient), sender: users.sender });
+        uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
         // Make the Sender the caller in this test.
         resetPrank({ msgSender: users.sender });
@@ -83,39 +83,39 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
         // Expect 1 call to the recipient hook.
         vm.expectCall({
-            callee: address(goodRecipient),
+            callee: address(recipientGood),
             data: abi.encodeCall(
-                ISablierRecipient.onSablierLockupWithdraw, (streamId, users.sender, address(goodRecipient), withdrawAmount)
+                ISablierRecipient.onSablierLockupWithdraw, (streamId, users.sender, address(recipientGood), withdrawAmount)
             ),
             count: 1
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
+        lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
     function test_WithdrawHooks_CallerRecipient() external givenDifferentSenderAndRecipient {
         // Create the test stream.
-        uint256 streamId = createDefaultStreamWithUsers({ recipient: address(goodRecipient), sender: users.sender });
+        uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
         // Make the recipient contract the caller in this test.
-        resetPrank({ msgSender: address(goodRecipient) });
+        resetPrank({ msgSender: address(recipientGood) });
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Expect no calls to the recipient hook.
         vm.expectCall({
-            callee: address(goodRecipient),
+            callee: address(recipientGood),
             data: abi.encodeCall(
                 ISablierRecipient.onSablierLockupWithdraw,
-                (streamId, address(goodRecipient), address(goodRecipient), withdrawAmount)
+                (streamId, address(recipientGood), address(recipientGood), withdrawAmount)
             ),
             count: 0
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: streamId, to: address(goodRecipient), amount: withdrawAmount });
+        lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
     modifier givenSameSenderAndRecipient() {
