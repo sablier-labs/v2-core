@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { ISablierV2Recipient } from "src/interfaces/hooks/ISablierV2Recipient.sol";
+import { ISablierV2Recipient } from "src/interfaces/ISablierV2Recipient.sol";
 
 import { Integration_Test } from "../../../Integration.t.sol";
 import { Withdraw_Integration_Shared_Test } from "../../../shared/lockup/withdraw.t.sol";
