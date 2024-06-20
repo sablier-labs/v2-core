@@ -10,7 +10,7 @@ import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
-import { ISablierV2Recipient } from "../interfaces/ISablierV2Recipient.sol";
+import { ISablierRecipient } from "../interfaces/ISablierRecipient.sol";
 import { Errors } from "../libraries/Errors.sol";
 import { Lockup } from "../types/DataTypes.sol";
 import { Adminable } from "./Adminable.sol";
@@ -364,7 +364,7 @@ abstract contract SablierV2Lockup is
         // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
         // any potential revert.
         if (msg.sender != recipient && recipient.code.length > 0) {
-            try ISablierV2Recipient(recipient).onSablierLockupWithdraw({
+            try ISablierRecipient(recipient).onSablierLockupWithdraw({
                 streamId: streamId,
                 caller: msg.sender,
                 to: to,
@@ -550,7 +550,7 @@ abstract contract SablierV2Lockup is
         // Interaction: if the recipient is a contract, try to invoke the cancel hook on the recipient without
         // reverting if the hook is not implemented, and without bubbling up any potential revert.
         if (recipient.code.length > 0) {
-            try ISablierV2Recipient(recipient).onSablierLockupCancel({
+            try ISablierRecipient(recipient).onSablierLockupCancel({
                 streamId: streamId,
                 sender: sender,
                 senderAmount: senderAmount,

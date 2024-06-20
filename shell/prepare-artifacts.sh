@@ -29,12 +29,12 @@ cp out-optimized/SablierV2LockupTranched.sol/SablierV2LockupTranched.json $artif
 cp out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json $artifacts
 
 interfaces=./artifacts/interfaces
+cp out-optimized/ISablierRecipient.sol/ISablierRecipient.json $interfaces
 cp out-optimized/ISablierV2Lockup.sol/ISablierV2Lockup.json $interfaces
 cp out-optimized/ISablierV2LockupDynamic.sol/ISablierV2LockupDynamic.json $interfaces
 cp out-optimized/ISablierV2LockupLinear.sol/ISablierV2LockupLinear.json $interfaces
 cp out-optimized/ISablierV2LockupTranched.sol/ISablierV2LockupTranched.json $interfaces
 cp out-optimized/ISablierV2NFTDescriptor.sol/ISablierV2NFTDescriptor.json $interfaces
-cp out-optimized/ISablierV2Recipient.sol/ISablierV2Recipient.json $interfaces
 
 erc20=./artifacts/interfaces/erc20
 cp out-optimized/IERC20.sol/IERC20.json $erc20

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierRecipient } from "src/interfaces/ISablierRecipient.sol";
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
-import { ISablierV2Recipient } from "src/interfaces/ISablierV2Recipient.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
 import { Lockup } from "src/types/DataTypes.sol";
@@ -487,7 +487,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
             vm.expectCall(
                 address(recipient),
                 abi.encodeCall(
-                    ISablierV2Recipient.onSablierLockupWithdraw,
+                    ISablierRecipient.onSablierLockupWithdraw,
                     (streamId, users.sender, address(recipient), withdrawAmount)
                 )
             );

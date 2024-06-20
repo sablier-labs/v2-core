@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
-import { ISablierV2Recipient } from "../../../src/interfaces/ISablierV2Recipient.sol";
+import { ISablierRecipient } from "../../../src/interfaces/ISablierRecipient.sol";
 
-contract GoodRecipient is ISablierV2Recipient {
+contract GoodRecipient is ISablierRecipient {
+    bool public constant override IS_SABLIER_RECIPIENT = true;
+
     function onSablierLockupCancel(
         uint256 streamId,
         address sender,
