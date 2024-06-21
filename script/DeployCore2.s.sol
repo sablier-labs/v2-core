@@ -8,7 +8,6 @@ import { SablierV2LockupTranched } from "../src/SablierV2LockupTranched.sol";
 
 import { BaseScript } from "./Base.s.sol";
 
-/// @notice Deploys these contracts.
 contract DeployCore2 is BaseScript {
     function run(
         address initialAdmin,

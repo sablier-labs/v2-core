@@ -197,7 +197,7 @@ interface ISablierV2Lockup is
     /// @notice Allows a recipient contract to hook to Sablier when a stream is canceled or when assets are withdrawn.
     /// Useful for implementing contracts that hold streams on behalf of users, such as vaults or staking contracts.
     ///
-    /// @dev Emits a {AllowToHook} event.
+    /// @dev Emits an {AllowToHook} event.
     ///
     /// Notes:
     /// - Does not revert if the contract is already on the allowlist.

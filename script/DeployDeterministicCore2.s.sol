@@ -8,7 +8,6 @@ import { SablierV2LockupTranched } from "../src/SablierV2LockupTranched.sol";
 
 import { BaseScript } from "./Base.s.sol";
 
-/// @notice Deploys these contracts at deterministic addresses across chains.
 /// @dev Reverts if any contract has already been deployed.
 contract DeployDeterministicCore2 is BaseScript {
     function run(
