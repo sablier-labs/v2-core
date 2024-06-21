@@ -16,7 +16,6 @@ mkdir $artifacts \
   "$artifacts/interfaces" \
   "$artifacts/interfaces/erc20" \
   "$artifacts/interfaces/erc721" \
-  "$artifacts/interfaces" \
   "$artifacts/libraries"
 
 # Generate the artifacts with Forge
