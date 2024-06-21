@@ -290,7 +290,6 @@ interface ISablierV2Lockup is
     ///
     /// Notes:
     /// - This function attempts to call a hook on the recipient of the stream, unless `msg.sender` is the recipient.
-    /// - This function attempts to call a hook on the sender of the stream, unless `msg.sender` is the sender.
     ///
     /// Requirements:
     /// - Must not be delegate called.
