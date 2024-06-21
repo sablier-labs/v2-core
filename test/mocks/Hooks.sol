@@ -33,51 +33,15 @@ contract RecipientGood is ISablierRecipient {
 contract RecipientMarkerFalse is ISablierRecipient {
     bool public constant override IS_SABLIER_RECIPIENT = false;
 
-    function onSablierLockupCancel(
-        uint256 streamId,
-        address sender,
-        uint128 senderAmount,
-        uint128 recipientAmount
-    )
-        external
-        pure
-    {
-        streamId;
-        sender;
-        senderAmount;
-        recipientAmount;
-    }
+    function onSablierLockupCancel(uint256, address, uint128, uint128) external pure { }
 
-    function onSablierLockupWithdraw(uint256 streamId, address caller, address to, uint128 amount) external pure {
-        streamId;
-        caller;
-        to;
-        amount;
-    }
+    function onSablierLockupWithdraw(uint256, address, address, uint128) external pure { }
 }
 
 contract RecipientMarkerMissing {
-    function onSablierLockupCancel(
-        uint256 streamId,
-        address sender,
-        uint128 senderAmount,
-        uint128 recipientAmount
-    )
-        external
-        pure
-    {
-        streamId;
-        sender;
-        senderAmount;
-        recipientAmount;
-    }
+    function onSablierLockupCancel(uint256, address, uint128, uint128) external pure { }
 
-    function onSablierLockupWithdraw(uint256 streamId, address caller, address to, uint128 amount) external pure {
-        streamId;
-        caller;
-        to;
-        amount;
-    }
+    function onSablierLockupWithdraw(uint256, address, address, uint128) external pure { }
 }
 
 contract RecipientReentrant is ISablierRecipient {
@@ -95,7 +59,7 @@ contract RecipientReentrant is ISablierRecipient {
         senderAmount;
         sender;
         recipientAmount;
-        ISablierV2Lockup(msg.sender).cancel(streamId);
+        ISablierV2Lockup(msg.sender).withdraw(streamId, address(this), recipientAmount);
     }
 
     function onSablierLockupWithdraw(uint256 streamId, address caller, address to, uint128 amount) external {

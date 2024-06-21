@@ -11,11 +11,17 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         resetPrank({ msgSender: users.recipient });
     }
 
+    modifier givenEndTimeInTheFuture() {
+        // Simulate the passage of time.
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
+        _;
+    }
+
     modifier givenNotNull() {
         _;
     }
 
-    modifier givenRecipientContract() {
+    modifier givenRecipientAllowedToHook() {
         _;
     }
 
@@ -28,11 +34,24 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         _;
     }
 
+    modifier whenCallerSender() {
+        resetPrank({ msgSender: users.sender });
+        _;
+    }
+
     modifier whenNoOverdraw() {
         _;
     }
 
     modifier whenNotDelegateCalled() {
+        _;
+    }
+
+    modifier whenRecipientNotReentrant() {
+        _;
+    }
+
+    modifier whenRecipientNotReverting() {
         _;
     }
 

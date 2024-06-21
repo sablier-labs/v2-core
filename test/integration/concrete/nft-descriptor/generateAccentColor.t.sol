@@ -8,7 +8,7 @@ contract GenerateAccentColor_Integration_Concrete_Test is NFTDescriptor_Integrat
         // Passing a dummy contract instead of a real Sablier contract to make this test easy to maintain.
         // Note: the address of `noop` depends on the order of the state variables in {Base_Test}.
         string memory actualColor = nftDescriptorMock.generateAccentColor_({ sablier: address(noop), streamId: 1337 });
-        string memory expectedColor = "hsl(268,54%,64%)";
+        string memory expectedColor = "hsl(128,58%,62%)";
         assertEq(actualColor, expectedColor, "accentColor");
     }
 }

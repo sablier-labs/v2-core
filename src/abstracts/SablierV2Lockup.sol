@@ -40,7 +40,7 @@ abstract contract SablierV2Lockup is
     ISablierV2NFTDescriptor public override nftDescriptor;
 
     /// @dev Mapping of contracts allowed be to run by Sablier when a stream is canceled or when assets are withdrawn.
-    mapping(ISablierRecipient recipient => bool allowed) internal _allowed;
+    mapping(ISablierRecipient recipient => bool allowed) internal _allowedToHook;
 
     /// @dev Sablier V2 Lockup streams mapped by unsigned integers.
     mapping(uint256 id => Lockup.Stream stream) internal _streams;
@@ -135,7 +135,7 @@ abstract contract SablierV2Lockup is
 
     /// @inheritdoc ISablierV2Lockup
     function isAllowedToHook(ISablierRecipient recipient) external view returns (bool result) {
-        result = _allowed[recipient];
+        result = _allowedToHook[recipient];
     }
 
     /// @inheritdoc ISablierV2Lockup
@@ -253,7 +253,7 @@ abstract contract SablierV2Lockup is
         }
 
         // Effect: put the recipient on the allowlist.
-        _allowed[recipient] = true;
+        _allowedToHook[recipient] = true;
 
         // Log the allowlist addition.
         emit ISablierV2Lockup.AllowToHook({ admin: msg.sender, recipient: recipient });
@@ -387,16 +387,14 @@ abstract contract SablierV2Lockup is
         // Emit an ERC-4906 event to trigger an update of the NFT metadata.
         emit MetadataUpdate({ _tokenId: streamId });
 
-        // Interaction: if `msg.sender` is not the recipient and the recipient is a contract, try to invoke the
-        // withdraw hook on it without reverting if the hook is not implemented, and also without bubbling up
-        // any potential revert.
-        if (msg.sender != recipient && recipient.code.length > 0) {
-            try ISablierRecipient(recipient).onSablierLockupWithdraw({
+        // Interaction: if `msg.sender` is not the recipient and the recipient is on the allowlist, run the hook.
+        if (msg.sender != recipient && _allowedToHook[ISablierRecipient(recipient)]) {
+            ISablierRecipient(recipient).onSablierLockupWithdraw({
                 streamId: streamId,
                 caller: msg.sender,
                 to: to,
                 amount: amount
-            }) { } catch { }
+            });
         }
     }
 
@@ -574,15 +572,14 @@ abstract contract SablierV2Lockup is
         // Emit an ERC-4906 event to trigger an update of the NFT metadata.
         emit MetadataUpdate({ _tokenId: streamId });
 
-        // Interaction: if the recipient is a contract, try to invoke the cancel hook on the recipient without
-        // reverting if the hook is not implemented, and without bubbling up any potential revert.
-        if (recipient.code.length > 0) {
-            try ISablierRecipient(recipient).onSablierLockupCancel({
+        // Interaction: if the recipient is on the allowlist, run the hook.
+        if (_allowedToHook[ISablierRecipient(recipient)]) {
+            ISablierRecipient(recipient).onSablierLockupCancel({
                 streamId: streamId,
                 sender: sender,
                 senderAmount: senderAmount,
                 recipientAmount: recipientAmount
-            }) { } catch { }
+            });
         }
     }
 

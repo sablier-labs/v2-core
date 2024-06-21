@@ -110,7 +110,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         assertFalse(isCancelable, "isCancelable");
     }
 
-    function test_Cancel_RecipientNotContract()
+    function test_Cancel_RecipientNotAllowedToHook()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -119,34 +119,19 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         givenStreamCancelable
         givenStatusStreaming
     {
-        lockup.cancel(defaultStreamId);
-        Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
-        Lockup.Status expectedStatus = Lockup.Status.CANCELED;
-        assertEq(actualStatus, expectedStatus);
-    }
+        // Create the stream with a recipient contract that implements {ISablierRecipient}.
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 
-    function test_Cancel_RecipientDoesNotImplementHook()
-        external
-        whenNotDelegateCalled
-        givenNotNull
-        givenStreamWarm
-        whenCallerAuthorized
-        givenStreamCancelable
-        givenStatusStreaming
-        givenRecipientContract
-    {
-        // Create the stream with a no-op contract as the recipient.
-        uint256 streamId = createDefaultStreamWithRecipient(address(noop));
-
-        // Expect a call to the hook.
+        // Expect Sablier to NOT run the recipient hook.
         uint128 senderAmount = lockup.refundableAmountOf(streamId);
         uint128 recipientAmount = lockup.withdrawableAmountOf(streamId);
-        vm.expectCall(
-            address(noop),
-            abi.encodeCall(
+        vm.expectCall({
+            callee: address(recipientGood),
+            data: abi.encodeCall(
                 ISablierRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
-            )
-        );
+            ),
+            count: 0
+        });
 
         // Cancel the stream.
         lockup.cancel(streamId);
@@ -157,7 +142,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         assertEq(actualStatus, expectedStatus);
     }
 
-    function test_Cancel_RecipientReverts()
+    function test_Cancel_RecipientReverting()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -165,32 +150,24 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenCallerAuthorized
         givenStreamCancelable
         givenStatusStreaming
-        givenRecipientContract
-        givenRecipientImplementsHook
+        givenRecipientAllowedToHook
     {
+        // Allow the recipient to hook.
+        resetPrank({ msgSender: users.admin });
+        lockup.allowToHook(recipientReverting);
+        resetPrank({ msgSender: users.sender });
+
         // Create the stream with a reverting contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientReverting));
 
-        // Expect a call to the hook.
-        uint128 senderAmount = lockup.refundableAmountOf(streamId);
-        uint128 recipientAmount = lockup.withdrawableAmountOf(streamId);
-        vm.expectCall(
-            address(recipientReverting),
-            abi.encodeCall(
-                ISablierRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
-            )
-        );
+        // Expect a revert.
+        vm.expectRevert("You shall not pass");
 
         // Cancel the stream.
         lockup.cancel(streamId);
-
-        // Assert that the stream has been canceled.
-        Lockup.Status actualStatus = lockup.statusOf(streamId);
-        Lockup.Status expectedStatus = Lockup.Status.CANCELED;
-        assertEq(actualStatus, expectedStatus);
     }
 
-    function test_Cancel_RecipientReentrancy()
+    function test_Cancel_RecipientReentrant()
         external
         whenNotDelegateCalled
         givenNotNull
@@ -198,14 +175,18 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenCallerAuthorized
         givenStreamCancelable
         givenStatusStreaming
-        givenRecipientContract
-        givenRecipientImplementsHook
-        whenRecipientDoesNotRevert
+        givenRecipientAllowedToHook
+        whenRecipientNotReverting
     {
+        // Allow the recipient to hook.
+        resetPrank({ msgSender: users.admin });
+        lockup.allowToHook(recipientReentrant);
+        resetPrank({ msgSender: users.sender });
+
         // Create the stream with a reentrant contract as the recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientReentrant));
 
-        // Expect a call to the hook.
+        // Expect Sablier to run the recipient hook.
         uint128 senderAmount = lockup.refundableAmountOf(streamId);
         uint128 recipientAmount = lockup.withdrawableAmountOf(streamId);
         vm.expectCall(
@@ -215,13 +196,23 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
             )
         );
 
+        // Expect a reentrant call to the Lockup contract.
+        vm.expectCall(
+            address(lockup),
+            abi.encodeCall(ISablierV2Lockup.withdraw, (streamId, address(recipientReentrant), recipientAmount))
+        );
+
         // Cancel the stream.
         lockup.cancel(streamId);
 
-        // Assert that the stream has been canceled.
+        // Assert that the stream has been depleted. The reentrant recipient withdrew all the funds.
         Lockup.Status actualStatus = lockup.statusOf(streamId);
-        Lockup.Status expectedStatus = Lockup.Status.CANCELED;
+        Lockup.Status expectedStatus = Lockup.Status.DEPLETED;
         assertEq(actualStatus, expectedStatus);
+
+        // Assert that the withdrawn amount has been updated.
+        uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(streamId);
+        assertEq(actualWithdrawnAmount, recipientAmount, "withdrawnAmount");
     }
 
     function test_Cancel()
@@ -232,11 +223,15 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenCallerAuthorized
         givenStreamCancelable
         givenStatusStreaming
-        givenRecipientContract
-        givenRecipientImplementsHook
-        whenRecipientDoesNotRevert
-        whenNoRecipientReentrancy
+        givenRecipientAllowedToHook
+        whenRecipientNotReverting
+        whenRecipientNotReentrant
     {
+        // Allow the recipient to hook.
+        resetPrank({ msgSender: users.admin });
+        lockup.allowToHook(recipientGood);
+        resetPrank({ msgSender: users.sender });
+
         // Create the stream.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 
@@ -244,7 +239,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         uint128 senderAmount = lockup.refundableAmountOf(streamId);
         expectCallToTransfer({ to: users.sender, value: senderAmount });
 
-        // Expect a call to the hook.
+        // Expect Sablier to run the recipient hook.
         uint128 recipientAmount = lockup.withdrawableAmountOf(streamId);
         vm.expectCall(
             address(recipientGood),

@@ -52,12 +52,16 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         whenCallerAuthorized
         givenStreamCancelable
         givenStatusStreaming
-        givenRecipientContract
-        givenRecipientImplementsHook
-        whenRecipientDoesNotRevert
-        whenNoRecipientReentrancy
+        givenRecipientAllowedToHook
+        whenRecipientNotReverting
+        whenRecipientNotReentrant
     {
-        timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1);
+        timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
+
+        // Allow the recipient to hook.
+        resetPrank({ msgSender: users.admin });
+        lockup.allowToHook(recipientReentrant);
+        resetPrank({ msgSender: users.sender });
 
         // Create the stream.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
