@@ -61,7 +61,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
         _;
     }
 
-    function test_WhenTheProvidedAddressImplementsTheInterfaceCorrectly()
+    function test_AllowToHook()
         external
         whenCallerAdmin
         whenProvidedAddressHasCode

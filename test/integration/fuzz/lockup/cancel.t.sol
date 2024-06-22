@@ -54,13 +54,14 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         givenStatusStreaming
         givenRecipientAllowedToHook
         whenRecipientNotReverting
+        whenRecipientReturnsSelector
         whenRecipientNotReentrant
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
 
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
-        lockup.allowToHook(recipientReentrant);
+        lockup.allowToHook(recipientGood);
         resetPrank({ msgSender: users.sender });
 
         // Create the stream.
