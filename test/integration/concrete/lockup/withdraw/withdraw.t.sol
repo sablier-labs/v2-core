@@ -367,6 +367,36 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
+    function test_Cancel_RecipientReturnsInvalidSelector()
+        external
+        whenNotDelegateCalled
+        givenNotNull
+        givenStreamNotDepleted
+        whenToNonZeroAddress
+        whenWithdrawAmountNotZero
+        whenNoOverdraw
+        whenWithdrawalAddressIsRecipient
+        whenCallerSender
+        givenEndTimeInTheFuture
+        whenStreamHasNotBeenCanceled
+        givenRecipientAllowedToHook
+    {
+        // Allow the recipient to hook.
+        resetPrank({ msgSender: users.admin });
+        lockup.allowToHook(recipientInvalidSelector);
+        resetPrank({ msgSender: users.sender });
+
+        // Create the stream with a recipient contract that returns invalid selector bytes on the hook call.
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientInvalidSelector));
+
+        // Expect a revert.
+        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_InvalidHookSelector.selector));
+
+        // Cancel the stream.
+        lockup.withdraw({ streamId: streamId, to: address(recipientInvalidSelector), amount: withdrawAmount });
+    }
+
     function test_Withdraw_RecipientReverting()
         external
         whenNotDelegateCalled
@@ -380,6 +410,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         givenEndTimeInTheFuture
         whenStreamHasNotBeenCanceled
         givenRecipientAllowedToHook
+        whenRecipientReturnsSelector
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
@@ -410,6 +441,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         givenEndTimeInTheFuture
         whenStreamHasNotBeenCanceled
         givenRecipientAllowedToHook
+        whenRecipientReturnsSelector
         whenRecipientNotReverting
     {
         // Allow the recipient to hook.
@@ -450,6 +482,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         givenEndTimeInTheFuture
         whenStreamHasNotBeenCanceled
         givenRecipientAllowedToHook
+        whenRecipientReturnsSelector
         whenRecipientNotReverting
         whenRecipientNotReentrant
     {

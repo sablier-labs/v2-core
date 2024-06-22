@@ -38,6 +38,9 @@ library Errors {
     /// @notice Thrown when trying to create a stream with an end time not in the future.
     error SablierV2Lockup_EndTimeNotInTheFuture(uint40 blockTimestamp, uint40 endTime);
 
+    /// @notice Thrown when the hook does not return the correct selector.
+    error SablierV2Lockup_InvalidHookSelector();
+
     /// @notice Thrown when trying to transfer Stream NFT when transferability is disabled.
     error SablierV2Lockup_NotTransferable(uint256 tokenId);
 

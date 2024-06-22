@@ -389,12 +389,18 @@ abstract contract SablierV2Lockup is
 
         // Interaction: if `msg.sender` is not the recipient and the recipient is on the allowlist, run the hook.
         if (msg.sender != recipient && _allowedToHook[ISablierRecipient(recipient)]) {
-            ISablierRecipient(recipient).onSablierLockupWithdraw({
+            bytes4 selector = ISablierRecipient(recipient).onSablierLockupWithdraw({
                 streamId: streamId,
                 caller: msg.sender,
                 to: to,
                 amount: amount
             });
+
+            // Check that the recipient's hook returns the correct selector. 0x92b9102b is the selector of
+            // `onSablierLockupWithdraw` function.
+            if (selector != 0x92b9102b) {
+                revert Errors.SablierV2Lockup_InvalidHookSelector();
+            }
         }
     }
 
@@ -574,12 +580,18 @@ abstract contract SablierV2Lockup is
 
         // Interaction: if the recipient is on the allowlist, run the hook.
         if (_allowedToHook[ISablierRecipient(recipient)]) {
-            ISablierRecipient(recipient).onSablierLockupCancel({
+            bytes4 selector = ISablierRecipient(recipient).onSablierLockupCancel({
                 streamId: streamId,
                 sender: sender,
                 senderAmount: senderAmount,
                 recipientAmount: recipientAmount
             });
+
+            // Check that the recipient's hook returns the correct selector. 0x6a5788f8 is the selector of
+            // `onSablierLockupCancel` function.
+            if (selector != 0x6a5788f8) {
+                revert Errors.SablierV2Lockup_InvalidHookSelector();
+            }
         }
     }
 

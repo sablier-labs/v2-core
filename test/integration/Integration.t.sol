@@ -5,7 +5,11 @@ import { Errors } from "src/libraries/Errors.sol";
 
 import { Base_Test } from "../Base.t.sol";
 import {
-    RecipientMarkerFalse, RecipientMarkerMissing, RecipientReentrant, RecipientReverting
+    RecipientInvalidSelector,
+    RecipientMarkerFalse,
+    RecipientMarkerMissing,
+    RecipientReentrant,
+    RecipientReverting
 } from "../mocks/Hooks.sol";
 
 /// @notice Common logic needed by all integration tests, both concrete and fuzz tests.
@@ -15,6 +19,7 @@ abstract contract Integration_Test is Base_Test {
                                    TEST CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
+    RecipientInvalidSelector internal recipientInvalidSelector = new RecipientInvalidSelector();
     RecipientMarkerFalse internal recipientMarkerFalse = new RecipientMarkerFalse();
     RecipientMarkerMissing internal recipientMarkerMissing = new RecipientMarkerMissing();
     RecipientReentrant internal recipientReentrant = new RecipientReentrant();
@@ -40,6 +45,7 @@ abstract contract Integration_Test is Base_Test {
 
     /// @dev Labels the most relevant contracts.
     function labelContracts() internal {
+        vm.label({ account: address(recipientInvalidSelector), newLabel: "Recipient Invalid Selector" });
         vm.label({ account: address(recipientMarkerFalse), newLabel: "Recipient Marker False" });
         vm.label({ account: address(recipientMarkerMissing), newLabel: "Recipient Marker Missing" });
         vm.label({ account: address(recipientReentrant), newLabel: "Recipient Reentrant" });

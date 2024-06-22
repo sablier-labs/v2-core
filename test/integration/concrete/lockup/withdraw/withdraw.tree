@@ -61,13 +61,16 @@ withdraw.t.sol
                                  ├── when the recipient reverts
                                  │  └── it should revert the entire transaction
                                  └── when the recipient does not revert
-                                    ├── when there is reentrancy
-                                    │  ├── it should make multiple withdrawals
-                                    │  ├── it should update the withdrawn amounts
-                                    │  └── it should make Sablier run the recipient hook
-                                    └── when there is no reentrancy
-                                       ├── it should make the withdrawal
-                                       ├── it should update the withdrawn amount
-                                       ├── it should make Sablier run the recipient hook
-                                       ├── it should emit a {MetadataUpdate} event
-                                       └── it should emit a {WithdrawFromLockupStream} event
+                                    ├── when the recipient hook does not return valid selector
+                                    │  └── it should revert
+                                    └── when the recipient hook returns valid selector
+                                       ├── when there is reentrancy
+                                       │  ├── it should make multiple withdrawals
+                                       │  ├── it should update the withdrawn amounts
+                                       │  └── it should make Sablier run the recipient hook
+                                       └── when there is no reentrancy
+                                          ├── it should make the withdrawal
+                                          ├── it should update the withdrawn amount
+                                          ├── it should make Sablier run the recipient hook
+                                          ├── it should emit a {MetadataUpdate} event
+                                          └── it should emit a {WithdrawFromLockupStream} event

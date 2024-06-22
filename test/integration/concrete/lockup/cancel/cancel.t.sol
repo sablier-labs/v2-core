@@ -142,6 +142,31 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         assertEq(actualStatus, expectedStatus);
     }
 
+    function test_Cancel_RecipientReturnsInvalidSelector()
+        external
+        whenNotDelegateCalled
+        givenNotNull
+        givenStreamWarm
+        whenCallerAuthorized
+        givenStreamCancelable
+        givenStatusStreaming
+        givenRecipientAllowedToHook
+    {
+        // Allow the recipient to hook.
+        resetPrank({ msgSender: users.admin });
+        lockup.allowToHook(recipientInvalidSelector);
+        resetPrank({ msgSender: users.sender });
+
+        // Create the stream with a recipient contract that returns invalid selector bytes on the hook call.
+        uint256 streamId = createDefaultStreamWithRecipient(address(recipientInvalidSelector));
+
+        // Expect a revert.
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_InvalidHookSelector.selector));
+
+        // Cancel the stream.
+        lockup.cancel(streamId);
+    }
+
     function test_Cancel_RecipientReverting()
         external
         whenNotDelegateCalled
@@ -151,6 +176,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         givenStreamCancelable
         givenStatusStreaming
         givenRecipientAllowedToHook
+        whenRecipientReturnsSelector
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
@@ -176,6 +202,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         givenStreamCancelable
         givenStatusStreaming
         givenRecipientAllowedToHook
+        whenRecipientReturnsSelector
         whenRecipientNotReverting
     {
         // Allow the recipient to hook.
@@ -224,6 +251,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         givenStreamCancelable
         givenStatusStreaming
         givenRecipientAllowedToHook
+        whenRecipientReturnsSelector
         whenRecipientNotReverting
         whenRecipientNotReentrant
     {

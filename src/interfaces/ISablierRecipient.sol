@@ -2,7 +2,7 @@
 pragma solidity >=0.8.22;
 
 /// @title ISablierRecipient
-/// @notice Interface for recipient contracts capable of reacting to cancellations, renouncements, and withdrawals.
+/// @notice Interface for recipient contracts capable of reacting to cancellations and withdrawals.
 /// @dev Implementation of this interface is optional. If a recipient contract doesn't implement this
 /// interface or implements it partially, the function execution will not revert.
 interface ISablierRecipient {
@@ -14,7 +14,8 @@ interface ISablierRecipient {
     /// @notice Responds to cancellations.
     ///
     /// @dev Notes:
-    /// - This function may revert, but the Sablier contract will ignore the revert.
+    /// - The function MUST return the selector i.e. ISablierRecipient.onSablierLockupCancel.selector.
+    /// - If this function reverts, the Sablier contract will revert as well.
     ///
     /// @param streamId The ID of the canceled stream.
     /// @param sender The stream's sender, who canceled the stream.
@@ -22,22 +23,35 @@ interface ISablierRecipient {
     /// decimals.
     /// @param recipientAmount The amount of assets left for the stream's recipient to withdraw, denoted in units of
     /// the asset's decimals.
+    ///
+    /// @return selector The function selector for the hook.
     function onSablierLockupCancel(
         uint256 streamId,
         address sender,
         uint128 senderAmount,
         uint128 recipientAmount
     )
-        external;
+        external
+        returns (bytes4 selector);
 
     /// @notice Responds to withdrawals triggered by any address except the contract implementing this interface.
     ///
     /// @dev Notes:
-    /// - This function may revert, but the Sablier contract will ignore the revert.
+    /// - The function MUST return the selector i.e. ISablierRecipient.onSablierLockupWithdraw.selector.
+    /// - If this function reverts, the Sablier contract will revert as well.
     ///
     /// @param streamId The ID of the stream being withdrawn from.
     /// @param caller The original `msg.sender` address that triggered the withdrawal.
     /// @param to The address receiving the withdrawn assets.
     /// @param amount The amount of assets withdrawn, denoted in units of the asset's decimals.
-    function onSablierLockupWithdraw(uint256 streamId, address caller, address to, uint128 amount) external;
+    ///
+    /// @return selector The function selector for the hook.
+    function onSablierLockupWithdraw(
+        uint256 streamId,
+        address caller,
+        address to,
+        uint128 amount
+    )
+        external
+        returns (bytes4 selector);
 }

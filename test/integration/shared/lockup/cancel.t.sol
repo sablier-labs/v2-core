@@ -58,4 +58,8 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
     modifier whenRecipientNotReverting() {
         _;
     }
+
+    modifier whenRecipientReturnsSelector() {
+        _;
+    }
 }
