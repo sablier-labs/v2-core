@@ -396,9 +396,8 @@ abstract contract SablierV2Lockup is
                 amount: amount
             });
 
-            // Check that the recipient's hook returns the correct selector. 0x92b9102b is the selector of
-            // `onSablierLockupWithdraw` function.
-            if (selector != 0x92b9102b) {
+            // Check: the recipient's hook returned the correct selector.
+            if (selector != ISablierRecipient.onSablierLockupWithdraw.selector) {
                 revert Errors.SablierV2Lockup_InvalidHookSelector();
             }
         }
@@ -587,9 +586,8 @@ abstract contract SablierV2Lockup is
                 recipientAmount: recipientAmount
             });
 
-            // Check that the recipient's hook returns the correct selector. 0x6a5788f8 is the selector of
-            // `onSablierLockupCancel` function.
-            if (selector != 0x6a5788f8) {
+            // Check: the recipient's hook returned the correct selector.
+            if (selector != ISablierRecipient.onSablierLockupCancel.selector) {
                 revert Errors.SablierV2Lockup_InvalidHookSelector();
             }
         }

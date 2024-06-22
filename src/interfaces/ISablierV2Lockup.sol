@@ -260,7 +260,6 @@ interface ISablierV2Lockup is
     ///
     /// Notes:
     /// - This is an irreversible operation.
-    /// - This function attempts to invoke a hook on the stream's recipient, provided that the recipient is a contract.
     ///
     /// Requirements:
     /// - Must not be delegate called.
@@ -341,7 +340,6 @@ interface ISablierV2Lockup is
     ///
     /// Notes:
     /// - This function attempts to call a hook on the recipient of each stream, unless `msg.sender` is the recipient.
-    /// - This function attempts to call a hook on the sender of each stream, unless `msg.sender` is the sender.
     ///
     /// Requirements:
     /// - Must not be delegate called.
