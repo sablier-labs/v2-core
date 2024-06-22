@@ -247,8 +247,8 @@ abstract contract SablierV2Lockup is
             revert Errors.SablierV2Lockup_AllowToHookZeroCodeSize(recipient);
         }
 
-        // Check: recipients implements the marker interface.
-        if (!recipient.IS_SABLIER_RECIPIENT()) {
+        // Check: recipients implements the ERC-165 interface ID required by {ISablierRecipient}.
+        if (!recipient.supportsInterface(0xf8ee98d3)) {
             revert Errors.SablierV2Lockup_AllowToHookIncorrectImplementation(recipient);
         }
 

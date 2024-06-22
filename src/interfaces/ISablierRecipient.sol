@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
-/// @title ISablierRecipient
-/// @notice Interface for recipient contracts capable of reacting to cancellations and withdrawals.
-/// @dev Implementation of this interface is optional. If a recipient contract doesn't implement this
-/// interface or implements it partially, the function execution will not revert.
-interface ISablierRecipient {
-    /// @notice A marker indicating that this is a {ISablierRecipient} contract.
-    ///
-    /// @dev This MUST return true.
-    function IS_SABLIER_RECIPIENT() external view returns (bool);
+import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
+/// @title ISablierRecipient
+///
+/// @notice Interface for recipient contracts capable of reacting to cancellations and withdrawals. Implementation of
+/// this interface is optional. If a recipient contract doesn't implement this interface or implements it partially, the
+/// function execution will not revert.
+///
+/// @dev See {IERC165-supportsInterface}.
+/// - The implementation MUST implement the {IERC165-supportsInterface} method, which MUST return `true` when called
+/// with `0xf8ee98d3`.
+interface ISablierRecipient is IERC165 {
     /// @notice Responds to cancellations.
     ///
     /// @dev Notes:

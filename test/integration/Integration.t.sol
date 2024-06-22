@@ -5,9 +5,9 @@ import { Errors } from "src/libraries/Errors.sol";
 
 import { Base_Test } from "../Base.t.sol";
 import {
+    RecipientInterfaceIDIncorrect,
+    RecipientInterfaceIDMissing,
     RecipientInvalidSelector,
-    RecipientMarkerFalse,
-    RecipientMarkerMissing,
     RecipientReentrant,
     RecipientReverting
 } from "../mocks/Hooks.sol";
@@ -19,9 +19,9 @@ abstract contract Integration_Test is Base_Test {
                                    TEST CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
+    RecipientInterfaceIDIncorrect internal recipientInterfaceIDIncorrect = new RecipientInterfaceIDIncorrect();
+    RecipientInterfaceIDMissing internal recipientInterfaceIDMissing = new RecipientInterfaceIDMissing();
     RecipientInvalidSelector internal recipientInvalidSelector = new RecipientInvalidSelector();
-    RecipientMarkerFalse internal recipientMarkerFalse = new RecipientMarkerFalse();
-    RecipientMarkerMissing internal recipientMarkerMissing = new RecipientMarkerMissing();
     RecipientReentrant internal recipientReentrant = new RecipientReentrant();
     RecipientReverting internal recipientReverting = new RecipientReverting();
 
@@ -45,9 +45,9 @@ abstract contract Integration_Test is Base_Test {
 
     /// @dev Labels the most relevant contracts.
     function labelContracts() internal {
+        vm.label({ account: address(recipientInterfaceIDIncorrect), newLabel: "Recipient Interface ID Incorrect" });
+        vm.label({ account: address(recipientInterfaceIDMissing), newLabel: "Recipient Interface ID Missing" });
         vm.label({ account: address(recipientInvalidSelector), newLabel: "Recipient Invalid Selector" });
-        vm.label({ account: address(recipientMarkerFalse), newLabel: "Recipient Marker False" });
-        vm.label({ account: address(recipientMarkerMissing), newLabel: "Recipient Marker Missing" });
         vm.label({ account: address(recipientReentrant), newLabel: "Recipient Reentrant" });
         vm.label({ account: address(recipientReverting), newLabel: "Recipient Reverting" });
     }

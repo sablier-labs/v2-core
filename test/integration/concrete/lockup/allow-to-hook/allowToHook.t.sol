@@ -44,15 +44,15 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
         whenCallerAdmin
         whenProvidedAddressHasCode
     {
-        // Marker returning false instead of true.
-        ISablierRecipient recipient = recipientMarkerFalse;
+        // Incorrect interface ID.
+        ISablierRecipient recipient = recipientInterfaceIDIncorrect;
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierV2Lockup_AllowToHookIncorrectImplementation.selector, recipient)
         );
         lockup.allowToHook(recipient);
 
-        // Missing marker. Will revert when calling `IS_SABLIER_RECIPIENT`, a function that is not implemented.
-        recipient = ISablierRecipient(address(recipientMarkerMissing));
+        // Missing interface ID.
+        recipient = ISablierRecipient(address(recipientInterfaceIDMissing));
         vm.expectRevert(bytes(""));
         lockup.allowToHook(recipient);
     }
