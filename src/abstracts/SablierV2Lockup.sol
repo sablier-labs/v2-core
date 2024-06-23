@@ -39,7 +39,8 @@ abstract contract SablierV2Lockup is
     /// @inheritdoc ISablierV2Lockup
     ISablierV2NFTDescriptor public override nftDescriptor;
 
-    /// @dev Mapping of contracts allowed be to run by Sablier when a stream is canceled or when assets are withdrawn.
+    /// @dev Mapping of contracts allowed to be called by Sablier when a stream is canceled or when assets are
+    /// withdrawn.
     mapping(ISablierRecipient recipient => bool allowed) internal _allowedToHook;
 
     /// @dev Sablier V2 Lockup streams mapped by unsigned integers.
@@ -244,12 +245,12 @@ abstract contract SablierV2Lockup is
     function allowToHook(ISablierRecipient recipient) external override onlyAdmin {
         // Check: non-zero code size.
         if (address(recipient).code.length == 0) {
-            revert Errors.SablierV2Lockup_AllowToHookZeroCodeSize(recipient);
+            revert Errors.SablierV2Lockup_AllowToHookZeroCodeSize(address(recipient));
         }
 
         // Check: recipients implements the ERC-165 interface ID required by {ISablierRecipient}.
         if (!recipient.supportsInterface(0xf8ee98d3)) {
-            revert Errors.SablierV2Lockup_AllowToHookIncorrectImplementation(recipient);
+            revert Errors.SablierV2Lockup_AllowToHookIncorrectImplementation(address(recipient));
         }
 
         // Effect: put the recipient on the allowlist.
