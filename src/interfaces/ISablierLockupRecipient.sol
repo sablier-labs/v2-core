@@ -24,7 +24,7 @@ interface ISablierLockupRecipient is IERC165 {
     /// @param recipientAmount The amount of assets left for the stream's recipient to withdraw, denoted in units of
     /// the asset's decimals.
     ///
-    /// @return selector The function selector for the hook.
+    /// @return selector The selector of this function needed to validate the hook.
     function onSablierLockupCancel(
         uint256 streamId,
         address sender,
@@ -45,7 +45,7 @@ interface ISablierLockupRecipient is IERC165 {
     /// @param to The address receiving the withdrawn assets.
     /// @param amount The amount of assets withdrawn, denoted in units of the asset's decimals.
     ///
-    /// @return selector The function selector for the hook.
+    /// @return selector The selector of this function needed to validate the hook.
     function onSablierLockupWithdraw(
         uint256 streamId,
         address caller,

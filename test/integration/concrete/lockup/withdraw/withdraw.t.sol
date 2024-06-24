@@ -384,7 +384,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
-        lockup.allowToHook(recipientReverting);
+        lockup.allowToHook(address(recipientReverting));
         resetPrank({ msgSender: users.sender });
 
         // Create the stream with a reverting contract as the stream's recipient.
@@ -415,7 +415,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
-        lockup.allowToHook(recipientInvalidSelector);
+        lockup.allowToHook(address(recipientInvalidSelector));
         resetPrank({ msgSender: users.sender });
 
         // Create the stream with a recipient contract that returns invalid selector bytes on the hook call.
@@ -423,7 +423,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
         // Expect a revert.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_InvalidHookSelector.selector));
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierV2Lockup_InvalidHookSelector.selector, address(recipientInvalidSelector)
+            )
+        );
 
         // Cancel the stream.
         lockup.withdraw({ streamId: streamId, to: address(recipientInvalidSelector), amount: withdrawAmount });
@@ -447,7 +451,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
-        lockup.allowToHook(recipientReentrant);
+        lockup.allowToHook(address(recipientReentrant));
         resetPrank({ msgSender: users.sender });
 
         // Create the stream with a reentrant contract as the stream's recipient.
@@ -489,7 +493,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
-        lockup.allowToHook(recipientGood);
+        lockup.allowToHook(address(recipientGood));
         resetPrank({ msgSender: users.sender });
 
         // Create the stream with a contract as the stream's recipient.

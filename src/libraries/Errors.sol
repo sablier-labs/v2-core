@@ -22,7 +22,7 @@ library Errors {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to allow for hooks a contract that doesn't implement the interface correctly.
-    error SablierV2Lockup_AllowToHookIncorrectImplementation(address recipient);
+    error SablierV2Lockup_AllowToHookUnsupportedInterface(address recipient);
 
     /// @notice Thrown when trying to allow for hooks an address with no code.
     error SablierV2Lockup_AllowToHookZeroCodeSize(address recipient);
@@ -37,7 +37,7 @@ library Errors {
     error SablierV2Lockup_EndTimeNotInTheFuture(uint40 blockTimestamp, uint40 endTime);
 
     /// @notice Thrown when the hook does not return the correct selector.
-    error SablierV2Lockup_InvalidHookSelector();
+    error SablierV2Lockup_InvalidHookSelector(address recipient);
 
     /// @notice Thrown when trying to transfer Stream NFT when transferability is disabled.
     error SablierV2Lockup_NotTransferable(uint256 tokenId);

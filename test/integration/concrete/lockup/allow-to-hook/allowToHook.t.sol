@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { ISablierLockupRecipient } from "src/interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
@@ -20,7 +19,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
-        lockup.allowToHook(ISablierLockupRecipient(users.eve));
+        lockup.allowToHook(users.eve);
     }
 
     modifier whenCallerAdmin() {
@@ -30,7 +29,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
     }
 
     function test_RevertWhen_ProvidedAddressNoCode() external whenCallerAdmin {
-        ISablierLockupRecipient eoa = ISablierLockupRecipient(vm.addr({ privateKey: 1 }));
+        address eoa = vm.addr({ privateKey: 1 });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_AllowToHookZeroCodeSize.selector, eoa));
         lockup.allowToHook(eoa);
     }
@@ -39,25 +38,25 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
         _;
     }
 
-    function test_RevertWhen_ProvidedAddressDoesNotImplementInterfaceCorrectly()
+    function test_RevertWhen_ProvidedAddressUnsupportedInterface()
         external
         whenCallerAdmin
         whenProvidedAddressHasCode
     {
         // Incorrect interface ID.
-        ISablierLockupRecipient recipient = recipientInterfaceIDIncorrect;
+        address recipient = address(recipientInterfaceIDIncorrect);
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2Lockup_AllowToHookIncorrectImplementation.selector, recipient)
+            abi.encodeWithSelector(Errors.SablierV2Lockup_AllowToHookUnsupportedInterface.selector, recipient)
         );
         lockup.allowToHook(recipient);
 
         // Missing interface ID.
-        recipient = ISablierLockupRecipient(address(recipientInterfaceIDMissing));
+        recipient = address(recipientInterfaceIDMissing);
         vm.expectRevert(bytes(""));
         lockup.allowToHook(recipient);
     }
 
-    modifier whenProvidedAddressImplementsInterfaceCorrectly() {
+    modifier whenProvidedAddressSupportsInterface() {
         _;
     }
 
@@ -65,17 +64,17 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
         external
         whenCallerAdmin
         whenProvidedAddressHasCode
-        whenProvidedAddressImplementsInterfaceCorrectly
+        whenProvidedAddressSupportsInterface
     {
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit AllowToHook(users.admin, recipientGood);
+        emit AllowToHook(users.admin, address(recipientGood));
 
         // Allow the provided address to hook.
-        lockup.allowToHook(recipientGood);
+        lockup.allowToHook(address(recipientGood));
 
         // Assert that the provided address has been put on the allowlist.
-        bool isAllowedToHook = lockup.isAllowedToHook(recipientGood);
+        bool isAllowedToHook = lockup.isAllowedToHook(address(recipientGood));
         assertTrue(isAllowedToHook, "address not put on the allowlist");
     }
 }

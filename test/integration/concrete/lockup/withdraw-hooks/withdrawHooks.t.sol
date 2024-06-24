@@ -15,7 +15,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
 
         // Allow the good recipient to hook.
         resetPrank({ msgSender: users.admin });
-        lockup.allowToHook(recipientGood);
+        lockup.allowToHook(address(recipientGood));
         resetPrank({ msgSender: users.sender });
     }
 

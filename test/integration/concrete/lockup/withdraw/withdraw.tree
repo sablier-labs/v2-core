@@ -61,9 +61,9 @@ withdraw.t.sol
                                  ├── when the recipient reverts
                                  │  └── it should revert the entire transaction
                                  └── when the recipient does not revert
-                                    ├── when the recipient hook does not return valid selector
+                                    ├── when the recipient hook does not return a valid selector
                                     │  └── it should revert
-                                    └── when the recipient hook returns valid selector
+                                    └── when the recipient hook returns a valid selector
                                        ├── when there is reentrancy
                                        │  ├── it should make multiple withdrawals
                                        │  ├── it should update the withdrawn amounts

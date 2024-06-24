@@ -61,7 +61,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
 
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
-        lockup.allowToHook(recipientGood);
+        lockup.allowToHook(address(recipientGood));
         resetPrank({ msgSender: users.sender });
 
         // Create the stream.
