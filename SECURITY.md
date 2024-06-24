@@ -55,6 +55,8 @@ vulnerability, it must adhere to these assumptions as well:
   an approved address. This excludes rebase tokens and interest-bearing tokens.
 - The token contract does not allow callbacks (e.g. ERC-777 is not supported).
 - There is no need for exponents greater than ~18.44 in `LockupDynamic` segments.
+- Recipient contracts, on the allowlist, are carefully reviewed by Sablier team and have gone through a thorough due
+  diligence. Thus they are assumed to expose no risk to the Sablier protocol.
 
 ### Rewards
 
