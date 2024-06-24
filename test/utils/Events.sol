@@ -3,7 +3,7 @@ pragma solidity >=0.8.22;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import { ISablierRecipient } from "../../src/interfaces/ISablierRecipient.sol";
+import { ISablierLockupRecipient } from "../../src/interfaces/ISablierLockupRecipient.sol";
 import { ISablierV2NFTDescriptor } from "../../src/interfaces/ISablierV2NFTDescriptor.sol";
 import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/types/DataTypes.sol";
 
@@ -33,7 +33,7 @@ abstract contract Events {
                                  SABLIER-V2-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
-    event AllowToHook(address admin, ISablierRecipient recipient);
+    event AllowToHook(address admin, ISablierLockupRecipient recipient);
 
     event CancelLockupStream(
         uint256 streamId,

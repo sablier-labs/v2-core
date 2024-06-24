@@ -8,7 +8,7 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
-import { ISablierRecipient } from "../interfaces/ISablierRecipient.sol";
+import { ISablierLockupRecipient } from "../interfaces/ISablierLockupRecipient.sol";
 import { ISablierV2Lockup } from "../interfaces/ISablierV2Lockup.sol";
 import { ISablierV2NFTDescriptor } from "../interfaces/ISablierV2NFTDescriptor.sol";
 import { Errors } from "../libraries/Errors.sol";
@@ -40,7 +40,7 @@ abstract contract SablierV2Lockup is
     ISablierV2NFTDescriptor public override nftDescriptor;
 
     /// @dev Mapping of contracts allowed to hook to Sablier when a stream is canceled or when assets are withdrawn.
-    mapping(ISablierRecipient recipient => bool allowed) internal _allowedToHook;
+    mapping(ISablierLockupRecipient recipient => bool allowed) internal _allowedToHook;
 
     /// @dev Sablier V2 Lockup streams mapped by unsigned integers.
     mapping(uint256 id => Lockup.Stream stream) internal _streams;
@@ -134,7 +134,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @inheritdoc ISablierV2Lockup
-    function isAllowedToHook(ISablierRecipient recipient) external view returns (bool result) {
+    function isAllowedToHook(ISablierLockupRecipient recipient) external view returns (bool result) {
         result = _allowedToHook[recipient];
     }
 
@@ -241,13 +241,13 @@ abstract contract SablierV2Lockup is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierV2Lockup
-    function allowToHook(ISablierRecipient recipient) external override onlyAdmin {
+    function allowToHook(ISablierLockupRecipient recipient) external override onlyAdmin {
         // Check: non-zero code size.
         if (address(recipient).code.length == 0) {
             revert Errors.SablierV2Lockup_AllowToHookZeroCodeSize(address(recipient));
         }
 
-        // Check: recipients implements the ERC-165 interface ID required by {ISablierRecipient}.
+        // Check: recipients implements the ERC-165 interface ID required by {ISablierLockupRecipient}.
         if (!recipient.supportsInterface(0xf8ee98d3)) {
             revert Errors.SablierV2Lockup_AllowToHookIncorrectImplementation(address(recipient));
         }
@@ -388,8 +388,8 @@ abstract contract SablierV2Lockup is
         emit MetadataUpdate({ _tokenId: streamId });
 
         // Interaction: if `msg.sender` is not the recipient and the recipient is on the allowlist, run the hook.
-        if (msg.sender != recipient && _allowedToHook[ISablierRecipient(recipient)]) {
-            bytes4 selector = ISablierRecipient(recipient).onSablierLockupWithdraw({
+        if (msg.sender != recipient && _allowedToHook[ISablierLockupRecipient(recipient)]) {
+            bytes4 selector = ISablierLockupRecipient(recipient).onSablierLockupWithdraw({
                 streamId: streamId,
                 caller: msg.sender,
                 to: to,
@@ -397,7 +397,7 @@ abstract contract SablierV2Lockup is
             });
 
             // Check: the recipient's hook returned the correct selector.
-            if (selector != ISablierRecipient.onSablierLockupWithdraw.selector) {
+            if (selector != ISablierLockupRecipient.onSablierLockupWithdraw.selector) {
                 revert Errors.SablierV2Lockup_InvalidHookSelector();
             }
         }
@@ -578,8 +578,8 @@ abstract contract SablierV2Lockup is
         emit MetadataUpdate({ _tokenId: streamId });
 
         // Interaction: if the recipient is on the allowlist, run the hook.
-        if (_allowedToHook[ISablierRecipient(recipient)]) {
-            bytes4 selector = ISablierRecipient(recipient).onSablierLockupCancel({
+        if (_allowedToHook[ISablierLockupRecipient(recipient)]) {
+            bytes4 selector = ISablierLockupRecipient(recipient).onSablierLockupCancel({
                 streamId: streamId,
                 sender: sender,
                 senderAmount: senderAmount,
@@ -587,7 +587,7 @@ abstract contract SablierV2Lockup is
             });
 
             // Check: the recipient's hook returned the correct selector.
-            if (selector != ISablierRecipient.onSablierLockupCancel.selector) {
+            if (selector != ISablierLockupRecipient.onSablierLockupCancel.selector) {
                 revert Errors.SablierV2Lockup_InvalidHookSelector();
             }
         }

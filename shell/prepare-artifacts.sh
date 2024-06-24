@@ -28,7 +28,7 @@ cp out-optimized/SablierV2LockupTranched.sol/SablierV2LockupTranched.json $artif
 cp out-optimized/SablierV2NFTDescriptor.sol/SablierV2NFTDescriptor.json $artifacts
 
 interfaces=./artifacts/interfaces
-cp out-optimized/ISablierRecipient.sol/ISablierRecipient.json $interfaces
+cp out-optimized/ISablierLockupRecipient.sol/ISablierLockupRecipient.json $interfaces
 cp out-optimized/ISablierV2Lockup.sol/ISablierV2Lockup.json $interfaces
 cp out-optimized/ISablierV2LockupDynamic.sol/ISablierV2LockupDynamic.json $interfaces
 cp out-optimized/ISablierV2LockupLinear.sol/ISablierV2LockupLinear.json $interfaces

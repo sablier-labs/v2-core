@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { ISablierRecipient } from "src/interfaces/ISablierRecipient.sol";
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
+import { ISablierLockupRecipient } from "src/interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
 import { Lockup } from "src/types/DataTypes.sol";
@@ -345,7 +345,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         givenEndTimeInTheFuture
         whenStreamHasNotBeenCanceled
     {
-        // Create the stream with a recipient contract that implements {ISablierRecipient}.
+        // Create the stream with a recipient contract that implements {ISablierLockupRecipient}.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 
         // Expect Sablier to NOT run the recipient hook.
@@ -353,7 +353,8 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         vm.expectCall({
             callee: address(recipientGood),
             data: abi.encodeCall(
-                ISablierRecipient.onSablierLockupWithdraw, (streamId, users.sender, address(recipientGood), withdrawAmount)
+                ISablierLockupRecipient.onSablierLockupWithdraw,
+                (streamId, users.sender, address(recipientGood), withdrawAmount)
             ),
             count: 0
         });
@@ -504,7 +505,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         vm.expectCall(
             address(recipientGood),
             abi.encodeCall(
-                ISablierRecipient.onSablierLockupWithdraw,
+                ISablierLockupRecipient.onSablierLockupWithdraw,
                 (streamId, users.sender, address(recipientGood), withdrawAmount)
             )
         );

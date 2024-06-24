@@ -3,12 +3,12 @@ pragma solidity >=0.8.22;
 
 import { IERC165, ERC165 } from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
-import { ISablierRecipient } from "../../src/interfaces/ISablierRecipient.sol";
 import { ISablierV2Lockup } from "../../src/interfaces/ISablierV2Lockup.sol";
+import { ISablierLockupRecipient } from "../../src/interfaces/ISablierLockupRecipient.sol";
 
-contract RecipientGood is ISablierRecipient, ERC165 {
+contract RecipientGood is ISablierLockupRecipient, ERC165 {
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
-        return interfaceId == type(ISablierRecipient).interfaceId;
+        return interfaceId == type(ISablierLockupRecipient).interfaceId;
     }
 
     function onSablierLockupCancel(
@@ -27,7 +27,7 @@ contract RecipientGood is ISablierRecipient, ERC165 {
         senderAmount;
         recipientAmount;
 
-        return ISablierRecipient.onSablierLockupCancel.selector;
+        return ISablierLockupRecipient.onSablierLockupCancel.selector;
     }
 
     function onSablierLockupWithdraw(
@@ -46,37 +46,37 @@ contract RecipientGood is ISablierRecipient, ERC165 {
         to;
         amount;
 
-        return ISablierRecipient.onSablierLockupWithdraw.selector;
+        return ISablierLockupRecipient.onSablierLockupWithdraw.selector;
     }
 }
 
-contract RecipientInterfaceIDIncorrect is ISablierRecipient, ERC165 {
+contract RecipientInterfaceIDIncorrect is ISablierLockupRecipient, ERC165 {
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
         return interfaceId == 0xffffffff;
     }
 
     function onSablierLockupCancel(uint256, address, uint128, uint128) external pure override returns (bytes4) {
-        return ISablierRecipient.onSablierLockupCancel.selector;
+        return ISablierLockupRecipient.onSablierLockupCancel.selector;
     }
 
     function onSablierLockupWithdraw(uint256, address, address, uint128) external pure override returns (bytes4) {
-        return ISablierRecipient.onSablierLockupWithdraw.selector;
+        return ISablierLockupRecipient.onSablierLockupWithdraw.selector;
     }
 }
 
 contract RecipientInterfaceIDMissing {
     function onSablierLockupCancel(uint256, address, uint128, uint128) external pure returns (bytes4) {
-        return ISablierRecipient.onSablierLockupCancel.selector;
+        return ISablierLockupRecipient.onSablierLockupCancel.selector;
     }
 
     function onSablierLockupWithdraw(uint256, address, address, uint128) external pure returns (bytes4) {
-        return ISablierRecipient.onSablierLockupWithdraw.selector;
+        return ISablierLockupRecipient.onSablierLockupWithdraw.selector;
     }
 }
 
-contract RecipientInvalidSelector is ISablierRecipient, ERC165 {
+contract RecipientInvalidSelector is ISablierLockupRecipient, ERC165 {
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
-        return interfaceId == type(ISablierRecipient).interfaceId;
+        return interfaceId == type(ISablierLockupRecipient).interfaceId;
     }
 
     function onSablierLockupCancel(
@@ -118,9 +118,9 @@ contract RecipientInvalidSelector is ISablierRecipient, ERC165 {
     }
 }
 
-contract RecipientReentrant is ISablierRecipient, ERC165 {
+contract RecipientReentrant is ISablierLockupRecipient, ERC165 {
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
-        return interfaceId == type(ISablierRecipient).interfaceId;
+        return interfaceId == type(ISablierLockupRecipient).interfaceId;
     }
 
     function onSablierLockupCancel(
@@ -140,7 +140,7 @@ contract RecipientReentrant is ISablierRecipient, ERC165 {
 
         ISablierV2Lockup(msg.sender).withdraw(streamId, address(this), recipientAmount);
 
-        return ISablierRecipient.onSablierLockupCancel.selector;
+        return ISablierLockupRecipient.onSablierLockupCancel.selector;
     }
 
     function onSablierLockupWithdraw(
@@ -160,13 +160,13 @@ contract RecipientReentrant is ISablierRecipient, ERC165 {
 
         ISablierV2Lockup(msg.sender).withdraw(streamId, address(this), amount);
 
-        return ISablierRecipient.onSablierLockupWithdraw.selector;
+        return ISablierLockupRecipient.onSablierLockupWithdraw.selector;
     }
 }
 
-contract RecipientReverting is ISablierRecipient, ERC165 {
+contract RecipientReverting is ISablierLockupRecipient, ERC165 {
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
-        return interfaceId == type(ISablierRecipient).interfaceId;
+        return interfaceId == type(ISablierLockupRecipient).interfaceId;
     }
 
     function onSablierLockupCancel(

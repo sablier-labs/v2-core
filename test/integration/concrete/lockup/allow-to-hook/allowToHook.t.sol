@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { ISablierRecipient } from "src/interfaces/ISablierRecipient.sol";
+import { ISablierLockupRecipient } from "src/interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
@@ -20,7 +20,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
-        lockup.allowToHook(ISablierRecipient(users.eve));
+        lockup.allowToHook(ISablierLockupRecipient(users.eve));
     }
 
     modifier whenCallerAdmin() {
@@ -30,7 +30,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
     }
 
     function test_RevertWhen_ProvidedAddressNoCode() external whenCallerAdmin {
-        ISablierRecipient eoa = ISablierRecipient(vm.addr({ privateKey: 1 }));
+        ISablierLockupRecipient eoa = ISablierLockupRecipient(vm.addr({ privateKey: 1 }));
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierV2Lockup_AllowToHookZeroCodeSize.selector, eoa));
         lockup.allowToHook(eoa);
     }
@@ -45,14 +45,14 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
         whenProvidedAddressHasCode
     {
         // Incorrect interface ID.
-        ISablierRecipient recipient = recipientInterfaceIDIncorrect;
+        ISablierLockupRecipient recipient = recipientInterfaceIDIncorrect;
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierV2Lockup_AllowToHookIncorrectImplementation.selector, recipient)
         );
         lockup.allowToHook(recipient);
 
         // Missing interface ID.
-        recipient = ISablierRecipient(address(recipientInterfaceIDMissing));
+        recipient = ISablierLockupRecipient(address(recipientInterfaceIDMissing));
         vm.expectRevert(bytes(""));
         lockup.allowToHook(recipient);
     }

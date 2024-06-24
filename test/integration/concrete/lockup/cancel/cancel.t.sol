@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { ISablierRecipient } from "src/interfaces/ISablierRecipient.sol";
 import { ISablierV2Lockup } from "src/interfaces/ISablierV2Lockup.sol";
+import { ISablierLockupRecipient } from "src/interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "src/libraries/Errors.sol";
 
 import { Lockup } from "src/types/DataTypes.sol";
@@ -119,7 +119,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         givenStreamCancelable
         givenStatusStreaming
     {
-        // Create the stream with a recipient contract that implements {ISablierRecipient}.
+        // Create the stream with a recipient contract that implements {ISablierLockupRecipient}.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 
         // Expect Sablier to NOT run the recipient hook.
@@ -128,7 +128,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         vm.expectCall({
             callee: address(recipientGood),
             data: abi.encodeCall(
-                ISablierRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
+                ISablierLockupRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             ),
             count: 0
         });
@@ -219,7 +219,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         vm.expectCall(
             address(recipientReentrant),
             abi.encodeCall(
-                ISablierRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
+                ISablierLockupRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
         );
 
@@ -272,7 +272,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         vm.expectCall(
             address(recipientGood),
             abi.encodeCall(
-                ISablierRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
+                ISablierLockupRecipient.onSablierLockupCancel, (streamId, users.sender, senderAmount, recipientAmount)
             )
         );
 
