@@ -4,20 +4,18 @@ pragma solidity >=0.8.22;
 import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 /// @title ISablierRecipient
-///
-/// @notice Interface for recipient contracts capable of reacting to cancellations and withdrawals. Implementation of
-/// this interface is optional. If a recipient contract doesn't implement this interface or implements it partially, the
-/// function execution will not revert.
-///
+/// @notice Interface for recipient contracts capable of reacting to cancellations and withdrawals. For this to be able
+/// to hook into Sablier, it must fully implement this interface and it must have been allowlisted by the Lockup
+/// contract's admin.
 /// @dev See {IERC165-supportsInterface}.
-/// - The implementation MUST implement the {IERC165-supportsInterface} method, which MUST return `true` when called
-/// with `0xf8ee98d3`.
+/// The implementation MUST implement the {IERC165-supportsInterface} method, which MUST return `true` when called with
+/// `0xf8ee98d3`, which is `type(ISablierRecipient).interfaceId`.
 interface ISablierRecipient is IERC165 {
     /// @notice Responds to cancellations.
     ///
     /// @dev Notes:
-    /// - The function MUST return the selector i.e. ISablierRecipient.onSablierLockupCancel.selector.
-    /// - If this function reverts, the Sablier contract will revert as well.
+    /// - The function MUST return the selector `ISablierRecipient.onSablierLockupCancel.selector`.
+    /// - If this function reverts, the execution in the Lockup contract will revert as well.
     ///
     /// @param streamId The ID of the canceled stream.
     /// @param sender The stream's sender, who canceled the stream.
@@ -39,8 +37,8 @@ interface ISablierRecipient is IERC165 {
     /// @notice Responds to withdrawals triggered by any address except the contract implementing this interface.
     ///
     /// @dev Notes:
-    /// - The function MUST return the selector i.e. ISablierRecipient.onSablierLockupWithdraw.selector.
-    /// - If this function reverts, the Sablier contract will revert as well.
+    /// - The function MUST return the selector `ISablierRecipient.onSablierLockupWithdraw.selector`.
+    /// - If this function reverts, the execution in the Lockup contract will revert as well.
     ///
     /// @param streamId The ID of the stream being withdrawn from.
     /// @param caller The original `msg.sender` address that triggered the withdrawal.

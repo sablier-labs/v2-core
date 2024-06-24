@@ -39,8 +39,7 @@ abstract contract SablierV2Lockup is
     /// @inheritdoc ISablierV2Lockup
     ISablierV2NFTDescriptor public override nftDescriptor;
 
-    /// @dev Mapping of contracts allowed to be called by Sablier when a stream is canceled or when assets are
-    /// withdrawn.
+    /// @dev Mapping of contracts allowed to hook to Sablier when a stream is canceled or when assets are withdrawn.
     mapping(ISablierRecipient recipient => bool allowed) internal _allowedToHook;
 
     /// @dev Sablier V2 Lockup streams mapped by unsigned integers.
