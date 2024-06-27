@@ -55,7 +55,6 @@ abstract contract Benchmark_Test is Base_Test {
 
         uint256 initialGas = gasleft();
         lockup.burn(streamIds[0]);
-
         string memory gasUsed = vm.toString(initialGas - gasleft());
 
         contentToAppend = string.concat("| `burn` | ", gasUsed, " |");
@@ -70,7 +69,6 @@ abstract contract Benchmark_Test is Base_Test {
 
         uint256 initialGas = gasleft();
         lockup.cancel(streamIds[1]);
-
         string memory gasUsed = vm.toString(initialGas - gasleft());
 
         contentToAppend = string.concat("| `cancel` | ", gasUsed, " |");
@@ -85,7 +83,6 @@ abstract contract Benchmark_Test is Base_Test {
 
         uint256 initialGas = gasleft();
         lockup.renounce(streamIds[2]);
-
         string memory gasUsed = vm.toString(initialGas - gasleft());
 
         contentToAppend = string.concat("| `renounce` | ", gasUsed, " |");
@@ -101,7 +98,6 @@ abstract contract Benchmark_Test is Base_Test {
 
         uint256 initialGas = gasleft();
         lockup.withdraw(streamId, to, withdrawAmount);
-
         string memory gasUsed = vm.toString(initialGas - gasleft());
 
         // Check if caller is recipient or not.
