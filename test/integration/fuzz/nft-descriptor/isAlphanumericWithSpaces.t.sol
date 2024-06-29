@@ -5,6 +5,7 @@ import { NFTDescriptor_Integration_Shared_Test } from "../../shared/nft-descript
 
 contract IsAlphanumericWithSpaces_Integration_Fuzz_Test is NFTDescriptor_Integration_Shared_Test {
     bytes1 internal constant SPACE = 0x20; // ASCII 32
+    bytes1 internal constant DASH = 0x2D; // ASCII 45
     bytes1 internal constant ZERO = 0x30; // ASCII 48
     bytes1 internal constant NINE = 0x39; // ASCII 57
     bytes1 internal constant A = 0x41; // ASCII 65
@@ -38,9 +39,10 @@ contract IsAlphanumericWithSpaces_Integration_Fuzz_Test is NFTDescriptor_Integra
 
     function isAlphanumericOrSpaceChar(bytes1 char) internal pure returns (bool) {
         bool isSpace = char == SPACE;
+        bool isDash = char == DASH;
         bool isDigit = char >= ZERO && char <= NINE;
         bool isUppercaseLetter = char >= A && char <= Z;
         bool isLowercaseLetter = char >= a && char <= z;
-        return isSpace || isDigit || isUppercaseLetter || isLowercaseLetter;
+        return isSpace || isDash || isDigit || isUppercaseLetter || isLowercaseLetter;
     }
 }

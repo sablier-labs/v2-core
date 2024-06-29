@@ -85,6 +85,10 @@ contract IsAlphanumericWithSpaces_Integration_Concrete_Test is NFTDescriptor_Int
         result = nftDescriptorMock.isAlphanumericWithSpaces_(symbol);
         assertTrue(result, "isAlphanumericWithSpaces");
 
+        symbol = "Bar-Foo";
+        result = nftDescriptorMock.isAlphanumericWithSpaces_(symbol);
+        assertTrue(result, "isAlphanumericWithSpaces");
+
         symbol = "  ";
         result = nftDescriptorMock.isAlphanumericWithSpaces_(symbol);
         assertTrue(result, "isAlphanumericWithSpaces");
