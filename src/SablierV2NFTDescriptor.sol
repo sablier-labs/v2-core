@@ -382,8 +382,8 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
 
         string memory symbol = abi.decode(returnData, (string));
 
-        // Check if the symbol is too long or contains non-alphanumeric characters, this measure helps mitigate
-        // potential security threats from malicious assets injecting scripts in the symbol string.
+        // Check if the symbol is too long or contains disallowed characters. This measure helps mitigate potential
+        // security threats from malicious assets injecting scripts in the symbol string.
         if (bytes(symbol).length > 30) {
             return "Long Symbol";
         } else {
