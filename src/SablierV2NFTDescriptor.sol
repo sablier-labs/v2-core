@@ -320,7 +320,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         return string.concat("Sablier V2 ", sablierModel, " #", streamId);
     }
 
-    /// @notice Checks whether the provided string contains only alphanumeric characters, spaces and dashes.
+    /// @notice Checks whether the provided string contains only alphanumeric characters, spaces, and dashes.
     /// @dev Note that this returns true for empty strings.
     function isAlphanumericWithSpaces(string memory str) internal pure returns (bool) {
         // Convert the string to bytes to iterate over its characters.
@@ -330,7 +330,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
         for (uint256 i = 0; i < length; ++i) {
             bytes1 char = b[i];
 
-            // Check if it's a space, dash or an alphanumeric character.
+            // Check if it's a space, dash, or an alphanumeric character.
             bool isSpace = char == 0x20; // space
             bool isDash = char == 0x2D; // dash
             bool isDigit = char >= 0x30 && char <= 0x39; // 0-9
