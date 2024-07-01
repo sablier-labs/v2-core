@@ -10,4 +10,4 @@ withdrawMax.t.sol
    ├── it should make the max withdrawal
    ├── it should update the withdrawn amount
    ├── it should emit a {WithdrawFromLockupStream} event
-   └── it should return the withdrawn amount
+   └── it should return the withdrawable amount

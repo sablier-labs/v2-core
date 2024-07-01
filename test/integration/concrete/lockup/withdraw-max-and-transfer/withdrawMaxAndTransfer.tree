@@ -23,4 +23,4 @@ withdrawMaxAndTransfer.t.sol
                   ├── it should emit a {WithdrawFromLockupStream} event
                   ├── it should emit a {Transfer} event
                   ├── it should emit a {MetadataUpdate} event
-                  └── it should return the withdrawn amount
+                  └── it should return the withdrawable amount
