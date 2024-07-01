@@ -70,7 +70,7 @@ abstract contract WithdrawMax_Integration_Concrete_Test is Integration_Test, Wit
         });
 
         // Make the max withdrawal.
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        uint128 expectedWithdrawnAmount = lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // Assert that the stream's status is still "STREAMING".
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
@@ -79,7 +79,6 @@ abstract contract WithdrawMax_Integration_Concrete_Test is Integration_Test, Wit
 
         // Assert that the withdrawn amount has been updated.
         uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);
-        uint128 expectedWithdrawnAmount = withdrawAmount;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 }
