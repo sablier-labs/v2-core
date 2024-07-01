@@ -22,16 +22,19 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 - Disallow zero `startTime` ([#813](https://github.com/sablier-labs/v2-core/pull/813),
   [#852](https://github.com/sablier-labs/v2-core/pull/852))
 - Change permissions of `withdraw` function to public ([#785](https://github.com/sablier-labs/v2-core/pull/785))
-- Refactor functions name in `ISablierV2Recipient` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
-- Bump OpenZeppelin to v5 ([#806](https://github.com/sablier-labs/v2-core/pull/806))
-- Bump build dependencies ([#942](https://github.com/sablier-labs/v2-core/pull/942),
-  [#944](https://github.com/sablier-labs/v2-core/pull/944))
+- Replace `ISablierV2Recipient` with `ISablierLockupRecipient` hook interface
+  ([#951](https://github.com/sablier-labs/v2-core/pull/951))
+- Remove `try..catch` block from hook callbacks ([#951](https://github.com/sablier-labs/v2-core/pull/951))
+- Only allow assets with supported characters in symbol ([#960](https://github.com/sablier-labs/v2-core/pull/960),
+  [#949](https://github.com/sablier-labs/v2-core/pull/949), [#945](https://github.com/sablier-labs/v2-core/pull/945))
+- Bump build dependencies ([#806](https://github.com/sablier-labs/v2-core/pull/806),
+  [#942](https://github.com/sablier-labs/v2-core/pull/942), [#944](https://github.com/sablier-labs/v2-core/pull/944))
 - Switch to Bun ([#775](https://github.com/sablier-labs/v2-core/pull/775))
 
 ### Added
 
+- **Breaking:** add hook allowlist ([#951](https://github.com/sablier-labs/v2-core/pull/951))
 - Add Lockup Tranched contract ([#817](https://github.com/sablier-labs/v2-core/pull/817))
-- Add `ISablierV2Sender` hook ([#781](https://github.com/sablier-labs/v2-core/pull/781))
 - Add `precompiles` in the NPM release ([#841](https://github.com/sablier-labs/v2-core/pull/841))
 
 ### Removed
