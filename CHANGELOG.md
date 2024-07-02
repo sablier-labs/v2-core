@@ -12,30 +12,35 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 [1.0.1]: https://github.com/sablier-labs/v2-core/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/sablier-labs/v2-core/releases/tag/v1.0.0
 
-## [1.2.0] - 2024-07-01
+## [1.2.0] - 2024-07-02
 
 ### Changed
 
 - **Breaking:** Move common logic into `Lockup` contract ([#784](https://github.com/sablier-labs/v2-core/pull/784),
   [#813](https://github.com/sablier-labs/v2-core/pull/813), [#850](https://github.com/sablier-labs/v2-core/pull/850),
   [#941](https://github.com/sablier-labs/v2-core/pull/941))
-- Disallow zero `startTime` ([#813](https://github.com/sablier-labs/v2-core/pull/813),
-  [#852](https://github.com/sablier-labs/v2-core/pull/852))
-- Change permissions of `withdraw` function to public ([#785](https://github.com/sablier-labs/v2-core/pull/785))
-- Replace `ISablierV2Recipient` with `ISablierLockupRecipient` hook interface
-  ([#951](https://github.com/sablier-labs/v2-core/pull/951))
-- Remove `try..catch` block from hook callbacks ([#951](https://github.com/sablier-labs/v2-core/pull/951))
-- Only allow assets with supported characters in symbol ([#960](https://github.com/sablier-labs/v2-core/pull/960),
-  [#949](https://github.com/sablier-labs/v2-core/pull/949), [#945](https://github.com/sablier-labs/v2-core/pull/945))
+- **Breaking:** Use a new hook system ([#951](https://github.com/sablier-labs/v2-core/pull/951))
+
+  - Replace `ISablierV2Recipient` with `ISablierLockupRecipient` hook interface
+  - Don't use try..catch block anymore
+
+- Allow only supported characters in NFT Descriptor asset symbols
+  ([#945](https://github.com/sablier-labs/v2-core/pull/945), [#960](https://github.com/sablier-labs/v2-core/pull/960),
+  [#949](https://github.com/sablier-labs/v2-core/pull/949))
 - Bump build dependencies ([#806](https://github.com/sablier-labs/v2-core/pull/806),
   [#942](https://github.com/sablier-labs/v2-core/pull/942), [#944](https://github.com/sablier-labs/v2-core/pull/944))
+- Change permissions of `withdraw` function to public ([#785](https://github.com/sablier-labs/v2-core/pull/785))
+- Disallow zero `startTime` ([#813](https://github.com/sablier-labs/v2-core/pull/813),
+  [#852](https://github.com/sablier-labs/v2-core/pull/852))
 - Switch to Bun ([#775](https://github.com/sablier-labs/v2-core/pull/775))
+- Use Solidity v0.8.26 ([#944](https://github.com/sablier-labs/v2-core/pull/944))
 
 ### Added
 
-- **Breaking:** add hook allowlist ([#951](https://github.com/sablier-labs/v2-core/pull/951))
 - Add Lockup Tranched contract ([#817](https://github.com/sablier-labs/v2-core/pull/817))
 - Add `precompiles` in the NPM release ([#841](https://github.com/sablier-labs/v2-core/pull/841))
+- Add return value in `withdrawMax` and `withdrawMaxAndTransfer`
+  ([#961](https://github.com/sablier-labs/v2-core/pull/961))
 
 ### Removed
 
