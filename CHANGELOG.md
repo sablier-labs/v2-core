@@ -30,6 +30,8 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 - Change permissions of `withdraw` function to public ([#785](https://github.com/sablier-labs/v2-core/pull/785))
 - Disallow zero `startTime` ([#813](https://github.com/sablier-labs/v2-core/pull/813),
   [#852](https://github.com/sablier-labs/v2-core/pull/852))
+- Rename create functions `createWithTimestamps` and `createWithDurations` across all lockup contracts
+  ([#798](https://github.com/sablier-labs/v2-core/pull/798))
 - Switch to Bun ([#775](https://github.com/sablier-labs/v2-core/pull/775))
 - Use Solidity v0.8.26 ([#944](https://github.com/sablier-labs/v2-core/pull/944))
 
