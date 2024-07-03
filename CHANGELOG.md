@@ -12,18 +12,16 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 [1.0.1]: https://github.com/sablier-labs/v2-core/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/sablier-labs/v2-core/releases/tag/v1.0.0
 
-## [1.2.0] - 2024-07-02
+## [1.2.0] - 2024-07-03
 
 ### Changed
 
-- **Breaking:** Move common logic into `Lockup` contract ([#784](https://github.com/sablier-labs/v2-core/pull/784),
+- **Breaking:** move common logic into `Lockup` contract ([#784](https://github.com/sablier-labs/v2-core/pull/784),
   [#813](https://github.com/sablier-labs/v2-core/pull/813), [#850](https://github.com/sablier-labs/v2-core/pull/850),
   [#941](https://github.com/sablier-labs/v2-core/pull/941))
-- **Breaking:** Use a new hook system ([#951](https://github.com/sablier-labs/v2-core/pull/951))
-
+- **Breaking:** use a new hook system ([#951](https://github.com/sablier-labs/v2-core/pull/951))
   - Replace `ISablierV2Recipient` with `ISablierLockupRecipient` hook interface
-  - Don't use try..catch block anymore
-
+  - Remove `try..catch` block from hook calls
 - Allow only supported characters in NFT Descriptor asset symbols
   ([#945](https://github.com/sablier-labs/v2-core/pull/945), [#960](https://github.com/sablier-labs/v2-core/pull/960),
   [#949](https://github.com/sablier-labs/v2-core/pull/949))
