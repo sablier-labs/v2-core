@@ -11,10 +11,21 @@
     "url": "https://github.com/sablier-labs/v2-core/issues"
   },
   "dependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@openzeppelin/contracts": "5.0.2",
-    "@prb/math": "4.0.3"
+    "@prb/math": "4.0.3",
+    "@types/node": "^22.5.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^5.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.7",
+    "@nomicfoundation/hardhat-ignition": "^0.15.5",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.5",
+    "@nomicfoundation/hardhat-verify": "^2.0.9",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "forge-std": "github:foundry-rs/forge-std#v1.8.2",
     "prettier": "^3.3.2",
     "solady": "0.0.208",
