@@ -215,8 +215,9 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "post-create NFT owner");
 
         // Load the post-create asset balances.
-        vars.balances =
-            getTokenBalances(address(FORK_ASSET), Solarray.addresses(address(lockupLinear), FORK_ASSET_HOLDER, params.broker.account));
+        vars.balances = getTokenBalances(
+            address(FORK_ASSET), Solarray.addresses(address(lockupLinear), FORK_ASSET_HOLDER, params.broker.account)
+        );
         vars.actualLockupLinearBalance = vars.balances[0];
         vars.actualHolderBalance = vars.balances[1];
         vars.actualBrokerBalance = vars.balances[2];

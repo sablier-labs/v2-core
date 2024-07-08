@@ -24,7 +24,8 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
 
         // Approve {SablierV2LockupTranched} to transfer the holder's assets.
         // We use a low-level call to ignore reverts because the asset can have the missing return value bug.
-        (bool success,) = address(FORK_ASSET).call(abi.encodeCall(IERC20.approve, (address(lockupTranched), MAX_UINT256)));
+        (bool success,) =
+            address(FORK_ASSET).call(abi.encodeCall(IERC20.approve, (address(lockupTranched), MAX_UINT256)));
         success;
     }
 
@@ -217,8 +218,9 @@ abstract contract LockupTranched_Fork_Test is Fork_Test {
         assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "post-create NFT owner");
 
         // Load the post-create asset balances.
-        vars.balances =
-            getTokenBalances(address(FORK_ASSET), Solarray.addresses(address(lockupTranched), FORK_ASSET_HOLDER, params.broker.account));
+        vars.balances = getTokenBalances(
+            address(FORK_ASSET), Solarray.addresses(address(lockupTranched), FORK_ASSET_HOLDER, params.broker.account)
+        );
         vars.actualLockupTranchedBalance = vars.balances[0];
         vars.actualHolderBalance = vars.balances[1];
         vars.actualBrokerBalance = vars.balances[2];
