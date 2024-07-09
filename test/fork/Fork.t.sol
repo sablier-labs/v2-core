@@ -42,7 +42,7 @@ abstract contract Fork_Test is Base_Test {
         // Make the forked asset holder the caller in this test suite.
         resetPrank({ msgSender: FORK_ASSET_HOLDER });
 
-        // Query the initial balance of the FORK_ASSET_HOLDER.
+        // Query the initial balance of the forked asset holder.
         initialHolderBalance = FORK_ASSET.balanceOf(FORK_ASSET_HOLDER);
     }
 
