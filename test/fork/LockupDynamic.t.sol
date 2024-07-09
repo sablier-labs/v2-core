@@ -124,7 +124,7 @@ abstract contract LockupDynamic_Fork_Test is Fork_Test {
             brokerFee: params.broker.fee
         });
 
-        // Make the FORK_ASSET_HOLDER the caller.
+        // Make the holder the caller.
         resetPrank(FORK_ASSET_HOLDER);
 
         /*//////////////////////////////////////////////////////////////////////////
