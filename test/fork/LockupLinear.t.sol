@@ -133,7 +133,7 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
         params.timestamps.end =
             boundUint40(params.timestamps.end, vars.endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
 
-        // Make the FORK_ASSET_HOLDER the caller.
+        // Make the holder the caller.
         resetPrank(FORK_ASSET_HOLDER);
 
         /*//////////////////////////////////////////////////////////////////////////
