@@ -55,7 +55,7 @@ abstract contract Fork_Test is Base_Test {
         // The protocol does not allow the zero address to interact with it.
         vm.assume(sender != address(0) && recipient != address(0) && broker != address(0));
 
-        // The goal is to not have overlapping users because the FORK_ASSET balance tests would fail otherwise.
+        // The goal is to not have overlapping users because the forked asset balance tests would fail otherwise.
         vm.assume(sender != recipient && sender != broker && recipient != broker);
         vm.assume(sender != FORK_ASSET_HOLDER && recipient != FORK_ASSET_HOLDER && broker != FORK_ASSET_HOLDER);
         vm.assume(sender != sablierContract && recipient != sablierContract && broker != sablierContract);
