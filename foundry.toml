@@ -110,3 +110,6 @@
   optimism = "https://optimism-mainnet.infura.io/v3/${API_KEY_INFURA}"
   polygon = "https://polygon-mainnet.infura.io/v3/${API_KEY_INFURA}"
   sepolia = "https://sepolia.infura.io/v3/${API_KEY_INFURA}"
+  arbitrum_sepolia = "https://arbitrum-sepolia.blockpi.network/v1/rpc/public"
+  base_sepolia = "https://sepolia.base.org"
+  optimism_sepolia = "https://sepolia.optimism.io"
