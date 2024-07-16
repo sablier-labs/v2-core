@@ -1,8 +1,7 @@
 name: "CI Deep"
 
 env:
-  API_KEY_INFURA: ${{ secrets.API_KEY_INFURA }}
-  RPC_URL_MAINNET: ${{ secrets.RPC_URL_MAINNET }}
+  MAINNET_RPC_URL: ${{ secrets.MAINNET_RPC_URL }}
 
 on:
   schedule:
