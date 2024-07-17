@@ -107,7 +107,7 @@ function initialize {
     chains["avalanche"]="avalanche $SNOWTRACE_API_KEY $AVALANCHE_ADMIN"
     chains["base"]="base $BASESCAN_API_KEY $BASE_ADMIN"
     chains["base_sepolia"]="base_sepolia $BASESCAN_API_KEY $TESTNET_ADMIN"
-    chains["bnb_smart_chain"]="  $BSCSCAN_API_KEY $BNB_ADMIN"
+    chains["bnb_smart_chain"]="bnb $BSCSCAN_API_KEY $BNB_ADMIN"
     chains["gnosis"]="gnosis $GNOSISSCAN_API_KEY $GNOSIS_ADMIN"
     chains["mainnet"]="mainnet $ETHERSCAN_API_KEY $MAINNET_ADMIN"
     chains["optimism"]="optimism $OPTIMISTIC_API_KEY $OPTIMISM_ADMIN"
