@@ -1,83 +1,21 @@
 // SPDX-License-Identifier: UNLICENSED
-// solhint-disable max-states-count
 pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+
 import { ISablierV2LockupDynamic } from "core/interfaces/ISablierV2LockupDynamic.sol";
 import { ISablierV2LockupLinear } from "core/interfaces/ISablierV2LockupLinear.sol";
 import { ISablierV2LockupTranched } from "core/interfaces/ISablierV2LockupTranched.sol";
 import { LockupDynamic, LockupLinear, LockupTranched } from "core/types/DataTypes.sol";
 
-import { Assertions as V2CoreAssertions } from "../core/utils/Assertions.sol";
-import { Constants as V2CoreConstants } from "../core/utils/Constants.sol";
-import { Utils as V2CoreUtils } from "../core/utils/Utils.sol";
-
-import { ISablierV2BatchLockup } from "periphery/interfaces/ISablierV2BatchLockup.sol";
-import { ISablierV2MerkleLL } from "periphery/interfaces/ISablierV2MerkleLL.sol";
-import { ISablierV2MerkleLockupFactory } from "periphery/interfaces/ISablierV2MerkleLockupFactory.sol";
-import { ISablierV2MerkleLT } from "periphery/interfaces/ISablierV2MerkleLT.sol";
-import { SablierV2BatchLockup } from "periphery/SablierV2BatchLockup.sol";
 import { SablierV2MerkleLL } from "periphery/SablierV2MerkleLL.sol";
-import { SablierV2MerkleLockupFactory } from "periphery/SablierV2MerkleLockupFactory.sol";
 import { SablierV2MerkleLT } from "periphery/SablierV2MerkleLT.sol";
 
-import { ERC20Mock } from "./mocks/erc20/ERC20Mock.sol";
-import { Assertions } from "./utils/Assertions.sol";
-import { Defaults } from "./utils/Defaults.sol";
-import { DeployOptimized } from "./utils/DeployOptimized.sol";
-import { Events } from "./utils/Events.sol";
-import { Merkle } from "./utils/Murky.sol";
-import { Users } from "./utils/Types.sol";
+import { Base_Test } from "../Base.t.sol";
 
-/// @notice Base test contract with common logic needed by all tests.
-abstract contract Base_Test is
-    Assertions,
-    DeployOptimized,
-    Events,
-    Merkle,
-    V2CoreConstants,
-    V2CoreAssertions,
-    V2CoreUtils
-{
-    /*//////////////////////////////////////////////////////////////////////////
-                                     VARIABLES
-    //////////////////////////////////////////////////////////////////////////*/
-
-    Users internal users;
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                   TEST CONTRACTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    ISablierV2BatchLockup internal batchLockup;
-    IERC20 internal dai;
-    Defaults internal defaults;
-    ISablierV2LockupDynamic internal lockupDynamic;
-    ISablierV2LockupLinear internal lockupLinear;
-    ISablierV2LockupTranched internal lockupTranched;
-    ISablierV2MerkleLockupFactory internal merkleLockupFactory;
-    ISablierV2MerkleLL internal merkleLL;
-    ISablierV2MerkleLT internal merkleLT;
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                  SET-UP FUNCTION
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function setUp() public virtual {
-        // Deploy the default test asset.
-        dai = new ERC20Mock("DAI Stablecoin", "DAI");
-
-        // Create users for testing.
-        users.alice = createUser("Alice");
-        users.admin = createUser("Admin");
-        users.broker = createUser("Broker");
-        users.eve = createUser("Eve");
-        users.recipient0 = createUser("Recipient");
-        users.recipient1 = createUser("Recipient1");
-        users.recipient2 = createUser("Recipient2");
-        users.recipient3 = createUser("Recipient3");
-        users.recipient4 = createUser("Recipient4");
+contract Periphery_Test is Base_Test {
+    function setUp() public virtual override {
+        Base_Test.setUp();
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -89,60 +27,6 @@ abstract contract Base_Test is
         resetPrank({ msgSender: from });
         (bool success,) = address(asset_).call(abi.encodeCall(IERC20.approve, (spender, MAX_UINT256)));
         success;
-    }
-
-    /// @dev Generates a user, labels its address, and funds it with ETH.
-    function createUser(string memory name) internal returns (address payable) {
-        address user = makeAddr(name);
-        vm.deal({ account: user, newBalance: 100_000 ether });
-        deal({ token: address(dai), to: user, give: 1_000_000e18 });
-        return payable(user);
-    }
-
-    /// @dev Conditionally deploy V2 Periphery normally or from an optimized source compiled with `--via-ir`.
-    function deployPeripheryConditionally() internal {
-        if (!isTestOptimizedProfile()) {
-            batchLockup = new SablierV2BatchLockup();
-            merkleLockupFactory = new SablierV2MerkleLockupFactory();
-        } else {
-            (batchLockup, merkleLockupFactory) = deployOptimizedPeriphery();
-        }
-    }
-
-    /// @dev Labels the most relevant contracts.
-    function labelContracts(IERC20 asset_) internal {
-        vm.label({ account: address(asset_), newLabel: IERC20Metadata(address(asset_)).symbol() });
-        vm.label({ account: address(defaults), newLabel: "Defaults" });
-        vm.label({ account: address(lockupDynamic), newLabel: "LockupDynamic" });
-        vm.label({ account: address(lockupLinear), newLabel: "LockupLinear" });
-        vm.label({ account: address(lockupTranched), newLabel: "LockupTranched" });
-        vm.label({ account: address(merkleLL), newLabel: "MerkleLL" });
-        vm.label({ account: address(merkleLockupFactory), newLabel: "MerkleLockupFactory" });
-        vm.label({ account: address(merkleLT), newLabel: "MerkleLT" });
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                    CALL EXPECTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @dev Expects a call to {IERC20.transfer}.
-    function expectCallToTransfer(address to, uint256 amount) internal {
-        expectCallToTransfer(address(dai), to, amount);
-    }
-
-    /// @dev Expects a call to {IERC20.transfer}.
-    function expectCallToTransfer(address asset_, address to, uint256 amount) internal {
-        vm.expectCall({ callee: asset_, data: abi.encodeCall(IERC20.transfer, (to, amount)) });
-    }
-
-    /// @dev Expects a call to {IERC20.transferFrom}.
-    function expectCallToTransferFrom(address from, address to, uint256 amount) internal {
-        expectCallToTransferFrom(address(dai), from, to, amount);
-    }
-
-    /// @dev Expects a call to {IERC20.transferFrom}.
-    function expectCallToTransferFrom(address asset_, address from, address to, uint256 amount) internal {
-        vm.expectCall({ callee: asset_, data: abi.encodeCall(IERC20.transferFrom, (from, to, amount)) });
     }
 
     /// @dev Expects multiple calls to {ISablierV2LockupDynamic.createWithDurations}, each with the specified
@@ -236,26 +120,30 @@ abstract contract Base_Test is
     }
 
     /// @dev Expects multiple calls to {IERC20.transfer}.
-    function expectMultipleCallsToTransfer(uint64 count, address to, uint256 amount) internal {
-        vm.expectCall({ callee: address(dai), count: count, data: abi.encodeCall(IERC20.transfer, (to, amount)) });
+    function expectMultipleCallsToTransfer(uint64 count, address to, uint256 value) internal {
+        vm.expectCall({ callee: address(dai), count: count, data: abi.encodeCall(IERC20.transfer, (to, value)) });
     }
 
     /// @dev Expects multiple calls to {IERC20.transferFrom}.
-    function expectMultipleCallsToTransferFrom(uint64 count, address from, address to, uint256 amount) internal {
-        expectMultipleCallsToTransferFrom(address(dai), count, from, to, amount);
+    function expectMultipleCallsToTransferFrom(uint64 count, address from, address to, uint256 value) internal {
+        expectMultipleCallsToTransferFrom(dai, count, from, to, value);
     }
 
     /// @dev Expects multiple calls to {IERC20.transferFrom}.
     function expectMultipleCallsToTransferFrom(
-        address asset_,
+        IERC20 asset,
         uint64 count,
         address from,
         address to,
-        uint256 amount
+        uint256 value
     )
         internal
     {
-        vm.expectCall({ callee: asset_, count: count, data: abi.encodeCall(IERC20.transferFrom, (from, to, amount)) });
+        vm.expectCall({
+            callee: address(asset),
+            count: count,
+            data: abi.encodeCall(IERC20.transferFrom, (from, to, value))
+        });
     }
 
     /*//////////////////////////////////////////////////////////////////////////

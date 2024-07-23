@@ -8,7 +8,7 @@ import { Lockup, LockupLinear } from "core/types/DataTypes.sol";
 import { ISablierV2MerkleLL } from "periphery/interfaces/ISablierV2MerkleLL.sol";
 import { MerkleLockup } from "periphery/types/DataTypes.sol";
 
-import { MerkleBuilder } from "../../utils/MerkleBuilder.sol";
+import { MerkleBuilder } from "../../../utils/MerkleBuilder.sol";
 import { Fork_Test } from "../Fork.t.sol";
 
 abstract contract MerkleLL_Fork_Test is Fork_Test {
@@ -184,7 +184,7 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             vm.warp({ newTimestamp: uint256(params.expiration) + 1 seconds });
 
             resetPrank({ msgSender: params.admin });
-            expectCallToTransfer({ asset_: address(FORK_ASSET), to: params.admin, amount: vars.clawbackAmount });
+            expectCallToTransfer({ asset: FORK_ASSET, to: params.admin, value: vars.clawbackAmount });
             vm.expectEmit({ emitter: address(vars.merkleLL) });
             emit Clawback({ to: params.admin, admin: params.admin, amount: vars.clawbackAmount });
             vars.merkleLL.clawback({ to: params.admin, amount: vars.clawbackAmount });

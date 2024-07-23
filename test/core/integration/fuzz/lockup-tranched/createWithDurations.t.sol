@@ -48,7 +48,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
         fuzzTrancheDurations(tranches);
 
         // Fuzz the tranche amounts and calculate the total and create amounts (deposit and broker fee).
-        (vars.totalAmount, vars.createAmounts) = fuzzTranchedStreamAmounts(tranches);
+        (vars.totalAmount, vars.createAmounts) = fuzzTranchedStreamAmounts(tranches, defaults.BROKER_FEE());
 
         // Make the Sender the stream's funder (recall that the Sender is the default caller).
         vars.funder = users.sender;
@@ -77,7 +77,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
             streamId: streamId,
             funder: vars.funder,
             sender: users.sender,
-            recipient: users.recipient,
+            recipient: users.recipient1,
             amounts: vars.createAmounts,
             asset: dai,
             cancelable: true,
@@ -126,7 +126,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
 
         // Assert that the NFT has been minted.
         vars.actualNFTOwner = lockupTranched.ownerOf({ tokenId: streamId });
-        vars.expectedNFTOwner = users.recipient;
+        vars.expectedNFTOwner = users.recipient1;
         assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "NFT owner");
     }
 }

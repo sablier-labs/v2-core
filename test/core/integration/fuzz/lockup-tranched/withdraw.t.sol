@@ -59,7 +59,7 @@ contract Withdraw_LockupTranched_Integration_Fuzz_Test is
         fuzzTrancheTimestamps(params.tranches, defaults.START_TIME());
 
         // Fuzz the tranche amounts.
-        (vars.totalAmount, vars.createAmounts) = fuzzTranchedStreamAmounts(params.tranches);
+        (vars.totalAmount, vars.createAmounts) = fuzzTranchedStreamAmounts(params.tranches, defaults.BROKER_FEE());
 
         // Bound the time jump.
         vars.totalDuration = params.tranches[params.tranches.length - 1].timestamp - defaults.START_TIME();
@@ -93,7 +93,7 @@ contract Withdraw_LockupTranched_Integration_Fuzz_Test is
         vars.withdrawAmount = boundUint128(vars.withdrawAmount, 1, vars.withdrawableAmount);
 
         // Make the Recipient the caller.
-        resetPrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient1 });
 
         // Expect the assets to be transferred to the fuzzed `to` address.
         expectCallToTransfer({ to: params.to, value: vars.withdrawAmount });

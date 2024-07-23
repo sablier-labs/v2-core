@@ -59,7 +59,7 @@ contract Withdraw_LockupDynamic_Integration_Fuzz_Test is
         fuzzSegmentTimestamps(params.segments, defaults.START_TIME());
 
         // Fuzz the segment amounts.
-        (vars.totalAmount, vars.createAmounts) = fuzzDynamicStreamAmounts(params.segments);
+        (vars.totalAmount, vars.createAmounts) = fuzzDynamicStreamAmounts(params.segments, defaults.BROKER_FEE());
 
         // Bound the time jump.
         vars.totalDuration = params.segments[params.segments.length - 1].timestamp - defaults.START_TIME();
@@ -102,7 +102,7 @@ contract Withdraw_LockupDynamic_Integration_Fuzz_Test is
         emit MetadataUpdate({ _tokenId: vars.streamId });
 
         // Make the Recipient the caller.
-        resetPrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient1 });
 
         // Make the withdrawal.
         lockupDynamic.withdraw({ streamId: vars.streamId, to: params.to, amount: vars.withdrawAmount });

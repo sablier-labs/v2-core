@@ -140,7 +140,7 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
             streamId: streamId,
             funder: funder,
             sender: users.sender,
-            recipient: users.recipient,
+            recipient: users.recipient1,
             amounts: defaults.lockupCreateAmounts(),
             asset: dai,
             cancelable: true,
@@ -173,7 +173,7 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
 
         // Assert that the NFT has been minted.
         address actualNFTOwner = lockupTranched.ownerOf({ tokenId: streamId });
-        address expectedNFTOwner = users.recipient;
+        address expectedNFTOwner = users.recipient1;
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }
 }

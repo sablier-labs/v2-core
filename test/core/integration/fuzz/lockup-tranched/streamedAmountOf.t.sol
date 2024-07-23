@@ -79,7 +79,7 @@ contract StreamedAmountOf_LockupTranched_Integration_Fuzz_Test is
 
         // Run the test.
         uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(streamId);
-        uint128 expectedStreamedAmount = calculateStreamedAmountForTranches(blockTimestamp, tranches, totalAmount);
+        uint128 expectedStreamedAmount = calculateStreamedAmountForTranches(tranches, totalAmount);
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 

@@ -6,8 +6,8 @@ import { LockupDynamic } from "core/types/DataTypes.sol";
 
 import { BatchLockup } from "periphery/types/DataTypes.sol";
 
-import { ArrayBuilder } from "../../utils/ArrayBuilder.sol";
-import { BatchLockupBuilder } from "../../utils/BatchLockupBuilder.sol";
+import { ArrayBuilder } from "../../../utils/ArrayBuilder.sol";
+import { BatchLockupBuilder } from "../../../utils/BatchLockupBuilder.sol";
 import { Fork_Test } from "../Fork.t.sol";
 
 /// @dev Runs against multiple fork assets.
@@ -61,18 +61,18 @@ abstract contract CreateWithTimestamps_LockupDynamic_BatchLockup_Fork_Test is Fo
             BatchLockupBuilder.fillBatch(createWithTimestamps, params.batchSize);
 
         expectCallToTransferFrom({
-            asset_: address(FORK_ASSET),
+            asset: FORK_ASSET,
             from: params.sender,
             to: address(batchLockup),
-            amount: totalTransferAmount
+            value: totalTransferAmount
         });
         expectMultipleCallsToCreateWithTimestampsLD({ count: uint64(params.batchSize), params: createWithTimestamps });
         expectMultipleCallsToTransferFrom({
-            asset_: address(FORK_ASSET),
+            asset: FORK_ASSET,
             count: uint64(params.batchSize),
             from: address(batchLockup),
             to: address(lockupDynamic),
-            amount: params.perStreamAmount
+            value: params.perStreamAmount
         });
 
         uint256[] memory actualStreamIds = batchLockup.createWithTimestampsLD(lockupDynamic, FORK_ASSET, batchParams);

@@ -81,11 +81,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         whenCallerUnauthorized
     {
         // Make the Recipient the caller in this test.
-        resetPrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient1 });
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2Lockup_Unauthorized.selector, testStreamIds[0], users.recipient)
+            abi.encodeWithSelector(Errors.SablierV2Lockup_Unauthorized.selector, testStreamIds[0], users.recipient1)
         );
         lockup.cancelMultiple(testStreamIds);
     }
@@ -120,11 +120,11 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         whenCallerUnauthorized
     {
         // Make the Recipient the caller in this test.
-        resetPrank({ msgSender: users.recipient });
+        resetPrank({ msgSender: users.recipient1 });
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierV2Lockup_Unauthorized.selector, testStreamIds[0], users.recipient)
+            abi.encodeWithSelector(Errors.SablierV2Lockup_Unauthorized.selector, testStreamIds[0], users.recipient1)
         );
         lockup.cancelMultiple(testStreamIds);
     }
@@ -181,7 +181,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         emit CancelLockupStream({
             streamId: testStreamIds[0],
             sender: users.sender,
-            recipient: users.recipient,
+            recipient: users.recipient1,
             asset: dai,
             senderAmount: senderAmount0,
             recipientAmount: defaults.DEPOSIT_AMOUNT() - senderAmount0
@@ -190,7 +190,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         emit CancelLockupStream({
             streamId: testStreamIds[1],
             sender: users.sender,
-            recipient: users.recipient,
+            recipient: users.recipient1,
             asset: dai,
             senderAmount: senderAmount1,
             recipientAmount: defaults.DEPOSIT_AMOUNT() - senderAmount1
@@ -213,7 +213,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         assertEq(lockup.getRefundedAmount(testStreamIds[1]), senderAmount1, "refundedAmount1");
 
         // Assert that the NFTs have not been burned.
-        address expectedNFTOwner = users.recipient;
+        address expectedNFTOwner = users.recipient1;
         assertEq(lockup.getRecipient(testStreamIds[0]), expectedNFTOwner, "NFT owner0");
         assertEq(lockup.getRecipient(testStreamIds[1]), expectedNFTOwner, "NFT owner1");
     }

@@ -4,11 +4,11 @@ pragma solidity >=0.8.22;
 import { ISablierV2MerkleLL } from "periphery/interfaces/ISablierV2MerkleLL.sol";
 import { ISablierV2MerkleLT } from "periphery/interfaces/ISablierV2MerkleLT.sol";
 
-import { Integration_Test } from "../Integration.t.sol";
+import { Periphery_Test } from "../../Periphery.t.sol";
 
-abstract contract MerkleLockup_Integration_Test is Integration_Test {
+abstract contract MerkleLockup_Integration_Test is Periphery_Test {
     function setUp() public virtual override {
-        Integration_Test.setUp();
+        Periphery_Test.setUp();
 
         // Create the default MerkleLockup contracts.
         merkleLL = createMerkleLL();

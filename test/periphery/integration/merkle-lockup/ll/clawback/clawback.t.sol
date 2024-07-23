@@ -77,7 +77,7 @@ contract Clawback_Integration_Test is MerkleLockup_Integration_Test {
 
     function test_Clawback(address to) internal {
         uint128 clawbackAmount = uint128(dai.balanceOf(address(merkleLL)));
-        expectCallToTransfer({ to: to, amount: clawbackAmount });
+        expectCallToTransfer({ to: to, value: clawbackAmount });
         vm.expectEmit({ emitter: address(merkleLL) });
         emit Clawback({ admin: users.admin, to: to, amount: clawbackAmount });
         merkleLL.clawback({ to: to, amount: clawbackAmount });

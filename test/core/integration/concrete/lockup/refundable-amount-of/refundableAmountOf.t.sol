@@ -60,7 +60,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
     {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient1 });
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() + 10 seconds });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
         uint128 expectedRefundableAmount = 0;
@@ -114,7 +114,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         givenStreamHasNotBeenCanceled
     {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient1 });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
         uint128 expectedReturnableAmount = 0;
         assertEq(actualRefundableAmount, expectedReturnableAmount, "refundableAmount");

@@ -57,12 +57,11 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
 
         // Simulate the passage of time.
-        uint40 blockTimestamp = defaults.START_TIME() + timeJump;
-        vm.warp({ newTimestamp: blockTimestamp });
+        vm.warp({ newTimestamp: defaults.START_TIME() + timeJump });
 
         // Run the test.
         uint128 actualStreamedAmount = lockupDynamic.streamedAmountOf(streamId);
-        uint128 expectedStreamedAmount = calculateStreamedAmountForOneSegment(blockTimestamp, segment);
+        uint128 expectedStreamedAmount = calculateStreamedAmountForOneSegment(segment, defaults.START_TIME());
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
@@ -118,13 +117,12 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
 
         // Simulate the passage of time.
-        uint40 blockTimestamp = defaults.START_TIME() + timeJump;
-        vm.warp({ newTimestamp: blockTimestamp });
+        vm.warp({ newTimestamp: defaults.START_TIME() + timeJump });
 
         // Run the test.
         uint128 actualStreamedAmount = lockupDynamic.streamedAmountOf(streamId);
         uint128 expectedStreamedAmount =
-            calculateStreamedAmountForMultipleSegments(blockTimestamp, segments, totalAmount);
+            calculateStreamedAmountForMultipleSegments(segments, defaults.START_TIME(), totalAmount);
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 

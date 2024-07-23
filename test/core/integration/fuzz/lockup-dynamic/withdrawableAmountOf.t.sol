@@ -50,8 +50,9 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
 
         // Run the test.
         uint128 actualWithdrawableAmount = lockupDynamic.withdrawableAmountOf(streamId);
-        uint128 expectedWithdrawableAmount =
-            calculateStreamedAmountForMultipleSegments(blockTimestamp, defaults.segments(), defaults.DEPOSIT_AMOUNT());
+        uint128 expectedWithdrawableAmount = calculateStreamedAmountForMultipleSegments(
+            defaults.segments(), defaults.START_TIME(), defaults.DEPOSIT_AMOUNT()
+        );
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
@@ -77,16 +78,6 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         whenStartTimeInThePast
         whenWithWithdrawals
     {
-        timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
-
-        // Define the block timestamp.
-        uint40 blockTimestamp = defaults.START_TIME() + timeJump;
-
-        // Bound the withdraw amount.
-        uint128 streamedAmount =
-            calculateStreamedAmountForMultipleSegments(blockTimestamp, defaults.segments(), defaults.DEPOSIT_AMOUNT());
-        withdrawAmount = boundUint128(withdrawAmount, 1, streamedAmount);
-
         // Create the stream with a custom total amount. The broker fee is disabled so that it doesn't interfere with
         // the calculations.
         LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
@@ -94,11 +85,19 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
         params.totalAmount = defaults.DEPOSIT_AMOUNT();
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
 
+        timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
+
         // Simulate the passage of time.
-        vm.warp({ newTimestamp: blockTimestamp });
+        vm.warp({ newTimestamp: defaults.START_TIME() + timeJump });
+
+        // Bound the withdraw amount.
+        uint128 streamedAmount = calculateStreamedAmountForMultipleSegments(
+            defaults.segments(), defaults.START_TIME(), defaults.DEPOSIT_AMOUNT()
+        );
+        withdrawAmount = boundUint128(withdrawAmount, 1, streamedAmount);
 
         // Make the withdrawal.
-        lockupDynamic.withdraw({ streamId: streamId, to: users.recipient, amount: withdrawAmount });
+        lockupDynamic.withdraw({ streamId: streamId, to: users.recipient1, amount: withdrawAmount });
 
         // Run the test.
         uint128 actualWithdrawableAmount = lockupDynamic.withdrawableAmountOf(streamId);

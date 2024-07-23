@@ -29,7 +29,7 @@ abstract contract IsDepleted_Integration_Concrete_Test is Integration_Test, Lock
 
     modifier givenStreamDepleted() {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient1 });
         _;
     }
 

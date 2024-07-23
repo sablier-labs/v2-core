@@ -6,8 +6,8 @@ import { LockupLinear } from "core/types/DataTypes.sol";
 
 import { BatchLockup } from "periphery/types/DataTypes.sol";
 
-import { ArrayBuilder } from "../../utils/ArrayBuilder.sol";
-import { BatchLockupBuilder } from "../../utils/BatchLockupBuilder.sol";
+import { ArrayBuilder } from "../../../utils/ArrayBuilder.sol";
+import { BatchLockupBuilder } from "../../../utils/BatchLockupBuilder.sol";
 import { Fork_Test } from "../Fork.t.sol";
 
 /// @dev Runs against multiple fork assets.
@@ -60,18 +60,18 @@ abstract contract CreateWithTimestamps_LockupLinear_BatchLockup_Fork_Test is For
 
         // Asset flow: sender → batch → Sablier
         expectCallToTransferFrom({
-            asset_: address(FORK_ASSET),
+            asset: FORK_ASSET,
             from: params.sender,
             to: address(batchLockup),
-            amount: totalTransferAmount
+            value: totalTransferAmount
         });
         expectMultipleCallsToCreateWithTimestampsLL({ count: uint64(params.batchSize), params: createParams });
         expectMultipleCallsToTransferFrom({
-            asset_: address(FORK_ASSET),
+            asset: FORK_ASSET,
             count: uint64(params.batchSize),
             from: address(batchLockup),
             to: address(lockupLinear),
-            amount: params.perStreamAmount
+            value: params.perStreamAmount
         });
 
         uint256[] memory actualStreamIds = batchLockup.createWithTimestampsLL(lockupLinear, FORK_ASSET, batchParams);

@@ -3,8 +3,8 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { SablierV2NFTDescriptor } from "core/SablierV2NFTDescriptor.sol";
 
-import { NFTDescriptorMock } from "../../../mocks/NFTDescriptorMock.sol";
-import { Base_Test } from "../../../Base.t.sol";
+import { NFTDescriptorMock } from "test/mocks/NFTDescriptorMock.sol";
+import { Base_Test } from "test/Base.t.sol";
 
 contract NFTDescriptor_Unit_Concrete_Test is Base_Test, SablierV2NFTDescriptor {
     NFTDescriptorMock internal nftDescriptorMock;

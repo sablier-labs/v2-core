@@ -9,8 +9,8 @@ import { ISablierV2MerkleLT } from "periphery/interfaces/ISablierV2MerkleLT.sol"
 import { Errors } from "periphery/libraries/Errors.sol";
 import { MerkleLockup, MerkleLT } from "periphery/types/DataTypes.sol";
 
-import { MerkleBuilder } from "../../../../utils/MerkleBuilder.sol";
-import { Merkle } from "../../../../utils/Murky.sol";
+import { MerkleBuilder } from "test/utils/MerkleBuilder.sol";
+import { Merkle } from "test/utils/Murky.sol";
 
 import { MerkleLockup_Integration_Test } from "../../MerkleLockup.t.sol";
 
