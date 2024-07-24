@@ -77,7 +77,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
             streamId: streamId,
             funder: vars.funder,
             sender: users.sender,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             amounts: vars.createAmounts,
             asset: dai,
             cancelable: true,
@@ -126,7 +126,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
 
         // Assert that the NFT has been minted.
         vars.actualNFTOwner = lockupTranched.ownerOf({ tokenId: streamId });
-        vars.expectedNFTOwner = users.recipient1;
+        vars.expectedNFTOwner = users.recipient0;
         assertEq(vars.actualNFTOwner, vars.expectedNFTOwner, "NFT owner");
     }
 }

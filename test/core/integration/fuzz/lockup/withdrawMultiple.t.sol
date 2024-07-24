@@ -52,21 +52,21 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         ongoingWithdrawAmount = boundUint128(ongoingWithdrawAmount, 1, ongoingWithdrawableAmount);
 
         // Expect the withdrawals to be made.
-        expectCallToTransfer({ to: users.recipient1, value: ongoingWithdrawAmount });
-        expectCallToTransfer({ to: users.recipient1, value: settledWithdrawAmount });
+        expectCallToTransfer({ to: users.recipient0, value: ongoingWithdrawAmount });
+        expectCallToTransfer({ to: users.recipient0, value: settledWithdrawAmount });
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
         emit WithdrawFromLockupStream({
             streamId: ongoingStreamId,
-            to: users.recipient1,
+            to: users.recipient0,
             asset: dai,
             amount: ongoingWithdrawAmount
         });
         vm.expectEmit({ emitter: address(lockup) });
         emit WithdrawFromLockupStream({
             streamId: settledStreamId,
-            to: users.recipient1,
+            to: users.recipient0,
             asset: dai,
             amount: settledWithdrawAmount
         });
@@ -85,7 +85,7 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         assertEq(lockup.getWithdrawnAmount(streamIds[1]), amounts[1], "withdrawnAmount1");
 
         // Assert that the stream NFTs have not been burned.
-        assertEq(lockup.getRecipient(streamIds[0]), users.recipient1, "NFT owner0");
-        assertEq(lockup.getRecipient(streamIds[1]), users.recipient1, "NFT owner1");
+        assertEq(lockup.getRecipient(streamIds[0]), users.recipient0, "NFT owner0");
+        assertEq(lockup.getRecipient(streamIds[1]), users.recipient0, "NFT owner1");
     }
 }

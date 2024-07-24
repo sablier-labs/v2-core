@@ -354,7 +354,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
             streamId: streamId,
             funder: funder,
             sender: users.sender,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             amounts: defaults.lockupCreateAmounts(),
             segments: defaults.segments(),
             asset: IERC20(asset),
@@ -385,7 +385,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
 
         // Assert that the NFT has been minted.
         address actualNFTOwner = lockupDynamic.ownerOf({ tokenId: streamId });
-        address expectedNFTOwner = users.recipient1;
+        address expectedNFTOwner = users.recipient0;
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }
 }
