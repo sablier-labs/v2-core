@@ -232,7 +232,7 @@ contract Claim_Integration_Test is Merkle, MerkleLockup_Integration_Test {
             recipient: users.recipient1,
             sender: users.admin,
             startTime: getBlockTimestamp(),
-            tranches: defaults.tranches(claimAmount),
+            tranches: defaults.tranchesMerkleLockup(claimAmount),
             wasCanceled: false
         });
 
@@ -270,7 +270,7 @@ contract Claim_Integration_Test is Merkle, MerkleLockup_Integration_Test {
             recipient: users.recipient1,
             sender: users.admin,
             startTime: getBlockTimestamp(),
-            tranches: defaults.tranches(),
+            tranches: defaults.tranchesMerkleLockup(),
             wasCanceled: false
         });
 

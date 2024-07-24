@@ -8,12 +8,21 @@ import { ISablierV2LockupLinear } from "core/interfaces/ISablierV2LockupLinear.s
 import { ISablierV2LockupTranched } from "core/interfaces/ISablierV2LockupTranched.sol";
 import { LockupDynamic, LockupLinear, LockupTranched } from "core/types/DataTypes.sol";
 
+import { ISablierV2MerkleLL } from "periphery/interfaces/ISablierV2MerkleLL.sol";
+import { ISablierV2MerkleLT } from "periphery/interfaces/ISablierV2MerkleLT.sol";
 import { SablierV2MerkleLL } from "periphery/SablierV2MerkleLL.sol";
 import { SablierV2MerkleLT } from "periphery/SablierV2MerkleLT.sol";
 
 import { Base_Test } from "../Base.t.sol";
 
 contract Periphery_Test is Base_Test {
+    ISablierV2MerkleLL internal merkleLL;
+    ISablierV2MerkleLT internal merkleLT;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                     SET-UP
+    //////////////////////////////////////////////////////////////////////////*/
+
     function setUp() public virtual override {
         Base_Test.setUp();
     }
@@ -28,6 +37,10 @@ contract Periphery_Test is Base_Test {
         (bool success,) = address(asset_).call(abi.encodeCall(IERC20.approve, (spender, MAX_UINT256)));
         success;
     }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                    EXPECT-CALLS
+    //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Expects multiple calls to {ISablierV2LockupDynamic.createWithDurations}, each with the specified
     /// `params`.

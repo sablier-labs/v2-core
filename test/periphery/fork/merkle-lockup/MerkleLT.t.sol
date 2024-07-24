@@ -169,7 +169,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             recipient: vars.recipients[params.posBeforeSort],
             sender: params.admin,
             startTime: getBlockTimestamp(),
-            tranches: defaults.tranches({ totalAmount: vars.amounts[params.posBeforeSort] }),
+            tranches: defaults.tranchesMerkleLockup({ totalAmount: vars.amounts[params.posBeforeSort] }),
             wasCanceled: false
         });
 

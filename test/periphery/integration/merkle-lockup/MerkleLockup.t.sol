@@ -10,6 +10,9 @@ abstract contract MerkleLockup_Integration_Test is Periphery_Test {
     function setUp() public virtual override {
         Periphery_Test.setUp();
 
+        // Make Alice the caller.
+        resetPrank(users.alice);
+
         // Create the default MerkleLockup contracts.
         merkleLL = createMerkleLL();
         merkleLT = createMerkleLT();

@@ -61,7 +61,7 @@ contract Defaults is Constants, Merkle {
     string public constant IPFS_CID = "QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR";
     uint256[] public LEAVES = new uint256[](RECIPIENT_COUNT);
     uint256 public constant RECIPIENT_COUNT = 4;
-    bytes32 public immutable MERKLE_ROOT;
+    bytes32 public MERKLE_ROOT;
     string public constant NAME = "Airdrop Campaign";
     bytes32 public constant NAME_BYTES32 = bytes32(abi.encodePacked("Airdrop Campaign"));
     uint64 public constant TOTAL_PERCENTAGE = uUNIT;
@@ -89,8 +89,15 @@ contract Defaults is Constants, Merkle {
 
         EXPIRATION = JULY_1_2024 + 12 weeks;
         FIRST_CLAIM_TIME = JULY_1_2024;
+    }
 
-        // Initialize the Merkle tree.
+    /*//////////////////////////////////////////////////////////////////////////
+                                      HELPERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev We need a separate function to initialize the Merkle tree because, at the construction time, the users are
+    /// not yet set.
+    function initMerkleTree() public {
         LEAVES[0] = MerkleBuilder.computeLeaf(INDEX1, users.recipient1, CLAIM_AMOUNT);
         LEAVES[1] = MerkleBuilder.computeLeaf(INDEX2, users.recipient2, CLAIM_AMOUNT);
         LEAVES[2] = MerkleBuilder.computeLeaf(INDEX3, users.recipient3, CLAIM_AMOUNT);
@@ -98,10 +105,6 @@ contract Defaults is Constants, Merkle {
         MerkleBuilder.sortLeaves(LEAVES);
         MERKLE_ROOT = getRoot(LEAVES.toBytes32());
     }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                      HELPERS
-    //////////////////////////////////////////////////////////////////////////*/
 
     function setAsset(IERC20 asset_) public {
         asset = asset_;
@@ -144,7 +147,7 @@ contract Defaults is Constants, Merkle {
             isDepleted: false,
             isStream: true,
             isTransferable: true,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             segments: segments(),
             sender: users.sender,
             startTime: START_TIME,
@@ -166,7 +169,7 @@ contract Defaults is Constants, Merkle {
             isTransferable: true,
             isDepleted: false,
             isStream: true,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             sender: users.sender,
             startTime: START_TIME,
             wasCanceled: false
@@ -186,7 +189,7 @@ contract Defaults is Constants, Merkle {
             isDepleted: false,
             isStream: true,
             isTransferable: true,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             sender: users.sender,
             startTime: START_TIME,
             tranches: tranches(),
@@ -238,23 +241,6 @@ contract Defaults is Constants, Merkle {
         tranches_[2] = LockupTranched.Tranche({ amount: 7400e18, timestamp: START_TIME + TOTAL_DURATION });
     }
 
-    /// @dev Mirros the logic from {SablierV2MerkleLT._calculateTranches}.
-    function tranches(uint128 totalAmount) public view returns (LockupTranched.Tranche[] memory tranches_) {
-        tranches_ = tranches();
-
-        uint128 amount0 = ud(totalAmount).mul(tranchesWithPercentages()[0].unlockPercentage.intoUD60x18()).intoUint128();
-        uint128 amount1 = ud(totalAmount).mul(tranchesWithPercentages()[1].unlockPercentage.intoUD60x18()).intoUint128();
-
-        tranches_[0].amount = amount0;
-        tranches_[1].amount = amount1;
-
-        uint128 amountsSum = amount0 + amount1;
-
-        if (amountsSum != totalAmount) {
-            tranches_[1].amount += totalAmount - amountsSum;
-        }
-    }
-
     function tranchesWithDurations()
         public
         pure
@@ -267,13 +253,13 @@ contract Defaults is Constants, Merkle {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                       PARAMS
+                                   CREATE-PARAMS
     //////////////////////////////////////////////////////////////////////////*/
 
     function createWithDurationsLD() public view returns (LockupDynamic.CreateWithDurations memory) {
         return LockupDynamic.CreateWithDurations({
             sender: users.sender,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -293,7 +279,7 @@ contract Defaults is Constants, Merkle {
     function createWithDurationsLL() public view returns (LockupLinear.CreateWithDurations memory) {
         return LockupLinear.CreateWithDurations({
             sender: users.sender,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -313,7 +299,7 @@ contract Defaults is Constants, Merkle {
     function createWithDurationsLT() public view returns (LockupTranched.CreateWithDurations memory) {
         return LockupTranched.CreateWithDurations({
             sender: users.sender,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -333,7 +319,7 @@ contract Defaults is Constants, Merkle {
     function createWithTimestampsLD() public view returns (LockupDynamic.CreateWithTimestamps memory) {
         return LockupDynamic.CreateWithTimestamps({
             sender: users.sender,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -354,7 +340,7 @@ contract Defaults is Constants, Merkle {
     function createWithTimestampsLL() public view returns (LockupLinear.CreateWithTimestamps memory) {
         return LockupLinear.CreateWithTimestamps({
             sender: users.sender,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -374,7 +360,7 @@ contract Defaults is Constants, Merkle {
     function createWithTimestampsLT() public view returns (LockupTranched.CreateWithTimestamps memory) {
         return LockupTranched.CreateWithTimestamps({
             sender: users.sender,
-            recipient: users.recipient1,
+            recipient: users.recipient0,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -513,6 +499,33 @@ contract Defaults is Constants, Merkle {
 
     function getLeaves() public view returns (uint256[] memory) {
         return LEAVES;
+    }
+
+    function tranchesMerkleLockup() public view returns (LockupTranched.Tranche[] memory tranches_) {
+        tranches_ = new LockupTranched.Tranche[](2);
+        tranches_[0] = LockupTranched.Tranche({ amount: 2500e18, timestamp: uint40(block.timestamp) + CLIFF_DURATION });
+        tranches_[1] = LockupTranched.Tranche({ amount: 7500e18, timestamp: uint40(block.timestamp) + TOTAL_DURATION });
+    }
+
+    /// @dev Mirros the logic from {SablierV2MerkleLT._calculateTranches}.
+    function tranchesMerkleLockup(uint128 totalAmount)
+        public
+        view
+        returns (LockupTranched.Tranche[] memory tranches_)
+    {
+        tranches_ = tranchesMerkleLockup();
+
+        uint128 amount0 = ud(totalAmount).mul(tranchesWithPercentages()[0].unlockPercentage.intoUD60x18()).intoUint128();
+        uint128 amount1 = ud(totalAmount).mul(tranchesWithPercentages()[1].unlockPercentage.intoUD60x18()).intoUint128();
+
+        tranches_[0].amount = amount0;
+        tranches_[1].amount = amount1;
+
+        uint128 amountsSum = amount0 + amount1;
+
+        if (amountsSum != totalAmount) {
+            tranches_[1].amount += totalAmount - amountsSum;
+        }
     }
 
     function tranchesWithPercentages()

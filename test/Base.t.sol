@@ -87,6 +87,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         users.broker = createUser("Broker");
         users.eve = createUser("Eve");
         users.operator = createUser("Operator");
+        users.recipient0 = createUser("Recipient0");
         users.recipient1 = createUser("Recipient1");
         users.recipient2 = createUser("Recipient2");
         users.recipient3 = createUser("Recipient3");
@@ -94,6 +95,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         users.sender = createUser("Sender");
 
         defaults.setUsers(users);
+        defaults.initMerkleTree();
 
         // Warp to July 1, 2024 at 00:00 UTC to provide a more realistic testing environment.
         vm.warp({ newTimestamp: JULY_1_2024 });
