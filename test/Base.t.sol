@@ -95,8 +95,8 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
 
         defaults.setUsers(users);
 
-        // Warp to May 1, 2024 at 00:00 GMT to provide a more realistic testing environment.
-        vm.warp({ newTimestamp: MAY_1_2024 });
+        // Warp to July 1, 2024 at 00:00 UTC to provide a more realistic testing environment.
+        vm.warp({ newTimestamp: JULY_1_2024 });
     }
 
     /*//////////////////////////////////////////////////////////////////////////

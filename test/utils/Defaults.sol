@@ -79,7 +79,7 @@ contract Defaults is Constants, Merkle {
     //////////////////////////////////////////////////////////////////////////*/
 
     constructor() {
-        START_TIME = uint40(MAY_1_2024) + 2 days;
+        START_TIME = JULY_1_2024 + 2 days;
         CLIFF_TIME = START_TIME + CLIFF_DURATION;
         END_TIME = START_TIME + TOTAL_DURATION;
         MAX_SEGMENT_DURATION = TOTAL_DURATION / uint40(MAX_SEGMENT_COUNT);
@@ -87,8 +87,8 @@ contract Defaults is Constants, Merkle {
         TRANCHE_COUNT = 3;
         WARP_26_PERCENT = START_TIME + CLIFF_DURATION + 100 seconds;
 
-        EXPIRATION = uint40(block.timestamp) + 12 weeks;
-        FIRST_CLAIM_TIME = uint40(block.timestamp);
+        EXPIRATION = JULY_1_2024 + 12 weeks;
+        FIRST_CLAIM_TIME = JULY_1_2024;
 
         // Initialize the Merkle tree.
         LEAVES[0] = MerkleBuilder.computeLeaf(INDEX1, users.recipient1, CLAIM_AMOUNT);
@@ -117,6 +117,10 @@ contract Defaults is Constants, Merkle {
 
     function broker() public view returns (Broker memory) {
         return Broker({ account: users.broker, fee: BROKER_FEE });
+    }
+
+    function brokerNull() public pure returns (Broker memory) {
+        return Broker({ account: address(0), fee: UD60x18.wrap(0) });
     }
 
     function durations() public pure returns (LockupLinear.Durations memory) {
@@ -282,7 +286,7 @@ contract Defaults is Constants, Merkle {
     function createWithDurationsBrokerNullLD() public view returns (LockupDynamic.CreateWithDurations memory) {
         LockupDynamic.CreateWithDurations memory params = createWithDurationsLD();
         params.totalAmount = DEPOSIT_AMOUNT;
-        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        params.broker = brokerNull();
         return params;
     }
 
@@ -302,7 +306,7 @@ contract Defaults is Constants, Merkle {
     function createWithDurationsBrokerNullLL() public view returns (LockupLinear.CreateWithDurations memory) {
         LockupLinear.CreateWithDurations memory params = createWithDurationsLL();
         params.totalAmount = DEPOSIT_AMOUNT;
-        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        params.broker = brokerNull();
         return params;
     }
 
@@ -322,7 +326,7 @@ contract Defaults is Constants, Merkle {
     function createWithDurationsBrokerNullLT() public view returns (LockupTranched.CreateWithDurations memory) {
         LockupTranched.CreateWithDurations memory params = createWithDurationsLT();
         params.totalAmount = DEPOSIT_AMOUNT;
-        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        params.broker = brokerNull();
         return params;
     }
 
@@ -343,7 +347,7 @@ contract Defaults is Constants, Merkle {
     function createWithTimestampsBrokerNullLD() public view returns (LockupDynamic.CreateWithTimestamps memory) {
         LockupDynamic.CreateWithTimestamps memory params = createWithTimestampsLD();
         params.totalAmount = DEPOSIT_AMOUNT;
-        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        params.broker = brokerNull();
         return params;
     }
 
@@ -363,7 +367,7 @@ contract Defaults is Constants, Merkle {
     function createWithTimestampsBrokerNullLL() public view returns (LockupLinear.CreateWithTimestamps memory) {
         LockupLinear.CreateWithTimestamps memory params = createWithTimestampsLL();
         params.totalAmount = DEPOSIT_AMOUNT;
-        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        params.broker = brokerNull();
         return params;
     }
 
@@ -384,7 +388,7 @@ contract Defaults is Constants, Merkle {
     function createWithTimestampsBrokerNullLT() public view returns (LockupTranched.CreateWithTimestamps memory) {
         LockupTranched.CreateWithTimestamps memory params = createWithTimestampsLT();
         params.totalAmount = DEPOSIT_AMOUNT;
-        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        params.broker = brokerNull();
         return params;
     }
 
