@@ -78,10 +78,7 @@ contract Defaults is Constants, Merkle {
                                     CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
 
-    constructor(IERC20 _asset, Users memory _users) {
-        asset = _asset;
-        users = _users;
-
+    constructor() {
         START_TIME = uint40(MAY_1_2024) + 2 days;
         CLIFF_TIME = START_TIME + CLIFF_DURATION;
         END_TIME = START_TIME + TOTAL_DURATION;
@@ -100,6 +97,18 @@ contract Defaults is Constants, Merkle {
         LEAVES[3] = MerkleBuilder.computeLeaf(INDEX4, users.recipient4, CLAIM_AMOUNT);
         MerkleBuilder.sortLeaves(LEAVES);
         MERKLE_ROOT = getRoot(LEAVES.toBytes32());
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                      HELPERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function setAsset(IERC20 asset_) public {
+        asset = asset_;
+    }
+
+    function setUsers(Users memory users_) public {
+        users = users_;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -131,7 +140,7 @@ contract Defaults is Constants, Merkle {
             isDepleted: false,
             isStream: true,
             isTransferable: true,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             segments: segments(),
             sender: users.sender,
             startTime: START_TIME,
@@ -153,7 +162,7 @@ contract Defaults is Constants, Merkle {
             isTransferable: true,
             isDepleted: false,
             isStream: true,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             sender: users.sender,
             startTime: START_TIME,
             wasCanceled: false
@@ -173,7 +182,7 @@ contract Defaults is Constants, Merkle {
             isDepleted: false,
             isStream: true,
             isTransferable: true,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             sender: users.sender,
             startTime: START_TIME,
             tranches: tranches(),
@@ -260,7 +269,7 @@ contract Defaults is Constants, Merkle {
     function createWithDurationsLD() public view returns (LockupDynamic.CreateWithDurations memory) {
         return LockupDynamic.CreateWithDurations({
             sender: users.sender,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -270,10 +279,17 @@ contract Defaults is Constants, Merkle {
         });
     }
 
+    function createWithDurationsBrokerNullLD() public view returns (LockupDynamic.CreateWithDurations memory) {
+        LockupDynamic.CreateWithDurations memory params = createWithDurationsLD();
+        params.totalAmount = DEPOSIT_AMOUNT;
+        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        return params;
+    }
+
     function createWithDurationsLL() public view returns (LockupLinear.CreateWithDurations memory) {
         return LockupLinear.CreateWithDurations({
             sender: users.sender,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -283,10 +299,17 @@ contract Defaults is Constants, Merkle {
         });
     }
 
+    function createWithDurationsBrokerNullLL() public view returns (LockupLinear.CreateWithDurations memory) {
+        LockupLinear.CreateWithDurations memory params = createWithDurationsLL();
+        params.totalAmount = DEPOSIT_AMOUNT;
+        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        return params;
+    }
+
     function createWithDurationsLT() public view returns (LockupTranched.CreateWithDurations memory) {
         return LockupTranched.CreateWithDurations({
             sender: users.sender,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -296,10 +319,17 @@ contract Defaults is Constants, Merkle {
         });
     }
 
+    function createWithDurationsBrokerNullLT() public view returns (LockupTranched.CreateWithDurations memory) {
+        LockupTranched.CreateWithDurations memory params = createWithDurationsLT();
+        params.totalAmount = DEPOSIT_AMOUNT;
+        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        return params;
+    }
+
     function createWithTimestampsLD() public view returns (LockupDynamic.CreateWithTimestamps memory) {
         return LockupDynamic.CreateWithTimestamps({
             sender: users.sender,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -310,10 +340,17 @@ contract Defaults is Constants, Merkle {
         });
     }
 
+    function createWithTimestampsBrokerNullLD() public view returns (LockupDynamic.CreateWithTimestamps memory) {
+        LockupDynamic.CreateWithTimestamps memory params = createWithTimestampsLD();
+        params.totalAmount = DEPOSIT_AMOUNT;
+        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        return params;
+    }
+
     function createWithTimestampsLL() public view returns (LockupLinear.CreateWithTimestamps memory) {
         return LockupLinear.CreateWithTimestamps({
             sender: users.sender,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -323,10 +360,17 @@ contract Defaults is Constants, Merkle {
         });
     }
 
+    function createWithTimestampsBrokerNullLL() public view returns (LockupLinear.CreateWithTimestamps memory) {
+        LockupLinear.CreateWithTimestamps memory params = createWithTimestampsLL();
+        params.totalAmount = DEPOSIT_AMOUNT;
+        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        return params;
+    }
+
     function createWithTimestampsLT() public view returns (LockupTranched.CreateWithTimestamps memory) {
         return LockupTranched.CreateWithTimestamps({
             sender: users.sender,
-            recipient: users.recipient0,
+            recipient: users.recipient1,
             totalAmount: TOTAL_AMOUNT,
             asset: asset,
             cancelable: true,
@@ -335,6 +379,13 @@ contract Defaults is Constants, Merkle {
             tranches: tranches(),
             broker: broker()
         });
+    }
+
+    function createWithTimestampsBrokerNullLT() public view returns (LockupTranched.CreateWithTimestamps memory) {
+        LockupTranched.CreateWithTimestamps memory params = createWithTimestampsLT();
+        params.totalAmount = DEPOSIT_AMOUNT;
+        params.broker = Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        return params;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

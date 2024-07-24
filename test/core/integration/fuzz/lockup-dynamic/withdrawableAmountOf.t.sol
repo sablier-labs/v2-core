@@ -39,9 +39,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
 
         // Create the stream with a custom total amount. The broker fee is disabled so that it doesn't interfere with
         // the calculations.
-        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
-        params.broker = Broker({ account: address(0), fee: ZERO });
-        params.totalAmount = defaults.DEPOSIT_AMOUNT();
+        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLD();
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
 
         // Simulate the passage of time.
@@ -80,8 +78,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is
     {
         // Create the stream with a custom total amount. The broker fee is disabled so that it doesn't interfere with
         // the calculations.
-        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
-        params.broker = Broker({ account: address(0), fee: ZERO });
+        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLD();
         params.totalAmount = defaults.DEPOSIT_AMOUNT();
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
 

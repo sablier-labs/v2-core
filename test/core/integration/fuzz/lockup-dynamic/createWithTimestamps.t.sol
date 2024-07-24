@@ -109,8 +109,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         uint128 depositAmount = defaultDepositAmount + depositDiff;
 
         // Prepare the params.
-        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
-        params.broker = Broker({ account: address(0), fee: brokerFee });
+        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLD();
         params.totalAmount = depositAmount;
 
         // Expect the relevant error to be thrown.

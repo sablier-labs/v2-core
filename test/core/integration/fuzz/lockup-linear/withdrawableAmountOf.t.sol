@@ -61,8 +61,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         deal({ token: address(dai), to: users.sender, give: depositAmount });
 
         // Create the stream. The broker fee is disabled so that it doesn't interfere with the calculations.
-        LockupLinear.CreateWithTimestamps memory params = defaults.createWithTimestampsLL();
-        params.broker = Broker({ account: address(0), fee: ZERO });
+        LockupLinear.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLL();
         params.totalAmount = depositAmount;
         uint256 streamId = lockupLinear.createWithTimestamps(params);
 
@@ -108,8 +107,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         deal({ token: address(dai), to: users.sender, give: depositAmount });
 
         // Create the stream. The broker fee is disabled so that it doesn't interfere with the calculations.
-        LockupLinear.CreateWithTimestamps memory params = defaults.createWithTimestampsLL();
-        params.broker = Broker({ account: address(0), fee: ZERO });
+        LockupLinear.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLL();
         params.totalAmount = depositAmount;
         uint256 streamId = lockupLinear.createWithTimestamps(params);
 

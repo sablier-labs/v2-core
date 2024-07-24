@@ -50,8 +50,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         deal({ token: address(dai), to: users.sender, give: segment.amount });
 
         // Create the stream with the fuzzed segment.
-        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
-        params.broker = Broker({ account: address(0), fee: ZERO });
+        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLD();
         params.segments = segments;
         params.totalAmount = segment.amount;
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
@@ -110,8 +109,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         deal({ token: address(dai), to: users.sender, give: totalAmount });
 
         // Create the stream with the fuzzed segments.
-        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
-        params.broker = Broker({ account: address(0), fee: ZERO });
+        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLD();
         params.segments = segments;
         params.totalAmount = totalAmount;
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
@@ -158,8 +156,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
         deal({ token: address(dai), to: users.sender, give: totalAmount });
 
         // Create the stream with the fuzzed segments.
-        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsLD();
-        params.broker = Broker({ account: address(0), fee: ZERO });
+        LockupDynamic.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLD();
         params.segments = segments;
         params.totalAmount = totalAmount;
         uint256 streamId = lockupDynamic.createWithTimestamps(params);
