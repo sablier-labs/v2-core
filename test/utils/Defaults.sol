@@ -398,17 +398,17 @@ contract Defaults is Constants, Merkle {
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithDurationsLD} parameters.
     function batchCreateWithDurationsLD() public view returns (BatchLockup.CreateWithDurationsLD[] memory batch) {
-        batch = BatchLockupBuilder.fillBatch(createWithDurationsLD(), BATCH_SIZE);
+        batch = BatchLockupBuilder.fillBatch(createWithDurationsBrokerNullLD(), BATCH_SIZE);
     }
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithDurationsLL} parameters.
     function batchCreateWithDurationsLL() public view returns (BatchLockup.CreateWithDurationsLL[] memory batch) {
-        batch = BatchLockupBuilder.fillBatch(createWithDurationsLL(), BATCH_SIZE);
+        batch = BatchLockupBuilder.fillBatch(createWithDurationsBrokerNullLL(), BATCH_SIZE);
     }
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithDurationsLT} parameters.
     function batchCreateWithDurationsLT() public view returns (BatchLockup.CreateWithDurationsLT[] memory batch) {
-        batch = BatchLockupBuilder.fillBatch(createWithDurationsLT(), BATCH_SIZE);
+        batch = BatchLockupBuilder.fillBatch(createWithDurationsBrokerNullLT(), BATCH_SIZE);
     }
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithTimestampsLD} parameters.
@@ -422,7 +422,7 @@ contract Defaults is Constants, Merkle {
         view
         returns (BatchLockup.CreateWithTimestampsLD[] memory batch)
     {
-        batch = BatchLockupBuilder.fillBatch(createWithTimestampsLD(), batchSize);
+        batch = BatchLockupBuilder.fillBatch(createWithTimestampsBrokerNullLD(), batchSize);
     }
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithTimestampsLL} parameters.
@@ -436,7 +436,7 @@ contract Defaults is Constants, Merkle {
         view
         returns (BatchLockup.CreateWithTimestampsLL[] memory batch)
     {
-        batch = BatchLockupBuilder.fillBatch(createWithTimestampsLL(), batchSize);
+        batch = BatchLockupBuilder.fillBatch(createWithTimestampsBrokerNullLL(), batchSize);
     }
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithTimestampsLT} parameters.
@@ -450,7 +450,7 @@ contract Defaults is Constants, Merkle {
         view
         returns (BatchLockup.CreateWithTimestampsLT[] memory batch)
     {
-        batch = BatchLockupBuilder.fillBatch(createWithTimestampsLT(), batchSize);
+        batch = BatchLockupBuilder.fillBatch(createWithTimestampsBrokerNullLT(), batchSize);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

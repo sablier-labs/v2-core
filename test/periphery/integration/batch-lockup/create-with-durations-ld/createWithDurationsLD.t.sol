@@ -9,6 +9,7 @@ import { Periphery_Test } from "../../../Periphery.t.sol";
 contract CreateWithDurationsLD_Integration_Test is Periphery_Test {
     function setUp() public virtual override {
         Periphery_Test.setUp();
+        resetPrank({ msgSender: users.sender });
     }
 
     function test_RevertWhen_BatchSizeZero() external {
@@ -22,12 +23,16 @@ contract CreateWithDurationsLD_Integration_Test is Periphery_Test {
     }
 
     function test_BatchCreateWithDurations() external whenBatchSizeNotZero {
-        // Asset flow: Alice → batchLockup → Sablier
+        // Asset flow: Sender → batchLockup → Sablier
         // Expect transfers from Alice to the batchLockup, and then from the batchLockup to the Sablier contract.
-        expectCallToTransferFrom({ from: users.alice, to: address(batchLockup), value: defaults.TOTAL_TRANSFER_AMOUNT() });
+        expectCallToTransferFrom({
+            from: users.sender,
+            to: address(batchLockup),
+            value: defaults.TOTAL_TRANSFER_AMOUNT()
+        });
         expectMultipleCallsToCreateWithDurationsLD({
             count: defaults.BATCH_SIZE(),
-            params: defaults.createWithDurationsLD()
+            params: defaults.createWithDurationsBrokerNullLD()
         });
         expectMultipleCallsToTransferFrom({
             count: defaults.BATCH_SIZE(),
