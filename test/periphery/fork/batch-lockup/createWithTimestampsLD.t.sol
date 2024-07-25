@@ -35,7 +35,7 @@ abstract contract CreateWithTimestamps_LockupDynamic_BatchLockup_Fork_Test is Fo
         (params.perStreamAmount,) = fuzzDynamicStreamAmounts({
             upperBound: MAX_UINT128 / params.batchSize,
             segments: params.segments,
-            brokerFee: defaults.BROKER_FEE()
+            brokerFee: defaults.brokerNull().fee
         });
 
         checkUsers(params.sender, params.recipient);
@@ -55,7 +55,7 @@ abstract contract CreateWithTimestamps_LockupDynamic_BatchLockup_Fork_Test is Fo
             transferable: true,
             startTime: params.startTime,
             segments: params.segments,
-            broker: defaults.broker()
+            broker: defaults.brokerNull()
         });
         BatchLockup.CreateWithTimestampsLD[] memory batchParams =
             BatchLockupBuilder.fillBatch(createWithTimestamps, params.batchSize);

@@ -35,7 +35,7 @@ abstract contract CreateWithTimestamps_LockupTranched_BatchLockup_Fork_Test is F
         (params.perStreamAmount,) = fuzzTranchedStreamAmounts({
             upperBound: MAX_UINT128 / params.batchSize,
             tranches: params.tranches,
-            brokerFee: defaults.BROKER_FEE()
+            brokerFee: defaults.brokerNull().fee
         });
 
         checkUsers(params.sender, params.recipient);
@@ -55,7 +55,7 @@ abstract contract CreateWithTimestamps_LockupTranched_BatchLockup_Fork_Test is F
             transferable: true,
             startTime: params.startTime,
             tranches: params.tranches,
-            broker: defaults.broker()
+            broker: defaults.brokerNull()
         });
         BatchLockup.CreateWithTimestampsLT[] memory batchParams =
             BatchLockupBuilder.fillBatch(createWithTimestamps, params.batchSize);
