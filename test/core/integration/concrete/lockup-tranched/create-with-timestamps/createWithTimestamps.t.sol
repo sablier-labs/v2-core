@@ -217,7 +217,6 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenTrancheTimestampsOrdered
         whenEndTimeInTheFuture
     {
-        UD60x18 brokerFee = ZERO;
         resetPrank({ msgSender: users.sender });
 
         // Adjust the default deposit amount.
@@ -225,8 +224,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         uint128 depositAmount = defaultDepositAmount + 100;
 
         // Prepare the params.
-        LockupTranched.CreateWithTimestamps memory params = defaults.createWithTimestampsLT();
-        params.broker = Broker({ account: address(0), fee: brokerFee });
+        LockupTranched.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLT();
         params.totalAmount = depositAmount;
 
         // Expect the relevant error to be thrown.

@@ -217,7 +217,6 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenSegmentTimestampsOrdered
         whenEndTimeInTheFuture
     {
-        UD60x18 brokerFee = ZERO;
         resetPrank({ msgSender: users.sender });
 
         // Adjust the default deposit amount.

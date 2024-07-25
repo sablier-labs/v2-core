@@ -101,7 +101,6 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
     {
         depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
 
-        UD60x18 brokerFee = ZERO;
         resetPrank({ msgSender: users.sender });
 
         // Adjust the default deposit amount.

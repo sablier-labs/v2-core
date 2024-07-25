@@ -101,7 +101,6 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
     {
         depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
 
-        UD60x18 brokerFee = ZERO;
         resetPrank({ msgSender: users.sender });
 
         // Adjust the default deposit amount.
@@ -109,8 +108,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         uint128 depositAmount = defaultDepositAmount + depositDiff;
 
         // Prepare the params.
-        LockupTranched.CreateWithTimestamps memory params = defaults.createWithTimestampsLT();
-        params.broker = Broker({ account: address(0), fee: brokerFee });
+        LockupTranched.CreateWithTimestamps memory params = defaults.createWithTimestampsBrokerNullLT();
         params.totalAmount = depositAmount;
 
         // Expect the relevant error to be thrown.
