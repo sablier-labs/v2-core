@@ -11,6 +11,8 @@ import { MerkleLockup } from "periphery/types/DataTypes.sol";
 import { MerkleBuilder } from "../../../utils/MerkleBuilder.sol";
 import { Fork_Test } from "../Fork.t.sol";
 
+import { console2 } from "forge-std/src/console2.sol";
+
 abstract contract MerkleLL_Fork_Test is Fork_Test {
     using MerkleBuilder for uint256[];
 
@@ -95,7 +97,11 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
         MerkleBuilder.sortLeaves(leaves);
         vars.merkleRoot = getRoot(leaves.toBytes32());
 
-        vars.expectedLL = computeMerkleLLAddress(params.admin, FORK_ASSET, vars.merkleRoot, params.expiration);
+        // Make the caller the admin.
+        resetPrank({ msgSender: params.admin });
+
+        vars.expectedLL =
+            computeMerkleLLAddress(params.admin, params.admin, FORK_ASSET, vars.merkleRoot, params.expiration);
 
         vars.baseParams = defaults.baseParams({
             admin: params.admin,
@@ -183,7 +189,6 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             vars.clawbackAmount = uint128(FORK_ASSET.balanceOf(address(vars.merkleLL)));
             vm.warp({ newTimestamp: uint256(params.expiration) + 1 seconds });
 
-            resetPrank({ msgSender: params.admin });
             expectCallToTransfer({ asset: FORK_ASSET, to: params.admin, value: vars.clawbackAmount });
             vm.expectEmit({ emitter: address(vars.merkleLL) });
             emit Clawback({ to: params.admin, admin: params.admin, amount: vars.clawbackAmount });

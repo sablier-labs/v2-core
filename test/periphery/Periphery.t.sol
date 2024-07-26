@@ -164,18 +164,7 @@ contract Periphery_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function computeMerkleLLAddress(
-        address admin,
-        bytes32 merkleRoot,
-        uint40 expiration
-    )
-        internal
-        view
-        returns (address)
-    {
-        return computeMerkleLLAddress(admin, dai, merkleRoot, expiration);
-    }
-
-    function computeMerkleLLAddress(
+        address caller,
         address admin,
         IERC20 asset_,
         bytes32 merkleRoot,
@@ -187,7 +176,7 @@ contract Periphery_Test is Base_Test {
     {
         bytes32 salt = keccak256(
             abi.encodePacked(
-                users.alice,
+                caller,
                 address(asset_),
                 defaults.CANCELABLE(),
                 expiration,
@@ -209,18 +198,7 @@ contract Periphery_Test is Base_Test {
     }
 
     function computeMerkleLTAddress(
-        address admin,
-        bytes32 merkleRoot,
-        uint40 expiration
-    )
-        internal
-        view
-        returns (address)
-    {
-        return computeMerkleLTAddress(admin, dai, merkleRoot, expiration);
-    }
-
-    function computeMerkleLTAddress(
+        address caller,
         address admin,
         IERC20 asset_,
         bytes32 merkleRoot,
@@ -232,7 +210,7 @@ contract Periphery_Test is Base_Test {
     {
         bytes32 salt = keccak256(
             abi.encodePacked(
-                users.alice,
+                caller,
                 address(asset_),
                 defaults.CANCELABLE(),
                 expiration,

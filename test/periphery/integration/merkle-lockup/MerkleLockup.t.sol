@@ -51,6 +51,18 @@ abstract contract MerkleLockup_Integration_Test is Periphery_Test {
         return computeMerkleLLAddress(admin, merkleRoot, defaults.EXPIRATION());
     }
 
+    function computeMerkleLLAddress(
+        address admin,
+        bytes32 merkleRoot,
+        uint40 expiration
+    )
+        internal
+        view
+        returns (address)
+    {
+        return computeMerkleLLAddress(users.alice, admin, dai, merkleRoot, expiration);
+    }
+
     function createMerkleLL() internal returns (ISablierV2MerkleLL) {
         return createMerkleLL(users.admin, defaults.EXPIRATION());
     }
@@ -100,6 +112,18 @@ abstract contract MerkleLockup_Integration_Test is Periphery_Test {
 
     function computeMerkleLTAddress(address admin, bytes32 merkleRoot) internal view returns (address) {
         return computeMerkleLTAddress(admin, merkleRoot, defaults.EXPIRATION());
+    }
+
+    function computeMerkleLTAddress(
+        address admin,
+        bytes32 merkleRoot,
+        uint40 expiration
+    )
+        internal
+        view
+        returns (address)
+    {
+        return computeMerkleLTAddress(users.alice, admin, dai, merkleRoot, expiration);
     }
 
     function createMerkleLT() internal returns (ISablierV2MerkleLT) {
