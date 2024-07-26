@@ -13,11 +13,7 @@ import { SablierV2BatchLockup } from "../src/periphery/SablierV2BatchLockup.sol"
 /// @notice Deploys the Sablier V2 Protocol.
 contract DeployProtocol is BaseScript {
     /// @dev Deploy via Forge.
-    function run(
-        address initialAdmin,
-        uint256 maxSegmentCount,
-        uint256 maxTrancheCount
-    )
+    function run(address initialAdmin)
         public
         virtual
         broadcast
@@ -32,9 +28,9 @@ contract DeployProtocol is BaseScript {
     {
         // Deploy V2 Core.
         nftDescriptor = new SablierV2NFTDescriptor();
-        lockupDynamic = new SablierV2LockupDynamic(initialAdmin, nftDescriptor, maxSegmentCount);
+        lockupDynamic = new SablierV2LockupDynamic(initialAdmin, nftDescriptor, segmentCountMap[block.chainid]);
         lockupLinear = new SablierV2LockupLinear(initialAdmin, nftDescriptor);
-        lockupTranched = new SablierV2LockupTranched(initialAdmin, nftDescriptor, maxTrancheCount);
+        lockupTranched = new SablierV2LockupTranched(initialAdmin, nftDescriptor, trancheCountMap[block.chainid]);
 
         // Deploy V2 Periphery.
         batchLockup = new SablierV2BatchLockup();
