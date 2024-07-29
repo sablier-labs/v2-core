@@ -30,10 +30,10 @@ jobs:
         run: >-
           forge script script/core/GenerateSVG.s.sol
           --sig "run(uint256,string,string,uint256)"
-          "${{ fromJSON(inputs.progress) }}",
-          "${{ fromJSON(inputs.status) }}"
-          "${{ fromJSON(inputs.streamed) }}"
-          "${{ fromJSON(inputs.duration) }}"
+          "${{ fromJSON(inputs.progress || true) }}",
+          "${{ fromJSON(inputs.status || true) }}"
+          "${{ fromJSON(inputs.streamed || true) }}"
+          "${{ fromJSON(inputs.duration || true) }}"
 
       - name: "Add workflow summary"
         run: |
