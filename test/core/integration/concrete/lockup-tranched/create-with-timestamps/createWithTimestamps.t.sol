@@ -4,7 +4,7 @@ pragma solidity >=0.8.22 <0.9.0;
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { UD60x18, ud, ZERO } from "@prb/math/src/UD60x18.sol";
+import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 import { stdError } from "forge-std/src/StdError.sol";
 
 import { ISablierV2LockupTranched } from "src/core/interfaces/ISablierV2LockupTranched.sol";

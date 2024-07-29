@@ -32,12 +32,12 @@ contract Clawback_Integration_Test is MerkleLockup_Integration_Test {
     }
 
     function test_Clawback_GracePeriod() external whenCallerAdmin afterFirstClaim {
-        vm.warp({ newTimestamp: block.timestamp + 6 days });
+        vm.warp({ newTimestamp: getBlockTimestamp() + 6 days });
         test_Clawback(users.admin);
     }
 
     modifier postGracePeriod() {
-        vm.warp({ newTimestamp: block.timestamp + 8 days });
+        vm.warp({ newTimestamp: getBlockTimestamp() + 8 days });
         _;
     }
 
@@ -45,7 +45,7 @@ contract Clawback_Integration_Test is MerkleLockup_Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierV2MerkleLockup_ClawbackNotAllowed.selector,
-                block.timestamp,
+                getBlockTimestamp(),
                 defaults.EXPIRATION(),
                 defaults.FIRST_CLAIM_TIME()
             )

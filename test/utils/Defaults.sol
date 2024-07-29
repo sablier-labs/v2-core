@@ -4,7 +4,7 @@ pragma solidity >=0.8.22;
 import { Arrays } from "@openzeppelin/contracts/utils/Arrays.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ud2x18, uUNIT } from "@prb/math/src/UD2x18.sol";
-import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
+import { UD60x18, ud, ZERO } from "@prb/math/src/UD60x18.sol";
 
 import { Broker, Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/core/types/DataTypes.sol";
 import { BatchLockup, MerkleLockup, MerkleLT } from "../../src/periphery/types/DataTypes.sol";
@@ -123,7 +123,7 @@ contract Defaults is Constants, Merkle {
     }
 
     function brokerNull() public pure returns (Broker memory) {
-        return Broker({ account: address(0), fee: UD60x18.wrap(0) });
+        return Broker({ account: address(0), fee: ZERO });
     }
 
     function durations() public pure returns (LockupLinear.Durations memory) {

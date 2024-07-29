@@ -2,7 +2,7 @@
 pragma solidity >=0.8.22;
 
 struct Users {
-    // Default admin for all Sablier V2 contracts.
+    // Default admin for all contracts.
     address payable admin;
     // Impartial user.
     address payable alice;

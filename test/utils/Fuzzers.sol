@@ -7,7 +7,6 @@ import { UD60x18, ud, uUNIT } from "@prb/math/src/UD60x18.sol";
 import { Lockup, LockupDynamic, LockupTranched } from "../../src/core/types/DataTypes.sol";
 
 import { Constants } from "./Constants.sol";
-import { Defaults } from "./Defaults.sol";
 import { Utils } from "./Utils.sol";
 
 abstract contract Fuzzers is Constants, Utils {

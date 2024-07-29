@@ -11,7 +11,6 @@ import { SablierV2LockupDynamic } from "src/core/SablierV2LockupDynamic.sol";
 import { SablierV2LockupLinear } from "src/core/SablierV2LockupLinear.sol";
 import { SablierV2LockupTranched } from "src/core/SablierV2LockupTranched.sol";
 import { SablierV2NFTDescriptor } from "src/core/SablierV2NFTDescriptor.sol";
-
 import { ISablierV2MerkleLockupFactory } from "src/periphery/interfaces/ISablierV2MerkleLockupFactory.sol";
 import { ISablierV2BatchLockup } from "src/periphery/interfaces/ISablierV2BatchLockup.sol";
 import { SablierV2BatchLockup } from "src/periphery/SablierV2BatchLockup.sol";
