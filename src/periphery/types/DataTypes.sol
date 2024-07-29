@@ -4,16 +4,9 @@ pragma solidity >=0.8.22;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD2x18 } from "@prb/math/src/UD2x18.sol";
 
-import { ISablierV2Lockup } from "../../core/interfaces/ISablierV2Lockup.sol";
 import { Broker, LockupDynamic, LockupLinear, LockupTranched } from "../../core/types/DataTypes.sol";
 
 library BatchLockup {
-    /// @notice A struct encapsulating the lockup contract's address and the stream ids to cancel.
-    struct CancelMultiple {
-        ISablierV2Lockup lockup;
-        uint256[] streamIds;
-    }
-
     /// @notice A struct encapsulating all parameters of {SablierV2LockupDynamic.createWithDurations} except for the
     /// asset.
     struct CreateWithDurationsLD {
