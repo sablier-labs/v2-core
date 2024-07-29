@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { LockupLinear } from "core/types/DataTypes.sol";
-
-import { Errors } from "periphery/libraries/Errors.sol";
-import { ISablierV2MerkleLL } from "periphery/interfaces/ISablierV2MerkleLL.sol";
-import { MerkleLockup } from "periphery/types/DataTypes.sol";
+import { LockupLinear } from "src/core/types/DataTypes.sol";
+import { Errors } from "src/periphery/libraries/Errors.sol";
+import { ISablierV2MerkleLL } from "src/periphery/interfaces/ISablierV2MerkleLL.sol";
+import { MerkleLockup } from "src/periphery/types/DataTypes.sol";
 
 import { MerkleLockup_Integration_Test } from "../../MerkleLockup.t.sol";
 

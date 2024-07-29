@@ -3,7 +3,7 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Solarray } from "solarray/src/Solarray.sol";
 
-import { Lockup } from "core/types/DataTypes.sol";
+import { Lockup } from "src/core/types/DataTypes.sol";
 
 import { Integration_Test } from "../../Integration.t.sol";
 import { CancelMultiple_Integration_Shared_Test } from "../../shared/lockup/cancelMultiple.t.sol";

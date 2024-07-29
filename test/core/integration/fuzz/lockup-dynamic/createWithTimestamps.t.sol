@@ -4,8 +4,8 @@ pragma solidity >=0.8.22 <0.9.0;
 import { MAX_UD60x18, UD60x18, ud, ZERO } from "@prb/math/src/UD60x18.sol";
 import { stdError } from "forge-std/src/StdError.sol";
 
-import { Errors } from "core/libraries/Errors.sol";
-import { Broker, Lockup, LockupDynamic } from "core/types/DataTypes.sol";
+import { Errors } from "src/core/libraries/Errors.sol";
+import { Broker, Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
 import { CreateWithTimestamps_Integration_Shared_Test } from "../../shared/lockup/createWithTimestamps.t.sol";
 import { LockupDynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";

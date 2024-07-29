@@ -6,9 +6,9 @@ import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
-import { ISablierV2LockupLinear } from "core/interfaces/ISablierV2LockupLinear.sol";
-import { Errors } from "core/libraries/Errors.sol";
-import { Broker, Lockup, LockupLinear } from "core/types/DataTypes.sol";
+import { ISablierV2LockupLinear } from "src/core/interfaces/ISablierV2LockupLinear.sol";
+import { Errors } from "src/core/libraries/Errors.sol";
+import { Broker, Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
 
 import { CreateWithTimestamps_Integration_Shared_Test } from "../../../shared/lockup/createWithTimestamps.t.sol";
 import { LockupLinear_Integration_Concrete_Test } from "../LockupLinear.t.sol";

@@ -2,7 +2,7 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { ZERO } from "@prb/math/src/UD60x18.sol";
-import { Broker, LockupTranched } from "core/types/DataTypes.sol";
+import { Broker, LockupTranched } from "src/core/types/DataTypes.sol";
 
 import { StreamedAmountOf_Integration_Shared_Test } from "../../shared/lockup/streamedAmountOf.t.sol";
 import { LockupTranched_Integration_Fuzz_Test } from "./LockupTranched.t.sol";

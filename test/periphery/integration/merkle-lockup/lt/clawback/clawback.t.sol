@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { Errors as V2CoreErrors } from "core/libraries/Errors.sol";
-
-import { Errors } from "periphery/libraries/Errors.sol";
+import { Errors as V2CoreErrors } from "src/core/libraries/Errors.sol";
+import { Errors } from "src/periphery/libraries/Errors.sol";
 
 import { MerkleLockup_Integration_Test } from "../../MerkleLockup.t.sol";
 

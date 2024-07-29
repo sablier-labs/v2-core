@@ -7,9 +7,9 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD60x18, ud, ZERO } from "@prb/math/src/UD60x18.sol";
 import { stdError } from "forge-std/src/StdError.sol";
 
-import { ISablierV2LockupTranched } from "core/interfaces/ISablierV2LockupTranched.sol";
-import { Errors } from "core/libraries/Errors.sol";
-import { Broker, Lockup, LockupTranched } from "core/types/DataTypes.sol";
+import { ISablierV2LockupTranched } from "src/core/interfaces/ISablierV2LockupTranched.sol";
+import { Errors } from "src/core/libraries/Errors.sol";
+import { Broker, Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 
 import { CreateWithTimestamps_Integration_Shared_Test } from "../../../shared/lockup/createWithTimestamps.t.sol";
 import { LockupTranched_Integration_Concrete_Test } from "../LockupTranched.t.sol";

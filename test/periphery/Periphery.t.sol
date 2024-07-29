@@ -3,15 +3,14 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import { ISablierV2LockupDynamic } from "core/interfaces/ISablierV2LockupDynamic.sol";
-import { ISablierV2LockupLinear } from "core/interfaces/ISablierV2LockupLinear.sol";
-import { ISablierV2LockupTranched } from "core/interfaces/ISablierV2LockupTranched.sol";
-import { LockupDynamic, LockupLinear, LockupTranched } from "core/types/DataTypes.sol";
-
-import { ISablierV2MerkleLL } from "periphery/interfaces/ISablierV2MerkleLL.sol";
-import { ISablierV2MerkleLT } from "periphery/interfaces/ISablierV2MerkleLT.sol";
-import { SablierV2MerkleLL } from "periphery/SablierV2MerkleLL.sol";
-import { SablierV2MerkleLT } from "periphery/SablierV2MerkleLT.sol";
+import { ISablierV2LockupDynamic } from "src/core/interfaces/ISablierV2LockupDynamic.sol";
+import { ISablierV2LockupLinear } from "src/core/interfaces/ISablierV2LockupLinear.sol";
+import { ISablierV2LockupTranched } from "src/core/interfaces/ISablierV2LockupTranched.sol";
+import { LockupDynamic, LockupLinear, LockupTranched } from "src/core/types/DataTypes.sol";
+import { ISablierV2MerkleLL } from "src/periphery/interfaces/ISablierV2MerkleLL.sol";
+import { ISablierV2MerkleLT } from "src/periphery/interfaces/ISablierV2MerkleLT.sol";
+import { SablierV2MerkleLL } from "src/periphery/SablierV2MerkleLL.sol";
+import { SablierV2MerkleLT } from "src/periphery/SablierV2MerkleLT.sol";
 
 import { Base_Test } from "../Base.t.sol";
 

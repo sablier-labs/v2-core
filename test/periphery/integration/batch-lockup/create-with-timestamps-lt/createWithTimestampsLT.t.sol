@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { Errors } from "periphery/libraries/Errors.sol";
-import { BatchLockup } from "periphery/types/DataTypes.sol";
+import { Errors } from "src/periphery/libraries/Errors.sol";
+import { BatchLockup } from "src/periphery/types/DataTypes.sol";
 
 import { Periphery_Test } from "../../../Periphery.t.sol";
 

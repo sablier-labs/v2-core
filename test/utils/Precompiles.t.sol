@@ -4,12 +4,12 @@ pragma solidity >=0.8.22 <0.9.0;
 import { LibString } from "solady/src/utils/LibString.sol";
 
 import { Precompiles } from "precompiles/Precompiles.sol";
-import { ISablierV2LockupDynamic } from "core/interfaces/ISablierV2LockupDynamic.sol";
-import { ISablierV2LockupLinear } from "core/interfaces/ISablierV2LockupLinear.sol";
-import { ISablierV2LockupTranched } from "core/interfaces/ISablierV2LockupTranched.sol";
-import { ISablierV2NFTDescriptor } from "core/interfaces/ISablierV2NFTDescriptor.sol";
-import { ISablierV2BatchLockup } from "periphery/interfaces/ISablierV2BatchLockup.sol";
-import { ISablierV2MerkleLockupFactory } from "periphery/interfaces/ISablierV2MerkleLockupFactory.sol";
+import { ISablierV2LockupDynamic } from "src/core/interfaces/ISablierV2LockupDynamic.sol";
+import { ISablierV2LockupLinear } from "src/core/interfaces/ISablierV2LockupLinear.sol";
+import { ISablierV2LockupTranched } from "src/core/interfaces/ISablierV2LockupTranched.sol";
+import { ISablierV2NFTDescriptor } from "src/core/interfaces/ISablierV2NFTDescriptor.sol";
+import { ISablierV2BatchLockup } from "src/periphery/interfaces/ISablierV2BatchLockup.sol";
+import { ISablierV2MerkleLockupFactory } from "src/periphery/interfaces/ISablierV2MerkleLockupFactory.sol";
 
 import { Base_Test } from "../Base.t.sol";
 

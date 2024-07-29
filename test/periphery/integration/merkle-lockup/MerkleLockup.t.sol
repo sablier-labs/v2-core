@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { ISablierV2MerkleLL } from "periphery/interfaces/ISablierV2MerkleLL.sol";
-import { ISablierV2MerkleLT } from "periphery/interfaces/ISablierV2MerkleLT.sol";
+import { ISablierV2MerkleLL } from "src/periphery/interfaces/ISablierV2MerkleLL.sol";
+import { ISablierV2MerkleLT } from "src/periphery/interfaces/ISablierV2MerkleLT.sol";
 
 import { Periphery_Test } from "../../Periphery.t.sol";
 

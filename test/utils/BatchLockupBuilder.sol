@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
-import { LockupDynamic, LockupLinear, LockupTranched } from "core/types/DataTypes.sol";
+import { LockupDynamic, LockupLinear, LockupTranched } from "src/core/types/DataTypes.sol";
 
 import { BatchLockup } from "src/periphery/types/DataTypes.sol";
 

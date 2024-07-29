@@ -3,8 +3,8 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
 
-import { ISablierV2Lockup } from "core/interfaces/ISablierV2Lockup.sol";
-import { Errors } from "core/libraries/Errors.sol";
+import { ISablierV2Lockup } from "src/core/interfaces/ISablierV2Lockup.sol";
+import { Errors } from "src/core/libraries/Errors.sol";
 
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
 import { Integration_Test } from "../../../Integration.t.sol";
