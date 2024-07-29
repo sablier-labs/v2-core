@@ -5,7 +5,6 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import { ISablierV2LockupLinear } from "../../src/core/interfaces/ISablierV2LockupLinear.sol";
 import { LockupLinear } from "../../src/core/types/DataTypes.sol";
-
 import { ISablierV2MerkleLL } from "../../src/periphery/interfaces/ISablierV2MerkleLL.sol";
 import { ISablierV2MerkleLockupFactory } from "../../src/periphery/interfaces/ISablierV2MerkleLockupFactory.sol";
 import { MerkleLockup } from "../../src/periphery/types/DataTypes.sol";

@@ -5,10 +5,10 @@ import { SablierV2LockupDynamic } from "../src/core/SablierV2LockupDynamic.sol";
 import { SablierV2LockupLinear } from "../src/core/SablierV2LockupLinear.sol";
 import { SablierV2LockupTranched } from "../src/core/SablierV2LockupTranched.sol";
 import { SablierV2NFTDescriptor } from "../src/core/SablierV2NFTDescriptor.sol";
-import { BaseScript } from "./Base.s.sol";
-
 import { SablierV2MerkleLockupFactory } from "../src/periphery/SablierV2MerkleLockupFactory.sol";
 import { SablierV2BatchLockup } from "../src/periphery/SablierV2BatchLockup.sol";
+
+import { BaseScript } from "./Base.s.sol";
 
 /// @notice Deploys the Sablier V2 Protocol at deterministic addresses across chains.
 contract DeployDeterministicProtocol is BaseScript {

@@ -3,13 +3,13 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD2x18 } from "@prb/math/src/UD2x18.sol";
+
 import { ISablierV2LockupTranched } from "../../src/core/interfaces/ISablierV2LockupTranched.sol";
-
-import { BaseScript } from "../Base.s.sol";
-
 import { ISablierV2MerkleLockupFactory } from "../../src/periphery/interfaces/ISablierV2MerkleLockupFactory.sol";
 import { ISablierV2MerkleLT } from "../../src/periphery/interfaces/ISablierV2MerkleLT.sol";
 import { MerkleLockup, MerkleLT } from "../../src/periphery/types/DataTypes.sol";
+
+import { BaseScript } from "../Base.s.sol";
 
 contract CreateMerkleLT is BaseScript {
     /// @dev Deploy via Forge.
