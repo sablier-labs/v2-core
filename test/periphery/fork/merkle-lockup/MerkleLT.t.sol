@@ -5,7 +5,7 @@ import { Arrays } from "@openzeppelin/contracts/utils/Arrays.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
-import { ISablierV2MerkleLT } from "src/periphery/interfaces/ISablierV2MerkleLT.sol";
+import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol";
 import { MerkleLockup } from "src/periphery/types/DataTypes.sol";
 
 import { MerkleBuilder } from "../../../utils/MerkleBuilder.sol";
@@ -48,7 +48,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         uint256[] indexes;
         uint256 leafPos;
         uint256 leafToClaim;
-        ISablierV2MerkleLT merkleLT;
+        ISablierMerkleLT merkleLT;
         bytes32 merkleRoot;
         address[] recipients;
         uint256 recipientCount;
@@ -111,7 +111,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
 
         vm.expectEmit({ emitter: address(merkleLockupFactory) });
         emit CreateMerkleLT({
-            merkleLT: ISablierV2MerkleLT(vars.expectedLT),
+            merkleLT: ISablierMerkleLT(vars.expectedLT),
             baseParams: vars.baseParams,
             lockupTranched: lockupTranched,
             tranchesWithPercentages: defaults.tranchesWithPercentages(),

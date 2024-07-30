@@ -1,6 +1,6 @@
 {
   "name": "@sablier/v2-core",
-  "description": "Core smart contracts of the Sablier V2 token distribution protocol",
+  "description": "Core smart contracts of the Lockup token distribution protocol",
   "license": "BUSL-1.1",
   "version": "1.2.0",
   "author": {
@@ -38,10 +38,12 @@
     "cryptoassets",
     "ethereum",
     "foundry",
+    "lockup",
     "money-streaming",
     "real-time-finance",
     "sablier",
     "sablier-v2",
+    "sablier-lockup",
     "smart-contracts",
     "solidity",
     "token-distribution",

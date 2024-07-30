@@ -131,11 +131,11 @@ library NFTSVG {
             '<text text-rendering="optimizeSpeed">',
             SVGElements.floatingText({
                 offset: "-100%",
-                text: string.concat(sablierAddress, unicode" • ", "Sablier V2 ", sablierModel)
+                text: string.concat(sablierAddress, unicode" • ", "Sablier ", sablierModel)
             }),
             SVGElements.floatingText({
                 offset: "0%",
-                text: string.concat(sablierAddress, unicode" • ", "Sablier V2 ", sablierModel)
+                text: string.concat(sablierAddress, unicode" • ", "Sablier ", sablierModel)
             }),
             SVGElements.floatingText({ offset: "-50%", text: string.concat(assetAddress, unicode" • ", assetSymbol) }),
             SVGElements.floatingText({ offset: "50%", text: string.concat(assetAddress, unicode" • ", assetSymbol) }),

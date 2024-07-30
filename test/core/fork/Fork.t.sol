@@ -51,14 +51,14 @@ abstract contract Fork_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Checks the user assumptions.
-    function checkUsers(address sender, address recipient, address broker, address sablierContract) internal virtual {
+    function checkUsers(address sender, address recipient, address broker, address lockupContract) internal virtual {
         // The protocol does not allow the zero address to interact with it.
         vm.assume(sender != address(0) && recipient != address(0) && broker != address(0));
 
         // The goal is to not have overlapping users because the forked asset balance tests would fail otherwise.
         vm.assume(sender != recipient && sender != broker && recipient != broker);
         vm.assume(sender != FORK_ASSET_HOLDER && recipient != FORK_ASSET_HOLDER && broker != FORK_ASSET_HOLDER);
-        vm.assume(sender != sablierContract && recipient != sablierContract && broker != sablierContract);
+        vm.assume(sender != lockupContract && recipient != lockupContract && broker != lockupContract);
 
         // Avoid users blacklisted by USDC or USDT.
         assumeNoBlacklisted(address(FORK_ASSET), sender);

@@ -1,4 +1,4 @@
-# Sablier V2 Core [![Github Actions][gha-badge]][gha] [![Coverage][codecov-badge]][codecov] [![Foundry][foundry-badge]][foundry] [![Discord][discord-badge]][discord]
+# Sablier Lockup [![Github Actions][gha-badge]][gha] [![Coverage][codecov-badge]][codecov] [![Foundry][foundry-badge]][foundry] [![Discord][discord-badge]][discord]
 
 [gha]: https://github.com/sablier-labs/v2-core/actions
 [gha-badge]: https://github.com/sablier-labs/v2-core/actions/workflows/ci.yml/badge.svg
@@ -9,15 +9,15 @@
 [foundry]: https://getfoundry.sh
 [foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg
 
-This repository contains the core smart contracts of the Sablier V2 Protocol. For higher-level logic, see the
+This repository contains the core smart contracts of the Sablier Lockup Protocol. For higher-level logic, see the
 [sablier-labs/v2-periphery](https://github.com/sablier-labs/v2-periphery) repository.
 
 In-depth documentation is available at [docs.sablier.com](https://docs.sablier.com).
 
 ## Background
 
-Sablier V2 is a token distribution protocol used by DAOs and businesses for vesting, payroll, airdrops, and more. Our
-flagship model is the linear stream, which distributes assets on a continuous, by-the-second basis.
+Sablier Lockup Protocol is a token distribution protocol used by DAOs and businesses for vesting, payroll, airdrops, and
+more. Our flagship model is the linear stream, which distributes assets on a continuous, by-the-second basis.
 
 The way it works is that the sender of a payment stream first deposits a specific amount of ERC-20 tokens in a contract.
 Then, the contract progressively allocates the funds to the recipient, who can access them as they become available over
@@ -30,7 +30,7 @@ of tokens deposited.
 
 This is the recommended approach.
 
-Install Sablier V2 Core using your favorite package manager, e.g., with Bun:
+Install Lockup using your favorite package manager, e.g., with Bun:
 
 ```shell
 bun add @sablier/v2-core
@@ -70,14 +70,14 @@ Finally, add these to your `remappings.txt` file:
 
 ## Usage
 
-This is just a glimpse of Sablier V2 Core. For more guides and examples, see the
+This is just a glimpse of Sablier Lockup. For more guides and examples, see the
 [documentation](https://docs.sablier.com).
 
 ```solidity
-import { ISablierV2LockupLinear } from "@sablier/v2-core/src/interfaces/ISablierV2LockupLinear.sol";
+import { ISablierLockupLinear } from "@sablier/v2-core/src/interfaces/ISablierLockupLinear.sol";
 
 contract MyContract {
-  ISablierV2LockupLinear sablier;
+  ISablierLockupLinear lockup;
 
   function buildSomethingWithSablier() external {
     // ...
@@ -87,7 +87,7 @@ contract MyContract {
 
 ## Architecture
 
-V2 Core uses a singleton-style architecture, where all streams are managed in the `LockupLinear`, `LockupDynamic` and
+Lockup uses a singleton-style architecture, where all streams are managed in the `LockupLinear`, `LockupDynamic` and
 `LockupTranched` contracts. That is, Sablier does not deploy a new contract for each stream. It bundles all streams into
 a single contract, which is more gas-efficient and easier to maintain.
 
@@ -122,7 +122,7 @@ For guidance on how to create PRs, see the [CONTRIBUTING](./CONTRIBUTING.md) gui
 
 ## License
 
-The primary license for Sablier V2 Core is the Business Source License 1.1 (`BUSL-1.1`), see
+The primary license for Sablier Lockup is the Business Source License 1.1 (`BUSL-1.1`), see
 [`LICENSE.md`](./LICENSE.md). However, there are exceptions:
 
 - All files in `src/interfaces/` and `src/types` are licensed under `GPL-3.0-or-later`, see

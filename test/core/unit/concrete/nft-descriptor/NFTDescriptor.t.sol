@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { SablierV2NFTDescriptor } from "src/core/SablierV2NFTDescriptor.sol";
+import { SablierNFTDescriptor } from "src/core/SablierNFTDescriptor.sol";
 
 import { NFTDescriptorMock } from "test/mocks/NFTDescriptorMock.sol";
 import { Base_Test } from "test/Base.t.sol";
 
-contract NFTDescriptor_Unit_Concrete_Test is Base_Test, SablierV2NFTDescriptor {
+contract NFTDescriptor_Unit_Concrete_Test is Base_Test, SablierNFTDescriptor {
     NFTDescriptorMock internal nftDescriptorMock;
 
     function setUp() public virtual override {

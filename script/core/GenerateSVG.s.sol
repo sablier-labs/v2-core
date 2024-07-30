@@ -5,17 +5,17 @@ import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 
 import { NFTSVG } from "../../src/core/libraries/NFTSVG.sol";
 import { SVGElements } from "../../src/core/libraries/SVGElements.sol";
-import { SablierV2NFTDescriptor } from "../../src/core/SablierV2NFTDescriptor.sol";
+import { SablierNFTDescriptor } from "../../src/core/SablierNFTDescriptor.sol";
 
 import { BaseScript } from "../Base.s.sol";
 
 /// @notice Generates an NFT SVG using the user-provided parameters.
-contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
+contract GenerateSVG is BaseScript, SablierNFTDescriptor {
     using Strings for address;
     using Strings for string;
 
     address internal constant DAI = address(uint160(uint256(keccak256("DAI"))));
-    address internal constant LOCKUP_LINEAR = address(uint160(uint256(keccak256("SablierV2LockupLinear"))));
+    address internal constant LOCKUP_LINEAR = address(uint160(uint256(keccak256("SablierLockupLinear"))));
 
     /// @param progress The streamed amount as a numerical percentage with 4 implied decimals.
     /// @param status The status of the stream, as a string.
