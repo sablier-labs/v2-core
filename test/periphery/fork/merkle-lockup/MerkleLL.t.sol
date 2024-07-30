@@ -93,7 +93,14 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
 
         // Sort the leaves in ascending order to match the production environment.
         MerkleBuilder.sortLeaves(leaves);
-        vars.merkleRoot = getRoot(leaves.toBytes32());
+
+        // Compute the Merkle root.
+        if (leaves.toBytes32().length == 1) {
+            // If there is only one leaf, the Merkle root is the leaf itself.
+            vars.merkleRoot = leaves.toBytes32()[0];
+        } else {
+            vars.merkleRoot = getRoot(leaves.toBytes32());
+        }
 
         // Make the caller the admin.
         resetPrank({ msgSender: params.admin });
@@ -152,11 +159,21 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             vars.amounts[params.posBeforeSort],
             vars.expectedStreamId
         );
+
+        // Compute the Merkle proof.
+        bytes32[] memory proof;
+        if (leaves.toBytes32().length == 1) {
+            // If there is only one leaf, the Merkle proof is hash of the single leaf.
+            proof[0] = leaves.toBytes32()[0];
+        } else {
+            proof = getProof(leaves.toBytes32(), vars.leafPos);
+        }
+
         vars.actualStreamId = vars.merkleLL.claim({
             index: vars.indexes[params.posBeforeSort],
             recipient: vars.recipients[params.posBeforeSort],
             amount: vars.amounts[params.posBeforeSort],
-            merkleProof: getProof(leaves.toBytes32(), vars.leafPos)
+            merkleProof: proof
         });
 
         vars.actualStream = lockupLinear.getStream(vars.actualStreamId);
