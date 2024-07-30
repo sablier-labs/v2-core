@@ -348,11 +348,11 @@ contract SablierNFTDescriptor is ISablierNFTDescriptor {
     function mapSymbol(IERC721Metadata sablier) internal view returns (string memory) {
         string memory symbol = sablier.symbol();
         if (symbol.equal("SAB-LOCKUP-LIN") || symbol.equal("SAB-V2-LOCKUP-LIN")) {
-            return "Lockup Linear";
+            return "Sablier Lockup Linear";
         } else if (symbol.equal("SAB-LOCKUP-DYN") || symbol.equal("SAB-V2-LOCKUP-DYN")) {
-            return "Lockup Dynamic";
+            return "Sablier Lockup Dynamic";
         } else if (symbol.equal("SAB-LOCKUP-TRA") || symbol.equal("SAB-V2-LOCKUP-TRA")) {
-            return "Lockup Tranched";
+            return "Sablier Lockup Tranched";
         } else {
             revert Errors.SablierNFTDescriptor_UnknownNFT(sablier, symbol);
         }
