@@ -217,7 +217,7 @@ abstract contract SablierLockup is
         _requireOwned({ tokenId: streamId });
 
         // Generate the URI describing the stream NFT.
-        uri = nftDescriptor.tokenURI({ lockup: this, streamId: streamId });
+        uri = nftDescriptor.tokenURI({ sablier: this, streamId: streamId });
     }
 
     /// @inheritdoc ISablierLockup
