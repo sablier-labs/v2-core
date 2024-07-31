@@ -5,13 +5,13 @@ pragma solidity >=0.8.22;
 /// @notice Library containing all custom errors the protocol may revert with.
 library Errors {
     /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-BATCH-LOCKUP
+                                SABLIER-BATCH-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
     error SablierBatchLockup_BatchSizeZero();
 
     /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-MERKLE-LOCKUP
+                               SABLIER-MERKLE-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to claim after the campaign has expired.
@@ -31,7 +31,7 @@ library Errors {
     error SablierMerkleLockup_StreamClaimed(uint256 index);
 
     /*//////////////////////////////////////////////////////////////////////////
-                                SABLIER-MERKLE-LT
+                                 SABLIER-MERKLE-LT
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to claim from an LT campaign with tranches' unlock percentages not adding up to 100%.

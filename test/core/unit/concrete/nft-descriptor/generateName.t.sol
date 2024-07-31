@@ -17,9 +17,9 @@ contract GenerateName_Unit_Concrete_Test is NFTDescriptor_Unit_Concrete_Test {
     }
 
     function test_GenerateName_Empty() external view {
-        assertEq(gn("", ""), "Sablier  #", "metadata name");
+        assertEq(gn("", ""), "Sablier #", "metadata name");
         assertEq(gn("A", ""), "Sablier A #", "metadata name");
-        assertEq(gn("", "1"), "Sablier  #1", "metadata name");
+        assertEq(gn("", "1"), "Sablier #1", "metadata name");
     }
 
     function test_GenerateName() external view {
