@@ -19,7 +19,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
     using SafeERC20 for IERC20;
 
     /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-LOCKUP-DYNAMIC
+                               SABLIER-LOCKUP-DYNAMIC
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierBatchLockup
@@ -120,7 +120,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                              SABLIER-LOCKUP-LINEAR
+                               SABLIER-LOCKUP-LINEAR
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierBatchLockup
@@ -220,7 +220,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-LOCKUP-TRANCHED
+                              SABLIER-LOCKUP-TRANCHED
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierBatchLockup

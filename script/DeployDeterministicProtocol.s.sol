@@ -28,7 +28,7 @@ contract DeployDeterministicProtocol is BaseScript {
     {
         bytes32 salt = constructCreate2Salt();
 
-        // Deploy  Core.
+        // Deploy Core.
         nftDescriptor = new SablierNFTDescriptor{ salt: salt }();
         lockupDynamic =
             new SablierLockupDynamic{ salt: salt }(initialAdmin, nftDescriptor, segmentCountMap[block.chainid]);
@@ -36,7 +36,7 @@ contract DeployDeterministicProtocol is BaseScript {
         lockupTranched =
             new SablierLockupTranched{ salt: salt }(initialAdmin, nftDescriptor, trancheCountMap[block.chainid]);
 
-        // Deploy  Periphery.
+        // Deploy Periphery.
         batchLockup = new SablierBatchLockup{ salt: salt }();
         merkleLockupFactory = new SablierMerkleLockupFactory{ salt: salt }();
     }

@@ -16,7 +16,7 @@ contract CreateMerkleLL is BaseScript {
     function run() public virtual broadcast returns (ISablierMerkleLL merkleLL) {
         // Prepare the constructor parameters.
         ISablierMerkleLockupFactory merkleLockupFactory =
-            ISablierMerkleLockupFactory(0xF35aB407CF28012Ba57CAF5ee2f6d6E4420253bc);
+            ISablierMerkleLockupFactory(0xF35aB407CF28012Ba57CAF5ee2f6d6E4420253bc); // TODO: Update address once deployed.
 
         MerkleLockup.ConstructorParams memory baseParams;
         baseParams.asset = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
@@ -28,6 +28,7 @@ contract CreateMerkleLL is BaseScript {
         baseParams.name = "The Boys LL";
         baseParams.transferable = true;
 
+        // TODO: Update address once deployed.
         ISablierLockupLinear lockupLinear = ISablierLockupLinear(0x3962f6585946823440d274aD7C719B02b49DE51E);
         LockupLinear.Durations memory streamDurations;
         streamDurations.cliff = 0;

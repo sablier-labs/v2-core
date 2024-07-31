@@ -16,7 +16,7 @@ contract CreateMerkleLT is BaseScript {
     function run() public virtual broadcast returns (ISablierMerkleLT merkleLT) {
         // Prepare the constructor parameters.
         ISablierMerkleLockupFactory merkleLockupFactory =
-            ISablierMerkleLockupFactory(0xF35aB407CF28012Ba57CAF5ee2f6d6E4420253bc);
+            ISablierMerkleLockupFactory(0xF35aB407CF28012Ba57CAF5ee2f6d6E4420253bc); // TODO: Update address once deployed.
 
         MerkleLockup.ConstructorParams memory baseParams;
         baseParams.asset = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
@@ -28,6 +28,7 @@ contract CreateMerkleLT is BaseScript {
         baseParams.name = "The Boys LT";
         baseParams.transferable = true;
 
+        // TODO: Update address once deployed.
         ISablierLockupTranched lockupTranched = ISablierLockupTranched(0xf86B359035208e4529686A1825F2D5BeE38c28A8);
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = new MerkleLT.TrancheWithPercentage[](2);
         tranchesWithPercentages[0] =

@@ -26,13 +26,13 @@ contract DeployProtocol is BaseScript {
             SablierMerkleLockupFactory merkleLockupFactory
         )
     {
-        // Deploy  Core.
+        // Deploy Core.
         nftDescriptor = new SablierNFTDescriptor();
         lockupDynamic = new SablierLockupDynamic(initialAdmin, nftDescriptor, segmentCountMap[block.chainid]);
         lockupLinear = new SablierLockupLinear(initialAdmin, nftDescriptor);
         lockupTranched = new SablierLockupTranched(initialAdmin, nftDescriptor, trancheCountMap[block.chainid]);
 
-        // Deploy  Periphery.
+        // Deploy Periphery.
         batchLockup = new SablierBatchLockup();
         merkleLockupFactory = new SablierMerkleLockupFactory();
     }

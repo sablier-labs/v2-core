@@ -18,7 +18,7 @@ library Errors {
     error DelegateCall();
 
     /*//////////////////////////////////////////////////////////////////////////
-                                 SABLIER-LOCKUP
+                                   SABLIER-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to allow to hook a contract that doesn't implement the interface correctly.
@@ -83,7 +83,7 @@ library Errors {
     error SablierLockup_WithdrawToZeroAddress(uint256 streamId);
 
     /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-LOCKUP-DYNAMIC
+                               SABLIER-LOCKUP-DYNAMIC
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to create a stream with a deposit amount not equal to the sum of the
@@ -108,7 +108,7 @@ library Errors {
     error SablierLockupDynamic_StartTimeNotLessThanFirstSegmentTimestamp(uint40 startTime, uint40 firstSegmentTimestamp);
 
     /*//////////////////////////////////////////////////////////////////////////
-                              SABLIER-LOCKUP-LINEAR
+                               SABLIER-LOCKUP-LINEAR
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to create a stream with a cliff time not strictly less than the end time.
@@ -122,14 +122,14 @@ library Errors {
     error SablierLockupLinear_StartTimeNotLessThanEndTime(uint40 startTime, uint40 endTime);
 
     /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-NFT-DESCRIPTOR
+                               SABLIER-NFT-DESCRIPTOR
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to generate the token URI for an unknown ERC-721 NFT contract.
     error SablierNFTDescriptor_UnknownNFT(IERC721Metadata nft, string symbol);
 
     /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-LOCKUP-TRANCHE
+                               SABLIER-LOCKUP-TRANCHE
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to create a stream with a deposit amount not equal to the sum of the
