@@ -7,6 +7,7 @@ import { Lockup, LockupDynamic } from "../types/DataTypes.sol";
 import { ISablierV2Lockup } from "./ISablierV2Lockup.sol";
 
 /// @title ISablierV2LockupDynamic
+///
 /// @notice Creates and manages Lockup streams with a dynamic distribution function.
 interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /*//////////////////////////////////////////////////////////////////////////
@@ -14,6 +15,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when a stream is created.
+    ///
     /// @param streamId The ID of the newly created stream.
     /// @param funder The address which has funded the stream.
     /// @param sender The address distributing the assets, which will have the ability to cancel the stream.
@@ -45,23 +47,32 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Retrieves the segments used to compose the dynamic distribution function.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getSegments(uint256 streamId) external view returns (LockupDynamic.Segment[] memory segments);
 
     /// @notice Retrieves the full stream details.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
+    ///
     /// @return stream See the documentation in {DataTypes}.
     function getStream(uint256 streamId) external view returns (LockupDynamic.StreamLD memory stream);
 
     /// @notice Retrieves the stream's start and end timestamps.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
+    ///
     /// @return timestamps See the documentation in {DataTypes}.
     function getTimestamps(uint256 streamId) external view returns (LockupDynamic.Timestamps memory timestamps);
 
     /// @notice The maximum number of segments allowed in a stream.
+    ///
     /// @dev This is initialized at construction time and cannot be changed later.
     function MAX_SEGMENT_COUNT() external view returns (uint256);
 
@@ -79,6 +90,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// - All requirements in {createWithTimestamps} must be met for the calculated parameters.
     ///
     /// @param params Struct encapsulating the function parameters, which are documented in {DataTypes}.
+    ///
     /// @return streamId The ID of the newly created stream.
     function createWithDurations(LockupDynamic.CreateWithDurations calldata params)
         external
@@ -106,6 +118,7 @@ interface ISablierV2LockupDynamic is ISablierV2Lockup {
     /// - `msg.sender` must have allowed this contract to spend at least `params.totalAmount` assets.
     ///
     /// @param params Struct encapsulating the function parameters, which are documented in {DataTypes}.
+    ///
     /// @return streamId The ID of the newly created stream.
     function createWithTimestamps(LockupDynamic.CreateWithTimestamps calldata params)
         external

@@ -7,6 +7,7 @@ import { SablierV2LockupDynamic } from "../src/SablierV2LockupDynamic.sol";
 import { BaseScript } from "./Base.s.sol";
 
 /// @notice Deploys {SablierV2LockupDynamic} at a deterministic address across chains.
+///
 /// @dev Reverts if the contract has already been deployed.
 contract DeployDeterministicLockupDynamic is BaseScript {
     function run(

@@ -30,6 +30,7 @@ import { Lockup, LockupTranched } from "./types/DataTypes.sol";
 */
 
 /// @title SablierV2LockupTranched
+///
 /// @notice See the documentation in {ISablierV2LockupTranched}.
 contract SablierV2LockupTranched is
     ISablierV2LockupTranched, // 5 inherited components
@@ -52,6 +53,7 @@ contract SablierV2LockupTranched is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Emits a {TransferAdmin} event.
+    ///
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialNFTDescriptor The address of the NFT descriptor contract.
     /// @param maxTrancheCount The maximum number of tranches allowed in a stream.
@@ -171,6 +173,7 @@ contract SablierV2LockupTranched is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierV2Lockup
+    ///
     /// @dev The distribution function is:
     ///
     /// $$

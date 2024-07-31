@@ -17,6 +17,7 @@ import { Adminable } from "./Adminable.sol";
 import { NoDelegateCall } from "./NoDelegateCall.sol";
 
 /// @title SablierV2Lockup
+///
 /// @notice See the documentation in {ISablierV2Lockup}.
 abstract contract SablierV2Lockup is
     NoDelegateCall, // 0 inherited components
@@ -50,6 +51,7 @@ abstract contract SablierV2Lockup is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Emits a {TransferAdmin} event.
+    ///
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialNFTDescriptor The address of the initial NFT descriptor.
     constructor(address initialAdmin, ISablierV2NFTDescriptor initialNFTDescriptor) {
@@ -465,10 +467,12 @@ abstract contract SablierV2Lockup is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Calculates the streamed amount of the stream without looking up the stream's status.
+    ///
     /// @dev This function is implemented by child contracts, so the logic varies depending on the model.
     function _calculateStreamedAmount(uint256 streamId) internal view virtual returns (uint128);
 
     /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party.
+    ///
     /// @param streamId The stream ID for the query.
     function _isCallerStreamRecipientOrApproved(uint256 streamId) internal view returns (bool) {
         address recipient = _ownerOf(streamId);
@@ -477,6 +481,7 @@ abstract contract SablierV2Lockup is
     }
 
     /// @notice Checks whether `msg.sender` is the stream's sender.
+    ///
     /// @param streamId The stream ID for the query.
     function _isCallerStreamSender(uint256 streamId) internal view returns (bool) {
         return msg.sender == _streams[streamId].sender;
@@ -609,13 +614,16 @@ abstract contract SablierV2Lockup is
 
     /// @notice Overrides the {ERC-721._update} function to check that the stream is transferable, and emits an
     /// ERC-4906 event.
+    ///
     /// @dev There are two cases when the transferable flag is ignored:
     /// - If the current owner is 0, then the update is a mint and is allowed.
     /// - If `to` is 0, then the update is a burn and is also allowed.
+    ///
     /// @param to The address of the new recipient of the stream.
     /// @param streamId ID of the stream to update.
     /// @param auth Optional parameter. If the value is not zero, the overridden implementation will check that
     /// `auth` is either the recipient of the stream, or an approved third party.
+    ///
     /// @return The original recipient of the `streamId` before the update.
     function _update(address to, uint256 streamId, address auth) internal override returns (address) {
         address from = _ownerOf(streamId);

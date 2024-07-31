@@ -33,6 +33,7 @@ import { Lockup, LockupDynamic } from "./types/DataTypes.sol";
 */
 
 /// @title SablierV2LockupDynamic
+///
 /// @notice See the documentation in {ISablierV2LockupDynamic}.
 contract SablierV2LockupDynamic is
     ISablierV2LockupDynamic, // 5 inherited components
@@ -57,6 +58,7 @@ contract SablierV2LockupDynamic is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Emits a {TransferAdmin} event.
+    ///
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialNFTDescriptor The address of the NFT descriptor contract.
     /// @param maxSegmentCount The maximum number of segments allowed in a stream.
@@ -176,6 +178,7 @@ contract SablierV2LockupDynamic is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierV2Lockup
+    ///
     /// @dev The distribution function is:
     ///
     /// $$

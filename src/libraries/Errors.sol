@@ -5,6 +5,7 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 /// @title Errors
+///
 /// @notice Library containing all custom errors the protocol may revert with.
 library Errors {
     /*//////////////////////////////////////////////////////////////////////////

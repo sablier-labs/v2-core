@@ -8,6 +8,7 @@ import { LockupLinear } from "../src/types/DataTypes.sol";
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
 /// @notice Tests used to benchmark LockupLinear.
+///
 /// @dev This contract creates a Markdown file with the gas usage of each function.
 contract LockupLinear_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////

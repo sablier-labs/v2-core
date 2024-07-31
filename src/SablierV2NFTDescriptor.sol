@@ -34,6 +34,7 @@ import { SVGElements } from "./libraries/SVGElements.sol";
 */
 
 /// @title SablierV2NFTDescriptor
+///
 /// @notice See the documentation in {ISablierV2NFTDescriptor}.
 contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     using Strings for address;
@@ -139,14 +140,17 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Creates an abbreviated representation of the provided amount, rounded down and prefixed with ">= ".
+    ///
     /// @dev The abbreviation uses these suffixes:
     /// - "K" for thousands
     /// - "M" for millions
     /// - "B" for billions
     /// - "T" for trillions
     /// For example, if the input is 1,234,567, the output is ">= 1.23M".
+    ///
     /// @param amount The amount to abbreviate, denoted in units of `decimals`.
     /// @param decimals The number of decimals to assume when abbreviating the amount.
+    ///
     /// @return abbreviation The abbreviated representation of the provided amount, as a string.
     function abbreviateAmount(uint256 amount, uint256 decimals) internal pure returns (string memory) {
         if (amount == 0) {
@@ -254,6 +258,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     /// - Asset symbol
     /// - Sender address
     /// - Status
+    ///
     /// @dev These attributes are useful for filtering and sorting the NFTs.
     function generateAttributes(
         string memory assetSymbol,
@@ -315,12 +320,14 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     }
 
     /// @notice Generates a string with the NFT's JSON metadata name, which is unique for each stream.
+    ///
     /// @dev The `streamId` is equivalent to the ERC-721 `tokenId`.
     function generateName(string memory sablierModel, string memory streamId) internal pure returns (string memory) {
         return string.concat("Sablier V2 ", sablierModel, " #", streamId);
     }
 
     /// @notice Checks whether the provided string contains only alphanumeric characters, spaces, and dashes.
+    ///
     /// @dev Note that this returns true for empty strings.
     function isAllowedCharacter(string memory str) internal pure returns (bool) {
         // Convert the string to bytes to iterate over its characters.
@@ -344,6 +351,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     }
 
     /// @notice Maps ERC-721 symbols to human-readable model names.
+    ///
     /// @dev Reverts if the symbol is unknown.
     function mapSymbol(IERC721Metadata sablier) internal view returns (string memory) {
         string memory symbol = sablier.symbol();
@@ -359,6 +367,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     }
 
     /// @notice Retrieves the asset's decimals safely, defaulting to "0" if an error occurs.
+    ///
     /// @dev Performs a low-level call to handle assets in which the decimals are not implemented.
     function safeAssetDecimals(address asset) internal view returns (uint8) {
         (bool success, bytes memory returnData) = asset.staticcall(abi.encodeCall(IERC20Metadata.decimals, ()));
@@ -370,6 +379,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     }
 
     /// @notice Retrieves the asset's symbol safely, defaulting to a hard-coded value if an error occurs.
+    ///
     /// @dev Performs a low-level call to handle assets in which the symbol is not implemented or it is a bytes32
     /// instead of a string.
     function safeAssetSymbol(address asset) internal view returns (string memory) {
@@ -395,6 +405,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     }
 
     /// @notice Converts the provided fractional amount to a string prefixed by a dot.
+    ///
     /// @param fractionalAmount A numerical value with 2 implied decimals.
     function stringifyFractionalAmount(uint256 fractionalAmount) internal pure returns (string memory) {
         // Return the empty string if the fractional amount is zero.
@@ -412,6 +423,7 @@ contract SablierV2NFTDescriptor is ISablierV2NFTDescriptor {
     }
 
     /// @notice Converts the provided percentage to a string.
+    ///
     /// @param percentage A numerical value with 4 implied decimals.
     function stringifyPercentage(uint256 percentage) internal pure returns (string memory) {
         // Extract the last two decimals.

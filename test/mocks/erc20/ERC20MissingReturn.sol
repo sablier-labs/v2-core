@@ -2,6 +2,7 @@
 pragma solidity >=0.8.22;
 
 /// @notice An implementation of ERC-20 that does not return a boolean in {transfer} and {transferFrom}.
+///
 /// @dev See https://medium.com/coinmonks/missing-return-value-bug-at-least-130-tokens-affected-d67bf08521ca/.
 contract ERC20MissingReturn {
     uint8 public decimals;

@@ -7,6 +7,7 @@ import { Lockup, LockupTranched } from "../types/DataTypes.sol";
 import { ISablierV2Lockup } from "./ISablierV2Lockup.sol";
 
 /// @title ISablierV2LockupTranched
+///
 /// @notice Creates and manages Lockup streams with a tranched distribution function.
 interface ISablierV2LockupTranched is ISablierV2Lockup {
     /*//////////////////////////////////////////////////////////////////////////
@@ -14,6 +15,7 @@ interface ISablierV2LockupTranched is ISablierV2Lockup {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when a stream is created.
+    ///
     /// @param streamId The ID of the newly created stream.
     /// @param funder The address which has funded the stream.
     /// @param sender The address distributing the assets, which will have the ability to cancel the stream.
@@ -45,23 +47,32 @@ interface ISablierV2LockupTranched is ISablierV2Lockup {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Retrieves the full stream details.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
+    ///
     /// @return stream See the documentation in {DataTypes}.
     function getStream(uint256 streamId) external view returns (LockupTranched.StreamLT memory stream);
 
     /// @notice Retrieves the stream's start and end timestamps.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
+    ///
     /// @return timestamps See the documentation in {DataTypes}.
     function getTimestamps(uint256 streamId) external view returns (LockupTranched.Timestamps memory timestamps);
 
     /// @notice Retrieves the tranches used to compose the tranched distribution function.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getTranches(uint256 streamId) external view returns (LockupTranched.Tranche[] memory tranches);
 
     /// @notice The maximum number of tranches allowed in a stream.
+    ///
     /// @dev This is initialized at construction time and cannot be changed later.
     function MAX_TRANCHE_COUNT() external view returns (uint256);
 
@@ -79,6 +90,7 @@ interface ISablierV2LockupTranched is ISablierV2Lockup {
     /// - All requirements in {createWithTimestamps} must be met for the calculated parameters.
     ///
     /// @param params Struct encapsulating the function parameters, which are documented in {DataTypes}.
+    ///
     /// @return streamId The ID of the newly created stream.
     function createWithDurations(LockupTranched.CreateWithDurations calldata params)
         external
@@ -106,6 +118,7 @@ interface ISablierV2LockupTranched is ISablierV2Lockup {
     /// - `msg.sender` must have allowed this contract to spend at least `params.totalAmount` assets.
     ///
     /// @param params Struct encapsulating the function parameters, which are documented in {DataTypes}.
+    ///
     /// @return streamId The ID of the newly created stream.
     function createWithTimestamps(LockupTranched.CreateWithTimestamps calldata params)
         external

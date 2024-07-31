@@ -11,6 +11,7 @@ import { IAdminable } from "./IAdminable.sol";
 import { ISablierV2NFTDescriptor } from "./ISablierV2NFTDescriptor.sol";
 
 /// @title ISablierV2Lockup
+///
 /// @notice Common logic between all Sablier V2 Lockup contracts.
 interface ISablierV2Lockup is
     IAdminable, // 0 inherited components
@@ -22,11 +23,13 @@ interface ISablierV2Lockup is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when the admin allows a new recipient contract to hook to Sablier.
+    ///
     /// @param admin The address of the current contract admin.
     /// @param recipient The address of the recipient contract put on the allowlist.
     event AllowToHook(address indexed admin, address recipient);
 
     /// @notice Emitted when a stream is canceled.
+    ///
     /// @param streamId The ID of the stream.
     /// @param sender The address of the stream's sender.
     /// @param recipient The address of the stream's recipient.
@@ -45,10 +48,12 @@ interface ISablierV2Lockup is
     );
 
     /// @notice Emitted when a sender gives up the right to cancel a stream.
+    ///
     /// @param streamId The ID of the stream.
     event RenounceLockupStream(uint256 indexed streamId);
 
     /// @notice Emitted when the admin sets a new NFT descriptor contract.
+    ///
     /// @param admin The address of the current contract admin.
     /// @param oldNFTDescriptor The address of the old NFT descriptor contract.
     /// @param newNFTDescriptor The address of the new NFT descriptor contract.
@@ -57,6 +62,7 @@ interface ISablierV2Lockup is
     );
 
     /// @notice Emitted when assets are withdrawn from a stream.
+    ///
     /// @param streamId The ID of the stream.
     /// @param to The address that has received the withdrawn assets.
     /// @param asset The contract address of the ERC-20 asset to be distributed.
@@ -68,84 +74,114 @@ interface ISablierV2Lockup is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Retrieves the address of the ERC-20 asset to be distributed.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getAsset(uint256 streamId) external view returns (IERC20 asset);
 
     /// @notice Retrieves the amount deposited in the stream, denoted in units of the asset's decimals.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getDepositedAmount(uint256 streamId) external view returns (uint128 depositedAmount);
 
     /// @notice Retrieves the stream's end time, which is a Unix timestamp.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getEndTime(uint256 streamId) external view returns (uint40 endTime);
 
     /// @notice Retrieves the stream's recipient.
+    ///
     /// @dev Reverts if the NFT has been burned.
+    ///
     /// @param streamId The stream ID for the query.
     function getRecipient(uint256 streamId) external view returns (address recipient);
 
     /// @notice Retrieves the amount refunded to the sender after a cancellation, denoted in units of the asset's
     /// decimals. This amount is always zero unless the stream was canceled.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getRefundedAmount(uint256 streamId) external view returns (uint128 refundedAmount);
 
     /// @notice Retrieves the stream's sender.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getSender(uint256 streamId) external view returns (address sender);
 
     /// @notice Retrieves the stream's start time, which is a Unix timestamp.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getStartTime(uint256 streamId) external view returns (uint40 startTime);
 
     /// @notice Retrieves the amount withdrawn from the stream, denoted in units of the asset's decimals.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function getWithdrawnAmount(uint256 streamId) external view returns (uint128 withdrawnAmount);
 
     /// @notice Retrieves a flag indicating whether the provided address is a contract allowed to hook to Sablier
     /// when a stream is canceled or when assets are withdrawn.
+    ///
     /// @dev See {ISablierLockupRecipient} for more information.
     function isAllowedToHook(address recipient) external view returns (bool result);
 
     /// @notice Retrieves a flag indicating whether the stream can be canceled. When the stream is cold, this
     /// flag is always `false`.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function isCancelable(uint256 streamId) external view returns (bool result);
 
     /// @notice Retrieves a flag indicating whether the stream is cold, i.e. settled, canceled, or depleted.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function isCold(uint256 streamId) external view returns (bool result);
 
     /// @notice Retrieves a flag indicating whether the stream is depleted.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function isDepleted(uint256 streamId) external view returns (bool result);
 
     /// @notice Retrieves a flag indicating whether the stream exists.
+    ///
     /// @dev Does not revert if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function isStream(uint256 streamId) external view returns (bool result);
 
     /// @notice Retrieves a flag indicating whether the stream NFT can be transferred.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function isTransferable(uint256 streamId) external view returns (bool result);
 
     /// @notice Retrieves a flag indicating whether the stream is warm, i.e. either pending or streaming.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function isWarm(uint256 streamId) external view returns (bool result);
 
     /// @notice Retrieves the maximum broker fee that can be charged by the broker, denoted as a fixed-point
     /// number where 1e18 is 100%.
+    ///
     /// @dev This value is hard coded as a constant.
     function MAX_BROKER_FEE() external view returns (UD60x18);
 
@@ -157,16 +193,21 @@ interface ISablierV2Lockup is
 
     /// @notice Calculates the amount that the sender would be refunded if the stream were canceled, denoted in units
     /// of the asset's decimals.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function refundableAmountOf(uint256 streamId) external view returns (uint128 refundableAmount);
 
     /// @notice Retrieves the stream's status.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function statusOf(uint256 streamId) external view returns (Lockup.Status status);
 
     /// @notice Calculates the amount streamed to the recipient, denoted in units of the asset's decimals.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
     ///
     /// Notes:
@@ -178,13 +219,17 @@ interface ISablierV2Lockup is
     function streamedAmountOf(uint256 streamId) external view returns (uint128 streamedAmount);
 
     /// @notice Retrieves a flag indicating whether the stream was canceled.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function wasCanceled(uint256 streamId) external view returns (bool result);
 
     /// @notice Calculates the amount that the recipient can withdraw from the stream, denoted in units of the asset's
     /// decimals.
+    ///
     /// @dev Reverts if `streamId` references a null stream.
+    ///
     /// @param streamId The stream ID for the query.
     function withdrawableAmountOf(uint256 streamId) external view returns (uint128 withdrawableAmount);
 
@@ -312,6 +357,7 @@ interface ISablierV2Lockup is
     ///
     /// @param streamId The ID of the stream to withdraw from.
     /// @param to The address receiving the withdrawn assets.
+    ///
     /// @return withdrawnAmount The amount withdrawn, denoted in units of the asset's decimals.
     function withdrawMax(uint256 streamId, address to) external returns (uint128 withdrawnAmount);
 
@@ -331,6 +377,7 @@ interface ISablierV2Lockup is
     ///
     /// @param streamId The ID of the stream NFT to transfer.
     /// @param newRecipient The address of the new owner of the stream NFT.
+    ///
     /// @return withdrawnAmount The amount withdrawn, denoted in units of the asset's decimals.
     function withdrawMaxAndTransfer(
         uint256 streamId,

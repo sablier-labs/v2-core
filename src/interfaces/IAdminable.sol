@@ -2,6 +2,7 @@
 pragma solidity >=0.8.22;
 
 /// @title IAdminable
+///
 /// @notice Contract module that provides a basic access control mechanism, with an admin that can be
 /// granted exclusive access to specific functions. The inheriting contract must set the initial admin
 /// in the constructor.
@@ -11,6 +12,7 @@ interface IAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when the admin is transferred.
+    ///
     /// @param oldAdmin The address of the old admin.
     /// @param newAdmin The address of the new admin.
     event TransferAdmin(address indexed oldAdmin, address indexed newAdmin);

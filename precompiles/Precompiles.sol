@@ -40,6 +40,7 @@ contract Precompiles {
 
     /// @notice Deploys {SablierV2LockupDynamic} from precompiled bytecode, passing a default value for the
     /// `maxSegmentCount` parameter.
+    ///
     /// @dev Notes:
     /// - A default value is passed for `maxSegmentCount`.
     /// - A dummy {SablierV2NFTDescriptor} is deployed so that the user does not have to provide one.
@@ -49,6 +50,7 @@ contract Precompiles {
     }
 
     /// @notice Deploys {SablierV2LockupDynamic} from precompiled bytecode.
+    ///
     /// @dev A dummy {SablierV2NFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupDynamic(
         address initialAdmin,
@@ -62,6 +64,7 @@ contract Precompiles {
     }
 
     /// @notice Deploys {SablierV2LockupDynamic} from precompiled bytecode.
+    ///
     /// @dev A default value is passed for `maxSegmentCount`.
     function deployLockupDynamic(
         address initialAdmin,
@@ -93,6 +96,7 @@ contract Precompiles {
     }
 
     /// @notice Deploys {SablierV2LockupLinear} from precompiled bytecode.
+    ///
     /// @dev A dummy {SablierV2NFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupLinear(address initialAdmin) public returns (ISablierV2LockupLinear lockupLinear) {
         ISablierV2NFTDescriptor nftDescriptor = new SablierV2NFTDescriptor();
@@ -118,6 +122,7 @@ contract Precompiles {
 
     /// @notice Deploys {SablierV2LockupTranched} from precompiled bytecode, passing a default value for the
     /// `maxTrancheCount` parameter.
+    ///
     /// @dev Notes:
     /// - A default value is passed for `maxTrancheCount`.
     /// - A dummy {SablierV2NFTDescriptor} is deployed so that the user does not have to provide one.
@@ -127,6 +132,7 @@ contract Precompiles {
     }
 
     /// @notice Deploys {SablierV2LockupTranched} from precompiled bytecode.
+    ///
     /// @dev A dummy {SablierV2NFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupTranched(
         address initialAdmin,
@@ -140,6 +146,7 @@ contract Precompiles {
     }
 
     /// @notice Deploys {SablierV2LockupTranched} from precompiled bytecode.
+    ///
     /// @dev A default value is passed for `maxTrancheCount`.
     function deployLockupTranched(
         address initialAdmin,

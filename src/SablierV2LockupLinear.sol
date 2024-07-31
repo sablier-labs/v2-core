@@ -32,6 +32,7 @@ import { Lockup, LockupLinear } from "./types/DataTypes.sol";
 */
 
 /// @title SablierV2LockupLinear
+///
 /// @notice See the documentation in {ISablierV2LockupLinear}.
 contract SablierV2LockupLinear is
     ISablierV2LockupLinear, // 5 inherited components
@@ -51,6 +52,7 @@ contract SablierV2LockupLinear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Emits a {TransferAdmin} event.
+    ///
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialNFTDescriptor The address of the initial NFT descriptor.
     constructor(
@@ -175,6 +177,7 @@ contract SablierV2LockupLinear is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierV2Lockup
+    ///
     /// @dev The distribution function is:
     ///
     /// $$

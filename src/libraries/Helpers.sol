@@ -7,6 +7,7 @@ import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../types/Da
 import { Errors } from "./Errors.sol";
 
 /// @title Helpers
+///
 /// @notice Library with helper functions needed across the Sablier V2 contracts.
 library Helpers {
     /*//////////////////////////////////////////////////////////////////////////

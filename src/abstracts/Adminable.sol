@@ -5,6 +5,7 @@ import { IAdminable } from "../interfaces/IAdminable.sol";
 import { Errors } from "../libraries/Errors.sol";
 
 /// @title Adminable
+///
 /// @notice See the documentation in {IAdminable}.
 abstract contract Adminable is IAdminable {
     /*//////////////////////////////////////////////////////////////////////////

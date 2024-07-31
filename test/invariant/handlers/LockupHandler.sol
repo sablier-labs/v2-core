@@ -46,6 +46,7 @@ abstract contract LockupHandler is BaseHandler {
     }
 
     /// @dev Picks a random stream from the store.
+    ///
     /// @param streamIndexSeed A fuzzed value needed for picking the random stream.
     modifier useFuzzedStream(uint256 streamIndexSeed) {
         uint256 lastStreamId = lockupStore.lastStreamId();

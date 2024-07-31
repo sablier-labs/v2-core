@@ -8,6 +8,7 @@ import { Broker, LockupTranched } from "../src/types/DataTypes.sol";
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
 /// @notice Tests used to benchmark LockupTranched.
+///
 /// @dev This contract creates a Markdown file with the gas usage of each function.
 contract LockupTranched_Gas_Test is Benchmark_Test {
     /*//////////////////////////////////////////////////////////////////////////

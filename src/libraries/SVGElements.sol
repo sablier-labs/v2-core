@@ -225,6 +225,7 @@ library SVGElements {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Calculates the pixel width of the provided string.
+    ///
     /// @dev Notes:
     /// - A factor of ~0.6 is applied to the two font sizes used in the SVG (26px and 22px) to approximate the average
     /// character width.

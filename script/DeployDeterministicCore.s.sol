@@ -9,6 +9,7 @@ import { SablierV2NFTDescriptor } from "../src/SablierV2NFTDescriptor.sol";
 import { BaseScript } from "./Base.s.sol";
 
 /// @notice Deploys all V2 Core contracts at deterministic addresses across chains.
+///
 /// @dev Reverts if any contract has already been deployed.
 contract DeployDeterministicCore is BaseScript {
     function run(address initialAdmin)
