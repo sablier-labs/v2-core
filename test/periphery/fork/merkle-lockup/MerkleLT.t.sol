@@ -49,6 +49,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         uint256 leafPos;
         uint256 leafToClaim;
         ISablierMerkleLT merkleLT;
+        bytes32[] merkleProof;
         bytes32 merkleRoot;
         address[] recipients;
         uint256 recipientCount;
@@ -96,9 +97,9 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         MerkleBuilder.sortLeaves(leaves);
 
         // Compute the Merkle root.
-        if (leaves.toBytes32().length == 1) {
-            // If there is only one leaf, the Merkle root is the leaf itself.
-            vars.merkleRoot = leaves.toBytes32()[0];
+        if (leaves.length == 1) {
+            // If there is only one leaf, the Merkle root is the hash of the leaf itself.
+            vars.merkleRoot = bytes32(leaves[0]);
         } else {
             vars.merkleRoot = getRoot(leaves.toBytes32());
         }
@@ -163,19 +164,18 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         );
 
         // Compute the Merkle proof.
-        bytes32[] memory proof;
-        if (leaves.toBytes32().length == 1) {
-            // If there is only one leaf, the Merkle proof is hash of the single leaf.
-            proof[0] = leaves.toBytes32()[0];
+        if (leaves.length == 1) {
+            // If there is only one leaf, the Merkle proof should be an empty array as no proof is needed because the
+            // leaf is the root.
         } else {
-            proof = getProof(leaves.toBytes32(), vars.leafPos);
+            vars.merkleProof = getProof(leaves.toBytes32(), vars.leafPos);
         }
 
         vars.actualStreamId = vars.merkleLT.claim({
             index: vars.indexes[params.posBeforeSort],
             recipient: vars.recipients[params.posBeforeSort],
             amount: vars.amounts[params.posBeforeSort],
-            merkleProof: proof
+            merkleProof: vars.merkleProof
         });
 
         vars.actualStream = lockupTranched.getStream(vars.actualStreamId);
