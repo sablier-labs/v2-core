@@ -40,8 +40,8 @@ contract GenerateSVG is BaseScript, SablierNFTDescriptor {
                 duration: calculateDurationInDays({ startTime: 0, endTime: duration * 1 days }),
                 progress: stringifyPercentage(progress),
                 progressNumerical: progress,
-                sablierAddress: LOCKUP_LINEAR.toHexString(),
-                sablierModel: "Lockup Linear",
+                lockupAddress: LOCKUP_LINEAR.toHexString(),
+                lockupModel: "Lockup Linear",
                 status: status
             })
         );

@@ -52,9 +52,9 @@ contract NFTDescriptorMock is SablierNFTDescriptor {
     }
 
     function generateDescription_(
-        string memory sablierModel,
+        string memory lockupModel,
         string memory assetSymbol,
-        string memory sablierAddress,
+        string memory lockupAddress,
         string memory assetAddress,
         string memory streamId,
         bool isTransferable
@@ -63,11 +63,11 @@ contract NFTDescriptorMock is SablierNFTDescriptor {
         pure
         returns (string memory)
     {
-        return generateDescription(sablierModel, assetSymbol, sablierAddress, assetAddress, streamId, isTransferable);
+        return generateDescription(lockupModel, assetSymbol, lockupAddress, assetAddress, streamId, isTransferable);
     }
 
-    function generateName_(string memory sablierModel, string memory streamId) external pure returns (string memory) {
-        return generateName(sablierModel, streamId);
+    function generateName_(string memory lockupModel, string memory streamId) external pure returns (string memory) {
+        return generateName(lockupModel, streamId);
     }
 
     function generateSVG_(NFTSVG.SVGParams memory params) external pure returns (string memory) {

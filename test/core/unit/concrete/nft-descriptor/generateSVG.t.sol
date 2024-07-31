@@ -21,8 +21,8 @@ contract GenerateSVG_Unit_Concrete_Test is NFTDescriptor_Unit_Concrete_Test {
                 duration: "5 Days",
                 progress: "0%",
                 progressNumerical: 0,
-                sablierAddress: "0xf3a045dc986015be9ae43bb3462ae5981b0816e0",
-                sablierModel: "Lockup Linear",
+                lockupAddress: "0xf3a045dc986015be9ae43bb3462ae5981b0816e0",
+                lockupModel: "Lockup Linear",
                 status: "Pending"
             })
         );
@@ -41,8 +41,8 @@ contract GenerateSVG_Unit_Concrete_Test is NFTDescriptor_Unit_Concrete_Test {
                 duration: "91 Days",
                 progress: "42.35%",
                 progressNumerical: 4235,
-                sablierAddress: "0xf3a045dc986015be9ae43bb3462ae5981b0816e0",
-                sablierModel: "Lockup Linear",
+                lockupAddress: "0xf3a045dc986015be9ae43bb3462ae5981b0816e0",
+                lockupModel: "Lockup Linear",
                 status: "Streaming"
             })
         );
@@ -61,8 +61,8 @@ contract GenerateSVG_Unit_Concrete_Test is NFTDescriptor_Unit_Concrete_Test {
                 duration: "5 Days",
                 progress: "100%",
                 progressNumerical: 100,
-                sablierAddress: "0xf3a045dc986015be9ae43bb3462ae5981b0816e0",
-                sablierModel: "Lockup Linear",
+                lockupAddress: "0xf3a045dc986015be9ae43bb3462ae5981b0816e0",
+                lockupModel: "Lockup Linear",
                 status: "Depleted"
             })
         );
