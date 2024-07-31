@@ -9,6 +9,7 @@
   ]
   gas_limit = 9223372036854775807
   gas_reports = [
+    "LockupNFTDescriptor",
     "SablierBatchLockup",
     "SablierLockupDynamic",
     "SablierLockupLinear",
@@ -16,7 +17,6 @@
     "SablierMerkleLL",
     "SablierMerkleLockupFactory",
     "SablierMerkleLT",
-    "SablierNFTDescriptor",
   ]
   optimizer = true
   optimizer_runs = 1000
@@ -78,10 +78,10 @@
   ]
 
 [profile.smt.model_checker.contracts]
+  "src/LockupNFTDescriptor.sol" = ["LockupNFTDescriptor"]
   "src/SablierLockupDynamic.sol" = ["SablierLockupDynamic"]
   "src/SablierLockupLinear.sol" = ["SablierLockupLinear"]
   "src/SablierLockupTranched.sol" = ["SablierLockupTranched"]
-  "src/SablierNFTDescriptor.sol" = ["SablierNFTDescriptor"]
 
 # Test the optimized contracts without re-compiling them
 [profile.test-optimized]

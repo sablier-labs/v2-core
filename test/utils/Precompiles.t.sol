@@ -4,10 +4,10 @@ pragma solidity >=0.8.22 <0.9.0;
 import { LibString } from "solady/src/utils/LibString.sol";
 
 import { Precompiles } from "precompiles/Precompiles.sol";
+import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockupDynamic } from "src/core/interfaces/ISablierLockupDynamic.sol";
 import { ISablierLockupLinear } from "src/core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
-import { ISablierNFTDescriptor } from "src/core/interfaces/ISablierNFTDescriptor.sol";
 import { ISablierBatchLockup } from "src/periphery/interfaces/ISablierBatchLockup.sol";
 import { ISablierMerkleLockupFactory } from "src/periphery/interfaces/ISablierMerkleLockupFactory.sol";
 
@@ -62,17 +62,17 @@ contract Precompiles_Test is Base_Test {
 
     function test_DeployCore() external onlyTestOptimizedProfile {
         (
+            ILockupNFTDescriptor actualNFTDescriptor,
             ISablierLockupDynamic actualLockupDynamic,
             ISablierLockupLinear actualLockupLinear,
-            ISablierLockupTranched actualLockupTranched,
-            ISablierNFTDescriptor actualNFTDescriptor
+            ISablierLockupTranched actualLockupTranched
         ) = precompiles.deployCore(users.admin);
 
         (
+            ILockupNFTDescriptor expectedNFTDescriptor,
             ISablierLockupDynamic expectedLockupDynamic,
             ISablierLockupLinear expectedLockupLinear,
-            ISablierLockupTranched expectedLockupTranched,
-            ISablierNFTDescriptor expectedNFTDescriptor
+            ISablierLockupTranched expectedLockupTranched
         ) = deployOptimizedCore(users.admin, precompiles.MAX_SEGMENT_COUNT(), precompiles.MAX_TRANCHE_COUNT());
 
         bytes memory expectedLockupDynamicCode = adjustBytecode(

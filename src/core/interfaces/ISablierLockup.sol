@@ -8,7 +8,7 @@ import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { Lockup } from "../types/DataTypes.sol";
 import { IAdminable } from "./IAdminable.sol";
-import { ISablierNFTDescriptor } from "./ISablierNFTDescriptor.sol";
+import { ILockupNFTDescriptor } from "./ILockupNFTDescriptor.sol";
 
 /// @title ISablierLockup
 /// @notice Common logic between all Sablier Lockup contracts.
@@ -53,7 +53,7 @@ interface ISablierLockup is
     /// @param oldNFTDescriptor The address of the old NFT descriptor contract.
     /// @param newNFTDescriptor The address of the new NFT descriptor contract.
     event SetNFTDescriptor(
-        address indexed admin, ISablierNFTDescriptor oldNFTDescriptor, ISablierNFTDescriptor newNFTDescriptor
+        address indexed admin, ILockupNFTDescriptor oldNFTDescriptor, ILockupNFTDescriptor newNFTDescriptor
     );
 
     /// @notice Emitted when assets are withdrawn from a stream.
@@ -153,7 +153,7 @@ interface ISablierLockup is
     function nextStreamId() external view returns (uint256);
 
     /// @notice Contract that generates the non-fungible token URI.
-    function nftDescriptor() external view returns (ISablierNFTDescriptor);
+    function nftDescriptor() external view returns (ILockupNFTDescriptor);
 
     /// @notice Calculates the amount that the sender would be refunded if the stream were canceled, denoted in units
     /// of the asset's decimals.
@@ -279,7 +279,7 @@ interface ISablierLockup is
     /// - `msg.sender` must be the contract admin.
     ///
     /// @param newNFTDescriptor The address of the new NFT descriptor contract.
-    function setNFTDescriptor(ISablierNFTDescriptor newNFTDescriptor) external;
+    function setNFTDescriptor(ILockupNFTDescriptor newNFTDescriptor) external;
 
     /// @notice Withdraws the provided amount of assets from the stream to the `to` address.
     ///

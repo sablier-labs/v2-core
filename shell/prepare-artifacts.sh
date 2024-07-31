@@ -30,18 +30,18 @@ mkdir $artifacts \
 ################################################
 
 core=./artifacts/core
+cp out-optimized/LockupNFTDescriptor.sol/LockupNFTDescriptor.json $core
 cp out-optimized/SablierLockupDynamic.sol/SablierLockupDynamic.json $core
 cp out-optimized/SablierLockupLinear.sol/SablierLockupLinear.json $core
 cp out-optimized/SablierLockupTranched.sol/SablierLockupTranched.json $core
-cp out-optimized/SablierNFTDescriptor.sol/SablierNFTDescriptor.json $core
 
 core_interfaces=./artifacts/core/interfaces
+cp out-optimized/ILockupNFTDescriptor.sol/ILockupNFTDescriptor.json $core_interfaces
 cp out-optimized/ISablierLockupRecipient.sol/ISablierLockupRecipient.json $core_interfaces
 cp out-optimized/ISablierLockup.sol/ISablierLockup.json $core_interfaces
 cp out-optimized/ISablierLockupDynamic.sol/ISablierLockupDynamic.json $core_interfaces
 cp out-optimized/ISablierLockupLinear.sol/ISablierLockupLinear.json $core_interfaces
 cp out-optimized/ISablierLockupTranched.sol/ISablierLockupTranched.json $core_interfaces
-cp out-optimized/ISablierNFTDescriptor.sol/ISablierNFTDescriptor.json $core_interfaces
 
 core_libraries=./artifacts/core/libraries
 cp out-optimized/Errors.sol/Errors.json $core_libraries

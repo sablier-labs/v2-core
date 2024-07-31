@@ -18,6 +18,13 @@ library Errors {
     error DelegateCall();
 
     /*//////////////////////////////////////////////////////////////////////////
+                               LOCKUP-NFT-DESCRIPTOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when trying to generate the token URI for an unknown ERC-721 NFT contract.
+    error LockupNFTDescriptor_UnknownNFT(IERC721Metadata nft, string symbol);
+
+    /*//////////////////////////////////////////////////////////////////////////
                                    SABLIER-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
@@ -120,13 +127,6 @@ library Errors {
 
     /// @notice Thrown when trying to create a stream with a start time not strictly less than the end time.
     error SablierLockupLinear_StartTimeNotLessThanEndTime(uint40 startTime, uint40 endTime);
-
-    /*//////////////////////////////////////////////////////////////////////////
-                               SABLIER-NFT-DESCRIPTOR
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Thrown when trying to generate the token URI for an unknown ERC-721 NFT contract.
-    error SablierNFTDescriptor_UnknownNFT(IERC721Metadata nft, string symbol);
 
     /*//////////////////////////////////////////////////////////////////////////
                                SABLIER-LOCKUP-TRANCHE

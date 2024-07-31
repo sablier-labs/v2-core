@@ -2,11 +2,11 @@
 // solhint-disable max-line-length,no-inline-assembly,reason-string
 pragma solidity >=0.8.22;
 
+import { ILockupNFTDescriptor } from "../src/core/interfaces/ILockupNFTDescriptor.sol";
+import { LockupNFTDescriptor } from "../src/core/LockupNFTDescriptor.sol";
 import { ISablierLockupDynamic } from "../src/core/interfaces/ISablierLockupDynamic.sol";
 import { ISablierLockupLinear } from "../src/core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockupTranched } from "../src/core/interfaces/ISablierLockupTranched.sol";
-import { ISablierNFTDescriptor } from "../src/core/interfaces/ISablierNFTDescriptor.sol";
-import { SablierNFTDescriptor } from "../src/core/SablierNFTDescriptor.sol";
 import { ISablierBatchLockup } from "../src/periphery/interfaces/ISablierBatchLockup.sol";
 import { ISablierMerkleLockupFactory } from "../src/periphery/interfaces/ISablierMerkleLockupFactory.sol";
 
@@ -44,14 +44,14 @@ contract Precompiles {
     /// `maxSegmentCount` parameter.
     /// @dev Notes:
     /// - A default value is passed for `maxSegmentCount`.
-    /// - A dummy {SablierNFTDescriptor} is deployed so that the user does not have to provide one.
+    /// - A dummy {LockupNFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupDynamic(address initialAdmin) public returns (ISablierLockupDynamic lockupDynamic) {
         uint256 maxSegmentCount = MAX_SEGMENT_COUNT;
         lockupDynamic = deployLockupDynamic(initialAdmin, maxSegmentCount);
     }
 
     /// @notice Deploys {SablierLockupDynamic} from precompiled bytecode.
-    /// @dev A dummy {SablierNFTDescriptor} is deployed so that the user does not have to provide one.
+    /// @dev A dummy {LockupNFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupDynamic(
         address initialAdmin,
         uint256 maxSegmentCount
@@ -59,7 +59,7 @@ contract Precompiles {
         public
         returns (ISablierLockupDynamic lockupDynamic)
     {
-        ISablierNFTDescriptor nftDescriptor = new SablierNFTDescriptor();
+        ILockupNFTDescriptor nftDescriptor = new LockupNFTDescriptor();
         lockupDynamic = deployLockupDynamic(initialAdmin, nftDescriptor, maxSegmentCount);
     }
 
@@ -67,7 +67,7 @@ contract Precompiles {
     /// @dev A default value is passed for `maxSegmentCount`.
     function deployLockupDynamic(
         address initialAdmin,
-        ISablierNFTDescriptor nftDescriptor
+        ILockupNFTDescriptor nftDescriptor
     )
         public
         returns (ISablierLockupDynamic lockupDynamic)
@@ -78,7 +78,7 @@ contract Precompiles {
     /// @notice Deploys {SablierLockupDynamic} from precompiled bytecode.
     function deployLockupDynamic(
         address initialAdmin,
-        ISablierNFTDescriptor nftDescriptor,
+        ILockupNFTDescriptor nftDescriptor,
         uint256 maxSegmentCount
     )
         public
@@ -95,16 +95,16 @@ contract Precompiles {
     }
 
     /// @notice Deploys {SablierLockupLinear} from precompiled bytecode.
-    /// @dev A dummy {SablierNFTDescriptor} is deployed so that the user does not have to provide one.
+    /// @dev A dummy {LockupNFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupLinear(address initialAdmin) public returns (ISablierLockupLinear lockupLinear) {
-        ISablierNFTDescriptor nftDescriptor = new SablierNFTDescriptor();
+        ILockupNFTDescriptor nftDescriptor = new LockupNFTDescriptor();
         lockupLinear = deployLockupLinear(initialAdmin, nftDescriptor);
     }
 
     /// @notice Deploys {SablierLockupLinear} from precompiled bytecode.
     function deployLockupLinear(
         address initialAdmin,
-        ISablierNFTDescriptor nftDescriptor
+        ILockupNFTDescriptor nftDescriptor
     )
         public
         returns (ISablierLockupLinear lockupLinear)
@@ -120,14 +120,14 @@ contract Precompiles {
     /// `maxTrancheCount` parameter.
     /// @dev Notes:
     /// - A default value is passed for `maxTrancheCount`.
-    /// - A dummy {SablierNFTDescriptor} is deployed so that the user does not have to provide one.
+    /// - A dummy {LockupNFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupTranched(address initialAdmin) public returns (ISablierLockupTranched lockupTranched) {
         uint256 maxTrancheCount = MAX_TRANCHE_COUNT;
         lockupTranched = deployLockupTranched(initialAdmin, maxTrancheCount);
     }
 
     /// @notice Deploys {SablierLockupTranched} from precompiled bytecode.
-    /// @dev A dummy {SablierNFTDescriptor} is deployed so that the user does not have to provide one.
+    /// @dev A dummy {LockupNFTDescriptor} is deployed so that the user does not have to provide one.
     function deployLockupTranched(
         address initialAdmin,
         uint256 maxTrancheCount
@@ -135,7 +135,7 @@ contract Precompiles {
         public
         returns (ISablierLockupTranched lockupTranched)
     {
-        ISablierNFTDescriptor nftDescriptor = new SablierNFTDescriptor();
+        ILockupNFTDescriptor nftDescriptor = new LockupNFTDescriptor();
         lockupTranched = deployLockupTranched(initialAdmin, nftDescriptor, maxTrancheCount);
     }
 
@@ -143,7 +143,7 @@ contract Precompiles {
     /// @dev A default value is passed for `maxTrancheCount`.
     function deployLockupTranched(
         address initialAdmin,
-        ISablierNFTDescriptor nftDescriptor
+        ILockupNFTDescriptor nftDescriptor
     )
         public
         returns (ISablierLockupTranched lockupTranched)
@@ -154,7 +154,7 @@ contract Precompiles {
     /// @notice Deploys {SablierLockupTranched} from precompiled bytecode.
     function deployLockupTranched(
         address initialAdmin,
-        ISablierNFTDescriptor nftDescriptor,
+        ILockupNFTDescriptor nftDescriptor,
         uint256 maxTrancheCount
     )
         public
@@ -170,8 +170,8 @@ contract Precompiles {
         );
     }
 
-    /// @notice Deploys {SablierNFTDescriptor} from precompiled bytecode.
-    function deployNFTDescriptor() public returns (ISablierNFTDescriptor nftDescriptor) {
+    /// @notice Deploys {LockupNFTDescriptor} from precompiled bytecode.
+    function deployNFTDescriptor() public returns (ILockupNFTDescriptor nftDescriptor) {
         bytes memory bytecode = BYTECODE_NFT_DESCRIPTOR;
         assembly {
             nftDescriptor := create(0, add(bytecode, 0x20), mload(bytecode))
@@ -185,10 +185,10 @@ contract Precompiles {
     function deployCore(address initialAdmin)
         public
         returns (
+            ILockupNFTDescriptor nftDescriptor,
             ISablierLockupDynamic lockupDynamic,
             ISablierLockupLinear lockupLinear,
-            ISablierLockupTranched lockupTranched,
-            ISablierNFTDescriptor nftDescriptor
+            ISablierLockupTranched lockupTranched
         )
     {
         nftDescriptor = deployNFTDescriptor();
@@ -235,7 +235,7 @@ contract Precompiles {
 
     /// @notice Deploys the entire Lockup Protocol from precompiled bytecode.
     ///
-    /// 1. {SablierNFTDescriptor}
+    /// 1. {LockupNFTDescriptor}
     /// 2. {SablierLockupDynamic}
     /// 3. {SablierLockupLinear}
     /// 4. {SablierLockupTranched}
@@ -244,16 +244,16 @@ contract Precompiles {
     function deployProtocol(address initialAdmin)
         public
         returns (
+            ILockupNFTDescriptor nftDescriptor,
             ISablierLockupDynamic lockupDynamic,
             ISablierLockupLinear lockupLinear,
             ISablierLockupTranched lockupTranched,
-            ISablierNFTDescriptor nftDescriptor,
             ISablierBatchLockup batchLockup,
             ISablierMerkleLockupFactory merkleLockupFactory
         )
     {
         // Deploy Core.
-        (lockupDynamic, lockupLinear, lockupTranched, nftDescriptor) = deployCore(initialAdmin);
+        (nftDescriptor, lockupDynamic, lockupLinear, lockupTranched) = deployCore(initialAdmin);
 
         // Deploy Periphery.
         (batchLockup, merkleLockupFactory) = deployPeriphery();

@@ -6,26 +6,26 @@ import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.s
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import { SablierLockup } from "./abstracts/SablierLockup.sol";
+import { ILockupNFTDescriptor } from "./interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockupTranched } from "./interfaces/ISablierLockupTranched.sol";
-import { ISablierNFTDescriptor } from "./interfaces/ISablierNFTDescriptor.sol";
 import { Helpers } from "./libraries/Helpers.sol";
 import { Lockup, LockupTranched } from "./types/DataTypes.sol";
 
 /*
 
-███████╗ █████╗ ██████╗ ██╗     ██╗███████╗██████╗     ██╗      ██████╗  ██████╗██╗  ██╗██╗   ██╗██████╗ 
+███████╗ █████╗ ██████╗ ██╗     ██╗███████╗██████╗     ██╗      ██████╗  ██████╗██╗  ██╗██╗   ██╗██████╗
 ██╔════╝██╔══██╗██╔══██╗██║     ██║██╔════╝██╔══██╗    ██║     ██╔═══██╗██╔════╝██║ ██╔╝██║   ██║██╔══██╗
 ███████╗███████║██████╔╝██║     ██║█████╗  ██████╔╝    ██║     ██║   ██║██║     █████╔╝ ██║   ██║██████╔╝
-╚════██║██╔══██║██╔══██╗██║     ██║██╔══╝  ██╔══██╗    ██║     ██║   ██║██║     ██╔═██╗ ██║   ██║██╔═══╝ 
-███████║██║  ██║██████╔╝███████╗██║███████╗██║  ██║    ███████╗╚██████╔╝╚██████╗██║  ██╗╚██████╔╝██║     
-╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     
+╚════██║██╔══██║██╔══██╗██║     ██║██╔══╝  ██╔══██╗    ██║     ██║   ██║██║     ██╔═██╗ ██║   ██║██╔═══╝
+███████║██║  ██║██████╔╝███████╗██║███████╗██║  ██║    ███████╗╚██████╔╝╚██████╗██║  ██╗╚██████╔╝██║
+╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝
 
-████████╗██████╗  █████╗ ███╗   ██╗ ██████╗██╗  ██╗███████╗██████╗ 
+████████╗██████╗  █████╗ ███╗   ██╗ ██████╗██╗  ██╗███████╗██████╗
 ╚══██╔══╝██╔══██╗██╔══██╗████╗  ██║██╔════╝██║  ██║██╔════╝██╔══██╗
    ██║   ██████╔╝███████║██╔██╗ ██║██║     ███████║█████╗  ██║  ██║
    ██║   ██╔══██╗██╔══██║██║╚██╗██║██║     ██╔══██║██╔══╝  ██║  ██║
    ██║   ██║  ██║██║  ██║██║ ╚████║╚██████╗██║  ██║███████╗██████╔╝
-   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═════╝ 
+   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═════╝
 
 */
 
@@ -57,7 +57,7 @@ contract SablierLockupTranched is
     /// @param maxTrancheCount The maximum number of tranches allowed in a stream.
     constructor(
         address initialAdmin,
-        ISablierNFTDescriptor initialNFTDescriptor,
+        ILockupNFTDescriptor initialNFTDescriptor,
         uint256 maxTrancheCount
     )
         ERC721("Sablier Lockup Tranched NFT", "SAB-LOCKUP-TRA")

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { ISablierNFTDescriptor } from "src/core/interfaces/ISablierNFTDescriptor.sol";
+import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
-import { SablierNFTDescriptor } from "src/core/SablierNFTDescriptor.sol";
+import { LockupNFTDescriptor } from "src/core/LockupNFTDescriptor.sol";
 
 import { Lockup_Integration_Shared_Test } from "../../../shared/lockup/Lockup.t.sol";
 import { Integration_Test } from "../../../Integration.t.sol";
@@ -21,7 +21,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
-        lockup.setNFTDescriptor(ISablierNFTDescriptor(users.eve));
+        lockup.setNFTDescriptor(ILockupNFTDescriptor(users.eve));
     }
 
     modifier whenCallerAdmin() {
@@ -41,13 +41,13 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.setNFTDescriptor(nftDescriptor);
 
         // Assert that the new NFT descriptor has been set.
-        vm.expectCall(address(nftDescriptor), abi.encodeCall(ISablierNFTDescriptor.tokenURI, (lockup, 1)));
+        vm.expectCall(address(nftDescriptor), abi.encodeCall(ILockupNFTDescriptor.tokenURI, (lockup, 1)));
         lockup.tokenURI({ tokenId: defaultStreamId });
     }
 
     function test_SetNFTDescriptor_NewNFTDescriptor() external whenCallerAdmin {
         // Deploy another NFT descriptor.
-        ISablierNFTDescriptor newNFTDescriptor = new SablierNFTDescriptor();
+        ILockupNFTDescriptor newNFTDescriptor = new LockupNFTDescriptor();
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
@@ -59,7 +59,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.setNFTDescriptor(newNFTDescriptor);
 
         // Assert that the new NFT descriptor has been set.
-        vm.expectCall(address(newNFTDescriptor), abi.encodeCall(ISablierNFTDescriptor.tokenURI, (lockup, 1)));
+        vm.expectCall(address(newNFTDescriptor), abi.encodeCall(ILockupNFTDescriptor.tokenURI, (lockup, 1)));
         lockup.tokenURI({ tokenId: defaultStreamId });
     }
 }

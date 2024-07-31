@@ -7,8 +7,8 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 
+import { ILockupNFTDescriptor } from "./interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockup } from "./interfaces/ISablierLockup.sol";
-import { ISablierNFTDescriptor } from "./interfaces/ISablierNFTDescriptor.sol";
 import { Lockup } from "./types/DataTypes.sol";
 
 import { Errors } from "./libraries/Errors.sol";
@@ -35,9 +35,9 @@ import { SVGElements } from "./libraries/SVGElements.sol";
 
 */
 
-/// @title SablierNFTDescriptor
-/// @notice See the documentation in {ISablierNFTDescriptor}.
-contract SablierNFTDescriptor is ISablierNFTDescriptor {
+/// @title LockupNFTDescriptor
+/// @notice See the documentation in {ILockupNFTDescriptor}.
+contract LockupNFTDescriptor is ILockupNFTDescriptor {
     using Strings for address;
     using Strings for string;
     using Strings for uint256;
@@ -63,7 +63,7 @@ contract SablierNFTDescriptor is ISablierNFTDescriptor {
         bool success;
     }
 
-    /// @inheritdoc ISablierNFTDescriptor
+    /// @inheritdoc ILockupNFTDescriptor
     function tokenURI(IERC721Metadata lockup, uint256 streamId) external view override returns (string memory uri) {
         TokenURIVars memory vars;
 
@@ -356,7 +356,7 @@ contract SablierNFTDescriptor is ISablierNFTDescriptor {
         } else if (symbol.equal("SAB-LOCKUP-TRA") || symbol.equal("SAB-V2-LOCKUP-TRA")) {
             return "Sablier Lockup Tranched";
         } else {
-            revert Errors.SablierNFTDescriptor_UnknownNFT(sablier, symbol);
+            revert Errors.LockupNFTDescriptor_UnknownNFT(sablier, symbol);
         }
     }
 

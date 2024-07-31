@@ -8,9 +8,9 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
+import { ILockupNFTDescriptor } from "../interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockupRecipient } from "../interfaces/ISablierLockupRecipient.sol";
 import { ISablierLockup } from "../interfaces/ISablierLockup.sol";
-import { ISablierNFTDescriptor } from "../interfaces/ISablierNFTDescriptor.sol";
 import { Errors } from "../libraries/Errors.sol";
 import { Lockup } from "../types/DataTypes.sol";
 import { Adminable } from "./Adminable.sol";
@@ -37,7 +37,7 @@ abstract contract SablierLockup is
     uint256 public override nextStreamId;
 
     /// @inheritdoc ISablierLockup
-    ISablierNFTDescriptor public override nftDescriptor;
+    ILockupNFTDescriptor public override nftDescriptor;
 
     /// @dev Mapping of contracts allowed to hook to Sablier when a stream is canceled or when assets are withdrawn.
     mapping(address recipient => bool allowed) internal _allowedToHook;
@@ -52,7 +52,7 @@ abstract contract SablierLockup is
     /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialNFTDescriptor The address of the initial NFT descriptor.
-    constructor(address initialAdmin, ISablierNFTDescriptor initialNFTDescriptor) {
+    constructor(address initialAdmin, ILockupNFTDescriptor initialNFTDescriptor) {
         admin = initialAdmin;
         nftDescriptor = initialNFTDescriptor;
         emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
@@ -334,9 +334,9 @@ abstract contract SablierLockup is
     }
 
     /// @inheritdoc ISablierLockup
-    function setNFTDescriptor(ISablierNFTDescriptor newNFTDescriptor) external override onlyAdmin {
+    function setNFTDescriptor(ILockupNFTDescriptor newNFTDescriptor) external override onlyAdmin {
         // Effect: set the NFT descriptor.
-        ISablierNFTDescriptor oldNftDescriptor = nftDescriptor;
+        ILockupNFTDescriptor oldNftDescriptor = nftDescriptor;
         nftDescriptor = newNFTDescriptor;
 
         // Log the change of the NFT descriptor.

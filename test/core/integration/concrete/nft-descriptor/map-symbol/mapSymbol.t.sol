@@ -12,7 +12,7 @@ contract MapSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_Shared
     function test_RevertGiven_UnknownNFT() external {
         MockERC721 nft = new MockERC721();
         nft.initialize("Foo", "FOO");
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierNFTDescriptor_UnknownNFT.selector, nft, "FOO"));
+        vm.expectRevert(abi.encodeWithSelector(Errors.LockupNFTDescriptor_UnknownNFT.selector, nft, "FOO"));
         nftDescriptorMock.mapSymbol_(IERC721Metadata(address(nft)));
     }
 

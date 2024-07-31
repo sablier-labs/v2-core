@@ -366,10 +366,10 @@ for chain in "${provided_chains[@]}"; do
         # Save to the chain file
         {
             echo "Core Contracts"
+            echo "LockupNFTDescriptor = ${nftDescriptor_address}"
             echo "SablierLockupDynamic = ${lockupDynamic_address}"
             echo "SablierLockupLinear = ${lockupLinear_address}"
             echo "SablierLockupTranched = ${lockupTranched_address}"
-            echo "SablierNFTDescriptor = ${nftDescriptor_address}"
             echo "Periphery Contracts"
             echo "SablierBatchLockup = ${batchLockup_address}"
             echo "SablierMerkleLockupFactory = ${merkleLockupFactory_address}"

@@ -6,12 +6,12 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { NFTSVG } from "src/core/libraries/NFTSVG.sol";
 import { SVGElements } from "src/core/libraries/SVGElements.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { SablierNFTDescriptor } from "src/core/SablierNFTDescriptor.sol";
+import { LockupNFTDescriptor } from "src/core/LockupNFTDescriptor.sol";
 
 /// @dev This mock is needed for:
 /// - Running the tests against the `--via-ir` precompiles
 /// - Testing reverts: https://github.com/foundry-rs/foundry/issues/864
-contract NFTDescriptorMock is SablierNFTDescriptor {
+contract NFTDescriptorMock is LockupNFTDescriptor {
     function abbreviateAmount_(uint256 amount, uint256 decimals) external pure returns (string memory) {
         return abbreviateAmount(amount, decimals);
     }

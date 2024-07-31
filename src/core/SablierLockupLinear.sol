@@ -8,21 +8,21 @@ import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
 import { SablierLockup } from "./abstracts/SablierLockup.sol";
 import { SablierLockup } from "./abstracts/SablierLockup.sol";
+import { ILockupNFTDescriptor } from "./interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockupLinear } from "./interfaces/ISablierLockupLinear.sol";
-import { ISablierNFTDescriptor } from "./interfaces/ISablierNFTDescriptor.sol";
 import { Helpers } from "./libraries/Helpers.sol";
 import { Lockup, LockupLinear } from "./types/DataTypes.sol";
 
 /*
 
-███████╗ █████╗ ██████╗ ██╗     ██╗███████╗██████╗     ██╗      ██████╗  ██████╗██╗  ██╗██╗   ██╗██████╗ 
+███████╗ █████╗ ██████╗ ██╗     ██╗███████╗██████╗     ██╗      ██████╗  ██████╗██╗  ██╗██╗   ██╗██████╗
 ██╔════╝██╔══██╗██╔══██╗██║     ██║██╔════╝██╔══██╗    ██║     ██╔═══██╗██╔════╝██║ ██╔╝██║   ██║██╔══██╗
 ███████╗███████║██████╔╝██║     ██║█████╗  ██████╔╝    ██║     ██║   ██║██║     █████╔╝ ██║   ██║██████╔╝
-╚════██║██╔══██║██╔══██╗██║     ██║██╔══╝  ██╔══██╗    ██║     ██║   ██║██║     ██╔═██╗ ██║   ██║██╔═══╝ 
-███████║██║  ██║██████╔╝███████╗██║███████╗██║  ██║    ███████╗╚██████╔╝╚██████╗██║  ██╗╚██████╔╝██║     
-╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     
+╚════██║██╔══██║██╔══██╗██║     ██║██╔══╝  ██╔══██╗    ██║     ██║   ██║██║     ██╔═██╗ ██║   ██║██╔═══╝
+███████║██║  ██║██████╔╝███████╗██║███████╗██║  ██║    ███████╗╚██████╔╝╚██████╗██║  ██╗╚██████╔╝██║
+╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝
 
-██╗     ██╗███╗   ██╗███████╗ █████╗ ██████╗ 
+██╗     ██╗███╗   ██╗███████╗ █████╗ ██████╗
 ██║     ██║████╗  ██║██╔════╝██╔══██╗██╔══██╗
 ██║     ██║██╔██╗ ██║█████╗  ███████║██████╔╝
 ██║     ██║██║╚██╗██║██╔══╝  ██╔══██║██╔══██╗
@@ -55,7 +55,7 @@ contract SablierLockupLinear is
     /// @param initialNFTDescriptor The address of the initial NFT descriptor.
     constructor(
         address initialAdmin,
-        ISablierNFTDescriptor initialNFTDescriptor
+        ILockupNFTDescriptor initialNFTDescriptor
     )
         ERC721("Sablier Lockup Linear NFT", "SAB-LOCKUP-LIN")
         SablierLockup(initialAdmin, initialNFTDescriptor)

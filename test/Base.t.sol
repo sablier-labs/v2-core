@@ -3,14 +3,14 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockupDynamic } from "src/core/interfaces/ISablierLockupDynamic.sol";
 import { ISablierLockupLinear } from "src/core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
-import { ISablierNFTDescriptor } from "src/core/interfaces/ISablierNFTDescriptor.sol";
+import { LockupNFTDescriptor } from "src/core/LockupNFTDescriptor.sol";
 import { SablierLockupDynamic } from "src/core/SablierLockupDynamic.sol";
 import { SablierLockupLinear } from "src/core/SablierLockupLinear.sol";
 import { SablierLockupTranched } from "src/core/SablierLockupTranched.sol";
-import { SablierNFTDescriptor } from "src/core/SablierNFTDescriptor.sol";
 import { LockupDynamic, LockupLinear, LockupTranched } from "src/core/types/DataTypes.sol";
 import { ISablierMerkleLockupFactory } from "src/periphery/interfaces/ISablierMerkleLockupFactory.sol";
 import { ISablierBatchLockup } from "src/periphery/interfaces/ISablierBatchLockup.sol";
@@ -53,7 +53,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
     ISablierMerkleLockupFactory internal merkleLockupFactory;
     ISablierMerkleLL internal merkleLL;
     ISablierMerkleLT internal merkleLT;
-    ISablierNFTDescriptor internal nftDescriptor;
+    ILockupNFTDescriptor internal nftDescriptor;
     Noop internal noop;
     RecipientGood internal recipientGood;
     ERC20MissingReturn internal usdt;
@@ -149,13 +149,13 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
     function deployProtocolConditionally() internal {
         if (!isBenchmarkProfile() && !isTestOptimizedProfile()) {
             batchLockup = new SablierBatchLockup();
-            nftDescriptor = new SablierNFTDescriptor();
+            nftDescriptor = new LockupNFTDescriptor();
             lockupDynamic = new SablierLockupDynamic(users.admin, nftDescriptor, defaults.MAX_SEGMENT_COUNT());
             lockupLinear = new SablierLockupLinear(users.admin, nftDescriptor);
             lockupTranched = new SablierLockupTranched(users.admin, nftDescriptor, defaults.MAX_TRANCHE_COUNT());
             merkleLockupFactory = new SablierMerkleLockupFactory();
         } else {
-            (lockupDynamic, lockupLinear, lockupTranched, nftDescriptor, batchLockup, merkleLockupFactory) =
+            (nftDescriptor, lockupDynamic, lockupLinear, lockupTranched, batchLockup, merkleLockupFactory) =
                 deployOptimizedProtocol(users.admin, defaults.MAX_SEGMENT_COUNT(), defaults.MAX_TRANCHE_COUNT());
         }
 

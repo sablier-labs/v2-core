@@ -17,7 +17,7 @@ lockup_dynamic=$(cat out-optimized/SablierLockupDynamic.sol/SablierLockupDynamic
 lockup_linear=$(cat out-optimized/SablierLockupLinear.sol/SablierLockupLinear.json | jq -r '.bytecode.object' | cut -c 3-)
 lockup_tranched=$(cat out-optimized/SablierLockupTranched.sol/SablierLockupTranched.json | jq -r '.bytecode.object' | cut -c 3-)
 merkle_lockup_factory=$(cat out-optimized/SablierMerkleLockupFactory.sol/SablierMerkleLockupFactory.json | jq -r '.bytecode.object' | cut -c 3-)
-nft_descriptor=$(cat out-optimized/SablierNFTDescriptor.sol/SablierNFTDescriptor.json | jq -r '.bytecode.object' | cut -c 3-)
+nft_descriptor=$(cat out-optimized/LockupNFTDescriptor.sol/LockupNFTDescriptor.json | jq -r '.bytecode.object' | cut -c 3-)
 
 precompiles_path="precompiles/Precompiles.sol"
 if [ ! -f $precompiles_path ]; then
