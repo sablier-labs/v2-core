@@ -90,7 +90,7 @@
 [doc]
   ignore = ["**/*.t.sol"]
   out = "docs"
-  repository = "https://github.com/sablier-labs/v2-core"
+  repository = "https://github.com/sablier-labs/lockup"
 
 [fmt]
   bracket_spacing = true

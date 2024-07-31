@@ -1,9 +1,9 @@
 # Sablier Lockup [![Github Actions][gha-badge]][gha] [![Coverage][codecov-badge]][codecov] [![Foundry][foundry-badge]][foundry] [![Discord][discord-badge]][discord]
 
-[gha]: https://github.com/sablier-labs/v2-core/actions
-[gha-badge]: https://github.com/sablier-labs/v2-core/actions/workflows/ci.yml/badge.svg
-[codecov]: https://codecov.io/gh/sablier-labs/v2-core
-[codecov-badge]: https://codecov.io/gh/sablier-labs/v2-core/branch/main/graph/badge.svg
+[gha]: https://github.com/sablier-labs/lockup/actions
+[gha-badge]: https://github.com/sablier-labs/lockup/actions/workflows/ci.yml/badge.svg
+[codecov]: https://codecov.io/gh/sablier-labs/lockup
+[codecov-badge]: https://codecov.io/gh/sablier-labs/lockup/branch/main/graph/badge.svg
 [discord]: https://discord.gg/bSwRCwWRsT
 [discord-badge]: https://dcbadge.vercel.app/api/server/bSwRCwWRsT?style=flat
 [foundry]: https://getfoundry.sh
@@ -33,13 +33,13 @@ This is the recommended approach.
 Install Lockup using your favorite package manager, e.g., with Bun:
 
 ```shell
-bun add @sablier/v2-core
+bun add @sablier/lockup
 ```
 
 Then, if you are using Foundry, you need to add these to your `remappings.txt` file:
 
 ```text
-@sablier/v2-core/=node_modules/@sablier/v2-core/
+@sablier/lockup/=node_modules/@sablier/lockup/
 @openzeppelin/contracts/=node_modules/@openzeppelin/contracts/
 @prb/math/=node_modules/@prb/math/
 ```
@@ -51,7 +51,7 @@ This installation method is not recommended, but it is available for those who p
 First, install the submodule using Forge:
 
 ```shell
-forge install --no-commit sablier-labs/v2-core
+forge install --no-commit sablier-labs/lockup
 ```
 
 Second, install the project's dependencies:
@@ -63,7 +63,7 @@ forge install --no-commit OpenZeppelin/openzeppelin-contracts@v5.0.2 PaulRBerg/p
 Finally, add these to your `remappings.txt` file:
 
 ```text
-@sablier/v2-core/=lib/v2-core/
+@sablier/lockup/=lib/lockup/
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 @prb/math/=lib/prb-math/
 ```
@@ -74,7 +74,7 @@ This is just a glimpse of Sablier Lockup. For more guides and examples, see the
 [documentation](https://docs.sablier.com).
 
 ```solidity
-import { ISablierLockupLinear } from "@sablier/v2-core/src/interfaces/ISablierLockupLinear.sol";
+import { ISablierLockupLinear } from "@sablier/lockup/src/interfaces/ISablierLockupLinear.sol";
 
 contract MyContract {
   ISablierLockupLinear lockup;
@@ -97,12 +97,12 @@ docs, as well as these [diagrams](https://docs.sablier.com/contracts/v2/referenc
 ### Branching Tree Technique
 
 You may notice that some test files are accompanied by `.tree` files. This is called the Branching Tree Technique, and
-it is explained in depth [here](https://github.com/sablier-labs/v2-core/wiki/Tests#branching-tree-technique).
+it is explained in depth [here](https://github.com/sablier-labs/lockup/wiki/Tests#branching-tree-technique).
 
 ## Deployments
 
 The list of all deployment addresses can be found [here](https://docs.sablier.com). For guidance on the deploy scripts,
-see the [Deployments wiki](https://github.com/sablier-labs/v2-core/wiki/Deployments).
+see the [Deployments wiki](https://github.com/sablier-labs/lockup/wiki/Deployments).
 
 ## Security
 
@@ -114,8 +114,8 @@ bug bounty program per the terms outlined in the aforementioned policy.
 
 ## Contributing
 
-Feel free to dive in! [Open](https://github.com/sablier-labs/v2-core/issues/new) an issue,
-[start](https://github.com/sablier-labs/v2-core/discussions/new) a discussion or submit a PR. For any informal concerns
+Feel free to dive in! [Open](https://github.com/sablier-labs/lockup/issues/new) an issue,
+[start](https://github.com/sablier-labs/lockup/discussions/new) a discussion or submit a PR. For any informal concerns
 or feedback, please join our [Discord server](https://discord.gg/bSwRCwWRsT).
 
 For guidance on how to create PRs, see the [CONTRIBUTING](./CONTRIBUTING.md) guide.
