@@ -9,9 +9,6 @@
 [foundry]: https://getfoundry.sh
 [foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg
 
-This repository contains the core smart contracts of the Sablier Lockup Protocol. For higher-level logic, see the
-[sablier-labs/v2-periphery](https://github.com/sablier-labs/v2-periphery) repository.
-
 In-depth documentation is available at [docs.sablier.com](https://docs.sablier.com).
 
 ## Background
