@@ -97,6 +97,8 @@ contract Claim_Integration_Test is Merkle_Shared_Integration_Test {
         vm.expectEmit({ emitter: address(merkleInstant) });
         emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT());
 
+        expectCallToTransfer({ to: users.recipient1, value: defaults.CLAIM_AMOUNT() });
+
         claimInstant();
 
         assertTrue(merkleInstant.hasClaimed(defaults.INDEX1()), "not claimed");

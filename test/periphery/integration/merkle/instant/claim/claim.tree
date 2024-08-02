@@ -16,4 +16,5 @@ claim.t.sol
       │     └── it should revert
       └── given the claim is included in the Merkle tree
          ├── it should mark the index as claimed
+         ├── it should transfer the claim amount to the recipient
          └── it should emit a {Claim} event

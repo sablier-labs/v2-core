@@ -159,6 +159,12 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
             vars.merkleProof = getProof(leaves.toBytes32(), vars.leafPos);
         }
 
+        expectCallToTransfer({
+            asset: FORK_ASSET,
+            to: vars.recipients[params.posBeforeSort],
+            value: vars.amounts[params.posBeforeSort]
+        });
+
         vars.merkleInstant.claim({
             index: vars.indexes[params.posBeforeSort],
             recipient: vars.recipients[params.posBeforeSort],
