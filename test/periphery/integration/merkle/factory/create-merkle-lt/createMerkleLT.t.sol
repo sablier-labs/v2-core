@@ -5,9 +5,9 @@ import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol"
 import { Errors } from "src/periphery/libraries/Errors.sol";
 import { MerkleBase, MerkleLT } from "src/periphery/types/DataTypes.sol";
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract CreateMerkleLT_Integration_Test is Merkle_Shared_Integration_Test {
+contract CreateMerkleLT_Integration_Test is Merkle_Integration_Test {
     function test_RevertWhen_CampaignNameTooLong() external {
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
         bool cancelable = defaults.CANCELABLE();

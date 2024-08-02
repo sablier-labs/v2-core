@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract HasClaimed_Integration_Test is Merkle_Shared_Integration_Test {
+contract HasClaimed_Integration_Test is Merkle_Integration_Test {
     function test_HasClaimed_IndexNotInTree() external {
         uint256 indexNotInTree = 1337e18;
         assertFalse(merkleLT.hasClaimed(indexNotInTree), "claimed");

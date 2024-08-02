@@ -3,9 +3,9 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Errors } from "src/periphery/libraries/Errors.sol";
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract Claim_Integration_Test is Merkle_Shared_Integration_Test {
+contract Claim_Integration_Test is Merkle_Integration_Test {
     function test_RevertGiven_CampaignExpired() external {
         uint40 expiration = defaults.EXPIRATION();
         uint256 warpTime = expiration + 1 seconds;

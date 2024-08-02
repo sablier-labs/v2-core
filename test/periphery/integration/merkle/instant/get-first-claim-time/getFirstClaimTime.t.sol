@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract GetFirstClaimTime_Integration_Test is Merkle_Shared_Integration_Test {
+contract GetFirstClaimTime_Integration_Test is Merkle_Integration_Test {
     function test_GetFirstClaimTime_BeforeFirstClaim() external view {
         uint256 firstClaimTime = merkleInstant.getFirstClaimTime();
         assertEq(firstClaimTime, 0);

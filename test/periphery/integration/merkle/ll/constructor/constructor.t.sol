@@ -4,9 +4,9 @@ pragma solidity >=0.8.22 <0.9.0;
 import { LockupLinear } from "src/core/types/DataTypes.sol";
 import { SablierMerkleLL } from "src/periphery/SablierMerkleLL.sol";
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract Constructor_MerkleLL_Integration_Test is Merkle_Shared_Integration_Test {
+contract Constructor_MerkleLL_Integration_Test is Merkle_Integration_Test {
     /// @dev Needed to prevent "Stack too deep" error
     struct Vars {
         address actualAdmin;

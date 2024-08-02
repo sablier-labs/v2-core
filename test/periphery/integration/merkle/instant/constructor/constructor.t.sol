@@ -3,9 +3,9 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { SablierMerkleInstant } from "src/periphery/SablierMerkleInstant.sol";
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract Constructor_MerkleInstant_Integration_Test is Merkle_Shared_Integration_Test {
+contract Constructor_MerkleInstant_Integration_Test is Merkle_Integration_Test {
     /// @dev Needed to prevent "Stack too deep" error
     struct Vars {
         address actualAdmin;

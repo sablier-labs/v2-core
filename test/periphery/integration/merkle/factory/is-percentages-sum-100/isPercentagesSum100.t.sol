@@ -5,9 +5,9 @@ import { MAX_UD2x18, ud2x18 } from "@prb/math/src/UD2x18.sol";
 
 import { MerkleLT } from "src/periphery/types/DataTypes.sol";
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract IsPercentagesSum100_Integration_Test is Merkle_Shared_Integration_Test {
+contract IsPercentagesSum100_Integration_Test is Merkle_Integration_Test {
     function test_RevertWhen_SumOverflow() public {
         MerkleLT.TrancheWithPercentage[] memory tranches = defaults.tranchesWithPercentages();
         tranches[0].unlockPercentage = MAX_UD2x18;

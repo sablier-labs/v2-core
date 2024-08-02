@@ -12,9 +12,9 @@ import { MerkleBase, MerkleLT } from "src/periphery/types/DataTypes.sol";
 import { MerkleBuilder } from "test/utils/MerkleBuilder.sol";
 import { Merkle } from "test/utils/Murky.sol";
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract Claim_Integration_Test is Merkle, Merkle_Shared_Integration_Test {
+contract Claim_Integration_Test is Merkle, Merkle_Integration_Test {
     using MerkleBuilder for uint256[];
 
     modifier whenTotalPercentageNotOneHundred() {

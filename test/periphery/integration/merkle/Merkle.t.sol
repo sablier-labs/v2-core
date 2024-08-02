@@ -7,7 +7,7 @@ import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol"
 
 import { Periphery_Test } from "../../Periphery.t.sol";
 
-abstract contract Merkle_Shared_Integration_Test is Periphery_Test {
+abstract contract Merkle_Integration_Test is Periphery_Test {
     function setUp() public virtual override {
         super.setUp();
 

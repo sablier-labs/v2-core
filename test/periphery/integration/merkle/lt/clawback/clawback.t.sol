@@ -4,9 +4,9 @@ pragma solidity >=0.8.22 <0.9.0;
 import { Errors as CoreErrors } from "src/core/libraries/Errors.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract Clawback_Integration_Test is Merkle_Shared_Integration_Test {
+contract Clawback_Integration_Test is Merkle_Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
         resetPrank({ msgSender: users.eve });
         vm.expectRevert(abi.encodeWithSelector(CoreErrors.CallerNotAdmin.selector, users.admin, users.eve));

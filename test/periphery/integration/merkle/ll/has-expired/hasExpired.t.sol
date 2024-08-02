@@ -3,9 +3,9 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { ISablierMerkleLL } from "src/periphery/interfaces/ISablierMerkleLL.sol";
 
-import { Merkle_Shared_Integration_Test } from "../../Merkle.t.sol";
+import { Merkle_Integration_Test } from "../../Merkle.t.sol";
 
-contract HasExpired_Integration_Test is Merkle_Shared_Integration_Test {
+contract HasExpired_Integration_Test is Merkle_Integration_Test {
     function test_HasExpired_ExpirationZero() external {
         ISablierMerkleLL testLockup = createMerkleLL({ expiration: 0 });
         assertFalse(testLockup.hasExpired(), "campaign expired");
