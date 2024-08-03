@@ -6,11 +6,11 @@ import { Errors } from "src/periphery/libraries/Errors.sol";
 
 import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
 
-contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
+abstract contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
         resetPrank({ msgSender: users.eve });
         vm.expectRevert(abi.encodeWithSelector(CoreErrors.CallerNotAdmin.selector, users.admin, users.eve));
-        merkleLT.clawback({ to: users.eve, amount: 1 });
+        merkleBase.clawback({ to: users.eve, amount: 1 });
     }
 
     modifier whenCallerAdmin() {
@@ -22,8 +22,7 @@ contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
         test_Clawback(users.admin);
     }
 
-    modifier afterFirstClaim() {
-        claimLT();
+    modifier afterFirstClaim() virtual {
         _;
     }
 
@@ -46,7 +45,7 @@ contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
                 defaults.FIRST_CLAIM_TIME()
             )
         );
-        merkleLT.clawback({ to: users.admin, amount: 1 });
+        merkleBase.clawback({ to: users.admin, amount: 1 });
     }
 
     modifier givenCampaignExpired() {
@@ -70,10 +69,10 @@ contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
     }
 
     function test_Clawback(address to) internal {
-        uint128 clawbackAmount = uint128(dai.balanceOf(address(merkleLT)));
+        uint128 clawbackAmount = uint128(dai.balanceOf(address(merkleBase)));
         expectCallToTransfer({ to: to, value: clawbackAmount });
-        vm.expectEmit({ emitter: address(merkleLT) });
+        vm.expectEmit({ emitter: address(merkleBase) });
         emit Clawback({ admin: users.admin, to: to, amount: clawbackAmount });
-        merkleLT.clawback({ to: to, amount: clawbackAmount });
+        merkleBase.clawback({ to: to, amount: clawbackAmount });
     }
 }
