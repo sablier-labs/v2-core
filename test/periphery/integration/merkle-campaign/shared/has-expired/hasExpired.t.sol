@@ -3,21 +3,17 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 
-import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
+import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
 
-abstract contract HasExpired_Integration_Test is MerkleCampaign_Integration_Test {
-    ISablierMerkleBase internal campaignWithZeroExpiry;
-
-    modifier createMerkleCampaignWithZeroExpiry() virtual {
-        _;
+abstract contract HasExpired_Integration_Test is MerkleCampaign_Integration_Shared_Test {
+    function setUp() public virtual override {
+        MerkleCampaign_Integration_Shared_Test.setUp();
     }
+
+    ISablierMerkleBase internal campaignWithZeroExpiry;
 
     function test_HasExpired_ExpirationZero() external view createMerkleCampaignWithZeroExpiry {
         assertFalse(campaignWithZeroExpiry.hasExpired(), "campaign expired");
-    }
-
-    modifier givenExpirationNotZero() {
-        _;
     }
 
     function test_HasExpired_ExpirationLessThanBlockTimestamp() external view givenExpirationNotZero {

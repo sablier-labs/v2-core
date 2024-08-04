@@ -4,36 +4,26 @@ pragma solidity >=0.8.22 <0.9.0;
 import { Errors as CoreErrors } from "src/core/libraries/Errors.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 
-import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
+import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
 
-abstract contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
+abstract contract Clawback_Integration_Test is MerkleCampaign_Integration_Shared_Test {
+    function setUp() public virtual override {
+        MerkleCampaign_Integration_Shared_Test.setUp();
+    }
+
     function test_RevertWhen_CallerNotAdmin() external {
         resetPrank({ msgSender: users.eve });
         vm.expectRevert(abi.encodeWithSelector(CoreErrors.CallerNotAdmin.selector, users.admin, users.eve));
         merkleBase.clawback({ to: users.eve, amount: 1 });
     }
 
-    modifier whenCallerAdmin() {
-        resetPrank({ msgSender: users.admin });
-        _;
-    }
-
     function test_Clawback_BeforeFirstClaim() external whenCallerAdmin {
         test_Clawback(users.admin);
-    }
-
-    modifier afterFirstClaim() virtual {
-        _;
     }
 
     function test_Clawback_GracePeriod() external whenCallerAdmin afterFirstClaim {
         vm.warp({ newTimestamp: getBlockTimestamp() + 6 days });
         test_Clawback(users.admin);
-    }
-
-    modifier postGracePeriod() {
-        vm.warp({ newTimestamp: getBlockTimestamp() + 8 days });
-        _;
     }
 
     function test_RevertGiven_CampaignNotExpired() external whenCallerAdmin afterFirstClaim postGracePeriod {
@@ -46,11 +36,6 @@ abstract contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
             )
         );
         merkleBase.clawback({ to: users.admin, amount: 1 });
-    }
-
-    modifier givenCampaignExpired() {
-        vm.warp({ newTimestamp: defaults.EXPIRATION() + 1 seconds });
-        _;
     }
 
     function test_Clawback() external whenCallerAdmin afterFirstClaim postGracePeriod givenCampaignExpired {
