@@ -9,6 +9,7 @@ node_modules
 out
 out-optimized
 out-svg
+target
 
 # files
 *.env
@@ -16,6 +17,7 @@ out-svg
 *.log
 .DS_Store
 .pnp.*
+Cargo.lock
 lcov.info
 package-lock.json
 pnpm-lock.yaml
