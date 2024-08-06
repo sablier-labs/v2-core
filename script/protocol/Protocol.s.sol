@@ -39,11 +39,11 @@ abstract contract ProtocolScript is BaseScript {
         }
 
         // If there is no explorer URL set for a specific chain, use a placeholder.
-        if (Strings.equal(explorerMap[block.chainid], "")) {
+        if (explorerMap[block.chainid].equal("")) {
             explorerMap[block.chainid] = "<explorer_url_missing>";
         }
 
-        // Create the deployment file if it doesn't exist.
+        // Create the deployment directory if it doesn't exist. This requires `--ffi` flag.
         if (!vm.isDir("deployments")) {
             string[] memory mkDirCommand = new string[](2);
             mkDirCommand[0] = "mkdir";
@@ -69,8 +69,8 @@ abstract contract ProtocolScript is BaseScript {
     )
         internal
     {
-        string memory core = " ### Core\n\n";
-        _appendToFile(core);
+        string memory coreTitle = " ### Core\n\n";
+        _appendToFile(coreTitle);
 
         string memory firstTwoLines = "| Contract | Address | Deployment |\n | :------- | :------ | :----------|";
         _appendToFile(firstTwoLines);
@@ -84,7 +84,7 @@ abstract contract ProtocolScript is BaseScript {
             lockupDynamicHex,
             ") | [core-",
             version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/",
+            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/v",
             version,
             ") |"
         );
@@ -99,7 +99,7 @@ abstract contract ProtocolScript is BaseScript {
             lockupLinearHex,
             ") | [core-",
             version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/",
+            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/v",
             version,
             ") |"
         );
@@ -114,7 +114,7 @@ abstract contract ProtocolScript is BaseScript {
             lockupTranchedHex,
             ") | [core-",
             version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/",
+            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/v",
             version,
             ") |"
         );
@@ -129,14 +129,14 @@ abstract contract ProtocolScript is BaseScript {
             nftDescriptorHex,
             ") | [core-",
             version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/",
+            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/v",
             version,
             ") |"
         );
         _appendToFile(nftDescriptorLine);
 
-        string memory periphery = "\n ### Periphery\n\n";
-        _appendToFile(periphery);
+        string memory peripheryTitle = "\n ### Periphery\n\n";
+        _appendToFile(peripheryTitle);
         _appendToFile(firstTwoLines);
 
         string memory batchLockupHex = batchLockup.toHexString();
@@ -146,9 +146,9 @@ abstract contract ProtocolScript is BaseScript {
             "](",
             explorerMap[block.chainid],
             batchLockupHex,
-            ") | [core-",
+            ") | [periphery-",
             version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/",
+            "](https://github.com/sablier-labs/v2-deployments/tree/main/periphery/v",
             version,
             ") |"
         );
@@ -161,9 +161,9 @@ abstract contract ProtocolScript is BaseScript {
             "](",
             explorerMap[block.chainid],
             merkleFactoryHex,
-            ") | [core-",
+            ") | [periphery-",
             version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/",
+            "](https://github.com/sablier-labs/v2-deployments/tree/main/periphery/v",
             version,
             ") |"
         );
@@ -177,26 +177,37 @@ abstract contract ProtocolScript is BaseScript {
 
     /// @dev Populates the admin map.
     function populateAdminMap() internal {
-        adminMap[42_161] = 0xF34E41a6f6Ce5A45559B1D3Ee92E141a3De96376;
-        adminMap[43_114] = 0x4735517616373c5137dE8bcCDc887637B8ac85Ce;
-        adminMap[8453] = 0x83A6fA8c04420B3F9C7A4CF1c040b63Fbbc89B66;
-        adminMap[56] = 0x6666cA940D2f4B65883b454b7Bc7EEB039f64fa3;
-        adminMap[100] = 0x72ACB57fa6a8fa768bE44Db453B1CDBa8B12A399;
-        adminMap[1] = 0x79Fb3e81aAc012c08501f41296CCC145a1E15844;
-        adminMap[10] = 0x43c76FE8Aec91F63EbEfb4f5d2a4ba88ef880350;
-        adminMap[137] = 0x40A518C5B9c1d3D6d62Ba789501CE4D526C9d9C6;
-        adminMap[534_352] = 0x0F7Ad835235Ede685180A5c611111610813457a9;
+        adminMap[42_161] = 0xF34E41a6f6Ce5A45559B1D3Ee92E141a3De96376; // Arbitrum
+        adminMap[43_114] = 0x4735517616373c5137dE8bcCDc887637B8ac85Ce; // Avalanche
+        adminMap[8453] = 0x83A6fA8c04420B3F9C7A4CF1c040b63Fbbc89B66; // Base
+        adminMap[56] = 0x6666cA940D2f4B65883b454b7Bc7EEB039f64fa3; // BNB
+        adminMap[100] = 0x72ACB57fa6a8fa768bE44Db453B1CDBa8B12A399; // Gnosis
+        adminMap[1] = 0x79Fb3e81aAc012c08501f41296CCC145a1E15844; // Mainnet
+        adminMap[59_144] = 0x72dCfa0483d5Ef91562817C6f20E8Ce07A81319D; // Linea
+        adminMap[10] = 0x43c76FE8Aec91F63EbEfb4f5d2a4ba88ef880350; // Optimism
+        adminMap[137] = 0x40A518C5B9c1d3D6d62Ba789501CE4D526C9d9C6; // Polygon
+        adminMap[534_352] = 0x0F7Ad835235Ede685180A5c611111610813457a9; // Scroll
     }
 
+    /// @dev Populates the explorer map.
     function populateExplorerMap() internal {
         explorerMap[42_161] = "https://arbiscan.io/address/";
         explorerMap[43_114] = "https://snowtrace.io/address/";
         explorerMap[8453] = "https://basescan.org/address/";
+        explorerMap[84_532] = "https://sepolia.basescan.org/address/";
         explorerMap[81_457] = "https://blastscan.io/address/";
+        explorerMap[168_587_773] = "https://sepolia.blastscan.io/address/";
         explorerMap[56] = "https://bscscan.com/address/";
         explorerMap[1] = "https://etherscan.io/address/";
         explorerMap[100] = "https://gnosisscan.io/address/";
+        explorerMap[59_144] = "https://lineascan.build/address/";
+        explorerMap[59_141] = "https://sepolia.lineascan.build/address/";
+        explorerMap[1890] = "https://phoenix.lightlink.io/address/";
+        explorerMap[34_443] = "https://explorer.mode.network/address/";
+        explorerMap[919] = "https://sepolia.explorer.mode.network/address/";
+        explorerMap[333_000_333] = "https://meldscan.io/address/";
         explorerMap[10] = "https://optimistic.etherscan.io/address/";
+        explorerMap[11_155_420] = "https://sepolia-optimistic.etherscan.io/address/";
         explorerMap[137] = "https://polygonscan.com/address/";
         explorerMap[534_352] = "https://scrollscan.com/address/";
         explorerMap[11_155_111] = "https://sepolia.etherscan.io/address/";
