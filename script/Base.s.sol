@@ -15,6 +15,9 @@ contract BaseScript is Script {
     /// @dev The default value for `segmentCountMap` and `trancheCountMap`.
     uint256 internal constant DEFAULT_MAX_COUNT = 500;
 
+    /// @dev The address of the Sablier deployer.
+    address internal constant SABLIER_DEPLOYER = 0xb1bEF51ebCA01EB12001a639bDBbFF6eEcA12B9F;
+
     /// @dev Included to enable compilation of the script without a $MNEMONIC environment variable.
     string internal constant TEST_MNEMONIC = "test test test test test test test test test test test junk";
 
@@ -26,6 +29,9 @@ contract BaseScript is Script {
 
     /// @dev Used to derive the broadcaster's address if $EOA is not defined.
     string internal mnemonic;
+
+    /// @dev Admin address mapped by the chain Id.
+    mapping(uint256 chainId => address admin) internal adminMap;
 
     /// @dev Maximum segment count mapped by the chain Id.
     mapping(uint256 chainId => uint256 count) internal segmentCountMap;
@@ -59,6 +65,14 @@ contract BaseScript is Script {
         if (trancheCountMap[block.chainid] == 0) {
             trancheCountMap[block.chainid] = DEFAULT_MAX_COUNT;
         }
+
+        // Populate the admin map.
+        populateAdminMap();
+
+        // If there is no admin set for a specific chain, use the Sablier deployer.
+        if (adminMap[block.chainid] == address(0)) {
+            adminMap[block.chainid] = SABLIER_DEPLOYER;
+        }
     }
 
     modifier broadcast() {
@@ -75,11 +89,45 @@ contract BaseScript is Script {
     /// - The version is obtained from `package.json`.
     function constructCreate2Salt() public view returns (bytes32) {
         string memory chainId = block.chainid.toString();
-        string memory json = vm.readFile("package.json");
-        string memory version = json.readString(".version");
+        string memory version = getVersion();
         string memory create2Salt = string.concat("ChainID ", chainId, ", Version ", version);
         console2.log("The CREATE2 salt is \"%s\"", create2Salt);
         return bytes32(abi.encodePacked(create2Salt));
+    }
+
+    function getVersion() public view returns (string memory) {
+        string memory json = vm.readFile("package.json");
+        return json.readString(".version");
+    }
+
+    /// @dev Populates the admin map.
+    function populateAdminMap() internal {
+        // Arbitrum chain ID.
+        adminMap[42_161] = 0xF34E41a6f6Ce5A45559B1D3Ee92E141a3De96376;
+
+        // Avalanche chain ID.
+        adminMap[43_114] = 0x4735517616373c5137dE8bcCDc887637B8ac85Ce;
+
+        // Base chain ID.
+        adminMap[8453] = 0x83A6fA8c04420B3F9C7A4CF1c040b63Fbbc89B66;
+
+        // BNB chain ID.
+        adminMap[56] = 0x6666cA940D2f4B65883b454b7Bc7EEB039f64fa3;
+
+        // Gnosis chain ID.
+        adminMap[100] = 0x72ACB57fa6a8fa768bE44Db453B1CDBa8B12A399;
+
+        // Ethereum chain ID.
+        adminMap[1] = 0x79Fb3e81aAc012c08501f41296CCC145a1E15844;
+
+        // Optimism chain ID.
+        adminMap[10] = 0x43c76FE8Aec91F63EbEfb4f5d2a4ba88ef880350;
+
+        // Polygon chain ID.
+        adminMap[137] = 0x40A518C5B9c1d3D6d62Ba789501CE4D526C9d9C6;
+
+        // Scroll chain ID.
+        adminMap[534_352] = 0x0F7Ad835235Ede685180A5c611111610813457a9;
     }
 
     /// @dev Populates the segment & tranche count map. Values can be updated using the `update-counts.sh` script.
