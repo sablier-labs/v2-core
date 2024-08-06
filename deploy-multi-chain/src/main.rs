@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::Command;
 use toml::Value;
 
 fn main() {
@@ -15,7 +15,7 @@ fn main() {
     let mut script_name = "DeployProtocol.s.sol".to_string();
     let mut gas_price = "".to_string();
     let mut on_all_chains = false;
-    let mut provided_chains: Vec<String> = Vec::new();
+    let mut provided_chains = Vec::new();
 
     // Parse all arguments
     while let Some(arg) = iter.next() {
@@ -62,98 +62,36 @@ fn main() {
     let chains_string = provided_chains.clone().join(", ");
     println!("Deploying to the chains: {}", chains_string);
 
-    // Before deploying, create the deployments directory to store the deployment addresses.
-    create_deployments_dir();
-
     let command = format!(
-        "FOUNDRY_PROFILE=optimized forge script ../script/{}{}{}",
+        "FOUNDRY_PROFILE=optimized forge script ../script/protocol/{}{}{}",
         script_name, broadcast_deployment, gas_price
     );
 
     for chain in provided_chains {
-        let deployment_command =
-            format!("{} {} --rpc-url {}", command, get_script_sig(&chain), chain);
+        let deployment_command = format!("{} --rpc-url {}", command, chain);
 
         println!("Running the deployment command: {}", deployment_command);
 
-        // Execute the deployment command
-        let output = Command::new("sh")
-            .arg("-c")
-            .arg(&deployment_command)
-            .stdin(Stdio::null())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .output()
-            .expect("Failed to execute command");
+        // Split the command into parts
+        let parts: Vec<&str> = deployment_command.split_whitespace().collect();
 
-        // Capture and print output
-        let stdout = String::from_utf8_lossy(&output.stdout);
-        let stderr = String::from_utf8_lossy(&output.stderr);
+        // Set the environment variable
+        let env_var = parts[0];
+        let env_var_parts: Vec<&str> = env_var.split('=').collect();
+        std::env::set_var(env_var_parts[0], env_var_parts[1]);
 
-        // Print the command output in real-time
-        if !stdout.is_empty() {
-            print!("{}", stdout);
+        // Define the command and arguments
+        let mut cmd = Command::new(parts[1]);
+        cmd.args(&parts[2..]);
+
+        // Capture the command output
+        let output = cmd.output().expect("Failed to run command");
+
+        // Check if the command executed successfully
+        if output.status.success() {
+            let output_str = String::from_utf8_lossy(&output.stdout);
+            println!("Command output: {}", output_str);
         }
-        if !stderr.is_empty() {
-            eprint!("{}", stderr);
-        }
-
-        // Check for error in output
-        if stderr.contains("Error") {
-            eprintln!("Deployment failed for chain {}", chain);
-            std::process::exit(1);
-        }
-        // Create a file for the chain
-        let chain_file = format!("{}/{}.txt", deployments_dir, chain);
-        let mut file = fs::File::create(&chain_file).expect("Failed to create file");
-
-        // Extract and save contract addresses
-        let batch_lockup_address = extract_address(&stdout, "batchLockup: contract");
-        let lockup_dynamic_address = extract_address(&stdout, "lockupDynamic: contract");
-        let lockup_linear_address = extract_address(&stdout, "lockupLinear: contract");
-        let lockup_tranched_address = extract_address(&stdout, "lockupTranched: contract");
-        let merkle_lockup_factory_address =
-            extract_address(&stdout, "merkleLockupFactory: contract");
-        let nft_descriptor_address = extract_address(&stdout, "nftDescriptor: contract");
-
-        // Save to the chain file
-        writeln!(file, "Core Contracts").expect("Failed to write to file");
-        writeln!(file, "SablierLockupDynamic = {}", lockup_dynamic_address)
-            .expect("Failed to write to file");
-        writeln!(file, "SablierLockupLinear = {}", lockup_linear_address)
-            .expect("Failed to write to file");
-        writeln!(file, "SablierLockupTranched = {}", lockup_tranched_address)
-            .expect("Failed to write to file");
-        writeln!(file, "SablierNFTDescriptor = {}", nft_descriptor_address)
-            .expect("Failed to write to file");
-        writeln!(file, "Periphery Contracts").expect("Failed to write to file");
-        writeln!(file, "SablierBatchLockup = {}", batch_lockup_address)
-            .expect("Failed to write to file");
-        writeln!(
-            file,
-            "SablierMerkleLockupFactory = {}",
-            merkle_lockup_factory_address
-        )
-        .expect("Failed to write to file");
-    }
-}
-
-fn create_deployments_dir() {
-    let deployments = "../deployments";
-    let path = Path::new(deployments);
-
-    // Check if the directory exists
-    if path.exists() {
-        // Attempt to remove the directory if it exists
-        if let Err(e) = fs::remove_dir_all(deployments) {
-            eprintln!("Failed to remove directory '{}': {}", deployments, e);
-            return; // Exit the function if removal fails
-        }
-    }
-
-    // Attempt to create the directory
-    if let Err(e) = fs::create_dir(deployments) {
-        eprintln!("Failed to create directory '{}': {}", deployments, e);
     }
 }
 
@@ -190,26 +128,4 @@ fn get_all_chains() -> Vec<String> {
     }
 
     chains.into_iter().collect()
-}
-
-// Function to get admin address based on the chain name
-fn get_script_sig(chain: &str) -> String {
-    let mut admins = HashMap::new();
-    let sablier_deployer = "0xb1bEF51ebCA01EB12001a639bDBbFF6eEcA12B9F";
-
-    admins.insert("arbitrum", "0xF34E41a6f6Ce5A45559B1D3Ee92E141a3De96376");
-    admins.insert("avalanche", "0x4735517616373c5137dE8bcCDc887637B8ac85Ce");
-    admins.insert("base", "0x83A6fA8c04420B3F9C7A4CF1c040b63Fbbc89B66");
-    admins.insert("bnb", "0x6666cA940D2f4B65883b454b7Bc7EEB039f64fa3");
-    admins.insert("gnosis", "0x72ACB57fa6a8fa768bE44Db453B1CDBa8B12A399");
-    admins.insert("mainnet", "0x79Fb3e81aAc012c08501f41296CCC145a1E15844");
-    admins.insert("optimism", "0x43c76FE8Aec91F63EbEfb4f5d2a4ba88ef880350");
-    admins.insert("polygon", "0x40A518C5B9c1d3D6d62Ba789501CE4D526C9d9C6");
-    admins.insert("scroll", "0x0F7Ad835235Ede685180A5c611111610813457a9");
-
-    // The admin address for the chain, or the default deployer address in case of testnets
-    // and no multisig on specific chain
-    let admin = admins.get(chain).unwrap_or(&sablier_deployer).to_string();
-
-    format!("--sig \"run(address)\" {}", admin)
 }
