@@ -51,6 +51,11 @@ abstract contract ProtocolScript is BaseScript {
         // Set the deployment file path.
         deploymentFile = string.concat("deployments/", block.chainid.toString(), "_", deterministicOrNot, ".md");
 
+        // TODO: if the file exists, first save a copy of it with a different name, then overwrite it.
+        // if (vm.isFile(deploymentFile)) {
+        //     deploymentFile = string.concat(deploymentFile, ".md");
+        // }
+
         // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
             path: deploymentFile,

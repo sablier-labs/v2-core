@@ -1,9 +1,9 @@
-use std::collections::HashMap;
+use serde_json::Value;
 use std::env;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
-use toml::Value;
+use toml::Value as TomlValue;
 
 fn main() {
     // Process command-line arguments
@@ -12,8 +12,8 @@ fn main() {
 
     // Variables to store flags and provided chains
     let mut broadcast_deployment = "".to_string();
-    let mut script_name = "DeployProtocol.s.sol".to_string();
     let mut gas_price = "".to_string();
+    let mut script_name = "DeployProtocol.s.sol".to_string();
     let mut on_all_chains = false;
     let mut provided_chains = Vec::new();
 
@@ -37,12 +37,12 @@ fn main() {
         }
     }
 
-    let mut chains = Vec::new();
-    chains = get_all_chains();
+    let chains = get_all_chains();
 
     if on_all_chains {
         provided_chains = chains;
     } else {
+        // Filter out chains that are not configured in the TOML file
         provided_chains.retain(|chain| {
             if chains.contains(chain) {
                 true // Keep the element in the vector
@@ -62,27 +62,34 @@ fn main() {
     let chains_string = provided_chains.clone().join(", ");
     println!("Deploying to the chains: {}", chains_string);
 
-    let command = format!(
-        "FOUNDRY_PROFILE=optimized forge script ../script/protocol/{}{}{}",
-        script_name, broadcast_deployment, gas_price
-    );
-
     for chain in provided_chains {
-        let deployment_command = format!("{} --rpc-url {}", command, chain);
+        let env_var = "FOUNDRY_PROFILE=optimized";
+        let command = "forge";
+        let script_arg = format!("../script/protocol/{}", script_name);
 
-        println!("Running the deployment command: {}", deployment_command);
+        let command_args = vec![
+            "script",
+            &script_arg,
+            "--rpc-url",
+            &chain,
+            &broadcast_deployment,
+            &gas_price,
+        ];
 
-        // Split the command into parts
-        let parts: Vec<&str> = deployment_command.split_whitespace().collect();
+        println!(
+            "Running the deployment command: {} {} {}",
+            env_var,
+            command,
+            command_args.join(" ")
+        );
 
         // Set the environment variable
-        let env_var = parts[0];
         let env_var_parts: Vec<&str> = env_var.split('=').collect();
-        std::env::set_var(env_var_parts[0], env_var_parts[1]);
+        env::set_var(env_var_parts[0], env_var_parts[1]);
 
-        // Define the command and arguments
-        let mut cmd = Command::new(parts[1]);
-        cmd.args(&parts[2..]);
+        // Create the CLI
+        let mut cmd = Command::new(command);
+        cmd.args(&command_args);
 
         // Capture the command output
         let output = cmd.output().expect("Failed to run command");
@@ -91,8 +98,55 @@ fn main() {
         if output.status.success() {
             let output_str = String::from_utf8_lossy(&output.stdout);
             println!("Command output: {}", output_str);
+        } else {
+            let error_str = String::from_utf8_lossy(&output.stderr);
+            eprintln!("Command failed with error: {}", error_str);
+        }
+
+        if !broadcast_deployment.is_empty() {
+            move_broadcast_file(
+                &script_name,
+                &chain,
+                &String::from_utf8_lossy(&output.stdout),
+            );
         }
     }
+}
+
+fn move_broadcast_file(script_name: &str, chain: &str, output: &str) {
+    // Find the chain_id in the `output`
+    let chain_id = output
+        .split(&format!("broadcast/{}/", script_name))
+        .nth(1)
+        .and_then(|s| s.split('/').next())
+        .unwrap_or("");
+
+    let broadcast_file_path = format!(
+        "../broadcast/{}/{}/run-latest.json",
+        script_name, chain_id
+    );
+    let version = serde_json::from_str::<Value>(&fs::read_to_string("../package.json").unwrap())
+        .unwrap()["version"]
+        .as_str()
+        .unwrap()
+        .to_string();
+
+    // Up to be changed, see this: https://github.com/sablier-labs/v2-deployments/issues/10
+    let destination_path = format!(
+        "../../v2-deployments/protocol/v{}/broadcasts/{}.json",
+        version, chain
+    );
+
+    // Create the parent directory if it doesn't exist
+    if let Some(parent) = Path::new(&destination_path).parent() {
+        if !parent.exists() {
+            fs::create_dir_all(parent).expect("Failed to create directories");
+        }
+    }
+
+    // Move and rename the file
+    fs::rename(&broadcast_file_path, &destination_path)
+        .expect("Failed to move and rename run-latest.json to v2-deployments");
 }
 
 // Function that reads the TOML chain configurations and extracts them
@@ -109,7 +163,7 @@ fn get_all_chains() -> Vec<String> {
         }
     };
 
-    let toml_values: Value = match toml::from_str(&toml_content) {
+    let toml_values: TomlValue = match toml::from_str(&toml_content) {
         Ok(value) => value,
         Err(_) => {
             eprintln!("Failed to parse TOML content");
