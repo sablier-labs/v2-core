@@ -15,10 +15,7 @@ abstract contract ProtocolScript is BaseScript {
     using Strings for uint256;
 
     /// @dev The path to the file where the deployment addresses are stored.
-    string internal deploymentFile = string.concat("deployments/", block.chainid.toString(), ".md");
-
-    /// @dev The version of the deployment.
-    string internal version = getVersion();
+    string internal deploymentFile;
 
     /// @dev Admin address mapped by the chain Id.
     mapping(uint256 chainId => address admin) internal adminMap;
@@ -26,7 +23,7 @@ abstract contract ProtocolScript is BaseScript {
     /// @dev Explorer URL mapped by the chain Id.
     mapping(uint256 chainId => string explorerUrl) internal explorerMap;
 
-    constructor() {
+    constructor(string memory deterministicOrNot) {
         // Populate the admin map.
         populateAdminMap();
 
@@ -51,6 +48,9 @@ abstract contract ProtocolScript is BaseScript {
             vm.ffi(mkDirCommand);
         }
 
+        // Set the deployment file path.
+        deploymentFile = string.concat("deployments/", block.chainid.toString(), "_", deterministicOrNot, ".md");
+
         // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
             path: deploymentFile,
@@ -59,7 +59,7 @@ abstract contract ProtocolScript is BaseScript {
     }
 
     /// @dev Function to append the deployed addresses to the deployment file.
-    function _appendToFileDeployedAddresses(
+    function appendToFileDeployedAddresses(
         address lockupDynamic,
         address lockupLinear,
         address lockupTranched,
@@ -75,104 +75,88 @@ abstract contract ProtocolScript is BaseScript {
         string memory firstTwoLines = "| Contract | Address | Deployment |\n | :------- | :------ | :----------|";
         _appendToFile(firstTwoLines);
 
-        string memory lockupDynamicHex = lockupDynamic.toHexString();
-        string memory lockupDynamicLine = string.concat(
-            "| SablierLockupDynamic | [",
-            lockupDynamicHex,
-            "](",
-            explorerMap[block.chainid],
-            lockupDynamicHex,
-            ") | [core-",
-            version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/v",
-            version,
-            ") |"
-        );
+        string memory lockupDynamicLine = _getContractLine({
+            contractName: "SablierLockupDynamic",
+            contractAddress: lockupDynamic.toHexString(),
+            coreOrPeriphery: "core"
+        });
         _appendToFile(lockupDynamicLine);
 
-        string memory lockupLinearHex = lockupLinear.toHexString();
-        string memory lockupLinearLine = string.concat(
-            "| SablierLockupLinear | [",
-            lockupLinearHex,
-            "](",
-            explorerMap[block.chainid],
-            lockupLinearHex,
-            ") | [core-",
-            version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/v",
-            version,
-            ") |"
-        );
+        string memory lockupLinearLine = _getContractLine({
+            contractName: "SablierLockupLinear",
+            contractAddress: lockupLinear.toHexString(),
+            coreOrPeriphery: "core"
+        });
         _appendToFile(lockupLinearLine);
 
-        string memory lockupTranchedHex = lockupTranched.toHexString();
-        string memory lockupTranchedLine = string.concat(
-            "| SablierLockupTranched | [",
-            lockupTranchedHex,
-            "](",
-            explorerMap[block.chainid],
-            lockupTranchedHex,
-            ") | [core-",
-            version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/v",
-            version,
-            ") |"
-        );
+        string memory lockupTranchedLine = _getContractLine({
+            contractName: "SablierLockupTranched",
+            contractAddress: lockupTranched.toHexString(),
+            coreOrPeriphery: "core"
+        });
         _appendToFile(lockupTranchedLine);
 
-        string memory nftDescriptorHex = nftDescriptor.toHexString();
-        string memory nftDescriptorLine = string.concat(
-            "| LockupNFTDescriptor | [",
-            nftDescriptorHex,
-            "](",
-            explorerMap[block.chainid],
-            nftDescriptorHex,
-            ") | [core-",
-            version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/core/v",
-            version,
-            ") |"
-        );
+        string memory nftDescriptorLine = _getContractLine({
+            contractName: "SablierNFTDescriptor",
+            contractAddress: nftDescriptor.toHexString(),
+            coreOrPeriphery: "core"
+        });
         _appendToFile(nftDescriptorLine);
 
         string memory peripheryTitle = "\n ### Periphery\n\n";
         _appendToFile(peripheryTitle);
         _appendToFile(firstTwoLines);
 
-        string memory batchLockupHex = batchLockup.toHexString();
-        string memory batchLockupLine = string.concat(
-            "| SablierBatchLockup | [",
-            batchLockupHex,
-            "](",
-            explorerMap[block.chainid],
-            batchLockupHex,
-            ") | [periphery-",
-            version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/periphery/v",
-            version,
-            ") |"
-        );
+        string memory batchLockupLine = _getContractLine({
+            contractName: "SablierBatchLockup",
+            contractAddress: batchLockup.toHexString(),
+            coreOrPeriphery: "periphery"
+        });
         _appendToFile(batchLockupLine);
 
-        string memory merkleFactoryHex = merkleFactory.toHexString();
-        string memory merkleFactoryLine = string.concat(
-            "| SablierMerkleFactory | [",
-            merkleFactoryHex,
-            "](",
-            explorerMap[block.chainid],
-            merkleFactoryHex,
-            ") | [periphery-",
-            version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/periphery/v",
-            version,
-            ") |"
-        );
+        string memory merkleFactoryLine = _getContractLine({
+            contractName: "MerkleFactory",
+            contractAddress: merkleFactory.toHexString(),
+            coreOrPeriphery: "periphery"
+        });
         _appendToFile(merkleFactoryLine);
     }
 
     /// @dev Append a line to the deployment file path.
-    function _appendToFile(string memory line) internal {
+    function _appendToFile(string memory line) private {
         vm.writeLine({ path: deploymentFile, data: line });
+    }
+
+    function _getContractLine(
+        string memory contractName,
+        string memory contractAddress,
+        string memory coreOrPeriphery
+    )
+        private
+        view
+        returns (string memory)
+    {
+        string memory version = getVersion();
+        version = string.concat("v", version);
+
+        return string.concat(
+            "| ",
+            contractName,
+            " | [",
+            contractAddress,
+            "](",
+            explorerMap[block.chainid],
+            contractAddress,
+            ") | [",
+            coreOrPeriphery,
+            "-",
+            version,
+            "](https://github.com/sablier-labs/v2-deployments/tree/main/",
+            coreOrPeriphery,
+            "/",
+            version,
+            ") |"
+        );
     }
 
     /// @dev Populates the admin map.
