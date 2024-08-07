@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 dotenv = "0.15"  # or the latest version
+serde_json = "1.0"
 toml = "0.5"  # or the latest version
