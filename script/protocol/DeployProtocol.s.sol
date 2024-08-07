@@ -11,7 +11,7 @@ import { SablierBatchLockup } from "../../src/periphery/SablierBatchLockup.sol";
 import { ProtocolScript } from "./Protocol.s.sol";
 
 /// @notice Deploys the Lockup Protocol.
-contract DeployProtocol is ProtocolScript {
+contract DeployProtocol is ProtocolScript("non_deterministic") {
     /// @dev Deploys the protocol with the admin set in `adminMap`.
     function run()
         public
@@ -67,7 +67,7 @@ contract DeployProtocol is ProtocolScript {
         batchLockup = new SablierBatchLockup();
         merkleLockupFactory = new SablierMerkleLockupFactory();
 
-        _appendToFileDeployedAddresses(
+        appendToFileDeployedAddresses(
             address(lockupDynamic),
             address(lockupLinear),
             address(lockupTranched),
