@@ -1,15 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
-
 import { MerkleCampaign_Integration_Test } from "../MerkleCampaign.t.sol";
 
 abstract contract MerkleCampaign_Integration_Shared_Test is MerkleCampaign_Integration_Test {
-    /// @dev A test contract meant to be overridden by the implementing contract, which will be either
-    /// {SablierMerkleLL}, {SablierMerkleLT} or {SablierMerkleInstant}.
-    ISablierMerkleBase internal merkleBase;
-
     function setUp() public virtual override {
         MerkleCampaign_Integration_Test.setUp();
     }
@@ -18,8 +12,9 @@ abstract contract MerkleCampaign_Integration_Shared_Test is MerkleCampaign_Integ
                                    MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev A shared modifier meant to be overridden by the implementing test contracts.
-    modifier afterFirstClaim() virtual {
+    modifier afterFirstClaim() {
+        // Make the first claim to set `_firstClaimTime`.
+        claim();
         _;
     }
 
@@ -36,7 +31,9 @@ abstract contract MerkleCampaign_Integration_Shared_Test is MerkleCampaign_Integ
         _;
     }
 
-    modifier givenRecipientHasClaimed() virtual {
+    modifier givenRecipientHasClaimed() {
+        // Make the first claim to set `_firstClaimTime`.
+        claim();
         _;
     }
 

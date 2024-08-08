@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
+import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { ISablierMerkleInstant } from "src/periphery/interfaces/ISablierMerkleInstant.sol";
 import { ISablierMerkleLL } from "src/periphery/interfaces/ISablierMerkleLL.sol";
 import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol";
@@ -8,6 +9,10 @@ import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol"
 import { Periphery_Test } from "../../Periphery.t.sol";
 
 abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
+    /// @dev A test contract meant to be overridden by the implementing contract, which will be either
+    /// {SablierMerkleLL}, {SablierMerkleLT} or {SablierMerkleInstant}.
+    ISablierMerkleBase internal merkleBase;
+
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
@@ -29,18 +34,18 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
         deal({ token: address(dai), to: address(merkleLT), give: defaults.AGGREGATE_AMOUNT() });
     }
 
-    /*//////////////////////////////////////////////////////////////////////////
-                                    MERKLE-INSTANT
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function claimInstant() internal {
-        return merkleInstant.claim({
+    function claim() internal {
+        merkleBase.claim({
             index: defaults.INDEX1(),
             recipient: users.recipient1,
             amount: defaults.CLAIM_AMOUNT(),
             merkleProof: defaults.index1Proof()
         });
     }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                    MERKLE-INSTANT
+    //////////////////////////////////////////////////////////////////////////*/
 
     function computeMerkleInstantAddress() internal view returns (address) {
         return computeMerkleInstantAddress(users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION());
@@ -93,15 +98,6 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                     MERKLE-LL
     //////////////////////////////////////////////////////////////////////////*/
-
-    function claimLL() internal {
-        merkleLL.claim({
-            index: defaults.INDEX1(),
-            recipient: users.recipient1,
-            amount: defaults.CLAIM_AMOUNT(),
-            merkleProof: defaults.index1Proof()
-        });
-    }
 
     function computeMerkleLLAddress() internal view returns (address) {
         return computeMerkleLLAddress(users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION());
@@ -158,15 +154,6 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                     MERKLE-LT
     //////////////////////////////////////////////////////////////////////////*/
-
-    function claimLT() internal {
-        merkleLT.claim({
-            index: defaults.INDEX1(),
-            recipient: users.recipient1,
-            amount: defaults.CLAIM_AMOUNT(),
-            merkleProof: defaults.index1Proof()
-        });
-    }
 
     function computeMerkleLTAddress() internal view returns (address) {
         return computeMerkleLTAddress(users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION());
