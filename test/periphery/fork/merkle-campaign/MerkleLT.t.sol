@@ -32,7 +32,6 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
 
     struct Vars {
         LockupTranched.StreamLT actualStream;
-        uint256 actualStreamId;
         LockupTranched.Tranche[] actualTranches;
         uint256 aggregateAmount;
         uint128[] amounts;
@@ -172,14 +171,14 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             vars.merkleProof = getProof(leaves.toBytes32(), vars.leafPos);
         }
 
-        vars.actualStreamId = vars.merkleLT.claim({
+        vars.merkleLT.claim({
             index: vars.indexes[params.posBeforeSort],
             recipient: vars.recipients[params.posBeforeSort],
             amount: vars.amounts[params.posBeforeSort],
             merkleProof: vars.merkleProof
         });
 
-        vars.actualStream = lockupTranched.getStream(vars.actualStreamId);
+        vars.actualStream = lockupTranched.getStream(vars.expectedStreamId);
         vars.expectedStream = LockupTranched.StreamLT({
             amounts: Lockup.Amounts({ deposited: vars.amounts[params.posBeforeSort], refunded: 0, withdrawn: 0 }),
             asset: FORK_ASSET,
@@ -196,7 +195,6 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         });
 
         assertTrue(vars.merkleLT.hasClaimed(vars.indexes[params.posBeforeSort]));
-        assertEq(vars.actualStreamId, vars.expectedStreamId);
         assertEq(vars.actualStream, vars.expectedStream);
 
         /*//////////////////////////////////////////////////////////////////////////
