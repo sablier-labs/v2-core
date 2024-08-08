@@ -66,29 +66,10 @@ contract SablierMerkleLL is
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierMerkleLL
-    function claim(
-        uint256 index,
-        address recipient,
-        uint128 amount,
-        bytes32[] calldata merkleProof
-    )
-        external
-        override
-        returns (uint256 streamId)
-    {
-        // Generate the Merkle tree leaf by hashing the corresponding parameters. Hashing twice prevents second
-        // preimage attacks.
-        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(index, recipient, amount))));
-
-        // Check: validate the function.
-        _checkClaim(index, leaf, merkleProof);
-
-        // Effect: mark the index as claimed.
-        _claimedBitMap.set(index);
-
+    /// @inheritdoc SablierMerkleBase
+    function _claim(uint256 index, address recipient, uint128 amount) internal override {
         // Interaction: create the stream via {SablierLockupLinear}.
-        streamId = LOCKUP_LINEAR.createWithDurations(
+        uint256 streamId = LOCKUP_LINEAR.createWithDurations(
             LockupLinear.CreateWithDurations({
                 sender: admin,
                 recipient: recipient,

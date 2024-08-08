@@ -94,8 +94,8 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
                                     MERKLE-LL
     //////////////////////////////////////////////////////////////////////////*/
 
-    function claimLL() internal returns (uint256) {
-        return merkleLL.claim({
+    function claimLL() internal {
+        merkleLL.claim({
             index: defaults.INDEX1(),
             recipient: users.recipient1,
             amount: defaults.CLAIM_AMOUNT(),
@@ -159,8 +159,8 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
                                     MERKLE-LT
     //////////////////////////////////////////////////////////////////////////*/
 
-    function claimLT() internal returns (uint256) {
-        return merkleLT.claim({
+    function claimLT() internal {
+        merkleLT.claim({
             index: defaults.INDEX1(),
             recipient: users.recipient1,
             amount: defaults.CLAIM_AMOUNT(),

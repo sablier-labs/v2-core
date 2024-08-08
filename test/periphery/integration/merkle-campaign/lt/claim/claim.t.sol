@@ -23,28 +23,22 @@ contract Claim_MerkleLT_Integration_Test is Merkle, MerkleCampaign_Integration_T
 
     function test_RevertWhen_TotalPercentageLessThanOneHundred() external whenTotalPercentageNotOneHundred {
         // Create a MerkleLT campaign with a total percentage less than 100.
-        MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
-        bool cancelable = defaults.CANCELABLE();
-        bool transferable = defaults.TRANSFERABLE();
-        uint256 aggregateAmount = defaults.AGGREGATE_AMOUNT();
-        uint256 recipientCount = defaults.RECIPIENT_COUNT();
-
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = defaults.tranchesWithPercentages();
         tranchesWithPercentages[0].unlockPercentage = ud2x18(0.05e18);
         tranchesWithPercentages[1].unlockPercentage = ud2x18(0.2e18);
 
+        merkleLT = merkleFactory.createMerkleLT(
+            defaults.baseParams(),
+            lockupTranched,
+            defaults.CANCELABLE(),
+            defaults.TRANSFERABLE(),
+            tranchesWithPercentages,
+            defaults.AGGREGATE_AMOUNT(),
+            defaults.RECIPIENT_COUNT()
+        );
+
         uint64 totalPercentage =
             tranchesWithPercentages[0].unlockPercentage.unwrap() + tranchesWithPercentages[1].unlockPercentage.unwrap();
-
-        merkleLT = merkleFactory.createMerkleLT(
-            baseParams,
-            lockupTranched,
-            cancelable,
-            transferable,
-            tranchesWithPercentages,
-            aggregateAmount,
-            recipientCount
-        );
 
         // Claim an airstream.
         bytes32[] memory merkleProof = defaults.index1Proof();
@@ -53,33 +47,27 @@ contract Claim_MerkleLT_Integration_Test is Merkle, MerkleCampaign_Integration_T
             abi.encodeWithSelector(Errors.SablierMerkleLT_TotalPercentageNotOneHundred.selector, totalPercentage)
         );
 
-        merkleLT.claim({ index: 1, recipient: users.recipient1, amount: 1, merkleProof: merkleProof });
+        merkleLT.claim({ index: 1, recipient: users.recipient1, amount: 10_000e18, merkleProof: merkleProof });
     }
 
     function test_RevertWhen_TotalPercentageGreaterThanOneHundred() external whenTotalPercentageNotOneHundred {
         // Create a MerkleLT campaign with a total percentage less than 100.
-        MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
-        bool cancelable = defaults.CANCELABLE();
-        bool transferable = defaults.TRANSFERABLE();
-        uint256 aggregateAmount = defaults.AGGREGATE_AMOUNT();
-        uint256 recipientCount = defaults.RECIPIENT_COUNT();
-
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = defaults.tranchesWithPercentages();
         tranchesWithPercentages[0].unlockPercentage = ud2x18(0.75e18);
         tranchesWithPercentages[1].unlockPercentage = ud2x18(0.8e18);
 
+        merkleLT = merkleFactory.createMerkleLT(
+            defaults.baseParams(),
+            lockupTranched,
+            defaults.CANCELABLE(),
+            defaults.TRANSFERABLE(),
+            tranchesWithPercentages,
+            defaults.AGGREGATE_AMOUNT(),
+            defaults.RECIPIENT_COUNT()
+        );
+
         uint64 totalPercentage =
             tranchesWithPercentages[0].unlockPercentage.unwrap() + tranchesWithPercentages[1].unlockPercentage.unwrap();
-
-        merkleLT = merkleFactory.createMerkleLT(
-            baseParams,
-            lockupTranched,
-            cancelable,
-            transferable,
-            tranchesWithPercentages,
-            aggregateAmount,
-            recipientCount
-        );
 
         // Claim an airstream.
         bytes32[] memory merkleProof = defaults.index1Proof();
@@ -88,7 +76,7 @@ contract Claim_MerkleLT_Integration_Test is Merkle, MerkleCampaign_Integration_T
             abi.encodeWithSelector(Errors.SablierMerkleLT_TotalPercentageNotOneHundred.selector, totalPercentage)
         );
 
-        merkleLT.claim({ index: 1, recipient: users.recipient1, amount: 1, merkleProof: merkleProof });
+        merkleLT.claim({ index: 1, recipient: users.recipient1, amount: 10_000e18, merkleProof: merkleProof });
     }
 
     modifier whenTotalPercentageOneHundred() {
@@ -231,8 +219,8 @@ contract Claim_MerkleLT_Integration_Test is Merkle, MerkleCampaign_Integration_T
         vm.expectEmit({ emitter: address(testMerkleLT) });
         emit Claim(defaults.INDEX1(), users.recipient1, claimAmount, expectedStreamId);
 
-        uint256 actualStreamId = testMerkleLT.claim(defaults.INDEX1(), users.recipient1, claimAmount, proof);
-        LockupTranched.StreamLT memory actualStream = lockupTranched.getStream(actualStreamId);
+        testMerkleLT.claim(defaults.INDEX1(), users.recipient1, claimAmount, proof);
+        LockupTranched.StreamLT memory actualStream = lockupTranched.getStream(expectedStreamId);
         LockupTranched.StreamLT memory expectedStream = LockupTranched.StreamLT({
             amounts: Lockup.Amounts({ deposited: claimAmount, refunded: 0, withdrawn: 0 }),
             asset: dai,
@@ -249,7 +237,6 @@ contract Claim_MerkleLT_Integration_Test is Merkle, MerkleCampaign_Integration_T
         });
 
         assertTrue(testMerkleLT.hasClaimed(defaults.INDEX1()), "not claimed");
-        assertEq(actualStreamId, expectedStreamId, "invalid stream id");
         assertEq(actualStream, expectedStream);
     }
 
@@ -269,8 +256,8 @@ contract Claim_MerkleLT_Integration_Test is Merkle, MerkleCampaign_Integration_T
         vm.expectEmit({ emitter: address(merkleLT) });
         emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
 
-        uint256 actualStreamId = claimLT();
-        LockupTranched.StreamLT memory actualStream = lockupTranched.getStream(actualStreamId);
+        claimLT();
+        LockupTranched.StreamLT memory actualStream = lockupTranched.getStream(expectedStreamId);
         LockupTranched.StreamLT memory expectedStream = LockupTranched.StreamLT({
             amounts: Lockup.Amounts({ deposited: defaults.CLAIM_AMOUNT(), refunded: 0, withdrawn: 0 }),
             asset: dai,
@@ -287,7 +274,6 @@ contract Claim_MerkleLT_Integration_Test is Merkle, MerkleCampaign_Integration_T
         });
 
         assertTrue(merkleLT.hasClaimed(defaults.INDEX1()), "not claimed");
-        assertEq(actualStreamId, expectedStreamId, "invalid stream id");
         assertEq(actualStream, expectedStream);
     }
 }

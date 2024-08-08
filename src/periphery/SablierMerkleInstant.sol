@@ -26,29 +26,11 @@ contract SablierMerkleInstant is
     constructor(MerkleBase.ConstructorParams memory baseParams) SablierMerkleBase(baseParams) { }
 
     /*//////////////////////////////////////////////////////////////////////////
-                         USER-FACING NON-CONSTANT FUNCTIONS
+                          INTERNAL NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierMerkleInstant
-    function claim(
-        uint256 index,
-        address recipient,
-        uint128 amount,
-        bytes32[] calldata merkleProof
-    )
-        external
-        override
-    {
-        // Generate the Merkle tree leaf by hashing the corresponding parameters. Hashing twice prevents second
-        // preimage attacks.
-        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(index, recipient, amount))));
-
-        // Check: validate the function.
-        _checkClaim(index, leaf, merkleProof);
-
-        // Effect: mark the index as claimed.
-        _claimedBitMap.set(index);
-
+    /// @inheritdoc SablierMerkleBase
+    function _claim(uint256 index, address recipient, uint128 amount) internal override {
         // Interaction: withdraw the assets to the recipient.
         ASSET.safeTransfer(recipient, amount);
 

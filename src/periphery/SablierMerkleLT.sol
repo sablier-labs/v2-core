@@ -87,40 +87,21 @@ contract SablierMerkleLT is
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                         USER-FACING NON-CONSTANT FUNCTIONS
+                           INTERNAL NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc ISablierMerkleLT
-    function claim(
-        uint256 index,
-        address recipient,
-        uint128 amount,
-        bytes32[] calldata merkleProof
-    )
-        external
-        override
-        returns (uint256 streamId)
-    {
+    /// @inheritdoc SablierMerkleBase
+    function _claim(uint256 index, address recipient, uint128 amount) internal override {
         // Check: the sum of percentages equals 100%.
         if (TOTAL_PERCENTAGE != uUNIT) {
             revert Errors.SablierMerkleLT_TotalPercentageNotOneHundred(TOTAL_PERCENTAGE);
         }
 
-        // Generate the Merkle tree leaf by hashing the corresponding parameters. Hashing twice prevents second
-        // preimage attacks.
-        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(index, recipient, amount))));
-
-        // Check: validate the function.
-        _checkClaim(index, leaf, merkleProof);
-
         // Calculate the tranches based on the unlock percentages.
         LockupTranched.TrancheWithDuration[] memory tranches = _calculateTranches(amount);
 
-        // Effect: mark the index as claimed.
-        _claimedBitMap.set(index);
-
         // Interaction: create the stream via {SablierLockupTranched}.
-        streamId = LOCKUP_TRANCHED.createWithDurations(
+        uint256 streamId = LOCKUP_TRANCHED.createWithDurations(
             LockupTranched.CreateWithDurations({
                 sender: admin,
                 recipient: recipient,

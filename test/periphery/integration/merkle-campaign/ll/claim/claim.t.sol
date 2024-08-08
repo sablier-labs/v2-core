@@ -99,9 +99,9 @@ contract Claim_MerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
 
         vm.expectEmit({ emitter: address(merkleLL) });
         emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
-        uint256 actualStreamId = claimLL();
+        claimLL();
 
-        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(actualStreamId);
+        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(expectedStreamId);
         LockupLinear.StreamLL memory expectedStream = LockupLinear.StreamLL({
             amounts: Lockup.Amounts({ deposited: defaults.CLAIM_AMOUNT(), refunded: 0, withdrawn: 0 }),
             asset: dai,
@@ -118,7 +118,6 @@ contract Claim_MerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
         });
 
         assertTrue(merkleLL.hasClaimed(defaults.INDEX1()), "not claimed");
-        assertEq(actualStreamId, expectedStreamId, "invalid stream id");
         assertEq(actualStream, expectedStream);
     }
 }
