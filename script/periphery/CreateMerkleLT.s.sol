@@ -26,27 +26,22 @@ contract CreateMerkleLT is BaseScript {
         baseParams.merkleRoot = 0x0000000000000000000000000000000000000000000000000000000000000000;
         baseParams.name = "The Boys LT";
 
-        // TODO: Update address once deployed.
-        ISablierLockupTranched lockupTranched = ISablierLockupTranched(0xf86B359035208e4529686A1825F2D5BeE38c28A8);
-        bool cancelable = true;
-        bool transferable = true;
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = new MerkleLT.TrancheWithPercentage[](2);
         tranchesWithPercentages[0] =
             MerkleLT.TrancheWithPercentage({ unlockPercentage: UD2x18.wrap(50), duration: 3600 });
         tranchesWithPercentages[1] =
             MerkleLT.TrancheWithPercentage({ unlockPercentage: UD2x18.wrap(50), duration: 7200 });
-        uint256 campaignTotalAmount = 10_000e18;
-        uint256 recipientCount = 100;
 
         // Deploy MerkleLT contract.
-        merkleLT = merkleFactory.createMerkleLT(
-            baseParams,
-            lockupTranched,
-            cancelable,
-            transferable,
-            tranchesWithPercentages,
-            campaignTotalAmount,
-            recipientCount
-        );
+        // TODO: Update address once deployed.
+        merkleLT = merkleFactory.createMerkleLT({
+            baseParams: baseParams,
+            lockupTranched: ISablierLockupTranched(0xf86B359035208e4529686A1825F2D5BeE38c28A8),
+            cancelable: true,
+            transferable: true,
+            tranchesWithPercentages: tranchesWithPercentages,
+            aggregateAmount: 10_000e18,
+            recipientCount: 100
+        });
     }
 }

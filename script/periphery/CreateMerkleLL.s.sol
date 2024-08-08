@@ -26,19 +26,16 @@ contract CreateMerkleLL is BaseScript {
         baseParams.merkleRoot = 0x0000000000000000000000000000000000000000000000000000000000000000;
         baseParams.name = "The Boys LL";
 
-        // TODO: Update address once deployed.
-        ISablierLockupLinear lockupLinear = ISablierLockupLinear(0x3962f6585946823440d274aD7C719B02b49DE51E);
-        bool cancelable = true;
-        bool transferable = true;
-        LockupLinear.Durations memory streamDurations;
-        streamDurations.cliff = 0;
-        streamDurations.total = 3600;
-        uint256 campaignTotalAmount = 10_000e18;
-        uint256 recipientCount = 100;
-
         // Deploy MerkleLL contract.
-        merkleLL = merkleFactory.createMerkleLL(
-            baseParams, lockupLinear, cancelable, transferable, streamDurations, campaignTotalAmount, recipientCount
-        );
+        // TODO: Update address once deployed.
+        merkleLL = merkleFactory.createMerkleLL({
+            baseParams: baseParams,
+            lockupLinear: ISablierLockupLinear(0x3962f6585946823440d274aD7C719B02b49DE51E),
+            cancelable: true,
+            transferable: true,
+            streamDurations: LockupLinear.Durations({ cliff: 0, total: 3600 }),
+            aggregateAmount: 10_000e18,
+            recipientCount: 100
+        });
     }
 }
