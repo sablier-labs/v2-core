@@ -12,6 +12,7 @@ fn main() {
 
     // Variables to store flags and provided chains
     let mut broadcast_deployment = "".to_string();
+    let mut cp_broadcasted_file = false;
     let mut gas_price = "".to_string();
     let mut script_name = "DeployProtocol.s.sol".to_string();
     let mut on_all_chains = false;
@@ -21,6 +22,7 @@ fn main() {
     while let Some(arg) = iter.next() {
         match arg.as_str() {
             "--all" => on_all_chains = true,
+            "--cp-bf" => cp_broadcasted_file = true,
             "--deterministic" => script_name = "DeployDeterministicProtocol.s.sol".to_string(),
             "--broadcast" => broadcast_deployment = " --broadcast --verify".to_string(),
             "--gas-price" => {
@@ -103,17 +105,18 @@ fn main() {
             eprintln!("Command failed with error: {}", error_str);
         }
 
-        if !broadcast_deployment.is_empty() {
+        if cp_broadcasted_file {
             move_broadcast_file(
                 &script_name,
                 &chain,
                 &String::from_utf8_lossy(&output.stdout),
+                &broadcast_deployment,
             );
         }
     }
 }
 
-fn move_broadcast_file(script_name: &str, chain: &str, output: &str) {
+fn move_broadcast_file(script_name: &str, chain: &str, output: &str, broadcast_deployment: &str) {
     // Find the chain_id in the `output`
     let chain_id = output
         .split(&format!("broadcast/{}/", script_name))
@@ -121,10 +124,15 @@ fn move_broadcast_file(script_name: &str, chain: &str, output: &str) {
         .and_then(|s| s.split('/').next())
         .unwrap_or("");
 
-    let broadcast_file_path = format!(
-        "../broadcast/{}/{}/run-latest.json",
-        script_name, chain_id
-    );
+    let broadcast_file_path = if broadcast_deployment.is_empty() {
+        format!(
+            "../broadcast/{}/{}/dry-run/run-latest.json",
+            script_name, chain_id
+        )
+    } else {
+        format!("../broadcast/{}/{}/run-latest.json", script_name, chain_id)
+    };
+
     let version = serde_json::from_str::<Value>(&fs::read_to_string("../package.json").unwrap())
         .unwrap()["version"]
         .as_str()
