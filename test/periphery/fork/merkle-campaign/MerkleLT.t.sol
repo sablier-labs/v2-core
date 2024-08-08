@@ -37,7 +37,6 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         uint256 aggregateAmount;
         uint128[] amounts;
         MerkleBase.ConstructorParams baseParams;
-        bool cancelable;
         uint128 clawbackAmount;
         address expectedLT;
         LockupTranched.StreamLT expectedStream;
@@ -50,7 +49,6 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         bytes32 merkleRoot;
         address[] recipients;
         uint256 recipientCount;
-        bool transferable;
     }
 
     // We need the leaves as a storage variable so that we can use OpenZeppelin's {Arrays.findUpperBound}.
@@ -120,8 +118,8 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             merkleLT: ISablierMerkleLT(vars.expectedLT),
             baseParams: vars.baseParams,
             lockupTranched: lockupTranched,
-            cancelable: vars.cancelable,
-            transferable: vars.transferable,
+            cancelable: defaults.CANCELABLE(),
+            transferable: defaults.TRANSFERABLE(),
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             totalDuration: defaults.TOTAL_DURATION(),
             aggregateAmount: vars.aggregateAmount,
@@ -131,8 +129,8 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         vars.merkleLT = merkleFactory.createMerkleLT({
             baseParams: vars.baseParams,
             lockupTranched: lockupTranched,
-            cancelable: vars.cancelable,
-            transferable: vars.transferable,
+            cancelable: defaults.CANCELABLE(),
+            transferable: defaults.TRANSFERABLE(),
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             aggregateAmount: vars.aggregateAmount,
             recipientCount: vars.recipientCount

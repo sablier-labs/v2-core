@@ -36,7 +36,6 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
         uint256 aggregateAmount;
         uint128[] amounts;
         MerkleBase.ConstructorParams baseParams;
-        bool cancelable;
         uint128 clawbackAmount;
         address expectedLL;
         LockupLinear.StreamLL expectedStream;
@@ -49,7 +48,6 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
         bytes32 merkleRoot;
         address[] recipients;
         uint256 recipientCount;
-        bool transferable;
     }
 
     // We need the leaves as a storage variable so that we can use OpenZeppelin's {Arrays.findUpperBound}.
@@ -119,7 +117,7 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             merkleLL: ISablierMerkleLL(vars.expectedLL),
             baseParams: vars.baseParams,
             lockupLinear: lockupLinear,
-            cancelable: vars.cancelable,
+            cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             streamDurations: defaults.durations(),
             aggregateAmount: vars.aggregateAmount,
@@ -129,8 +127,8 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
         vars.merkleLL = merkleFactory.createMerkleLL({
             baseParams: vars.baseParams,
             lockupLinear: lockupLinear,
-            cancelable: vars.cancelable,
-            transferable: vars.transferable,
+            cancelable: defaults.CANCELABLE(),
+            transferable: defaults.TRANSFERABLE(),
             streamDurations: defaults.durations(),
             aggregateAmount: vars.aggregateAmount,
             recipientCount: vars.recipientCount
