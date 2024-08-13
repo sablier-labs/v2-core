@@ -81,8 +81,6 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Te
         merkleBase.claim(index1, users.recipient1, amount, invalidMerkleProof);
     }
 
-    function test_Claim() external givenCampaignNotExpired givenNotClaimed givenIncludedInMerkleTree {
-        claim();
-        assertTrue(merkleBase.hasClaimed(defaults.INDEX1()), "not claimed");
-    }
+    /// @dev Since the logic may differ in `_claim()` function in each Merkle campaign, we declare this test as virtual.
+    function test_Claim() external virtual givenCampaignNotExpired givenNotClaimed givenIncludedInMerkleTree { }
 }
