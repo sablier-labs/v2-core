@@ -103,7 +103,7 @@ library Lockup {
 
 /// @notice Namespace for the structs used in {SablierLockupDynamic}.
 library LockupDynamic {
-    /// @notice Struct encapsulating the parameters of the {SablierV2LockupDynamic.createWithDurations} function.
+    /// @notice Struct encapsulating the parameters of the {SablierLockupDynamic.createWithDurations} function.
     /// @param sender The address distributing the assets, which is able to cancel the stream. It doesn't have to be the
     /// same as `msg.sender`.
     /// @param recipient The address receiving the assets, as well as the NFT owner.
@@ -127,7 +127,7 @@ library LockupDynamic {
         Broker broker;
     }
 
-    /// @notice Struct encapsulating the parameters of the {SablierV2LockupDynamic.createWithTimestamps} function.
+    /// @notice Struct encapsulating the parameters of the {SablierLockupDynamic.createWithTimestamps} function.
     /// @param sender The address distributing the assets, which is able to cancel the stream. It doesn't have to be the
     /// same as `msg.sender`.
     /// @param recipient The address receiving the assets, as well as the NFT owner.
@@ -163,7 +163,7 @@ library LockupDynamic {
         uint40 timestamp;
     }
 
-    /// @notice Segment struct used at runtime in {SablierV2LockupDynamic.createWithDurations}.
+    /// @notice Segment struct used at runtime in {SablierLockupDynamic.createWithDurations}.
     /// @param amount The amount of assets streamed in the segment, denoted in units of the asset's decimals.
     /// @param exponent The exponent of the segment, denoted as a fixed-point number.
     /// @param duration The time difference in seconds between the segment and the previous one.
