@@ -2,17 +2,20 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
-
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
+import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
+
 import { Errors } from "src/periphery/libraries/Errors.sol";
 import { MerkleLT } from "src/periphery/types/DataTypes.sol";
 
 import { Claim_Integration_Test } from "../../shared/claim/claim.t.sol";
-import { MerkleLT_Integration_Shared_Test } from "../MerkleLT.t.sol";
 
-contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Integration_Shared_Test {
-    function setUp() public override(Claim_Integration_Test, MerkleLT_Integration_Shared_Test) {
-        super.setUp();
+contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test {
+    function setUp() public virtual override {
+        Claim_Integration_Test.setUp();
+
+        // Cast the {MerkleLT} contract as {ISablierMerkleBase}
+        merkleBase = ISablierMerkleBase(merkleLT);
     }
 
     modifier whenTotalPercentageNotOneHundred() {
@@ -99,6 +102,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
         emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
 
         claim();
+
         LockupTranched.StreamLT memory actualStream = lockupTranched.getStream(expectedStreamId);
         LockupTranched.StreamLT memory expectedStream = LockupTranched.StreamLT({
             amounts: Lockup.Amounts({ deposited: defaults.CLAIM_AMOUNT(), refunded: 0, withdrawn: 0 }),
@@ -114,8 +118,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
             tranches: defaults.tranchesMerkleLT(),
             wasCanceled: false
         });
-
         assertEq(actualStream, expectedStream);
-        assertTrue(merkleBase.hasClaimed(defaults.INDEX1()), "not claimed");
+        assertTrue(merkleLT.hasClaimed(defaults.INDEX1()), "not claimed");
     }
 }

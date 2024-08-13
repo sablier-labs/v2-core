@@ -6,4 +6,5 @@ claim.t.sol
 │       └── it should revert
 └── when the total percentage equals 100%
     ├── it should create a stream
-    └── it should emit a {Claim} event
+    ├── it should mark the index as Claimed
+    └── it should emit {Claim} event
