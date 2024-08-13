@@ -4,15 +4,16 @@ pragma solidity >=0.8.22 <0.9.0;
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
+import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 import { MerkleLT } from "src/periphery/types/DataTypes.sol";
 
-import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
+import { Claim_Integration_Test } from "../../shared/claim/claim.t.sol";
 
-contract Claim_MerkleLT_Integration_Test is MerkleCampaign_Integration_Shared_Test {
+contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test {
     function setUp() public override {
         super.setUp();
-        merkleBase = merkleLT;
+        merkleBase = ISablierMerkleBase(merkleLT);
     }
 
     modifier whenTotalPercentageNotOneHundred() {
@@ -85,7 +86,7 @@ contract Claim_MerkleLT_Integration_Test is MerkleCampaign_Integration_Shared_Te
         _;
     }
 
-    function test_Claim()
+    function test_ClaimLT()
         external
         whenTotalPercentageOneHundred
         givenCampaignNotExpired

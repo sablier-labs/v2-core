@@ -54,8 +54,8 @@ interface ISablierMerkleBase is IAdminable {
 
     /// @notice Makes the claim.
     ///
-    /// @dev Depending on the Merkle model, it either transfers assets to the recipient or creates a Lockup stream with
-    /// an NFT minted to the recipient.
+    /// @dev Depending on the Merkle campaign, it either transfers assets to the recipient or creates a Lockup stream
+    /// with an NFT minted to the recipient.
     ///
     /// Requirements:
     /// - The campaign must not have expired.
