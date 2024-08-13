@@ -2,16 +2,17 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
+import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 
-import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
+import { Claim_Integration_Test } from "../../shared/claim/claim.t.sol";
 
-contract Claim_MerkleLL_Integration_Test is MerkleCampaign_Integration_Shared_Test {
+contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test {
     function setUp() public override {
         super.setUp();
-        merkleBase = merkleLL;
+        merkleBase = ISablierMerkleBase(merkleLL);
     }
 
-    function test_Claim() external givenCampaignNotExpired givenNotClaimed givenIncludedInMerkleTree {
+    function test_ClaimLL() external givenCampaignNotExpired givenNotClaimed givenIncludedInMerkleTree {
         uint256 expectedStreamId = lockupLinear.nextStreamId();
 
         vm.expectEmit({ emitter: address(merkleLL) });
