@@ -128,8 +128,8 @@ abstract contract LockupLinear_Fork_Test is Fork_Test {
                 params.timestamps.cliff, params.timestamps.start + 1 seconds, params.timestamps.start + 52 weeks
             );
         }
-        // Bound the end time so that it is always greater than the block timestamp, the start time, and the cliff time.
-        vars.endTimeLowerBound = maxOfThree(params.timestamps.start, params.timestamps.cliff, vars.blockTimestamp);
+        // Bound the end time so that it is always greater than the start time, and the cliff time.
+        vars.endTimeLowerBound = maxOfTwo(params.timestamps.start, params.timestamps.cliff);
         params.timestamps.end =
             boundUint40(params.timestamps.end, vars.endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
 
