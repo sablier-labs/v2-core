@@ -86,8 +86,9 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test {
         _;
     }
 
-    function test_ClaimLT()
+    function test_Claim()
         external
+        override
         whenTotalPercentageOneHundred
         givenCampaignNotExpired
         givenNotClaimed
@@ -114,6 +115,8 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test {
             tranches: defaults.tranchesMerkleLT(),
             wasCanceled: false
         });
+
         assertEq(actualStream, expectedStream);
+        assertTrue(merkleBase.hasClaimed(defaults.INDEX1()), "not claimed");
     }
 }

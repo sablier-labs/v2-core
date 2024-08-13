@@ -17,5 +17,7 @@ contract Claim_MerkleInstant_Integration_Test is Claim_Integration_Test {
 
         expectCallToTransfer({ to: users.recipient1, value: defaults.CLAIM_AMOUNT() });
         claim();
+
+        assertTrue(merkleBase.hasClaimed(defaults.INDEX1()), "not claimed");
     }
 }
