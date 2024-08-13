@@ -4,16 +4,15 @@ pragma solidity >=0.8.22 <0.9.0;
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
-import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 import { MerkleLT } from "src/periphery/types/DataTypes.sol";
 
 import { Claim_Integration_Test } from "../../shared/claim/claim.t.sol";
+import { MerkleLT_Integration_Shared_Test } from "../MerkleLT.t.sol";
 
-contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test {
-    function setUp() public override {
+contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Integration_Shared_Test {
+    function setUp() public override(Claim_Integration_Test, MerkleLT_Integration_Shared_Test) {
         super.setUp();
-        merkleBase = ISablierMerkleBase(merkleLT);
     }
 
     modifier whenTotalPercentageNotOneHundred() {
