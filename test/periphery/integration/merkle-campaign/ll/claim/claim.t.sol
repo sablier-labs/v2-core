@@ -35,6 +35,6 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
         });
 
         assertEq(actualStream, expectedStream);
-        assertTrue(merkleBase.hasClaimed(defaults.INDEX1()), "not claimed");
+        assertTrue(merkleLL.hasClaimed(defaults.INDEX1()), "not claimed");
     }
 }
