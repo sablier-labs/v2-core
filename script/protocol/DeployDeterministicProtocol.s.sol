@@ -5,7 +5,7 @@ import { LockupNFTDescriptor } from "../../src/core/LockupNFTDescriptor.sol";
 import { SablierLockupDynamic } from "../../src/core/SablierLockupDynamic.sol";
 import { SablierLockupLinear } from "../../src/core/SablierLockupLinear.sol";
 import { SablierLockupTranched } from "../../src/core/SablierLockupTranched.sol";
-import { SablierMerkleLockupFactory } from "../../src/periphery/SablierMerkleLockupFactory.sol";
+import { SablierMerkleFactory } from "../../src/periphery/SablierMerkleFactory.sol";
 import { SablierBatchLockup } from "../../src/periphery/SablierBatchLockup.sol";
 
 import { ProtocolScript } from "./Protocol.s.sol";
@@ -23,7 +23,7 @@ contract DeployDeterministicProtocol is ProtocolScript("deterministic") {
             SablierLockupLinear lockupLinear,
             SablierLockupTranched lockupTranched,
             SablierBatchLockup batchLockup,
-            SablierMerkleLockupFactory merkleLockupFactory
+            SablierMerkleFactory merkleLockupFactory
         )
     {
         address initialAdmin = adminMap[block.chainid];
@@ -33,7 +33,9 @@ contract DeployDeterministicProtocol is ProtocolScript("deterministic") {
     }
 
     /// @dev Deploys the protocol with the given `initialAdmin`.
-    function run(address initialAdmin)
+    function run(
+        address initialAdmin
+    )
         internal
         returns (
             LockupNFTDescriptor nftDescriptor,
@@ -41,7 +43,7 @@ contract DeployDeterministicProtocol is ProtocolScript("deterministic") {
             SablierLockupLinear lockupLinear,
             SablierLockupTranched lockupTranched,
             SablierBatchLockup batchLockup,
-            SablierMerkleLockupFactory merkleLockupFactory
+            SablierMerkleFactory merkleLockupFactory
         )
     {
         (nftDescriptor, lockupDynamic, lockupLinear, lockupTranched, batchLockup, merkleLockupFactory) =
@@ -49,7 +51,9 @@ contract DeployDeterministicProtocol is ProtocolScript("deterministic") {
     }
 
     /// @dev Common logic for the run functions.
-    function _run(address initialAdmin)
+    function _run(
+        address initialAdmin
+    )
         internal
         returns (
             LockupNFTDescriptor nftDescriptor,
@@ -57,7 +61,7 @@ contract DeployDeterministicProtocol is ProtocolScript("deterministic") {
             SablierLockupLinear lockupLinear,
             SablierLockupTranched lockupTranched,
             SablierBatchLockup batchLockup,
-            SablierMerkleLockupFactory merkleLockupFactory
+            SablierMerkleFactory merkleLockupFactory
         )
     {
         bytes32 salt = constructCreate2Salt();
@@ -72,7 +76,7 @@ contract DeployDeterministicProtocol is ProtocolScript("deterministic") {
 
         // Deploy Periphery.
         batchLockup = new SablierBatchLockup{ salt: salt }();
-        merkleLockupFactory = new SablierMerkleLockupFactory{ salt: salt }();
+        merkleLockupFactory = new SablierMerkleFactory{ salt: salt }();
 
         appendToFileDeployedAddresses(
             address(lockupDynamic),

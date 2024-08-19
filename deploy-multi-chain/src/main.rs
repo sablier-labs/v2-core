@@ -114,6 +114,12 @@ fn main() {
             );
         }
     }
+
+    // Run Prettier to format the deployment files
+    let _ = Command::new("bun")
+        .args(["prettier", "--write", "../deployments/**/*.md"])
+        .status()
+        .expect("Failed to run Prettier");
 }
 
 fn move_broadcast_file(script_name: &str, chain: &str, output: &str, broadcast_deployment: &str) {
