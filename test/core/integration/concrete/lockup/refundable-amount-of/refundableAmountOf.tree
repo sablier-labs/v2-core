@@ -1,21 +1,20 @@
-refundableAmountOf.t.sol
-├── given the ID references a null stream
+RefundableAmountOf_Integration_Concrete_Test
+├── given null
 │  └── it should revert
-└── given the ID does not reference a null stream
-   ├── given the stream is not cancelable
+└── given not null
+   ├── given non cancelable stream
    │  └── it should return zero
-   └── given the stream is cancelable
-      ├── given the stream has been canceled
-      │  ├── given the stream's status is "CANCELED"
-      │  │  └── it should return zero
-      │  └── given the stream's status is "DEPLETED"
+   └── given stream is cancelable
+      ├── given canceled stream with "CANCELED" status
+      │  └── it should return zero
+      ├── given canceled stream with "DEPLETED" status
       │     └── it should return zero
-      └── given the stream has not been canceled
-         ├── given the stream's status is "PENDING"
+      └── given not canceled stream
+         ├── given status is "PENDING"
          │  └── it should return the deposited amount
-         ├── given the stream's status is "STREAMING"
+         ├── given status is "STREAMING"
          │  └── it should return the correct refundable amount
-         ├── given the stream's status is "SETTLED"
+         ├── given status is "SETTLED"
          │  └── it should return zero
-         └── given the stream's status is "DEPLETED"
+         └── given status is "DEPLETED"
             └── it should return zero

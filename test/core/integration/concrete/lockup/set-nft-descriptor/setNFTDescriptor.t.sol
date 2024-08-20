@@ -15,7 +15,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         defaultStreamId = createDefaultStream();
     }
 
-    function test_RevertWhen_CallerNotAdmin() external {
+    function test_RevertWhen_CallerIsNotAdmin() external {
         // Make Eve the caller in this test.
         resetPrank({ msgSender: users.eve });
 
@@ -24,14 +24,14 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.setNFTDescriptor(ILockupNFTDescriptor(users.eve));
     }
 
-    modifier whenCallerAdmin() {
+    modifier whenCallerIsAdmin() {
         // Make the Admin the caller in the rest of this test suite.
         resetPrank({ msgSender: users.admin });
         _;
     }
 
-    function test_SetNFTDescriptor_SameNFTDescriptor() external whenCallerAdmin {
-        // Expect the relevant events to be emitted.
+    function test_WhenNewNFTDescriptorIsSameAsCurrentNFTDescriptor() external whenCallerIsAdmin {
+        // It should emit {SetNFTDescriptor} and {BatchMetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });
         emit SetNFTDescriptor(users.admin, nftDescriptor, nftDescriptor);
         vm.expectEmit({ emitter: address(lockup) });
@@ -40,16 +40,16 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         // Re-set the NFT descriptor.
         lockup.setNFTDescriptor(nftDescriptor);
 
-        // Assert that the new NFT descriptor has been set.
+        // It should re-set the NFT descriptor.
         vm.expectCall(address(nftDescriptor), abi.encodeCall(ILockupNFTDescriptor.tokenURI, (lockup, 1)));
         lockup.tokenURI({ tokenId: defaultStreamId });
     }
 
-    function test_SetNFTDescriptor_NewNFTDescriptor() external whenCallerAdmin {
+    function test_WhenNewNFTDescriptorIsNotSameAsCurrentNFTDescriptor() external whenCallerIsAdmin {
         // Deploy another NFT descriptor.
         ILockupNFTDescriptor newNFTDescriptor = new LockupNFTDescriptor();
 
-        // Expect the relevant events to be emitted.
+        // It should emit {SetNFTDescriptor} and {BatchMetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });
         emit SetNFTDescriptor(users.admin, nftDescriptor, newNFTDescriptor);
         vm.expectEmit({ emitter: address(lockup) });
@@ -58,7 +58,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         // Set the new NFT descriptor.
         lockup.setNFTDescriptor(newNFTDescriptor);
 
-        // Assert that the new NFT descriptor has been set.
+        // It should set the new NFT descriptor.
         vm.expectCall(address(newNFTDescriptor), abi.encodeCall(ILockupNFTDescriptor.tokenURI, (lockup, 1)));
         lockup.tokenURI({ tokenId: defaultStreamId });
     }

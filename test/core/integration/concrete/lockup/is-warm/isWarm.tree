@@ -1,14 +1,14 @@
-isWarm.t.sol
-├── given the ID references a null stream
+IsWarm_Integration_Concrete_Test
+├── given null
 │  └── it should revert
-└── given the ID does not reference a null stream
-   ├── given the stream's status is pending
+└── given not null
+   ├── given status is "PENDING"
    │  └── it should return true
-   ├── given the stream's status is streaming
+   ├── given status is "STREAMING"
    │  └── it should return true
-   ├── given the stream's status is settled
+   ├── given status is "SETTLED"
    │  └── it should return false
-   ├── given the stream's status is canceled
+   ├── given status is "CANCELED"
    │  └── it should return false
-   └── given the stream's status is depleted
+   └── given status is "DEPLETED"
       └── it should return false

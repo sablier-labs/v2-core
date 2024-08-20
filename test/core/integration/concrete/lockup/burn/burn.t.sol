@@ -21,17 +21,17 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         resetPrank({ msgSender: users.recipient });
     }
 
-    function test_RevertWhen_DelegateCalled() external {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData = abi.encodeCall(ISablierLockup.burn, streamId);
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier whenNoDelegateCall() {
         _;
     }
 
-    function test_RevertGiven_Null() external whenNotDelegateCalled {
+    function test_RevertGiven_Null() external whenNoDelegateCall {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_Null.selector, nullStreamId));
         lockup.burn(nullStreamId);
@@ -45,9 +45,9 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    function test_RevertGiven_StatusPending()
+    function test_RevertGiven_StatusIsPENDING()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
         givenStreamHasNotBeenDepleted
     {
@@ -56,9 +56,9 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    function test_RevertGiven_StatusStreaming()
+    function test_RevertGiven_StatusIsSTREAMING()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
         givenStreamHasNotBeenDepleted
     {
@@ -67,9 +67,9 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    function test_RevertGiven_StatusSettled()
+    function test_RevertGiven_StatusIsSETTLED()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
         givenStreamHasNotBeenDepleted
     {
@@ -78,9 +78,9 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    function test_RevertGiven_StatusCanceled()
+    function test_RevertGiven_StatusIsCANCELED()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
         givenStreamHasNotBeenDepleted
     {
@@ -98,9 +98,9 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    function test_RevertWhen_CallerUnauthorized()
+    function test_RevertWhen_UnauthorizedCaller()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
         givenStreamHasBeenDepleted(streamId)
     {
@@ -109,16 +109,16 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    modifier whenCallerAuthorized() {
+    modifier whenAuthorizedCaller() {
         _;
     }
 
     function test_RevertGiven_NFTDoesNotExist()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
         givenStreamHasBeenDepleted(streamId)
-        whenCallerAuthorized
+        whenAuthorizedCaller
     {
         // Burn the NFT so that it no longer exists.
         lockup.burn(streamId);
@@ -132,34 +132,38 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    function test_Burn_NonTransferableNFT()
+    function test_GivenNonTransferableNFT()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
-        givenStreamHasBeenDepleted(notTransferableStreamId)
-        whenCallerAuthorized
+        givenStreamHasBeenDepleted(streamId)
+        whenAuthorizedCaller
         givenNFTExists
     {
-        // Expect the relevant event to be emitted.
+        // It should emit a {MetadataUpdate} event.
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: notTransferableStreamId });
+
+        // Burn the NFT.
         lockup.burn(notTransferableStreamId);
+
+        // It should burn the NFT.
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721NonexistentToken.selector, notTransferableStreamId));
         lockup.getRecipient(notTransferableStreamId);
     }
 
-    modifier givenTransferableStream() {
+    modifier givenTransferableNFT() {
         _;
     }
 
-    function test_Burn_CallerApprovedOperator()
+    function test_WhenCallerIsApprovedThirdParty()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
         givenStreamHasBeenDepleted(streamId)
-        whenCallerAuthorized
+        whenAuthorizedCaller
         givenNFTExists
-        givenTransferableStream
+        givenTransferableNFT
     {
         // Approve the operator to handle the stream.
         lockup.approve({ to: users.operator, tokenId: streamId });
@@ -167,31 +171,35 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         // Make the approved operator the caller in this test.
         resetPrank({ msgSender: users.operator });
 
-        // Expect the relevant event to be emitted.
+        // It should emit a {MetadataUpdate} event.
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: streamId });
 
         // Burn the NFT.
         lockup.burn(streamId);
 
-        // Assert that the NFT has been burned.
+        // It should burn the NFT.
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721NonexistentToken.selector, streamId));
         lockup.getRecipient(streamId);
     }
 
-    function test_Burn_CallerNFTOwner()
+    function test_WhenCallerIsNFTOwner()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
         givenStreamHasBeenDepleted(streamId)
-        whenCallerAuthorized
+        whenAuthorizedCaller
         givenNFTExists
-        givenTransferableStream
+        givenTransferableNFT
     {
-        // Expect the relevant event to be emitted.
+        // It should emit a {MetadataUpdate} event.
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: streamId });
+
+        // Burn the NFT.
         lockup.burn(streamId);
+
+        // It should burn the NFT.
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721NonexistentToken.selector, streamId));
         lockup.getRecipient(streamId);
     }

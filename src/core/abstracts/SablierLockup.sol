@@ -379,6 +379,12 @@ abstract contract SablierLockup is
             revert Errors.SablierLockup_WithdrawAmountZero(streamId);
         }
 
+        // Check: the withdraw amount is not greater than the withdrawable amount.
+        uint128 withdrawableAmount = _withdrawableAmountOf(streamId);
+        if (amount > withdrawableAmount) {
+            revert Errors.SablierLockup_Overdraw(streamId, amount, withdrawableAmount);
+        }
+
         // Retrieve the recipient from storage.
         address recipient = _ownerOf(streamId);
 
@@ -386,12 +392,6 @@ abstract contract SablierLockup is
         // must be the recipient.
         if (to != recipient && !_isCallerStreamRecipientOrApproved(streamId)) {
             revert Errors.SablierLockup_WithdrawalAddressNotRecipient(streamId, msg.sender, to);
-        }
-
-        // Check: the withdraw amount is not greater than the withdrawable amount.
-        uint128 withdrawableAmount = _withdrawableAmountOf(streamId);
-        if (amount > withdrawableAmount) {
-            revert Errors.SablierLockup_Overdraw(streamId, amount, withdrawableAmount);
         }
 
         // Effects and Interactions: make the withdrawal.

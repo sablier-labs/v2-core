@@ -22,26 +22,22 @@ abstract contract IsCancelable_Integration_Concrete_Test is Integration_Test, Lo
         _;
     }
 
-    function test_IsCancelable_Cold() external givenNotNull {
+    function test_GivenStreamIsCold() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() }); // settled status
         bool isCancelable = lockup.isCancelable(defaultStreamId);
         assertFalse(isCancelable, "isCancelable");
     }
 
-    modifier givenNotCold() {
+    modifier givenStreamIsNotCold() {
         _;
     }
 
-    function test_IsCancelable_StreamCancelable() external givenNotNull givenNotCold {
+    function test_GivenCancelableStream() external givenNotNull givenStreamIsNotCold {
         bool isCancelable = lockup.isCancelable(defaultStreamId);
         assertTrue(isCancelable, "isCancelable");
     }
 
-    modifier givenStreamNotCancelable() {
-        _;
-    }
-
-    function test_IsCancelable() external givenNotNull givenNotCold givenStreamNotCancelable {
+    function test_GivenNonCancelableStream() external givenNotNull givenStreamIsNotCold {
         uint256 streamId = createDefaultStreamNotCancelable();
         bool isCancelable = lockup.isCancelable(streamId);
         assertFalse(isCancelable, "isCancelable");

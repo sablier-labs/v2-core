@@ -1,24 +1,24 @@
-renounce.t.sol
-├── when delegate called
+Renounce_Integration_Concrete_Test
+├── when delegate call
 │  └── it should revert
-└── when not delegate called
-   ├── given the ID references a null stream
+└── when no delegate call
+   ├── given null
    │  └── it should revert
-   └──  given the ID does not reference a null stream
-      ├── given the stream is cold
-      │  ├── given the stream's status is "DEPLETED"
+   └──  given not null
+      ├── given stream is cold
+      │  ├── given status is "DEPLETED"
       │  │  └── it should revert
-      │  ├── given the stream's status is "CANCELED"
+      │  ├── given status is "CANCELED"
       │  │  └── it should revert
-      │  └── given the stream's status is "SETTLED"
+      │  └── given status is "SETTLED"
       │     └── it should revert
-      └── given the stream is warm
-         ├── when the caller is not the sender
+      └── given stream is warm
+         ├── when caller is not sender
          │  └── it should revert
-         └── when the caller is the sender
-            ├── given the stream is not cancelable
+         └── when caller is sender
+            ├── given non cancelable stream
             │  └── it should revert
-            └── given the stream is cancelable
-               ├── it should renounce the stream
-               ├── it should emit a {RenounceLockupStream} event
-               └── it should emit a {MetadataUpdate} event
+            └── given cancelable stream
+               ├── it should emit {MetadataUpdate} and {RenounceLockupStream} events
+               ├── it should make stream non cancelable
+               └── it should emit a {} event

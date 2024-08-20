@@ -18,13 +18,13 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         WithdrawMultiple_Integration_Shared_Test.setUp();
     }
 
-    function test_RevertWhen_DelegateCalled() external {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData = abi.encodeCall(ISablierLockup.withdrawMultiple, (testStreamIds, testAmounts));
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_ArrayCountsNotEqual() external whenNotDelegateCalled {
+    function test_RevertWhen_ArraysHaveUnequalLength() external whenNoDelegateCall {
         uint256[] memory streamIds = new uint256[](2);
         uint128[] memory amounts = new uint128[](1);
         vm.expectRevert(
@@ -35,25 +35,27 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         lockup.withdrawMultiple(streamIds, amounts);
     }
 
-    modifier whenArrayCountsAreEqual() {
+    modifier whenArraysHaveEqualLength() {
         _;
     }
 
-    function test_WithdrawMultiple_ArrayCountsZero() external whenNotDelegateCalled whenArrayCountsAreEqual {
+    function test_WhenArrayLengthIsZero() external whenNoDelegateCall whenArraysHaveEqualLength {
         uint256[] memory streamIds = new uint256[](0);
         uint128[] memory amounts = new uint128[](0);
+
+        // It should do nothing.
         lockup.withdrawMultiple(streamIds, amounts);
     }
 
-    modifier whenArrayCountsNotZero() {
+    modifier whenArrayLengthIsNotZero() {
         _;
     }
 
-    function test_RevertGiven_OnlyNull()
+    function test_RevertGiven_AllStreamIDsReferenceToNull()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
+        whenNoDelegateCall
+        whenArraysHaveEqualLength
+        whenArrayLengthIsNotZero
     {
         uint256 nullStreamId = 1729;
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
@@ -64,11 +66,11 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         });
     }
 
-    function test_RevertGiven_SomeNull()
+    function test_RevertGiven_SomeStreamIDsReferenceToNull()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
+        whenNoDelegateCall
+        whenArraysHaveEqualLength
+        whenArrayLengthIsNotZero
     {
         uint256 nullStreamId = 1729;
         uint256[] memory streamIds = Solarray.uint256s(testStreamIds[0], testStreamIds[1], nullStreamId);
@@ -76,19 +78,19 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
-        // Expect the relevant error to be thrown.
+        // It should revert.
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_Null.selector, nullStreamId));
 
         // Withdraw from multiple streams.
         lockup.withdrawMultiple({ streamIds: streamIds, amounts: testAmounts });
     }
 
-    function test_RevertGiven_AllStatusesDepleted()
+    function test_RevertGiven_AllStreamsWithDEPLETEDStatus()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        givenNoNull
+        whenNoDelegateCall
+        whenArraysHaveEqualLength
+        whenArrayLengthIsNotZero
+        givenNoStreamIDsReferenceToNull
     {
         uint256[] memory streamIds = Solarray.uint256s(testStreamIds[0]);
         uint128[] memory amounts = Solarray.uint128s(defaults.WITHDRAW_AMOUNT());
@@ -99,19 +101,19 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         // Deplete the first test stream.
         lockup.withdrawMax({ streamId: testStreamIds[0], to: users.recipient });
 
-        // Expect the relevant error to be thrown.
+        // It should revert.
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamDepleted.selector, testStreamIds[0]));
 
         // Withdraw from multiple streams.
         lockup.withdrawMultiple(streamIds, amounts);
     }
 
-    function test_RevertGiven_SomeStatusesDepleted()
+    function test_RevertGiven_SomeStreamsWithDEPLETEDStatus()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        givenNoNull
+        whenNoDelegateCall
+        whenArraysHaveEqualLength
+        whenArrayLengthIsNotZero
+        givenNoStreamIDsReferenceToNull
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.END_TIME() });
@@ -119,40 +121,40 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         // Deplete the first test stream.
         lockup.withdrawMax({ streamId: testStreamIds[0], to: users.recipient });
 
-        // Expect the relevant error to be thrown.
+        // It should revert.
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamDepleted.selector, testStreamIds[0]));
 
         // Withdraw from multiple streams.
         lockup.withdrawMultiple({ streamIds: testStreamIds, amounts: testAmounts });
     }
 
-    function test_RevertWhen_SomeAmountsZero()
+    function test_RevertWhen_SomeAmountsAreZero()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        givenNoNull
-        givenNoDepletedStream
-        whenToNonZeroAddress
+        whenNoDelegateCall
+        whenArraysHaveEqualLength
+        whenArrayLengthIsNotZero
+        givenNoStreamIDsReferenceToNull
+        givenNoStreamsWithDEPLETEDStatus
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Run the test.
         uint128[] memory amounts = Solarray.uint128s(defaults.WITHDRAW_AMOUNT(), 0, 0);
+
+        // It should revert.
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_WithdrawAmountZero.selector, testStreamIds[1]));
         lockup.withdrawMultiple({ streamIds: testStreamIds, amounts: amounts });
     }
 
     function test_RevertWhen_SomeAmountsOverdraw()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        givenNoNull
-        givenNoDepletedStream
-        whenToNonZeroAddress
-        whenNoAmountZero
+        whenNoDelegateCall
+        whenArraysHaveEqualLength
+        whenArrayLengthIsNotZero
+        givenNoStreamIDsReferenceToNull
+        givenNoStreamsWithDEPLETEDStatus
+        whenNoAmountsAreZero
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -160,6 +162,8 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         // Run the test.
         uint128 withdrawableAmount = lockup.withdrawableAmountOf(testStreamIds[2]);
         uint128[] memory amounts = Solarray.uint128s(testAmounts[0], testAmounts[1], MAX_UINT128);
+
+        // It should revert.
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierLockup_Overdraw.selector, testStreamIds[2], MAX_UINT128, withdrawableAmount
@@ -168,16 +172,14 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         lockup.withdrawMultiple({ streamIds: testStreamIds, amounts: amounts });
     }
 
-    function test_WithdrawMultiple()
+    function test_WhenNoAmountsOverdraw()
         external
-        whenNotDelegateCalled
-        whenArrayCountsAreEqual
-        whenArrayCountsNotZero
-        givenNoNull
-        givenNoDepletedStream
-        whenToNonZeroAddress
-        whenNoAmountZero
-        whenNoAmountOverdraws
+        whenNoDelegateCall
+        whenArraysHaveEqualLength
+        whenArrayLengthIsNotZero
+        givenNoStreamIDsReferenceToNull
+        givenNoStreamsWithDEPLETEDStatus
+        whenNoAmountsAreZero
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: earlyStopTime });
@@ -189,12 +191,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         // Run the test with the caller provided in {whenCallerAuthorizedAllStreams}.
         resetPrank({ msgSender: caller });
 
-        // Expect the withdrawals to be made.
+        // It should make the withdrawals.
         expectCallToTransfer({ to: users.recipient, value: testAmounts[0] });
         expectCallToTransfer({ to: users.recipient, value: testAmounts[1] });
         expectCallToTransfer({ to: users.recipient, value: testAmounts[2] });
 
-        // Expect the relevant events to be emitted.
+        // It should emit multiple {WithdrawFromLockupStream} events.
         vm.expectEmit({ emitter: address(lockup) });
         emit WithdrawFromLockupStream({
             streamId: testStreamIds[0],
@@ -220,12 +222,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         // Make the withdrawals.
         lockup.withdrawMultiple({ streamIds: testStreamIds, amounts: testAmounts });
 
-        // Assert that the statuses have been updated.
+        // It should update the statuses.
         assertEq(lockup.statusOf(testStreamIds[0]), Lockup.Status.STREAMING, "status0");
         assertEq(lockup.statusOf(testStreamIds[1]), Lockup.Status.DEPLETED, "status1");
         assertEq(lockup.statusOf(testStreamIds[2]), Lockup.Status.CANCELED, "status2");
 
-        // Assert that the withdrawn amounts have been updated.
+        // It should update the withdrawn amounts.
         assertEq(lockup.getWithdrawnAmount(testStreamIds[0]), testAmounts[0], "withdrawnAmount0");
         assertEq(lockup.getWithdrawnAmount(testStreamIds[1]), testAmounts[1], "withdrawnAmount1");
         assertEq(lockup.getWithdrawnAmount(testStreamIds[2]), testAmounts[2], "withdrawnAmount2");

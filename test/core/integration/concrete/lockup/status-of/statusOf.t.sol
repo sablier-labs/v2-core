@@ -23,37 +23,43 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_StatusOf_AssetsFullyWithdrawn() external givenNotNull {
+    function test_GivenAssetsHaveBeenFullyWithdrawn() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+
+        // It should return DEPLETED.
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
         Lockup.Status expectedStatus = Lockup.Status.DEPLETED;
         assertEq(actualStatus, expectedStatus);
     }
 
-    modifier givenAssetsNotFullyWithdrawn() {
+    modifier givenAssetsHaveNotBeenFullyWithdrawn() {
         _;
     }
 
-    function test_StatusOf_StreamCanceled() external givenNotNull givenAssetsNotFullyWithdrawn {
+    function test_GivenCanceledStream() external givenNotNull givenAssetsHaveNotBeenFullyWithdrawn {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
+
+        // It should return CANCELED.
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
         Lockup.Status expectedStatus = Lockup.Status.CANCELED;
         assertEq(actualStatus, expectedStatus);
     }
 
-    modifier givenStreamNotCanceled() {
+    modifier givenNotCanceledStream() {
         _;
     }
 
-    function test_StatusOf_StartTimeInTheFuture()
+    function test_GivenStartTimeInTheFuture()
         external
         givenNotNull
-        givenAssetsNotFullyWithdrawn
-        givenStreamNotCanceled
+        givenAssetsHaveNotBeenFullyWithdrawn
+        givenNotCanceledStream
     {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
+
+        // It should return PENDING.
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
         Lockup.Status expectedStatus = Lockup.Status.PENDING;
         assertEq(actualStatus, expectedStatus);
@@ -63,32 +69,31 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_StatusOf_RefundableAmountNotZero()
+    function test_GivenRefundableAmountIsZero()
         external
         givenNotNull
-        givenAssetsNotFullyWithdrawn
-        givenStreamNotCanceled
+        givenAssetsHaveNotBeenFullyWithdrawn
+        givenNotCanceledStream
         givenStartTimeNotInTheFuture
     {
         vm.warp({ newTimestamp: defaults.END_TIME() });
+
+        // It should return SETTLED.
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
         Lockup.Status expectedStatus = Lockup.Status.SETTLED;
         assertEq(actualStatus, expectedStatus);
     }
 
-    modifier givenRefundableAmountNotZero() {
-        _;
-    }
-
-    function test_StatusOf()
+    function test_GivenRefundableAmountIsNotZero()
         external
         givenNotNull
-        givenAssetsNotFullyWithdrawn
-        givenStreamNotCanceled
+        givenAssetsHaveNotBeenFullyWithdrawn
+        givenNotCanceledStream
         givenStartTimeNotInTheFuture
-        givenRefundableAmountNotZero
     {
         vm.warp({ newTimestamp: defaults.START_TIME() + 1 seconds });
+
+        // It should return STREAMING.
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
         Lockup.Status expectedStatus = Lockup.Status.STREAMING;
         assertEq(actualStatus, expectedStatus);

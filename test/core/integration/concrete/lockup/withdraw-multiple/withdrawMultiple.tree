@@ -1,29 +1,29 @@
-withdrawMultiple.t.sol
-├── when delegate called
+WithdrawMultiple_Integration_Concrete_Test
+├── when delegate call
 │  └── it should revert
-└── when not delegate called
-   ├── when the inputs are not equal
+└── when no delegate call
+   ├── when arrays have unequal length
    │  └── it should revert
-   └── when the input array counts are equal
-      ├── when the array counts are zero
+   └── when arrays have equal length
+      ├── when array length is zero
       │  └── it should do nothing
-      └── when the array counts are not zero
-         ├── given the stream IDs array references only null streams
+      └── when array length is not zero
+         ├── given all stream IDs reference to null
          │  └── it should revert
-         ├── given the stream IDs array references some null streams
+         ├── given some stream IDs reference to null
          │  └── it should revert
-         └── given the stream IDs array references only non-null streams
-            ├── given all streams' statuses are "DEPLETED"
+         └── given no stream IDs reference to null
+            ├── given all streams with "DEPLETED" status
             │  └── it should revert
-            ├── given some streams' statuses are "DEPLETED"
+            ├── given some streams with "DEPLETED" status
             │  └── it should revert
-            └── given no stream's status is "DEPLETED"
+            └── given no streams with "DEPLETED" status
                ├── when some amounts are zero
                │  └── it should revert
-               └── when none of the amounts are zero
+               └── when no amounts are zero
                   ├── when some amounts overdraw
                   │  └── it should revert
-                  └── when no amount overdraws
+                  └── when no amounts overdraw
                      ├── it should make the withdrawals
                      ├── it should update the statuses
                      ├── it should update the withdrawn amounts
