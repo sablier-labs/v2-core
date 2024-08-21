@@ -11,43 +11,43 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         resetPrank({ msgSender: users.sender });
     }
 
+    modifier givenCancelableStream() {
+        _;
+    }
+
     modifier givenNotNull() {
         _;
     }
 
-    modifier givenRecipientAllowedToHook() {
+    modifier givenRecipientIsAllowedToHook() {
         _;
     }
 
     /// @dev In LockupLinear, the streaming starts after the cliff time, whereas in LockupDynamic, the streaming starts
     /// after the start time.
-    modifier givenStatusStreaming() {
+    modifier givenStatusIsSTREAMING() {
         // Warp to the future, after the stream's start time but before the stream's end time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
-    modifier givenStreamCancelable() {
+    modifier givenStreamIsCold() {
         _;
     }
 
-    modifier givenStreamCold() {
+    modifier givenStreamIsWarm() {
         _;
     }
 
-    modifier givenStreamWarm() {
+    modifier whenAuthorizedCaller() {
         _;
     }
 
-    modifier whenCallerAuthorized() {
+    modifier whenNoDelegateCall() {
         _;
     }
 
-    modifier whenCallerUnauthorized() {
-        _;
-    }
-
-    modifier whenNotDelegateCalled() {
+    modifier whenRecipientDoesNotRevert() {
         _;
     }
 
@@ -55,11 +55,11 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         _;
     }
 
-    modifier whenRecipientNotReverting() {
+    modifier whenRecipientReturnsValidSelector() {
         _;
     }
 
-    modifier whenRecipientReturnsSelector() {
+    modifier whenUnauthorizedCaller() {
         _;
     }
 }

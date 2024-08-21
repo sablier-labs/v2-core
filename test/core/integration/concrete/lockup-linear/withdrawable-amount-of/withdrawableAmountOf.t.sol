@@ -18,7 +18,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Concrete_Test is
         WithdrawableAmountOf_Integration_Concrete_Test.setUp();
     }
 
-    function test_GivenCliffTimeInFuture() external givenStatusIsSTREAMING {
+    function test_GivenCliffTimeInFuture() external view givenStatusIsSTREAMING {
         uint128 actualWithdrawableAmount = lockupLinear.withdrawableAmountOf(defaultStreamId);
         uint128 expectedWithdrawableAmount = 0;
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");

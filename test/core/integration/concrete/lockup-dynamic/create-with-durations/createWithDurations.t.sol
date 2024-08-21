@@ -40,7 +40,7 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
     function test_RevertWhen_IndexOneOrHigherContainsZeroDuration()
         external
         whenNoDelegateCall
-        whenSegmentCountNotTooHigh
+        whenSegmentCountIsNotTooHigh
     {
         uint40 startTime = getBlockTimestamp();
         LockupDynamic.SegmentWithDuration[] memory segments = defaults.createWithDurationsLD().segments;
@@ -60,58 +60,65 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
     function test_RevertWhen_StartTimeIsGreaterThanFirstSegmentTimestamp()
         external
         whenNoDelegateCall
-        whenSegmentCountNotTooHigh
+        whenSegmentCountIsNotTooHigh
         whenIndexOneOrHigherNotContainZeroDuration
         whenSegmentTimestampCalculationsOverflow
     {
-        uint40 startTime = getBlockTimestamp();
-        LockupDynamic.SegmentWithDuration[] memory segments = defaults.segmentsWithDurations();
-        segments[0].duration = MAX_UINT40;
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.SablierLockupDynamic_StartTimeNotLessThanFirstSegmentTimestamp.selector,
-                startTime,
-                startTime + segments[0].duration
-            )
-        );
-        createDefaultStreamWithDurations(segments);
+        unchecked {
+            uint40 startTime = getBlockTimestamp();
+            LockupDynamic.SegmentWithDuration[] memory segments = defaults.segmentsWithDurations();
+            segments[0].duration = MAX_UINT40;
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    Errors.SablierLockupDynamic_StartTimeNotLessThanFirstSegmentTimestamp.selector,
+                    startTime,
+                    startTime + segments[0].duration
+                )
+            );
+            createDefaultStreamWithDurations(segments);
+        }
     }
 
     function test_RevertWhen_SegmentTimestampsAreNotOrdered()
         external
         whenNoDelegateCall
-        whenSegmentCountNotTooHigh
+        whenSegmentCountIsNotTooHigh
         whenIndexOneOrHigherNotContainZeroDuration
         whenSegmentTimestampCalculationsOverflow
     {
-        uint40 startTime = getBlockTimestamp();
+        unchecked {
+            uint40 startTime = getBlockTimestamp();
 
-        // Create new segments that overflow when the timestamps are eventually calculated.
-        LockupDynamic.SegmentWithDuration[] memory segments = new LockupDynamic.SegmentWithDuration[](2);
-        segments[0] =
-            LockupDynamic.SegmentWithDuration({ amount: 0, exponent: ud2x18(1e18), duration: startTime + 1 seconds });
-        segments[1] = defaults.segmentsWithDurations()[0];
-        segments[1].duration = MAX_UINT40;
+            // Create new segments that overflow when the timestamps are eventually calculated.
+            LockupDynamic.SegmentWithDuration[] memory segments = new LockupDynamic.SegmentWithDuration[](2);
+            segments[0] = LockupDynamic.SegmentWithDuration({
+                amount: 0,
+                exponent: ud2x18(1e18),
+                duration: startTime + 1 seconds
+            });
+            segments[1] = defaults.segmentsWithDurations()[0];
+            segments[1].duration = MAX_UINT40;
 
-        // Expect the relevant error to be thrown.
-        uint256 index = 1;
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.SablierLockupDynamic_SegmentTimestampsNotOrdered.selector,
-                index,
-                startTime + segments[0].duration,
-                startTime + segments[0].duration + segments[1].duration
-            )
-        );
+            // Expect the relevant error to be thrown.
+            uint256 index = 1;
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    Errors.SablierLockupDynamic_SegmentTimestampsNotOrdered.selector,
+                    index,
+                    startTime + segments[0].duration,
+                    startTime + segments[0].duration + segments[1].duration
+                )
+            );
 
-        // Create the stream.
-        createDefaultStreamWithDurations(segments);
+            // Create the stream.
+            createDefaultStreamWithDurations(segments);
+        }
     }
 
     function test_WhenSegmentTimestampCalculationsDoNotOverflow()
         external
         whenNoDelegateCall
-        whenSegmentCountNotTooHigh
+        whenSegmentCountIsNotTooHigh
         whenIndexOneOrHigherNotContainZeroDuration
     {
         // Make the Sender the stream's funder

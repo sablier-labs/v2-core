@@ -27,11 +27,11 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         uint256 segmentCount
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenSegmentCountIsNotZero
     {
         uint256 defaultMax = defaults.MAX_SEGMENT_COUNT();
         segmentCount = _bound(segmentCount, defaultMax + 1, defaultMax * 2);
@@ -45,12 +45,12 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         uint128 amount1
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenSegmentCountIsNotZero
+        whenSegmentCountIsNotTooHigh
     {
         amount0 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
         amount1 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
@@ -65,12 +65,12 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         uint40 firstTimestamp
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenSegmentCountIsNotZero
+        whenSegmentCountIsNotTooHigh
         whenSegmentAmountsSumDoesNotOverflow
     {
         firstTimestamp = boundUint40(firstTimestamp, 0, defaults.START_TIME());
@@ -96,15 +96,15 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         uint128 depositDiff
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenSegmentCountIsNotZero
+        whenSegmentCountIsNotTooHigh
         whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsOrdered
+        whenStartTimeIsLessThanFirstSegmentTimestamp
+        whenSegmentTimestampsAreOrdered
     {
         depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
 
@@ -135,15 +135,15 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         Broker memory broker
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenSegmentCountIsNotZero
+        whenSegmentCountIsNotTooHigh
         whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsOrdered
+        whenStartTimeIsLessThanFirstSegmentTimestamp
+        whenSegmentTimestampsAreOrdered
         whenDepositAmountEqualToSegmentAmountsSum
     {
         vm.assume(broker.account != address(0));
@@ -182,19 +182,19 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         LockupDynamic.CreateWithTimestamps memory params
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenSegmentCountIsNotZero
+        whenSegmentCountIsNotTooHigh
         whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsOrdered
+        whenStartTimeIsLessThanFirstSegmentTimestamp
+        whenSegmentTimestampsAreOrdered
         whenDepositAmountEqualToSegmentAmountsSum
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
+        whenBrokerFeeIsNotTooHigh
+        whenAssetIsContract
         whenAssetERC20
     {
         vm.assume(

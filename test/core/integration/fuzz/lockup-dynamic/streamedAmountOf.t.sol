@@ -35,7 +35,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         givenNotNull
-        givenStreamHasNotBeenCanceled
+        givenNotCanceledStream
         whenStartTimeInThePast
     {
         vm.assume(segment.amount != 0);
@@ -86,7 +86,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         givenNotNull
-        givenStreamHasNotBeenCanceled
+        givenNotCanceledStream
         whenStartTimeInThePast
         givenMultipleSegments
         whenCurrentTimestampNot1st
@@ -132,7 +132,7 @@ contract StreamedAmountOf_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         givenNotNull
-        givenStreamHasNotBeenCanceled
+        givenNotCanceledStream
         whenStartTimeInThePast
         givenMultipleSegments
         whenCurrentTimestampNot1st

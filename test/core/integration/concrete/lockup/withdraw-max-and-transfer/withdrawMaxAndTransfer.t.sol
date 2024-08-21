@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 
@@ -59,7 +60,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // It should not expect a transfer call on asset.
-        vm.expectCall({ callee: address(dai), data: abi.encodeCall(IERC20.transfer, (to, value)), count: 0 });
+        vm.expectCall({ callee: address(dai), data: abi.encodeCall(IERC20.transfer, (users.recipient, 0)), count: 0 });
 
         // It should emit {Transfer} event on NFT.
         vm.expectEmit({ emitter: address(lockup) });

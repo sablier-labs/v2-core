@@ -1,4 +1,4 @@
-getGetStream_LockupTranched_Integration_Concrete_Test
+GetStream_LockupTranched_Integration_Concrete_Test
 ├── given null
 │  └── it should revert
 └── given not null

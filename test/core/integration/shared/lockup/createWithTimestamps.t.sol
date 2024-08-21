@@ -10,7 +10,7 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         streamId = lockup.nextStreamId();
     }
 
-    modifier whenAssetContract() {
+    modifier whenAssetIsContract() {
         _;
     }
 
@@ -18,19 +18,19 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenBrokerFeeNotTooHigh() {
+    modifier whenBrokerFeeIsNotTooHigh() {
         _;
     }
 
-    modifier whenCliffTimeGreaterThanZero() {
+    modifier whenCliffTimeIsGreaterThanZero() {
         _;
     }
 
-    modifier whenCliffTimeLessThanEndTime() {
+    modifier whenCliffTimeIsLessThanEndTime() {
         _;
     }
 
-    modifier whenCliffTimeZero() {
+    modifier whenCliffTimeIsZero() {
         _;
     }
 
@@ -38,19 +38,19 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenDepositAmountEqualToTrancheAmountsSum() {
+    modifier whenTheDepositAmountEqualsTrancheAmountsSum() {
         _;
     }
 
-    modifier whenDepositAmountNotZero() {
+    modifier whenDepositAmountIsNotZero() {
         _;
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier whenNoDelegateCall() {
         _;
     }
 
-    modifier whenRecipientNonZeroAddress() {
+    modifier whenRecipientIsNotZeroAddress() {
         _;
     }
 
@@ -58,19 +58,23 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenSegmentCountNotTooHigh() {
+    modifier whenSegmentCountIsNotTooHigh() {
         _;
     }
 
-    modifier whenSegmentCountNotZero() {
+    modifier whenSegmentCountIsNotZero() {
         _;
     }
 
-    modifier whenSegmentTimestampsOrdered() {
+    modifier whenSegmentTimestampsAreOrdered() {
         _;
     }
 
-    modifier whenSenderNonZeroAddress() {
+    modifier whenSenderIsNotZeroAddress() {
+        _;
+    }
+
+    modifier whenStartTimeIsLessThanCliffTime() {
         _;
     }
 
@@ -78,15 +82,15 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenStartTimeLessThanFirstSegmentTimestamp() {
+    modifier whenStartTimeIsLessThanFirstSegmentTimestamp() {
         _;
     }
 
-    modifier whenStartTimeLessThanFirstTrancheTimestamp() {
+    modifier whenStartTimeIsLessThanFirstTrancheTimestamp() {
         _;
     }
 
-    modifier whenStartTimeNotZero() {
+    modifier whenStartTimeIsNotZero() {
         _;
     }
 
@@ -94,15 +98,15 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenTrancheCountNotTooHigh() {
+    modifier whenTrancheCountIsNotTooHigh() {
         _;
     }
 
-    modifier whenTrancheCountNotZero() {
+    modifier whenTrancheCountIsNotZero() {
         _;
     }
 
-    modifier whenTrancheTimestampsOrdered() {
+    modifier whenTrancheTimestampsAreOrdered() {
         _;
     }
 }

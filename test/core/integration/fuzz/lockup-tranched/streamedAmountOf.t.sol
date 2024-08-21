@@ -44,7 +44,7 @@ contract StreamedAmountOf_LockupTranched_Integration_Fuzz_Test is
     )
         external
         givenNotNull
-        givenStreamHasNotBeenCanceled
+        givenNotCanceledStream
         whenStartTimeInThePast
         givenMultipleTranches
         whenCurrentTimestampNot1st
@@ -91,7 +91,7 @@ contract StreamedAmountOf_LockupTranched_Integration_Fuzz_Test is
     )
         external
         givenNotNull
-        givenStreamHasNotBeenCanceled
+        givenNotCanceledStream
         whenStartTimeInThePast
         givenMultipleTranches
         whenCurrentTimestampNot1st

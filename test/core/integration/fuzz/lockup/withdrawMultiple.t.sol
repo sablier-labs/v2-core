@@ -21,13 +21,13 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         uint128 ongoingWithdrawAmount
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         whenArraysEqual
-        givenNoNull
-        givenNoDepletedStream
+        givenNotNull
+        givenNoStreamsWithDEPLETEDStatus
         whenCallerAuthorizedAllStreams
-        whenToNonZeroAddress
-        whenNoAmountZero
+        whenWithdrawalAddressIsNotZero
+        whenNoAmountsAreZero
         whenNoAmountOverdraws
     {
         timeJump = _bound(timeJump, defaults.TOTAL_DURATION(), defaults.TOTAL_DURATION() * 2 - 1 seconds);

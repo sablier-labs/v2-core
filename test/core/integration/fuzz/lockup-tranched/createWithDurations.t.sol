@@ -38,8 +38,8 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
         LockupTranched.TrancheWithDuration[] memory tranches
     )
         external
-        whenNotDelegateCalled
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenTrancheCountIsNotTooHigh
         whenDurationsNotZero
         whenTimestampsCalculationsDoNotOverflow
     {

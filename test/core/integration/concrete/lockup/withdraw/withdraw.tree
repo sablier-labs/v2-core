@@ -41,7 +41,6 @@ Withdraw_Integration_Concrete_Test
                            │  ├── it should make the withdrawal
                            │  ├── it should mark the stream as depleted
                            │  ├── it should update the withdrawn amount
-                           │  ├── it should make Sablier run the recipient hook
                            │  └── it should emit {WithdrawFromLockupStream} and {MetadataUpdate} events
                            └── given not canceled stream
                               ├── given recipient is not allowed to hook

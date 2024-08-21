@@ -16,7 +16,10 @@ abstract contract IsAllowedToHook_Integration_Concrete_Test is Integration_Test,
         assertFalse(result, "isAllowedToHook");
     }
 
-    function test_GivenProvidedAddressIsAllowedToHook() external view {
+    function test_GivenProvidedAddressIsAllowedToHook() external {
+        resetPrank({ msgSender: users.admin });
+        lockup.allowToHook(address(recipientGood));
+
         bool result = lockup.isAllowedToHook(address(recipientGood));
         assertTrue(result, "isAllowedToHook");
     }

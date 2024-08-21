@@ -26,10 +26,10 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         Broker memory broker
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
     {
         vm.assume(broker.account != address(0));
         broker.fee = _bound(broker.fee, MAX_BROKER_FEE + ud(1), MAX_UD60x18);
@@ -43,10 +43,10 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         uint40 startTime
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
     {
         startTime = boundUint40(startTime, defaults.CLIFF_TIME() + 1 seconds, defaults.END_TIME() - 1 seconds);
         vm.expectRevert(
@@ -62,10 +62,10 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         uint40 endTime
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
     {
         uint40 startTime = defaults.START_TIME();
         endTime = boundUint40(endTime, startTime + 1 seconds, startTime + 2 weeks);
@@ -104,14 +104,14 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         LockupLinear.CreateWithTimestamps memory params
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeLessThanEndTime
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsLessThanEndTime
+        whenBrokerFeeIsNotTooHigh
+        whenAssetIsContract
         whenAssetERC20
     {
         vm.assume(

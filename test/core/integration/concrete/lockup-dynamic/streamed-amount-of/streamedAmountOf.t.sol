@@ -31,6 +31,10 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, 0, "streamedAmount");
     }
 
+    modifier givenStartTimeIsInPast() {
+        _;
+    }
+
     function test_GivenSingleSegment() external givenStatusIsSTREAMING givenStartTimeIsInPast {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + 2000 seconds });

@@ -45,10 +45,6 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    modifier givenNotCanceledStream() {
-        _;
-    }
-
     function test_GivenStatusIsPENDING() external givenNotNull givenNotCanceledStream {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
 

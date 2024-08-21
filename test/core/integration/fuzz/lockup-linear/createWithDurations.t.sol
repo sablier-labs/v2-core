@@ -24,7 +24,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         LockupLinear.Durations memory durations
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         whenCliffDurationCalculationDoesNotOverflow
     {
         uint40 startTime = getBlockTimestamp();
@@ -52,7 +52,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is
         LockupLinear.Durations memory durations
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         whenCliffDurationCalculationDoesNotOverflow
         whenTotalDurationCalculationDoesNotOverflow
     {

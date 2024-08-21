@@ -6,7 +6,7 @@ import { Errors } from "src/core/libraries/Errors.sol";
 import { Adminable_Unit_Shared_Test } from "../../../shared/Adminable.t.sol";
 
 contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
-    function test_RevertWhen_CallerNotAdmin() external {
+    function test_RevertWhen_CallerIsNotAdmin() external {
         // Make Eve the caller in this test.
         resetPrank(users.eve);
 
@@ -15,51 +15,51 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         adminableMock.transferAdmin(users.eve);
     }
 
-    modifier whenCallerAdmin() {
+    modifier whenCallerIsAdmin() {
         _;
     }
 
-    function test_TransferAdmin_SameAdmin() external whenCallerAdmin {
-        // Expect the relevant event to be emitted.
+    function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerIsAdmin {
+        // It should emit a {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.admin });
 
         // Transfer the admin.
         adminableMock.transferAdmin(users.admin);
 
-        // Assert that the admin has remained the same.
+        // It should keep the same admin.
         address actualAdmin = adminableMock.admin();
         address expectedAdmin = users.admin;
         assertEq(actualAdmin, expectedAdmin, "admin");
     }
 
-    function test_TransferAdmin_ZeroAddress() external whenCallerAdmin {
-        // Expect the relevant event to be emitted.
+    modifier whenNewAdminNotSameAsCurrentAdmin() {
+        _;
+    }
+
+    function test_WhenNewAdminIsZeroAddress() external whenCallerIsAdmin whenNewAdminNotSameAsCurrentAdmin {
+        // It should emit a {TransferAdmin}.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: address(0) });
 
         // Transfer the admin.
         adminableMock.transferAdmin(address(0));
 
-        // Assert that the admin has been transferred.
+        // It should set the admin to the zero address.
         address actualAdmin = adminableMock.admin();
         address expectedAdmin = address(0);
         assertEq(actualAdmin, expectedAdmin, "admin");
     }
 
-    modifier whenNotZeroAddress() {
-        _;
-    }
-
-    function test_TransferAdmin_NewAdmin() external whenCallerAdmin whenNotZeroAddress {
-        // Expect the relevant event to be emitted.
+    function test_WhenNewAdminIsNotZeroAddress() external whenCallerIsAdmin whenNewAdminNotSameAsCurrentAdmin {
+        // It should emit a {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.alice });
 
         // Transfer the admin.
         adminableMock.transferAdmin(users.alice);
 
-        // Assert that the admin has been transferred.
+        // It should set the new admin.
         address actualAdmin = adminableMock.admin();
         address expectedAdmin = users.alice;
         assertEq(actualAdmin, expectedAdmin, "admin");

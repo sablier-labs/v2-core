@@ -35,7 +35,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCliffTimeInFuture() external givenStatusIsSTREAMING {
+    function test_GivenCliffTimeInFuture() external view givenStatusIsSTREAMING {
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 0;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");

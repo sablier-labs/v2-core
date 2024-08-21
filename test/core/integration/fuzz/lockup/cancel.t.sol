@@ -15,11 +15,11 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         uint256 timeJump
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
-        givenStreamWarm
-        whenCallerAuthorized
-        givenStreamCancelable
+        givenStreamIsWarm
+        whenAuthorizedCaller
+        givenCancelableStream
     {
         timeJump = _bound(timeJump, 1 seconds, 100 weeks);
 
@@ -48,15 +48,15 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         uint128 withdrawAmount
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
-        givenStreamWarm
-        whenCallerAuthorized
-        givenStreamCancelable
-        givenStatusStreaming
-        givenRecipientAllowedToHook
-        whenRecipientNotReverting
-        whenRecipientReturnsSelector
+        givenStreamIsWarm
+        whenAuthorizedCaller
+        givenCancelableStream
+        givenStatusIsSTREAMING
+        givenRecipientIsAllowedToHook
+        whenRecipientDoesNotRevert
+        whenRecipientReturnsValidSelector
         whenRecipientNotReentrant
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);

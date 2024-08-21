@@ -18,11 +18,11 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         address caller
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
+        whenWithdrawalAddressIsNotZero
+        whenWithdrawAmountIsNotZero
+        whenWithdrawAmountDoesNotOverdraw
     {
         vm.assume(caller != users.sender && caller != users.recipient);
 
@@ -53,12 +53,12 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         address to
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
-        givenStreamNotDepleted
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
+        givenStatusIsNotDEPLETED
+        whenWithdrawalAddressIsNotZero
+        whenWithdrawAmountIsNotZero
+        whenWithdrawAmountDoesNotOverdraw
     {
         vm.assume(to != address(0));
 
@@ -96,11 +96,11 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         uint128 withdrawAmount
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
+        whenWithdrawalAddressIsNotZero
+        whenWithdrawAmountIsNotZero
+        whenWithdrawAmountDoesNotOverdraw
         whenCallerRecipient
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
@@ -163,12 +163,12 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         uint128 withdrawAmount
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
-        whenStreamHasNotBeenCanceled
+        whenWithdrawalAddressIsNotZero
+        whenWithdrawAmountIsNotZero
+        whenWithdrawAmountDoesNotOverdraw
+        givenNotCanceledStream
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
         vm.assume(to != address(0));

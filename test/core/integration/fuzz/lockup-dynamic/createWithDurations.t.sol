@@ -38,8 +38,8 @@ contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is
         LockupDynamic.SegmentWithDuration[] memory segments
     )
         external
-        whenNotDelegateCalled
-        whenSegmentCountNotTooHigh
+        whenNoDelegateCall
+        whenSegmentCountIsNotTooHigh
         whenDurationsNotZero
         whenTimestampsCalculationsDoNotOverflow
     {

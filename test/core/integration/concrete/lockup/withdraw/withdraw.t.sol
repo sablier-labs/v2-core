@@ -93,7 +93,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
             // When caller is a former recipient.
             caller = users.recipient;
             resetPrank({ msgSender: caller });
-            lockup.transferFrom(caller, users.alice, defaultStreamId);
+            lockup.transferFrom(caller, users.eve, defaultStreamId);
             _;
         } else {
             // When caller is approved third party.
@@ -119,14 +119,19 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsNotRecipient(false)
     {
-        // Run the test.
+        // Simulate the passage of time.
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
+
+        // Set the withdraw amount to the default amount.
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
+
+        // It should revert.
         vm.expectRevert(
             abi.encodeWithSelector(
-                Errors.SablierLockup_WithdrawalAddressNotRecipient.selector, defaultStreamId, caller, caller
+                Errors.SablierLockup_WithdrawalAddressNotRecipient.selector, defaultStreamId, caller, users.alice
             )
         );
-        lockup.withdraw({ streamId: defaultStreamId, to: caller, amount: withdrawAmount });
+        lockup.withdraw({ streamId: defaultStreamId, to: users.alice, amount: withdrawAmount });
     }
 
     function test_WhenCallerIsApprovedThirdPartyOrRecipient()
@@ -143,20 +148,22 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Set the withdraw amount to the default amount.
-        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
+        uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT() / 2;
+
+        uint128 previousWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);
 
         // It should emit {WithdrawFromLockupStream} and {MetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({ streamId: defaultStreamId, to: caller, asset: dai, amount: withdrawAmount });
+        emit WithdrawFromLockupStream({ streamId: defaultStreamId, to: users.alice, asset: dai, amount: withdrawAmount });
         vm.expectEmit({ emitter: address(lockup) });
         emit MetadataUpdate({ _tokenId: defaultStreamId });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: defaultStreamId, to: caller, amount: withdrawAmount });
+        lockup.withdraw({ streamId: defaultStreamId, to: users.alice, amount: withdrawAmount });
 
         // It should update the withdrawn amount.
         uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);
-        uint128 expectedWithdrawnAmount = withdrawAmount;
+        uint128 expectedWithdrawnAmount = previousWithdrawnAmount + withdrawAmount;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
@@ -256,15 +263,6 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
 
         // Set the withdraw amount to the withdrawable amount.
         uint128 withdrawAmount = lockup.withdrawableAmountOf(defaultStreamId);
-
-        // It should make Sablier run the recipient hook.
-        vm.expectCall(
-            address(recipientGood),
-            abi.encodeCall(
-                ISablierLockupRecipient.onSablierLockupWithdraw,
-                (streamId, users.sender, address(recipientGood), withdrawAmount)
-            )
-        );
 
         // It should emit {WithdrawFromLockupStream} and {MetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });

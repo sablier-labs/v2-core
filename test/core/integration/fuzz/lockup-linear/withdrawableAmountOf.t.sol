@@ -24,7 +24,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
     )
         external
         givenNotNull
-        givenStreamHasNotBeenCanceled
+        givenNotCanceledStream
     {
         timeJump = boundUint40(timeJump, 0, defaults.CLIFF_DURATION() - 1);
         vm.warp({ newTimestamp: defaults.START_TIME() + timeJump });
@@ -51,7 +51,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
     )
         external
         givenNotNull
-        givenStreamHasNotBeenCanceled
+        givenNotCanceledStream
         whenCliffTimeNotInTheFuture
     {
         vm.assume(depositAmount != 0);
@@ -97,7 +97,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
     )
         external
         givenNotNull
-        givenStreamHasNotBeenCanceled
+        givenNotCanceledStream
         whenCliffTimeNotInTheFuture
         givenPreviousWithdrawals
     {

@@ -27,11 +27,11 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         uint256 trancheCount
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenTrancheCountNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenTrancheCountIsNotZero
     {
         uint256 defaultMax = defaults.MAX_TRANCHE_COUNT();
         trancheCount = _bound(trancheCount, defaultMax + 1, defaultMax * 10);
@@ -45,12 +45,12 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         uint128 amount1
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
     {
         amount0 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
         amount1 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
@@ -65,12 +65,12 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         uint40 firstTimestamp
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
     {
         firstTimestamp = boundUint40(firstTimestamp, 0, defaults.START_TIME());
@@ -96,15 +96,15 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         uint128 depositDiff
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
-        whenTrancheTimestampsOrdered
+        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheTimestampsAreOrdered
     {
         depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
 
@@ -135,16 +135,16 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         Broker memory broker
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
-        whenTrancheTimestampsOrdered
-        whenDepositAmountEqualToTrancheAmountsSum
+        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheTimestampsAreOrdered
+        whenTheDepositAmountEqualsTrancheAmountsSum
     {
         vm.assume(broker.account != address(0));
         broker.fee = _bound(broker.fee, MAX_BROKER_FEE + ud(1), MAX_UD60x18);
@@ -182,19 +182,19 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
         LockupTranched.CreateWithTimestamps memory params
     )
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
-        whenTrancheTimestampsOrdered
-        whenDepositAmountEqualToTrancheAmountsSum
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
+        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheTimestampsAreOrdered
+        whenTheDepositAmountEqualsTrancheAmountsSum
+        whenBrokerFeeIsNotTooHigh
+        whenAssetIsContract
         whenAssetERC20
     {
         vm.assume(

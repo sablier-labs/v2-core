@@ -44,11 +44,11 @@ contract Withdraw_LockupTranched_Integration_Fuzz_Test is
         Params memory params
     )
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         givenNotNull
-        whenToNonZeroAddress
-        whenWithdrawAmountNotZero
-        whenNoOverdraw
+        whenWithdrawalAddressIsNotZero
+        whenWithdrawAmountIsNotZero
+        whenWithdrawAmountDoesNotOverdraw
     {
         vm.assume(params.tranches.length != 0);
         vm.assume(params.to != address(0));

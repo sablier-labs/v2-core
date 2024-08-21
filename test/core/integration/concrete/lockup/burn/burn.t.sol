@@ -136,7 +136,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamHasBeenDepleted(streamId)
+        givenStreamHasBeenDepleted(notTransferableStreamId)
         whenAuthorizedCaller
         givenNFTExists
     {

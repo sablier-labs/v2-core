@@ -18,11 +18,19 @@ abstract contract CreateWithDurations_Integration_Shared_Test is Lockup_Integrat
         _;
     }
 
-    modifier whenNotDelegateCalled() {
+    modifier whenIndexOneOrHigherNotContainZeroDuration() {
         _;
     }
 
-    modifier whenSegmentCountNotTooHigh() {
+    modifier whenNoDelegateCall() {
+        _;
+    }
+
+    modifier whenSegmentCountIsNotTooHigh() {
+        _;
+    }
+
+    modifier whenSegmentTimestampCalculationsOverflow() {
         _;
     }
 
@@ -34,7 +42,11 @@ abstract contract CreateWithDurations_Integration_Shared_Test is Lockup_Integrat
         _;
     }
 
-    modifier whenTrancheCountNotTooHigh() {
+    modifier whenTrancheCountIsNotTooHigh() {
+        _;
+    }
+
+    modifier whenTrancheTimestampCalculationsOverflow() {
         _;
     }
 }

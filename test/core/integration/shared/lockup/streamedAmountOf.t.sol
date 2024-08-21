@@ -14,7 +14,7 @@ abstract contract StreamedAmountOf_Integration_Shared_Test is Lockup_Integration
         _;
     }
 
-    modifier givenStatusStreaming() {
+    modifier givenStatusIsSTREAMING() {
         _;
     }
 
@@ -22,7 +22,7 @@ abstract contract StreamedAmountOf_Integration_Shared_Test is Lockup_Integration
         _;
     }
 
-    modifier givenStreamHasNotBeenCanceled() {
+    modifier givenNotCanceledStream() {
         _;
     }
 

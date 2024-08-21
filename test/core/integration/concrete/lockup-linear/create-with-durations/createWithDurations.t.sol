@@ -28,7 +28,7 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_WhenCliffDurationCalculationOverflows() external whenNoDelegateCall {
+    function test_RevertWhen_CliffDurationCalculationOverflows() external whenNoDelegateCall {
         uint40 startTime = getBlockTimestamp();
         uint40 cliffDuration = MAX_UINT40 - startTime + 2 seconds;
         uint40 totalDuration = defaults.TOTAL_DURATION();

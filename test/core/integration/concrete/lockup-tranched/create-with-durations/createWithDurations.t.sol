@@ -38,7 +38,7 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
     function test_RevertWhen_IndexOneOrHigherContainsZeroDuration()
         external
         whenNoDelegateCall
-        whenTrancheCountNotTooHigh
+        whenTrancheCountIsNotTooHigh
     {
         uint40 startTime = getBlockTimestamp();
         LockupTranched.TrancheWithDuration[] memory tranches = defaults.createWithDurationsLT().tranches;
@@ -58,57 +58,61 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
     function test_RevertWhen_StartTimeIsGreaterThanFirstTrancheTimestamp()
         external
         whenNoDelegateCall
-        whenTrancheCountNotTooHigh
+        whenTrancheCountIsNotTooHigh
         whenIndexOneOrHigherNotContainZeroDuration
         whenTrancheTimestampCalculationsOverflow
     {
-        uint40 startTime = getBlockTimestamp();
-        LockupTranched.TrancheWithDuration[] memory tranches = defaults.tranchesWithDurations();
-        tranches[0].duration = MAX_UINT40;
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.SablierLockupTranched_StartTimeNotLessThanFirstTrancheTimestamp.selector,
-                startTime,
-                startTime + tranches[0].duration
-            )
-        );
-        createDefaultStreamWithDurations(tranches);
+        unchecked {
+            uint40 startTime = getBlockTimestamp();
+            LockupTranched.TrancheWithDuration[] memory tranches = defaults.tranchesWithDurations();
+            tranches[0].duration = MAX_UINT40;
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    Errors.SablierLockupTranched_StartTimeNotLessThanFirstTrancheTimestamp.selector,
+                    startTime,
+                    startTime + tranches[0].duration
+                )
+            );
+            createDefaultStreamWithDurations(tranches);
+        }
     }
 
     function test_RevertWhen_TrancheTimestampsAreNotOrdered()
         external
         whenNoDelegateCall
-        whenTrancheCountNotTooHigh
+        whenTrancheCountIsNotTooHigh
         whenIndexOneOrHigherNotContainZeroDuration
         whenTrancheTimestampCalculationsOverflow
     {
-        uint40 startTime = getBlockTimestamp();
+        unchecked {
+            uint40 startTime = getBlockTimestamp();
 
-        // Create new tranches that overflow when the timestamps are eventually calculated.
-        LockupTranched.TrancheWithDuration[] memory tranches = new LockupTranched.TrancheWithDuration[](2);
-        tranches[0] = LockupTranched.TrancheWithDuration({ amount: 0, duration: startTime + 1 seconds });
-        tranches[1] = defaults.tranchesWithDurations()[0];
-        tranches[1].duration = MAX_UINT40;
+            // Create new tranches that overflow when the timestamps are eventually calculated.
+            LockupTranched.TrancheWithDuration[] memory tranches = new LockupTranched.TrancheWithDuration[](2);
+            tranches[0] = LockupTranched.TrancheWithDuration({ amount: 0, duration: startTime + 1 seconds });
+            tranches[1] = defaults.tranchesWithDurations()[0];
+            tranches[1].duration = MAX_UINT40;
 
-        // Expect the relevant error to be thrown.
-        uint256 index = 1;
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.SablierLockupTranched_TrancheTimestampsNotOrdered.selector,
-                index,
-                startTime + tranches[0].duration,
-                startTime + tranches[0].duration + tranches[1].duration
-            )
-        );
+            // Expect the relevant error to be thrown.
+            uint256 index = 1;
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    Errors.SablierLockupTranched_TrancheTimestampsNotOrdered.selector,
+                    index,
+                    startTime + tranches[0].duration,
+                    startTime + tranches[0].duration + tranches[1].duration
+                )
+            );
 
-        // Create the stream.
-        createDefaultStreamWithDurations(tranches);
+            // Create the stream.
+            createDefaultStreamWithDurations(tranches);
+        }
     }
 
     function test_WhenTrancheTimestampCalculationsDoNotOverflow()
         external
         whenNoDelegateCall
-        whenTrancheCountNotTooHigh
+        whenTrancheCountIsNotTooHigh
         whenIndexOneOrHigherNotContainZeroDuration
     {
         // Make the Sender the stream's funder
@@ -174,6 +178,5 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
         address actualNFTOwner = lockupTranched.ownerOf({ tokenId: streamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
-    }
     }
 }
