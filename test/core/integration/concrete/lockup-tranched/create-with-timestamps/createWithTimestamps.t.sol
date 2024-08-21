@@ -27,29 +27,29 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         CreateWithTimestamps_Integration_Shared_Test.setUp();
     }
 
-    function test_RevertWhen_DelegateCalled() external {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData =
             abi.encodeCall(ISablierLockupTranched.createWithTimestamps, defaults.createWithTimestampsLT());
         (bool success, bytes memory returnData) = address(lockupTranched).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_SenderZeroAddress() external whenNotDelegateCalled {
+    function test_RevertWhen_SenderIsZeroAddress() external whenNoDelegateCall {
         vm.expectRevert(Errors.SablierLockup_SenderZeroAddress.selector);
         createDefaultStreamWithSender(address(0));
     }
 
-    function test_RevertWhen_RecipientZeroAddress() external whenNotDelegateCalled whenSenderNonZeroAddress {
+    function test_RevertWhen_RecipientIsZeroAddress() external whenNoDelegateCall whenSenderIsNotZeroAddress {
         address recipient = address(0);
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721InvalidReceiver.selector, recipient));
         createDefaultStreamWithRecipient(recipient);
     }
 
-    function test_RevertWhen_DepositAmountZero()
+    function test_RevertWhen_DepositAmountIsZero()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
     {
         // It is not possible to obtain a zero deposit amount from a non-zero total amount, because the `MAX_BROKER_FEE`
         // is hard coded to 10%.
@@ -58,38 +58,38 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTotalAmount(totalAmount);
     }
 
-    function test_RevertWhen_StartTimeZero()
+    function test_RevertWhen_StartTimeIsZero()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
     {
         vm.expectRevert(Errors.SablierLockup_StartTimeZero.selector);
         createDefaultStreamWithStartTime(0);
     }
 
-    function test_RevertWhen_TrancheCountZero()
+    function test_RevertWhen_TrancheCountIsZero()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
     {
         LockupTranched.Tranche[] memory tranches;
         vm.expectRevert(Errors.SablierLockupTranched_TrancheCountZero.selector);
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_TrancheCountTooHigh()
+    function test_RevertWhen_TrancheCountIsTooHigh()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
     {
         uint256 trancheCount = defaults.MAX_TRANCHE_COUNT() + 1;
         LockupTranched.Tranche[] memory tranches = new LockupTranched.Tranche[](trancheCount);
@@ -99,13 +99,13 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
 
     function test_RevertWhen_TrancheAmountsSumOverflows()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
     {
         LockupTranched.Tranche[] memory tranches = defaults.tranches();
         tranches[0].amount = MAX_UINT128;
@@ -114,15 +114,15 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_StartTimeGreaterThanFirstTrancheTimestamp()
+    function test_RevertWhen_StartTimeIsGreaterThanFirstTrancheTimestamp()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
     {
         // Change the timestamp of the first tranche.
@@ -142,15 +142,15 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_StartTimeEqualToFirstTrancheTimestamp()
+    function test_RevertWhen_StartTimeIsEqualToFirstTrancheTimestamp()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
     {
         // Change the timestamp of the first tranche.
@@ -170,17 +170,17 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_TrancheTimestampsNotOrdered()
+    function test_RevertWhen_TrancheTimestampsAreNotOrdered()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
+        whenStartTimeIsLessThanFirstTrancheTimestamp
     {
         // Swap the tranche timestamps.
         LockupTranched.Tranche[] memory tranches = defaults.tranches();
@@ -201,18 +201,18 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_DepositAmountNotEqualToTrancheAmountsSum()
+    function test_RevertWhen_DepositAmountNotEqualTrancheAmountsSum()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
-        whenTrancheTimestampsOrdered
+        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheTimestampsAreOrdered
     {
         resetPrank({ msgSender: users.sender });
 
@@ -237,19 +237,19 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         lockupTranched.createWithTimestamps(params);
     }
 
-    function test_RevertWhen_BrokerFeeTooHigh()
+    function test_RevertWhen_BrokerFeeIsTooHigh()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
-        whenTrancheTimestampsOrdered
-        whenDepositAmountEqualToTrancheAmountsSum
+        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheTimestampsAreOrdered
+        whenTheDepositAmountEqualsTrancheAmountsSum
     {
         UD60x18 brokerFee = MAX_BROKER_FEE + ud(1);
         vm.expectRevert(
@@ -258,20 +258,20 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithBroker(Broker({ account: users.broker, fee: brokerFee }));
     }
 
-    function test_RevertWhen_AssetNotContract()
+    function test_RevertWhen_AssetIsNotContract()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
-        whenTrancheTimestampsOrdered
-        whenDepositAmountEqualToTrancheAmountsSum
-        whenBrokerFeeNotTooHigh
+        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheTimestampsAreOrdered
+        whenTheDepositAmountEqualsTrancheAmountsSum
+        whenBrokerFeeIsNotTooHigh
     {
         address nonContract = address(8128);
 
@@ -282,41 +282,40 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithAsset(IERC20(nonContract));
     }
 
-    function test_CreateWithTimestamps_AssetMissingReturnValue()
+    function test_WhenAssetMissesERC20ReturnValue()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
-        whenTrancheTimestampsOrdered
-        whenDepositAmountEqualToTrancheAmountsSum
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
+        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheTimestampsAreOrdered
+        whenTheDepositAmountEqualsTrancheAmountsSum
+        whenBrokerFeeIsNotTooHigh
+        whenAssetIsContract
     {
         testCreateWithTimestamps(address(usdt));
     }
 
-    function test_CreateWithTimestamps()
+    function test_WhenAssetDoesNotMissERC20ReturnValue()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenTrancheCountNotZero
-        whenTrancheCountNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenTrancheCountIsNotZero
+        whenTrancheCountIsNotTooHigh
         whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeLessThanFirstTrancheTimestamp
-        whenTrancheTimestampsOrdered
-        whenDepositAmountEqualToTrancheAmountsSum
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
-        whenAssetERC20
+        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheTimestampsAreOrdered
+        whenTheDepositAmountEqualsTrancheAmountsSum
+        whenBrokerFeeIsNotTooHigh
+        whenAssetIsContract
     {
         testCreateWithTimestamps(address(dai));
     }
@@ -326,7 +325,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         // Make the Sender the stream's funder.
         address funder = users.sender;
 
-        // Expect the assets to be transferred from the funder to {SablierLockupTranched}.
+        // It should perform the ERC-20 transfers.
         expectCallToTransferFrom({
             asset: IERC20(asset),
             from: funder,
@@ -342,7 +341,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
             value: defaults.BROKER_FEE_AMOUNT()
         });
 
-        // Expect the relevant events to be emitted.
+        // It should emit {CreateLockupTranchedStream} and {MetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockupTranched) });
         emit MetadataUpdate({ _tokenId: streamId });
         vm.expectEmit({ emitter: address(lockupTranched) });
@@ -360,7 +359,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
             broker: users.broker
         });
 
-        // Create the stream.
+        // It should create the stream.
         streamId = createDefaultStreamWithAsset(IERC20(asset));
 
         // Assert that the stream has been created.
@@ -374,12 +373,12 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         Lockup.Status expectedStatus = Lockup.Status.PENDING;
         assertEq(actualStatus, expectedStatus);
 
-        // Assert that the next stream ID has been bumped.
+        // It should bump the next stream ID.
         uint256 actualNextStreamId = lockupTranched.nextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
 
-        // Assert that the NFT has been minted.
+        // It should mint the NFT.
         address actualNFTOwner = lockupTranched.ownerOf({ tokenId: streamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
