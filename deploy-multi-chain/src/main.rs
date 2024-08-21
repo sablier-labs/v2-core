@@ -3,6 +3,7 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 use toml::Value as TomlValue;
 
 fn main() {
@@ -14,6 +15,7 @@ fn main() {
     let mut broadcast_deployment = "".to_string();
     let mut cp_broadcasted_file = false;
     let mut gas_price = "".to_string();
+    let mut is_deterministic = false;
     let mut script_name = "DeployProtocol.s.sol".to_string();
     let mut on_all_chains = false;
     let mut provided_chains = Vec::new();
@@ -23,7 +25,10 @@ fn main() {
         match arg.as_str() {
             "--all" => on_all_chains = true,
             "--cp-bf" => cp_broadcasted_file = true,
-            "--deterministic" => script_name = "DeployDeterministicProtocol.s.sol".to_string(),
+            "--deterministic" => {
+                script_name = "DeployDeterministicProtocol.s.sol".to_string();
+                is_deterministic = true;
+            }
             "--broadcast" => broadcast_deployment = " --broadcast --verify".to_string(),
             "--gas-price" => {
                 let value = iter.next().expect("gas price value").to_string();
@@ -63,6 +68,20 @@ fn main() {
     // Output the list of unique chains
     let chains_string = provided_chains.clone().join(", ");
     println!("Deploying to the chains: {}", chains_string);
+
+    let deployment_path = get_deployment_path(is_deterministic, false);
+
+    // Create the parent directory if it doesn't exist
+    if let Some(parent) = Path::new(&deployment_path).parent() {
+        if parent.exists() {
+            _ = fs::copy(
+                &deployment_path,
+                get_deployment_path(is_deterministic, true),
+            );
+        }
+
+        fs::create_dir_all(parent).expect("Failed to create directories");
+    }
 
     for chain in provided_chains {
         let env_var = "FOUNDRY_PROFILE=optimized";
@@ -122,47 +141,6 @@ fn main() {
         .expect("Failed to run Prettier");
 }
 
-fn move_broadcast_file(script_name: &str, chain: &str, output: &str, broadcast_deployment: &str) {
-    // Find the chain_id in the `output`
-    let chain_id = output
-        .split(&format!("broadcast/{}/", script_name))
-        .nth(1)
-        .and_then(|s| s.split('/').next())
-        .unwrap_or("");
-
-    let broadcast_file_path = if broadcast_deployment.is_empty() {
-        format!(
-            "../broadcast/{}/{}/dry-run/run-latest.json",
-            script_name, chain_id
-        )
-    } else {
-        format!("../broadcast/{}/{}/run-latest.json", script_name, chain_id)
-    };
-
-    let version = serde_json::from_str::<Value>(&fs::read_to_string("../package.json").unwrap())
-        .unwrap()["version"]
-        .as_str()
-        .unwrap()
-        .to_string();
-
-    // Up to be changed, see this: https://github.com/sablier-labs/v2-deployments/issues/10
-    let destination_path = format!(
-        "../../v2-deployments/protocol/v{}/broadcasts/{}.json",
-        version, chain
-    );
-
-    // Create the parent directory if it doesn't exist
-    if let Some(parent) = Path::new(&destination_path).parent() {
-        if !parent.exists() {
-            fs::create_dir_all(parent).expect("Failed to create directories");
-        }
-    }
-
-    // Move and rename the file
-    fs::rename(&broadcast_file_path, &destination_path)
-        .expect("Failed to move and rename run-latest.json to v2-deployments");
-}
-
 // Function that reads the TOML chain configurations and extracts them
 fn get_all_chains() -> Vec<String> {
     // Define the path to the TOML file
@@ -196,4 +174,68 @@ fn get_all_chains() -> Vec<String> {
     }
 
     chains.into_iter().collect()
+}
+
+fn get_deployment_path(is_deterministic: bool, with_timestamp: bool) -> String {
+    let mut deployment_path = if is_deterministic {
+        "../deployments/deterministic.md".to_string()
+    } else {
+        "../deployments/non_deterministic.md".to_string()
+    };
+
+    if with_timestamp {
+        // Get the current Unix timestamp as a string
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("Time went backwards")
+            .as_secs()
+            .to_string();
+
+        // Insert the timestamp before the filename
+        let filename_start = deployment_path.rfind('/').unwrap() + 1;
+        deployment_path.insert_str(filename_start, &format!("{}_{}", timestamp, ""));
+    }
+
+    deployment_path
+}
+
+fn move_broadcast_file(script_name: &str, chain: &str, output: &str, broadcast_deployment: &str) {
+    // Find the chain_id in the `output`
+    let chain_id = output
+        .split(&format!("broadcast/{}/", script_name))
+        .nth(1)
+        .and_then(|s| s.split('/').next())
+        .unwrap_or("");
+
+    let broadcast_file_path = if broadcast_deployment.is_empty() {
+        format!(
+            "../broadcast/{}/{}/dry-run/run-latest.json",
+            script_name, chain_id
+        )
+    } else {
+        format!("../broadcast/{}/{}/run-latest.json", script_name, chain_id)
+    };
+
+    let version = serde_json::from_str::<Value>(&fs::read_to_string("../package.json").unwrap())
+        .unwrap()["version"]
+        .as_str()
+        .unwrap()
+        .to_string();
+
+    // Up to be changed, see this: https://github.com/sablier-labs/v2-deployments/issues/10
+    let dest_path = format!(
+        "../../v2-deployments/protocol/v{}/broadcasts/{}.json",
+        version, chain
+    );
+
+    // Create the parent directory if it doesn't exist
+    if let Some(parent) = Path::new(&dest_path).parent() {
+        if !parent.exists() {
+            fs::create_dir_all(parent).expect("Failed to create directories");
+        }
+    }
+
+    // Move and rename the file
+    fs::rename(&broadcast_file_path, &dest_path)
+        .expect("Failed to move and rename run-latest.json to v2-deployments");
 }

@@ -20,12 +20,18 @@ abstract contract ProtocolScript is BaseScript {
     /// @dev Admin address mapped by the chain Id.
     mapping(uint256 chainId => address admin) internal adminMap;
 
+    /// @dev Chain names mapped by the chain Id.
+    mapping(uint256 chainId => string name) internal nameMap;
+
     /// @dev Explorer URL mapped by the chain Id.
     mapping(uint256 chainId => string explorerUrl) internal explorerMap;
 
     constructor(string memory deterministicOrNot) {
         // Populate the admin map.
         populateAdminMap();
+
+        // Populate the chain name map.
+        populateChainNameMap();
 
         // Populate the explorer URLs.
         populateExplorerMap();
@@ -40,27 +46,11 @@ abstract contract ProtocolScript is BaseScript {
             explorerMap[block.chainid] = "<explorer_url_missing>";
         }
 
-        // Create the deployment directory if it doesn't exist. This requires `--ffi` flag.
-        if (!vm.isDir("deployments")) {
-            string[] memory mkDirCommand = new string[](2);
-            mkDirCommand[0] = "mkdir";
-            mkDirCommand[1] = "deployments";
-            vm.ffi(mkDirCommand);
-        }
-
         // Set the deployment file path.
-        deploymentFile = string.concat("deployments/", block.chainid.toString(), "_", deterministicOrNot, ".md");
+        deploymentFile = string.concat("deployments/", deterministicOrNot, ".md");
 
-        // TODO: if the file exists, first save a copy of it with a different name, then overwrite it.
-        // if (vm.isFile(deploymentFile)) {
-        //     deploymentFile = string.concat(deploymentFile, ".md");
-        // }
-
-        // Create the file if it doesn't exist, otherwise overwrite it.
-        vm.writeFile({
-            path: deploymentFile,
-            data: string.concat("# Deployed Addresses for chain ", block.chainid.toString(), "\n\n")
-        });
+        // Create the file .
+        vm.writeFile({ path: deploymentFile, data: string.concat("# ", nameMap[block.chainid], "\n\n") });
     }
 
     /// @dev Function to append the deployed addresses to the deployment file.
@@ -178,12 +168,42 @@ abstract contract ProtocolScript is BaseScript {
         adminMap[534_352] = 0x0F7Ad835235Ede685180A5c611111610813457a9; // Scroll
     }
 
+    /// @dev Populates the chain name map.
+    function populateChainNameMap() internal {
+        nameMap[42_161] = "Arbitrum";
+        nameMap[43_114] = "Avalanche";
+        nameMap[8453] = "Base";
+        nameMap[84_532] = "Base Sepolia";
+        nameMap[80_084] = "Berachain Bartio";
+        nameMap[81_457] = "Blast";
+        nameMap[168_587_773] = "Blast Sepolia";
+        nameMap[56] = "BNB Smart Chain";
+        nameMap[100] = "Gnosis";
+        nameMap[1890] = "Lightlink";
+        nameMap[59_144] = "Linea";
+        nameMap[59_141] = "Linea Sepolia";
+        nameMap[1] = "Mainnet";
+        nameMap[333_000_333] = "Meld";
+        nameMap[34_443] = "Mode";
+        nameMap[919] = "Mode Sepolia";
+        nameMap[2810] = "Morph Holesky";
+        nameMap[10] = "Optimism";
+        nameMap[11_155_420] = "Optimism Sepolia";
+        nameMap[137] = "Polygon";
+        nameMap[534_352] = "Scroll";
+        nameMap[11_155_111] = "Sepolia";
+        nameMap[53_302] = "Superseed Sepolia";
+        nameMap[167_009] = "Taiko Hekla";
+        nameMap[167_000] = "Taiko Mainnet";
+    }
+
     /// @dev Populates the explorer map.
     function populateExplorerMap() internal {
         explorerMap[42_161] = "https://arbiscan.io/address/";
         explorerMap[43_114] = "https://snowtrace.io/address/";
         explorerMap[8453] = "https://basescan.org/address/";
         explorerMap[84_532] = "https://sepolia.basescan.org/address/";
+        explorerMap[80_084] = "https://bartio.beratrail.io/address/";
         explorerMap[81_457] = "https://blastscan.io/address/";
         explorerMap[168_587_773] = "https://sepolia.blastscan.io/address/";
         explorerMap[56] = "https://bscscan.com/address/";
@@ -194,11 +214,15 @@ abstract contract ProtocolScript is BaseScript {
         explorerMap[1890] = "https://phoenix.lightlink.io/address/";
         explorerMap[34_443] = "https://explorer.mode.network/address/";
         explorerMap[919] = "https://sepolia.explorer.mode.network/address/";
+        explorerMap[2810] = "https://explorer-holesky.morphl2.io/address/";
         explorerMap[333_000_333] = "https://meldscan.io/address/";
         explorerMap[10] = "https://optimistic.etherscan.io/address/";
         explorerMap[11_155_420] = "https://sepolia-optimistic.etherscan.io/address/";
         explorerMap[137] = "https://polygonscan.com/address/";
         explorerMap[534_352] = "https://scrollscan.com/address/";
         explorerMap[11_155_111] = "https://sepolia.etherscan.io/address/";
+        explorerMap[53_302] = "https://sepolia-explorer.superseed.xyz/address/";
+        explorerMap[167_009] = "https://explorer.hekla.taiko.xyz/address/";
+        explorerMap[167_000] = "https://taikoscan.io/address/";
     }
 }
