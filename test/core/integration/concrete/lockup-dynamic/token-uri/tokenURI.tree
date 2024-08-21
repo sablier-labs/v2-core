@@ -1,5 +1,8 @@
 TokenURI_LockupDynamic_Integration_Concrete_Test
 ├── given NFT does not exist
-│  └── it should revert
+│   └── it should revert
 └── given NFT exists
-   └── it should return the correct token URI
+    ├── when token URI is decoded
+    │   └── it should return the correct token URI
+    └── when token URI is not decoded
+        └── it should return the correct token URI

@@ -26,42 +26,40 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         CreateWithTimestamps_Integration_Shared_Test.setUp();
     }
 
-    function test_RevertWhen_DelegateCalled() external {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData =
             abi.encodeCall(ISablierLockupLinear.createWithTimestamps, defaults.createWithTimestampsLL());
         (bool success, bytes memory returnData) = address(lockupLinear).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_SenderZeroAddress() external whenNotDelegateCalled {
+    function test_RevertWhen_SenderIsZeroAddress() external whenNoDelegateCall {
         vm.expectRevert(Errors.SablierLockup_SenderZeroAddress.selector);
         createDefaultStreamWithSender(address(0));
     }
 
-    function test_RevertWhen_RecipientZeroAddress() external whenNotDelegateCalled whenSenderNonZeroAddress {
+    function test_RevertWhen_RecipientIsZeroAddress() external whenNoDelegateCall whenSenderIsNotZeroAddress {
         address recipient = address(0);
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721InvalidReceiver.selector, recipient));
         createDefaultStreamWithRecipient(recipient);
     }
 
-    /// @dev It is not possible to obtain a zero deposit amount from a non-zero total amount, because the
-    /// `MAX_BROKER_FEE` is hard coded to 10%.
-    function test_RevertWhen_DepositAmountZero()
+    function test_RevertWhen_DepositAmountIsZero()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
     {
         vm.expectRevert(Errors.SablierLockup_DepositAmountZero.selector);
         createDefaultStreamWithTotalAmount(0);
     }
 
-    function test_RevertWhen_StartTimeZero()
+    function test_RevertWhen_StartTimeIsZero()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
     {
         uint40 cliffTime = defaults.CLIFF_TIME();
         uint40 endTime = defaults.END_TIME();
@@ -70,14 +68,14 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithTimestamps(LockupLinear.Timestamps({ start: 0, cliff: cliffTime, end: endTime }));
     }
 
-    function test_RevertWhen_StartTimeNotLessThanEndTime()
+    function test_RevertWhen_StartTimeIsNotLessThanEndTime()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsZero
     {
         uint40 startTime = defaults.END_TIME();
         uint40 endTime = defaults.START_TIME();
@@ -88,14 +86,14 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithTimestamps(LockupLinear.Timestamps({ start: startTime, cliff: 0, end: endTime }));
     }
 
-    function test_CreateWithTimestamps_StartTimeLessThanEndTime()
+    function test_WhenStartTimeIsLessThanEndTime()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeZero
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsZero
     {
         createDefaultStreamWithTimestamps(
             LockupLinear.Timestamps({ start: defaults.START_TIME(), cliff: 0, end: defaults.END_TIME() })
@@ -118,15 +116,14 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }
 
-    function test_RevertWhen_StartTimeGreaterThanCliffTime()
+    function test_RevertWhen_StartTimeIsNotLessThanCliffTime()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeGreaterThanZero
-        whenStartTimeLessThanEndTime
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsGreaterThanZero
     {
         uint40 startTime = defaults.CLIFF_TIME();
         uint40 cliffTime = defaults.START_TIME();
@@ -139,15 +136,15 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithTimestamps(LockupLinear.Timestamps({ start: startTime, cliff: cliffTime, end: endTime }));
     }
 
-    function test_RevertWhen_CliffTimeNotLessThanEndTime()
+    function test_RevertWhen_CliffTimeIsNotLessThanEndTime()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeGreaterThanZero
-        whenStartTimeLessThanEndTime
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsGreaterThanZero
+        whenStartTimeIsLessThanCliffTime
     {
         uint40 startTime = defaults.START_TIME();
         uint40 cliffTime = defaults.END_TIME();
@@ -158,16 +155,16 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithTimestamps(LockupLinear.Timestamps({ start: startTime, cliff: cliffTime, end: endTime }));
     }
 
-    function test_RevertWhen_BrokerFeeTooHigh()
+    function test_RevertWhen_BrokerFeeIsTooHigh()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeGreaterThanZero
-        whenStartTimeLessThanEndTime
-        whenCliffTimeLessThanEndTime
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsGreaterThanZero
+        whenStartTimeIsLessThanCliffTime
+        whenCliffTimeIsLessThanEndTime
     {
         UD60x18 brokerFee = MAX_BROKER_FEE + ud(1);
         vm.expectRevert(
@@ -176,51 +173,51 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithBroker(Broker({ account: users.broker, fee: brokerFee }));
     }
 
-    function test_RevertWhen_AssetNotContract()
+    function test_RevertWhen_AssetIsNotContract()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeGreaterThanZero
-        whenStartTimeLessThanEndTime
-        whenCliffTimeLessThanEndTime
-        whenBrokerFeeNotTooHigh
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsGreaterThanZero
+        whenStartTimeIsLessThanCliffTime
+        whenCliffTimeIsLessThanEndTime
+        whenBrokerFeeIsNotTooHigh
     {
         address nonContract = address(8128);
         vm.expectRevert(abi.encodeWithSelector(Address.AddressEmptyCode.selector, nonContract));
         createDefaultStreamWithAsset(IERC20(nonContract));
     }
 
-    function test_CreateWithTimestamps_AssetMissingReturnValue()
+    function test_WhenAssetMissesERC20ReturnValue()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenRecipientNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeGreaterThanZero
-        whenStartTimeLessThanEndTime
-        whenCliffTimeLessThanEndTime
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsGreaterThanZero
+        whenStartTimeIsLessThanCliffTime
+        whenCliffTimeIsLessThanEndTime
+        whenBrokerFeeIsNotTooHigh
+        whenAssetIsContract
     {
         testCreateWithTimestamps(address(usdt));
     }
 
-    function test_CreateWithTimestamps()
+    function test_WhenAssetDoesNotMissERC20ReturnValue()
         external
-        whenNotDelegateCalled
-        whenSenderNonZeroAddress
-        whenDepositAmountNotZero
-        whenStartTimeNotZero
-        whenCliffTimeGreaterThanZero
-        whenStartTimeLessThanEndTime
-        whenCliffTimeLessThanEndTime
-        whenBrokerFeeNotTooHigh
-        whenAssetContract
-        whenAssetERC20
+        whenNoDelegateCall
+        whenSenderIsNotZeroAddress
+        whenRecipientIsNotZeroAddress
+        whenDepositAmountIsNotZero
+        whenStartTimeIsNotZero
+        whenCliffTimeIsGreaterThanZero
+        whenStartTimeIsLessThanCliffTime
+        whenCliffTimeIsLessThanEndTime
+        whenBrokerFeeIsNotTooHigh
+        whenAssetIsContract
     {
         testCreateWithTimestamps(address(dai));
     }
@@ -230,7 +227,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         // Make the Sender the stream's funder.
         address funder = users.sender;
 
-        // Expect the assets to be transferred from the funder to {SablierLockupLinear}.
+        // It should perform the ERC-20 transfers.
         expectCallToTransferFrom({
             asset: IERC20(asset),
             from: funder,
@@ -246,7 +243,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
             value: defaults.BROKER_FEE_AMOUNT()
         });
 
-        // Expect the relevant events to be emitted.
+        // It should emit {MetadataUpdate} and {CreateLockupLinearStream} events.
         vm.expectEmit({ emitter: address(lockupLinear) });
         emit MetadataUpdate({ _tokenId: streamId });
         vm.expectEmit({ emitter: address(lockupLinear) });
@@ -266,7 +263,7 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         // Create the stream.
         createDefaultStreamWithAsset(IERC20(asset));
 
-        // Assert that the stream has been created.
+        // It should create the stream.
         LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);
         LockupLinear.StreamLL memory expectedStream = defaults.lockupLinearStream();
         expectedStream.asset = IERC20(asset);
@@ -277,12 +274,12 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         Lockup.Status expectedStatus = Lockup.Status.PENDING;
         assertEq(actualStatus, expectedStatus);
 
-        // Assert that the next stream ID has been bumped.
+        // It should bump the next stream ID.
         uint256 actualNextStreamId = lockupLinear.nextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
 
-        // Assert that the NFT has been minted.
+        // It should mint the NFT.
         address actualNFTOwner = lockupLinear.ownerOf({ tokenId: streamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
