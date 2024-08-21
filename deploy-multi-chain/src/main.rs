@@ -1,6 +1,8 @@
 use serde_json::Value;
 use std::env;
 use std::fs;
+use std::fs::OpenOptions;
+use std::io::Write;
 use std::path::Path;
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -83,6 +85,9 @@ fn main() {
         fs::create_dir_all(parent).expect("Failed to create directories");
     }
 
+    // Append the type of deployment at the start of the deployment file
+    append_type_of_deployment(&deployment_path, broadcast_deployment.is_empty());
+
     for chain in provided_chains {
         let env_var = "FOUNDRY_PROFILE=optimized";
         let command = "forge";
@@ -129,7 +134,7 @@ fn main() {
                 &script_name,
                 &chain,
                 &String::from_utf8_lossy(&output.stdout),
-                &broadcast_deployment,
+                broadcast_deployment.is_empty(),
             );
         }
     }
@@ -139,6 +144,22 @@ fn main() {
         .args(["prettier", "--write", "../deployments/**/*.md"])
         .status()
         .expect("Failed to run Prettier");
+}
+
+fn append_type_of_deployment(deployment_path: &str, is_broadcast_deployment: bool) {
+    let message = if is_broadcast_deployment {
+        " # This is a deployment simulation\n\n\n"
+    } else {
+        " # This deployment is broadcasted\n"
+    };
+
+    OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open(deployment_path)
+        .expect("Failed to open the file")
+        .write_all(message.as_bytes())
+        .expect("Failed to write to the file");
 }
 
 // Function that reads the TOML chain configurations and extracts them
@@ -199,7 +220,12 @@ fn get_deployment_path(is_deterministic: bool, with_timestamp: bool) -> String {
     deployment_path
 }
 
-fn move_broadcast_file(script_name: &str, chain: &str, output: &str, broadcast_deployment: &str) {
+fn move_broadcast_file(
+    script_name: &str,
+    chain: &str,
+    output: &str,
+    is_broadcast_deployment: bool,
+) {
     // Find the chain_id in the `output`
     let chain_id = output
         .split(&format!("broadcast/{}/", script_name))
@@ -207,7 +233,7 @@ fn move_broadcast_file(script_name: &str, chain: &str, output: &str, broadcast_d
         .and_then(|s| s.split('/').next())
         .unwrap_or("");
 
-    let broadcast_file_path = if broadcast_deployment.is_empty() {
+    let broadcast_file_path = if is_broadcast_deployment {
         format!(
             "../broadcast/{}/{}/dry-run/run-latest.json",
             script_name, chain_id

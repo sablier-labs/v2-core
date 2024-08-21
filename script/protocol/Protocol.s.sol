@@ -49,8 +49,8 @@ abstract contract ProtocolScript is BaseScript {
         // Set the deployment file path.
         deploymentFile = string.concat("deployments/", deterministicOrNot, ".md");
 
-        // Create the file .
-        vm.writeFile({ path: deploymentFile, data: string.concat("# ", nameMap[block.chainid], "\n\n") });
+        // Append the chain name to the deployment file.
+        _appendToFile(string.concat("# ", nameMap[block.chainid], "\n\n"));
     }
 
     /// @dev Function to append the deployed addresses to the deployment file.
