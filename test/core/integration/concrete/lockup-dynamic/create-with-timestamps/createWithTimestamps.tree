@@ -1,56 +1,54 @@
-createWithTimestamps.t.sol
-├── when delegate called
+CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test
+├── when delegate call
 │  └── it should revert
-└── when not delegate called
-   ├── when the sender is the zero address
+└── when no delegate call
+   ├── when sender is zero address
    │  └── it should revert
-   └── when the sender is not the zero address
-      ├── when the recipient is the zero address
+   └── when sender is not zero address
+      ├── when recipient is zero address
       │  └── it should revert
-      └── when the recipient is not the zero address
-         ├── when the deposit amount is zero
+      └── when recipient is not zero address
+         ├── when deposit amount is zero
          │  └── it should revert
-         └── when the deposit amount is not zero
-            ├── when the start time is zero
+         └── when deposit amount is not zero
+            ├── when start time is zero
             │  └── it should revert
-            └── when the start time is not zero
-               ├── when the segment count is zero
+            └── when start time is not zero
+               ├── when segment count is zero
                │  └── it should revert
-               └── when the segment count is not zero
-                  ├── when the segment count is too high
+               └── when segment count is not zero
+                  ├── when segment count is too high
                   │  └── it should revert
-                  └── when the segment count is not too high
-                     ├── when the segment amounts sum overflows
+                  └── when segment count is not too high
+                     ├── when segment amounts sum overflows
                      │  └── it should revert
-                     └── when the segment amounts sum does not overflow
-                        ├── when the start time is greater than the first segment timestamp
+                     └── when segment amounts sum does not overflow
+                        ├── when start time is greater than first segment timestamp
                         │  └── it should revert
-                        ├── when the start time is equal to the first segment timestamp
+                        ├── when start time is equal to first segment timestamp
                         │  └── it should revert
-                        └── when the start time is less than the first segment timestamp
-                           ├── when the segment timestamps are not ordered
+                        └── when start time is less than first segment timestamp
+                           ├── when segment timestamps are not ordered
                            │  └── it should revert
-                           └── when the segment timestamps are ordered
-                              ├── when the deposit amount is not equal to the segment amounts sum
+                           └── when segment timestamps are ordered
+                              ├── when deposit amount not equal segment amounts sum
                               │  └── it should revert
-                              └── when the deposit amount is equal to the segment amounts sum
-                                 ├── when the broker fee is too high
+                              └── when deposit amount not equals segment amounts sum
+                                 ├── when broker fee is too high
                                  │  └── it should revert
-                                 └── when the broker fee is not too high
-                                    ├── when the asset is not a contract
+                                 └── when broker fee is not too high
+                                    ├── when asset is not contract
                                     │  └── it should revert
-                                    └── when the asset is a contract
-                                       ├── when the asset misses the ERC-20 return value
+                                    └── when asset is contract
+                                       ├── when asset misses ERC20 return value
                                        │  ├── it should create the stream
                                        │  ├── it should bump the next stream ID
                                        │  ├── it should mint the NFT
-                                       │  ├── it should emit a {MetadataUpdate} event
-                                       │  ├── it should perform the ERC-20 transfers
-                                       │  └── it should emit a {CreateLockupDynamicStream} event
-                                       └── when the asset does not miss the ERC-20 return value
+                                       │  ├── it should emit {CreateLockupDynamicStream} and {MetadataUpdate} events
+                                       │  └── it should perform the ERC-20 transfers
+                                       └── when asset does not miss ERC20 return value
                                           ├── it should create the stream
                                           ├── it should bump the next stream ID
                                           ├── it should mint the NFT
-                                          ├── it should emit a {MetadataUpdate} event
-                                          ├── it should perform the ERC-20 transfers
-                                          └── it should emit a {CreateLockupDynamicStream} event
+                                          ├── it should emit {CreateLockupDynamicStream} and {MetadataUpdate} events
+                                          └── it should perform the ERC-20 transfers

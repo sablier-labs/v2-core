@@ -24,22 +24,24 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         streamId = lockupDynamic.nextStreamId();
     }
 
-    /// @dev it should revert.
-    function test_RevertWhen_DelegateCalled() external {
+    function test_RevertWhen_DelegateCall() external {
         bytes memory callData =
             abi.encodeCall(ISablierLockupDynamic.createWithDurations, defaults.createWithDurationsLD());
         (bool success, bytes memory returnData) = address(lockupDynamic).delegatecall(callData);
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    /// @dev it should revert.
-    function test_RevertWhen_SegmentCountTooHigh() external whenNotDelegateCalled {
+    function test_RevertWhen_SegmentCountTooHigh() external whenNoDelegateCall {
         LockupDynamic.SegmentWithDuration[] memory segments = new LockupDynamic.SegmentWithDuration[](25_000);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupDynamic_SegmentCountTooHigh.selector, 25_000));
         createDefaultStreamWithDurations(segments);
     }
 
-    function test_RevertWhen_DurationsZero() external whenNotDelegateCalled whenSegmentCountNotTooHigh {
+    function test_RevertWhen_IndexOneOrHigherContainsZeroDuration()
+        external
+        whenNoDelegateCall
+        whenSegmentCountNotTooHigh
+    {
         uint40 startTime = getBlockTimestamp();
         LockupDynamic.SegmentWithDuration[] memory segments = defaults.createWithDurationsLD().segments;
         segments[1].duration = 0;
@@ -55,68 +57,62 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         createDefaultStreamWithDurations(segments);
     }
 
-    function test_RevertWhen_TimestampsCalculationsOverflows_StartTimeNotLessThanFirstSegmentTimestamp()
+    function test_RevertWhen_StartTimeIsGreaterThanFirstSegmentTimestamp()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         whenSegmentCountNotTooHigh
-        whenDurationsNotZero
+        whenIndexOneOrHigherNotContainZeroDuration
+        whenSegmentTimestampCalculationsOverflow
     {
-        unchecked {
-            uint40 startTime = getBlockTimestamp();
-            LockupDynamic.SegmentWithDuration[] memory segments = defaults.segmentsWithDurations();
-            segments[0].duration = MAX_UINT40;
-            vm.expectRevert(
-                abi.encodeWithSelector(
-                    Errors.SablierLockupDynamic_StartTimeNotLessThanFirstSegmentTimestamp.selector,
-                    startTime,
-                    startTime + segments[0].duration
-                )
-            );
-            createDefaultStreamWithDurations(segments);
-        }
+        uint40 startTime = getBlockTimestamp();
+        LockupDynamic.SegmentWithDuration[] memory segments = defaults.segmentsWithDurations();
+        segments[0].duration = MAX_UINT40;
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierLockupDynamic_StartTimeNotLessThanFirstSegmentTimestamp.selector,
+                startTime,
+                startTime + segments[0].duration
+            )
+        );
+        createDefaultStreamWithDurations(segments);
     }
 
-    function test_RevertWhen_TimestampsCalculationsOverflows_SegmentTimestampsNotOrdered()
+    function test_RevertWhen_SegmentTimestampsAreNotOrdered()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         whenSegmentCountNotTooHigh
-        whenDurationsNotZero
+        whenIndexOneOrHigherNotContainZeroDuration
+        whenSegmentTimestampCalculationsOverflow
     {
-        unchecked {
-            uint40 startTime = getBlockTimestamp();
+        uint40 startTime = getBlockTimestamp();
 
-            // Create new segments that overflow when the timestamps are eventually calculated.
-            LockupDynamic.SegmentWithDuration[] memory segments = new LockupDynamic.SegmentWithDuration[](2);
-            segments[0] = LockupDynamic.SegmentWithDuration({
-                amount: 0,
-                exponent: ud2x18(1e18),
-                duration: startTime + 1 seconds
-            });
-            segments[1] = defaults.segmentsWithDurations()[0];
-            segments[1].duration = MAX_UINT40;
+        // Create new segments that overflow when the timestamps are eventually calculated.
+        LockupDynamic.SegmentWithDuration[] memory segments = new LockupDynamic.SegmentWithDuration[](2);
+        segments[0] =
+            LockupDynamic.SegmentWithDuration({ amount: 0, exponent: ud2x18(1e18), duration: startTime + 1 seconds });
+        segments[1] = defaults.segmentsWithDurations()[0];
+        segments[1].duration = MAX_UINT40;
 
-            // Expect the relevant error to be thrown.
-            uint256 index = 1;
-            vm.expectRevert(
-                abi.encodeWithSelector(
-                    Errors.SablierLockupDynamic_SegmentTimestampsNotOrdered.selector,
-                    index,
-                    startTime + segments[0].duration,
-                    startTime + segments[0].duration + segments[1].duration
-                )
-            );
+        // Expect the relevant error to be thrown.
+        uint256 index = 1;
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierLockupDynamic_SegmentTimestampsNotOrdered.selector,
+                index,
+                startTime + segments[0].duration,
+                startTime + segments[0].duration + segments[1].duration
+            )
+        );
 
-            // Create the stream.
-            createDefaultStreamWithDurations(segments);
-        }
+        // Create the stream.
+        createDefaultStreamWithDurations(segments);
     }
 
-    function test_CreateWithDurations()
+    function test_WhenSegmentTimestampCalculationsDoNotOverflow()
         external
-        whenNotDelegateCalled
+        whenNoDelegateCall
         whenSegmentCountNotTooHigh
-        whenDurationsNotZero
-        whenTimestampsCalculationsDoNotOverflow
+        whenIndexOneOrHigherNotContainZeroDuration
     {
         // Make the Sender the stream's funder
         address funder = users.sender;
@@ -132,13 +128,13 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         segments[0].timestamp = timestamps.start + segmentsWithDurations[0].duration;
         segments[1].timestamp = segments[0].timestamp + segmentsWithDurations[1].duration;
 
-        // Expect the assets to be transferred from the funder to {SablierLockupDynamic}.
+        // It should perform the ERC-20 transfers.
         expectCallToTransferFrom({ from: funder, to: address(lockupDynamic), value: defaults.DEPOSIT_AMOUNT() });
 
         // Expect the broker fee to be paid to the broker.
         expectCallToTransferFrom({ from: funder, to: users.broker, value: defaults.BROKER_FEE_AMOUNT() });
 
-        // Expect the relevant events to be emitted.
+        // It should emit {CreateLockupDynamicStream} and {MetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockupDynamic) });
         emit MetadataUpdate({ _tokenId: streamId });
         vm.expectEmit({ emitter: address(lockupDynamic) });
@@ -159,7 +155,7 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         // Create the stream.
         createDefaultStreamWithDurations();
 
-        // Assert that the stream has been created.
+        // It should create the stream.
         LockupDynamic.StreamLD memory actualStream = lockupDynamic.getStream(streamId);
         LockupDynamic.StreamLD memory expectedStream = defaults.lockupDynamicStream();
         expectedStream.endTime = timestamps.end;
@@ -172,12 +168,12 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         Lockup.Status expectedStatus = Lockup.Status.STREAMING;
         assertEq(actualStatus, expectedStatus);
 
-        // Assert that the next stream ID has been bumped.
+        // It should bump the next stream ID.
         uint256 actualNextStreamId = lockupDynamic.nextStreamId();
         uint256 expectedNextStreamId = streamId + 1;
         assertEq(actualNextStreamId, expectedNextStreamId, "nextStreamId");
 
-        // Assert that the NFT has been minted.
+        // It should mint the NFT.
         address actualNFTOwner = lockupDynamic.ownerOf({ tokenId: streamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");

@@ -1,22 +1,21 @@
-createWithDurations.t.sol
-├── when delegate called
+CreateWithDurations_LockupDynamic_Integration_Concrete_Test
+├── when delegate call
 │  └── it should revert
-└── when not delegate called
-   ├── when the segment count is too high
+└── when no delegate call
+   ├── when segment count too high
    │  └── it should revert
-   └── when the segment count is not too high
-       ├── when at least one of the durations at index one or greater is zero
+   └── when segment count not too high
+       ├── when index one or higher contains zero duration
        │  └── it should revert
-       └── when none of the durations is zero
-          ├── when the segment timestamp calculations overflow uint256
-          │  ├── when the start time is not less than the first segment timestamp
+       └── when index one or higher not contain zero duration
+          ├── when segment timestamp calculations overflow
+          │  ├── when start time is greater than first segment timestamp
           │  │  └── it should revert
-          │  └── when the segment timestamps are not ordered
+          │  └── when segment timestamps are not ordered
           │     └── it should revert
-          └── when the segment timestamp calculations do not overflow uint256
+          └── when segment timestamp calculations do not overflow
              ├── it should create the stream
              ├── it should bump the next stream ID
              ├── it should mint the NFT
-             ├── it should emit a {MetadataUpdate} event
-             ├── it should perform the ERC-20 transfers
-             └── it should emit a {CreateLockupDynamicStream} event
+             ├── it should emit {CreateLockupDynamicStream} and {MetadataUpdate} events
+             └── it should perform the ERC-20 transfers

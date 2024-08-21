@@ -35,16 +35,10 @@ contract TokenURI_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Integ
         lockupDynamic.tokenURI({ tokenId: nullStreamId });
     }
 
-    modifier givenNFTExists() {
+    function test_GivenNFTExists() external skipOnMismatch {
         defaultStreamId = createDefaultStream();
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.TOTAL_DURATION() / 4 });
-        _;
-    }
 
-    /// @dev If you need to update the hard-coded token URI:
-    /// 1. Use "vm.writeFile" to log the strings to a file.
-    /// 2. Remember to escape the EOL character \n with \\n.
-    function test_TokenURI_Decoded() external skipOnMismatch givenNFTExists {
         string memory tokenURI = lockupDynamic.tokenURI(defaultStreamId);
         tokenURI = vm.replace({ input: tokenURI, from: "data:application/json;base64,", to: "" });
         string memory actualDecodedTokenURI = string(Base64.decode(tokenURI));
