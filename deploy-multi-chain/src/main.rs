@@ -73,16 +73,16 @@ fn main() {
 
     let deployment_path = get_deployment_path(is_deterministic, false);
 
-    // Create the parent directory if it doesn't exist
-    if let Some(parent) = Path::new(&deployment_path).parent() {
-        if parent.exists() {
-            _ = fs::copy(
-                &deployment_path,
-                get_deployment_path(is_deterministic, true),
-            );
-        }
-
-        fs::create_dir_all(parent).expect("Failed to create directories");
+    // Check if the deployment file exists
+    if Path::new(&deployment_path).exists() {
+        // Move the existing file to a new path with timestamp
+        _ = fs::rename(
+            &deployment_path,
+            get_deployment_path(is_deterministic, true),
+        );
+    } else {
+        // Create the parent directory
+        _ = fs::create_dir_all(Path::new(&deployment_path).parent().unwrap());
     }
 
     // Append the type of deployment at the start of the deployment file
@@ -113,53 +113,53 @@ fn main() {
         let env_var_parts: Vec<&str> = env_var.split('=').collect();
         env::set_var(env_var_parts[0], env_var_parts[1]);
 
-        // Create the CLI
-        let mut cmd = Command::new(command);
-        cmd.args(&command_args);
+        // Create the CLI and capture the command output
+        let output = Command::new(command)
+            .args(command_args)
+            .output()
+            .expect("Failed to run command");
 
-        // Capture the command output
-        let output = cmd.output().expect("Failed to run command");
-
-        // Check if the command executed successfully
+        // Process command output
+        let output_str = String::from_utf8_lossy(&output.stdout);
         if output.status.success() {
-            let output_str = String::from_utf8_lossy(&output.stdout);
             println!("Command output: {}", output_str);
         } else {
-            let error_str = String::from_utf8_lossy(&output.stderr);
-            eprintln!("Command failed with error: {}", error_str);
+            eprintln!(
+                "Command failed with error: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
         }
 
+        // Move broadcast file if needed
         if cp_broadcasted_file {
             move_broadcast_file(
                 &script_name,
                 &chain,
-                &String::from_utf8_lossy(&output.stdout),
+                &output_str,
                 broadcast_deployment.is_empty(),
             );
         }
     }
 
     // Run Prettier to format the deployment files
-    let _ = Command::new("bun")
+    _ = Command::new("bun")
         .args(["prettier", "--write", "../deployments/**/*.md"])
         .status()
         .expect("Failed to run Prettier");
 }
 
 fn append_type_of_deployment(deployment_path: &str, is_broadcast_deployment: bool) {
-    let message = if is_broadcast_deployment {
-        " # This is a deployment simulation\n\n\n"
-    } else {
-        " # This deployment is broadcasted\n"
+    let message = match is_broadcast_deployment {
+        true => " # This deployment is a simulation\n\n",
+        false => " # This deployment is broadcasted\n\n",
     };
 
     OpenOptions::new()
         .append(true)
         .create(true)
         .open(deployment_path)
-        .expect("Failed to open the file")
-        .write_all(message.as_bytes())
-        .expect("Failed to write to the file");
+        .and_then(|mut file| file.write_all(message.as_bytes()))
+        .expect("Failed to open or write to the file");
 }
 
 // Function that reads the TOML chain configurations and extracts them

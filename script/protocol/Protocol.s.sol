@@ -20,11 +20,11 @@ abstract contract ProtocolScript is BaseScript {
     /// @dev Admin address mapped by the chain Id.
     mapping(uint256 chainId => address admin) internal adminMap;
 
-    /// @dev Chain names mapped by the chain Id.
-    mapping(uint256 chainId => string name) internal nameMap;
-
     /// @dev Explorer URL mapped by the chain Id.
     mapping(uint256 chainId => string explorerUrl) internal explorerMap;
+
+    /// @dev Chain names mapped by the chain Id.
+    mapping(uint256 chainId => string name) internal nameMap;
 
     constructor(string memory deterministicOrNot) {
         // Populate the admin map.
@@ -44,6 +44,11 @@ abstract contract ProtocolScript is BaseScript {
         // If there is no explorer URL set for a specific chain, use a placeholder.
         if (explorerMap[block.chainid].equal("")) {
             explorerMap[block.chainid] = "<explorer_url_missing>";
+        }
+
+        // If there is no chain name set for a specific chain, use the chain ID.
+        if (nameMap[block.chainid].equal("")) {
+            nameMap[block.chainid] = block.chainid.toString();
         }
 
         // Set the deployment file path.
@@ -117,43 +122,6 @@ abstract contract ProtocolScript is BaseScript {
         _appendToFile(merkleFactoryLine);
     }
 
-    /// @dev Append a line to the deployment file path.
-    function _appendToFile(string memory line) private {
-        vm.writeLine({ path: deploymentFile, data: line });
-    }
-
-    function _getContractLine(
-        string memory contractName,
-        string memory contractAddress,
-        string memory coreOrPeriphery
-    )
-        private
-        view
-        returns (string memory)
-    {
-        string memory version = getVersion();
-        version = string.concat("v", version);
-
-        return string.concat(
-            "| ",
-            contractName,
-            " | [",
-            contractAddress,
-            "](",
-            explorerMap[block.chainid],
-            contractAddress,
-            ") | [",
-            coreOrPeriphery,
-            "-",
-            version,
-            "](https://github.com/sablier-labs/v2-deployments/tree/main/",
-            coreOrPeriphery,
-            "/",
-            version,
-            ") |"
-        );
-    }
-
     /// @dev Populates the admin map.
     function populateAdminMap() internal {
         adminMap[42_161] = 0xF34E41a6f6Ce5A45559B1D3Ee92E141a3De96376; // Arbitrum
@@ -224,5 +192,42 @@ abstract contract ProtocolScript is BaseScript {
         explorerMap[53_302] = "https://sepolia-explorer.superseed.xyz/address/";
         explorerMap[167_009] = "https://explorer.hekla.taiko.xyz/address/";
         explorerMap[167_000] = "https://taikoscan.io/address/";
+    }
+
+    /// @dev Append a line to the deployment file path.
+    function _appendToFile(string memory line) private {
+        vm.writeLine({ path: deploymentFile, data: line });
+    }
+
+    function _getContractLine(
+        string memory contractName,
+        string memory contractAddress,
+        string memory coreOrPeriphery
+    )
+        private
+        view
+        returns (string memory)
+    {
+        string memory version = getVersion();
+        version = string.concat("v", version);
+
+        return string.concat(
+            "| ",
+            contractName,
+            " | [",
+            contractAddress,
+            "](",
+            explorerMap[block.chainid],
+            contractAddress,
+            ") | [",
+            coreOrPeriphery,
+            "-",
+            version,
+            "](https://github.com/sablier-labs/v2-deployments/tree/main/",
+            coreOrPeriphery,
+            "/",
+            version,
+            ") |"
+        );
     }
 }
