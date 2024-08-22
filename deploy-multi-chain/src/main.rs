@@ -86,7 +86,7 @@ fn main() {
     }
 
     // Append the type of deployment at the start of the deployment file
-    append_type_of_deployment(&deployment_path, broadcast_deployment.is_empty());
+    append_type_of_deployment(&deployment_path, !broadcast_deployment.is_empty());
 
     for chain in provided_chains {
         let env_var = "FOUNDRY_PROFILE=optimized";
@@ -136,7 +136,7 @@ fn main() {
                 &script_name,
                 &chain,
                 &output_str,
-                broadcast_deployment.is_empty(),
+                !broadcast_deployment.is_empty(),
             );
         }
     }
@@ -150,8 +150,8 @@ fn main() {
 
 fn append_type_of_deployment(deployment_path: &str, is_broadcast_deployment: bool) {
     let message = match is_broadcast_deployment {
-        true => " # This deployment is a simulation\n\n",
-        false => " # This deployment is broadcasted\n\n",
+        true => " # This deployment is broadcasted\n\n",
+        false => " # This deployment is a simulation\n\n",
     };
 
     OpenOptions::new()
@@ -234,12 +234,12 @@ fn move_broadcast_file(
         .unwrap_or("");
 
     let broadcast_file_path = if is_broadcast_deployment {
+        format!("../broadcast/{}/{}/run-latest.json", script_name, chain_id)
+    } else {
         format!(
             "../broadcast/{}/{}/dry-run/run-latest.json",
             script_name, chain_id
         )
-    } else {
-        format!("../broadcast/{}/{}/run-latest.json", script_name, chain_id)
     };
 
     let version = serde_json::from_str::<Value>(&fs::read_to_string("../package.json").unwrap())
