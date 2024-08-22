@@ -6,8 +6,9 @@ import { stdJson } from "forge-std/src/StdJson.sol";
 
 import { BaseScript } from "../Base.s.sol";
 
-/// @dev This contract creates a Markdown file with the deployed addresses with the format used in docs:
-/// https://docs.sablier.com/contracts/v2/deployments
+/// @dev This contract appends to a Markdown file, which is assumed to be already created at the `deploymentFile` path,
+/// the deployed addresses in the format used in the docs: https://docs.sablier.com/contracts/v2/deployments.
+/// This script is intended to be used in `deploy-multi-chain/src/main.rs`.
 abstract contract ProtocolScript is BaseScript {
     using stdJson for string;
     using Strings for address;
@@ -199,6 +200,7 @@ abstract contract ProtocolScript is BaseScript {
         vm.writeLine({ path: deploymentFile, data: line });
     }
 
+    /// @dev Returns a string for a single contract line formatted according to the docs.
     function _getContractLine(
         string memory contractName,
         string memory contractAddress,
