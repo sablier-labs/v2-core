@@ -30,6 +30,9 @@ contract SablierMerkleLT is
     bool public immutable override CANCELABLE;
 
     /// @inheritdoc ISablierMerkleLT
+    uint40 public immutable override START_TIME;
+
+    /// @inheritdoc ISablierMerkleLT
     ISablierLockupTranched public immutable override LOCKUP_TRANCHED;
 
     /// @inheritdoc ISablierMerkleLT
@@ -52,11 +55,13 @@ contract SablierMerkleLT is
         ISablierLockupTranched lockupTranched,
         bool cancelable,
         bool transferable,
+        uint40 startTime,
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages
     )
         SablierMerkleBase(baseParams)
     {
         CANCELABLE = cancelable;
+        START_TIME = startTime;
         LOCKUP_TRANCHED = lockupTranched;
         TRANSFERABLE = transferable;
 
@@ -96,16 +101,17 @@ contract SablierMerkleLT is
         }
 
         // Calculate the tranches based on the unlock percentages.
-        LockupTranched.TrancheWithDuration[] memory tranches = _calculateTranches(amount);
+        (uint40 startTime, LockupTranched.Tranche[] memory tranches) = _calculateStartTimeAndTranches(amount);
 
         // Interaction: create the stream via {SablierLockupTranched}.
-        uint256 streamId = LOCKUP_TRANCHED.createWithDurations(
-            LockupTranched.CreateWithDurations({
+        uint256 streamId = LOCKUP_TRANCHED.createWithTimestamps(
+            LockupTranched.CreateWithTimestamps({
                 sender: admin,
                 recipient: recipient,
                 totalAmount: amount,
                 asset: ASSET,
                 cancelable: CANCELABLE,
+                startTime: startTime,
                 transferable: TRANSFERABLE,
                 tranches: tranches,
                 broker: Broker({ account: address(0), fee: ZERO })
@@ -120,14 +126,22 @@ contract SablierMerkleLT is
                             INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Calculates the tranches based on the claim amount and the unlock percentages for each tranche.
-    function _calculateTranches(
+    /// @dev Calculates the start time, and the tranches based on the claim amount and the unlock percentages for each
+    /// tranche.
+    function _calculateStartTimeAndTranches(
         uint128 claimAmount
     )
         internal
         view
-        returns (LockupTranched.TrancheWithDuration[] memory tranches)
+        returns (uint40 startTime, LockupTranched.Tranche[] memory tranches)
     {
+        // Calculate the start time.
+        if (START_TIME == 0) {
+            startTime = uint40(block.timestamp);
+        } else {
+            startTime = START_TIME;
+        }
+
         // Load the tranches in memory (to save gas).
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = _tranchesWithPercentages;
 
@@ -135,7 +149,7 @@ contract SablierMerkleLT is
         uint128 calculatedAmountsSum;
         UD60x18 claimAmountUD = ud60x18(claimAmount);
         uint256 trancheCount = tranchesWithPercentages.length;
-        tranches = new LockupTranched.TrancheWithDuration[](trancheCount);
+        tranches = new LockupTranched.Tranche[](trancheCount);
 
         // Iterate over each tranche to calculate its unlock amount.
         for (uint256 i = 0; i < trancheCount; ++i) {
@@ -145,10 +159,10 @@ contract SablierMerkleLT is
             // Calculate the tranche's amount by multiplying the claim amount by the unlock percentage.
             uint128 calculatedAmount = claimAmountUD.mul(percentage).intoUint128();
 
-            // Create the tranche with duration.
-            tranches[i] = LockupTranched.TrancheWithDuration({
+            // Create the tranche.
+            tranches[i] = LockupTranched.Tranche({
                 amount: calculatedAmount,
-                duration: tranchesWithPercentages[i].duration
+                timestamp: startTime + tranchesWithPercentages[i].duration
             });
 
             // Add the calculated tranche amount.

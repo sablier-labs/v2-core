@@ -100,6 +100,17 @@ library MerkleBase {
     }
 }
 
+library MerkleLL {
+    /// @notice Struct encapsulating the start time, cliff duration and the end duration used to construct the time
+    /// variables in `LockupLinear.CreateWithTimestamps`.
+    /// @dev A start time value of zero will be considered as `block.timestamp`.
+    struct Schedule {
+        uint40 startTime;
+        uint40 cliffDuration;
+        uint40 endDuration;
+    }
+}
+
 library MerkleLT {
     /// @notice Struct encapsulating the unlock percentage and duration of a tranche.
     /// @dev Since users may have different amounts allocated, this struct makes it possible to calculate the amounts
