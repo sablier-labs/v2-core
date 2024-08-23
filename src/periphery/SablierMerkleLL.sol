@@ -73,8 +73,15 @@ contract SablierMerkleLL is
         } else {
             timestamps.start = schedule.startTime;
         }
-        timestamps.cliff = timestamps.start + schedule.cliffDuration;
-        timestamps.end = timestamps.start + schedule.endDuration;
+
+        // It is safe to use unchecked arithmetic because the `createWithTimestamps` function in the Lockup contract
+        // will nonetheless make the relevant checks.
+        unchecked {
+            if (schedule.cliffDuration > 0) {
+                timestamps.cliff = timestamps.start + schedule.cliffDuration;
+            }
+            timestamps.end = timestamps.start + schedule.endDuration;
+        }
 
         // Interaction: create the stream via {SablierLockupLinear}.
         uint256 streamId = LOCKUP_LINEAR.createWithTimestamps(
