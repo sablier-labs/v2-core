@@ -30,10 +30,10 @@ contract SablierMerkleLT is
     bool public immutable override CANCELABLE;
 
     /// @inheritdoc ISablierMerkleLT
-    uint40 public immutable override START_TIME;
+    ISablierLockupTranched public immutable override LOCKUP_TRANCHED;
 
     /// @inheritdoc ISablierMerkleLT
-    ISablierLockupTranched public immutable override LOCKUP_TRANCHED;
+    uint40 public immutable override STREAM_START_TIME;
 
     /// @inheritdoc ISablierMerkleLT
     uint64 public immutable override TOTAL_PERCENTAGE;
@@ -55,14 +55,14 @@ contract SablierMerkleLT is
         ISablierLockupTranched lockupTranched,
         bool cancelable,
         bool transferable,
-        uint40 startTime,
+        uint40 streamStartTime,
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages
     )
         SablierMerkleBase(baseParams)
     {
         CANCELABLE = cancelable;
-        START_TIME = startTime;
         LOCKUP_TRANCHED = lockupTranched;
+        STREAM_START_TIME = streamStartTime;
         TRANSFERABLE = transferable;
 
         uint256 count = tranchesWithPercentages.length;
@@ -136,10 +136,10 @@ contract SablierMerkleLT is
         returns (uint40 startTime, LockupTranched.Tranche[] memory tranches)
     {
         // Calculate the start time.
-        if (START_TIME == 0) {
+        if (STREAM_START_TIME == 0) {
             startTime = uint40(block.timestamp);
         } else {
-            startTime = START_TIME;
+            startTime = STREAM_START_TIME;
         }
 
         // Load the tranches in memory (to save gas).

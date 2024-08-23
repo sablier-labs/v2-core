@@ -24,12 +24,12 @@ interface ISablierMerkleLT is ISablierMerkleBase {
     /// @dev This is an immutable state variable.
     function CANCELABLE() external returns (bool);
 
-    /// @notice The start time of the stream created in the `claim` function.
-    /// @dev A start time value of zero will be considered as `block.timestamp`.
-    function START_TIME() external returns (uint40);
-
     /// @notice The address of the {SablierLockupTranched} contract.
     function LOCKUP_TRANCHED() external view returns (ISablierLockupTranched);
+
+    /// @notice The start time of the stream created in the `claim` function.
+    /// @dev A start time value of zero will be considered as `block.timestamp`.
+    function STREAM_START_TIME() external returns (uint40);
 
     /// @notice The total percentage of the tranches.
     function TOTAL_PERCENTAGE() external view returns (uint64);

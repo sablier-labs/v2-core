@@ -80,7 +80,7 @@ contract SablierMerkleLL is
             if (schedule.cliffDuration > 0) {
                 timestamps.cliff = timestamps.start + schedule.cliffDuration;
             }
-            timestamps.end = timestamps.start + schedule.endDuration;
+            timestamps.end = timestamps.start + schedule.totalDuration;
         }
 
         // Interaction: create the stream via {SablierLockupLinear}.

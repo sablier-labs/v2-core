@@ -7,7 +7,7 @@ import { ud2x18, uUNIT } from "@prb/math/src/UD2x18.sol";
 import { UD60x18, ud, ZERO } from "@prb/math/src/UD60x18.sol";
 
 import { Broker, Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/core/types/DataTypes.sol";
-import { BatchLockup, MerkleBase, MerkleLT } from "../../src/periphery/types/DataTypes.sol";
+import { BatchLockup, MerkleBase, MerkleLL, MerkleLT } from "../../src/periphery/types/DataTypes.sol";
 
 import { ArrayBuilder } from "./ArrayBuilder.sol";
 import { Constants } from "./Constants.sol";
@@ -38,6 +38,7 @@ contract Defaults is Constants, Merkle {
     uint128 public constant REFUND_AMOUNT = DEPOSIT_AMOUNT - CLIFF_AMOUNT;
     uint256 public constant SEGMENT_COUNT = 2;
     uint40 public immutable START_TIME;
+    uint40 public immutable STREAM_START_TIME = 0; // used only in merkle campaigns
     uint128 public constant TOTAL_AMOUNT = 10_030.090270812437311935e18; // deposit + broker fee
     uint40 public constant TOTAL_DURATION = 10_000 seconds;
     uint256 public constant TRANCHE_COUNT = 3;
@@ -499,6 +500,12 @@ contract Defaults is Constants, Merkle {
 
     function getLeaves() public view returns (uint256[] memory) {
         return LEAVES;
+    }
+
+    function schedule() public pure returns (MerkleLL.Schedule memory schedule_) {
+        schedule_.startTime = STREAM_START_TIME;
+        schedule_.cliffDuration = CLIFF_DURATION;
+        schedule_.totalDuration = TOTAL_DURATION;
     }
 
     function tranchesMerkleLT() public view returns (LockupTranched.Tranche[] memory tranches_) {

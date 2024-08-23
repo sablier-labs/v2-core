@@ -30,6 +30,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
             lockupTranched,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
+            defaults.STREAM_START_TIME(),
             tranchesWithPercentages,
             defaults.AGGREGATE_AMOUNT(),
             defaults.RECIPIENT_COUNT()
@@ -59,6 +60,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
             lockupTranched,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
+            defaults.STREAM_START_TIME(),
             tranchesWithPercentages,
             defaults.AGGREGATE_AMOUNT(),
             defaults.RECIPIENT_COUNT()

@@ -8,7 +8,7 @@ import { LockupLinear } from "../../core/types/DataTypes.sol";
 import { ISablierMerkleInstant } from "./ISablierMerkleInstant.sol";
 import { ISablierMerkleLL } from "./ISablierMerkleLL.sol";
 import { ISablierMerkleLT } from "./ISablierMerkleLT.sol";
-import { MerkleBase, MerkleLT } from "../types/DataTypes.sol";
+import { MerkleBase, MerkleLL, MerkleLT } from "../types/DataTypes.sol";
 
 /// @title ISablierMerkleFactory
 /// @notice A contract that deploys Merkle Lockups and Merkle Instant campaigns. Both of these use Merkle proofs for
@@ -37,7 +37,7 @@ interface ISablierMerkleFactory {
         ISablierLockupLinear lockupLinear,
         bool cancelable,
         bool transferable,
-        LockupLinear.Durations streamDurations,
+        MerkleLL.Schedule schedule,
         uint256 aggregateAmount,
         uint256 recipientCount
     );
@@ -49,6 +49,7 @@ interface ISablierMerkleFactory {
         ISablierLockupTranched lockupTranched,
         bool cancelable,
         bool transferable,
+        uint40 streamStartTime,
         MerkleLT.TrancheWithPercentage[] tranchesWithPercentages,
         uint256 totalDuration,
         uint256 aggregateAmount,
@@ -96,7 +97,7 @@ interface ISablierMerkleFactory {
     /// @param lockupLinear The address of the {SablierLockupLinear} contract.
     /// @param cancelable Indicates if the stream will be cancelable after claiming.
     /// @param transferable Indicates if the stream will be transferable after claiming.
-    /// @param streamDurations The durations for each stream.
+    /// @param schedule The time variables to construct the stream timestampts.
     /// @param aggregateAmount The total amount of ERC-20 assets to be distributed to all recipients.
     /// @param recipientCount The total number of recipients who are eligible to claim.
     /// @return merkleLL The address of the newly created Merkle Lockup contract.
@@ -105,7 +106,7 @@ interface ISablierMerkleFactory {
         ISablierLockupLinear lockupLinear,
         bool cancelable,
         bool transferable,
-        LockupLinear.Durations memory streamDurations,
+        MerkleLL.Schedule memory schedule,
         uint256 aggregateAmount,
         uint256 recipientCount
     )
@@ -120,6 +121,7 @@ interface ISablierMerkleFactory {
     /// @param lockupTranched The address of the {SablierLockupTranched} contract.
     /// @param cancelable Indicates if the stream will be cancelable after claiming.
     /// @param transferable Indicates if the stream will be transferable after claiming.
+    /// @param streamStartTime The start time of the stream created in `claim`.
     /// @param tranchesWithPercentages The tranches with their respective unlock percentages.
     /// @param aggregateAmount The total amount of ERC-20 assets to be distributed to all recipients.
     /// @param recipientCount The total number of recipients who are eligible to claim.
@@ -129,6 +131,7 @@ interface ISablierMerkleFactory {
         ISablierLockupTranched lockupTranched,
         bool cancelable,
         bool transferable,
+        uint40 streamStartTime,
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages,
         uint256 aggregateAmount,
         uint256 recipientCount
