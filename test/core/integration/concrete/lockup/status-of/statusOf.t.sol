@@ -84,7 +84,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         assertEq(actualStatus, expectedStatus);
     }
 
-    function test_NonZeroGivenRefundableAmount()
+    function test_GivenNonZeroRefundableAmount()
         external
         givenNotNull
         givenAssetsAreNotFullyWithdrawn

@@ -41,7 +41,7 @@ abstract contract GetRecipient_Integration_Concrete_Test is Integration_Test, Lo
         lockup.getRecipient(defaultStreamId);
     }
 
-    function test_GivenNFTHasNotBeenBurned() external view givenNotNull {
+    function test_GivenNotBurnedNFT() external view givenNotNull {
         address actualRecipient = lockup.getRecipient(defaultStreamId);
         address expectedRecipient = users.recipient;
         assertEq(actualRecipient, expectedRecipient, "recipient");

@@ -45,7 +45,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.tokenURI({ tokenId: defaultStreamId });
     }
 
-    function test_WhenProvidedAddressNotMatcheCurrentNFTDescriptor() external whenCallerIsAdmin {
+    function test_WhenProvidedAddressNotMatchCurrentNFTDescriptor() external whenCallerIsAdmin {
         // Deploy another NFT descriptor.
         ILockupNFTDescriptor newNFTDescriptor = new LockupNFTDescriptor();
 

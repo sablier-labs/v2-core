@@ -79,7 +79,7 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         }
     }
 
-    function test_RevertWhen_TimestampsAreNotStrictlyIncreasing()
+    function test_RevertWhen_TimestampsNotStrictlyIncreasing()
         external
         whenNoDelegateCall
         whenSegmentCountNotExceedMaxValue

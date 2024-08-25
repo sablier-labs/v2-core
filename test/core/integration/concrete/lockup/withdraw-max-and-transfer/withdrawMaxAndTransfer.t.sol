@@ -49,7 +49,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
     }
 
-    function test_GivenWithdrawableAmountIsZero()
+    function test_GivenZeroWithdrawableAmount()
         external
         whenNoDelegateCall
         givenNotNull
@@ -75,7 +75,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         givenNotNull
         givenTransferableStream
         givenNotBurnedNFT
-        givenWithdrawableAmountIsNotZero
+        givenNonZeroWithdrawableAmount
     {
         // Make Eve the caller in this test.
         resetPrank({ msgSender: users.eve });
@@ -91,7 +91,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         givenNotNull
         givenTransferableStream
         givenNotBurnedNFT
-        givenWithdrawableAmountIsNotZero
+        givenNonZeroWithdrawableAmount
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });

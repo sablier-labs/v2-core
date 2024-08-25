@@ -10,5 +10,5 @@ StreamedAmountOf_LockupDynamic_Integration_Concrete_Test
       └── given multiple segments
          ├── given start time behind current time
          │  └── it should return the correct streamed amount
-         └── given start time not behind current timetime
+         └── given start time not behind current time
             └── it should return the correct streamed amount

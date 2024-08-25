@@ -77,7 +77,7 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
         }
     }
 
-    function test_RevertWhen_TimestampsAreNotStrictlyIncreasing()
+    function test_RevertWhen_TimestampsNotStrictlyIncreasing()
         external
         whenNoDelegateCall
         whenTrancheCountNotExceedMaxValue

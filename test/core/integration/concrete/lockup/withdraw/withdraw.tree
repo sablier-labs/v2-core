@@ -32,7 +32,7 @@ Withdraw_Integration_Concrete_Test
                      │  ├── it should make the withdrawal
                      │  └── it should update the withdrawn amount
                      └── when caller is sender
-                        ├── given the end time not in future
+                        ├── given end time not in future
                         │  ├── it should make the withdrawal
                         │  ├── it should mark the stream as depleted
                         │  └── it should make the stream not cancelable
