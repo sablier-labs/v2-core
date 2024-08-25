@@ -28,7 +28,7 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_CliffDurationCalculationOverflows() external whenNoDelegateCall {
+    function test_RevertWhen_CliffTimeCalculationOverflows() external whenNoDelegateCall whenCliffDurationIsNotZero {
         uint40 startTime = getBlockTimestamp();
         uint40 cliffDuration = MAX_UINT40 - startTime + 2 seconds;
         uint40 totalDuration = defaults.TOTAL_DURATION();
@@ -50,11 +50,12 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithDurations(LockupLinear.Durations({ cliff: cliffDuration, total: totalDuration }));
     }
 
-    function test_RevertWhen_TotalDurationCalculationOverflows()
-        external
-        whenNoDelegateCall
-        whenCliffDurationCalculationDoesNotOverflow
-    {
+    function test_WhenCliffTimeCalculationNotOverflow() external whenNoDelegateCall whenCliffDurationIsNotZero {
+        LockupLinear.Durations memory durations = defaults.durations();
+        _test_CreateWithDurations(durations);
+    }
+
+    function test_RevertWhen_EndTimeCalculationOverflows() external whenNoDelegateCall whenCliffDurationIsZero {
         uint40 startTime = getBlockTimestamp();
         LockupLinear.Durations memory durations =
             LockupLinear.Durations({ cliff: 0, total: MAX_UINT40 - startTime + 1 seconds });
@@ -76,11 +77,13 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithDurations(durations);
     }
 
-    function test_WhenTotalDurationCalculationDoesNotOverflow()
-        external
-        whenNoDelegateCall
-        whenCliffDurationCalculationDoesNotOverflow
-    {
+    function test_WhenEndTimeCalculationNotOverflow() external whenNoDelegateCall whenCliffDurationIsZero {
+        LockupLinear.Durations memory durations = defaults.durations();
+        durations.cliff = 0;
+        _test_CreateWithDurations(durations);
+    }
+
+    function _test_CreateWithDurations(LockupLinear.Durations memory durations) private {
         // Make the Sender the stream's funder
         address funder = users.sender;
 
@@ -88,9 +91,11 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         uint40 blockTimestamp = getBlockTimestamp();
         LockupLinear.Timestamps memory timestamps = LockupLinear.Timestamps({
             start: blockTimestamp,
-            cliff: blockTimestamp + defaults.CLIFF_DURATION(),
-            end: blockTimestamp + defaults.TOTAL_DURATION()
+            cliff: blockTimestamp + durations.cliff,
+            end: blockTimestamp + durations.total
         });
+
+        if (durations.cliff == 0) timestamps.cliff = 0;
 
         // It should perform the ERC-20 transfers.
         expectCallToTransferFrom({ from: funder, to: address(lockupLinear), value: defaults.DEPOSIT_AMOUNT() });
@@ -116,7 +121,7 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         });
 
         // Create the stream.
-        createDefaultStreamWithDurations();
+        createDefaultStreamWithDurations(durations);
 
         // It should create the stream.
         LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(streamId);

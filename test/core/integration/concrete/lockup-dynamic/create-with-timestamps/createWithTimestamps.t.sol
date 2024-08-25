@@ -82,7 +82,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         createDefaultStreamWithSegments(segments);
     }
 
-    function test_RevertWhen_SegmentCountIsTooHigh()
+    function test_RevertWhen_SegmentCountExceedsMaxValue()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -105,7 +105,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
+        whenSegmentCountNotExceedMaxValue
     {
         LockupDynamic.Segment[] memory segments = defaults.segments();
         segments[0].amount = MAX_UINT128;
@@ -114,7 +114,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         createDefaultStreamWithSegments(segments);
     }
 
-    function test_RevertWhen_StartTimeIsGreaterThanFirstSegmentTimestamp()
+    function test_RevertWhen_StartTimeGreaterThanFirstTimestamp()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -122,8 +122,8 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
     {
         // Change the timestamp of the first segment.
         LockupDynamic.Segment[] memory segments = defaults.segments();
@@ -142,7 +142,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         createDefaultStreamWithSegments(segments);
     }
 
-    function test_RevertWhen_StartTimeIsEqualToFirstSegmentTimestamp()
+    function test_RevertWhen_StartTimeEqualsFirstTimestamp()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -150,8 +150,8 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
     {
         // Change the timestamp of the first segment.
         LockupDynamic.Segment[] memory segments = defaults.segments();
@@ -170,7 +170,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         createDefaultStreamWithSegments(segments);
     }
 
-    function test_RevertWhen_SegmentTimestampsAreNotOrdered()
+    function test_RevertWhen_TimestampsNotStrictlyIncreasing()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -178,9 +178,9 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
     {
         // Swap the segment timestamps.
         LockupDynamic.Segment[] memory segments = defaults.segments();
@@ -209,10 +209,10 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsAreOrdered
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+        whenTimestampsStrictlyIncreasing
     {
         resetPrank({ msgSender: users.sender });
 
@@ -241,7 +241,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         _;
     }
 
-    function test_RevertWhen_BrokerFeeIsTooHigh()
+    function test_RevertWhen_BrokerFeeExceedsMaxValue()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -249,10 +249,10 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsAreOrdered
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+        whenTimestampsStrictlyIncreasing
         whenDepositAmountNotEqualsSegmentAmountsSum
     {
         UD60x18 brokerFee = MAX_BROKER_FEE + ud(1);
@@ -270,12 +270,12 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsAreOrdered
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+        whenTimestampsStrictlyIncreasing
         whenDepositAmountNotEqualsSegmentAmountsSum
-        whenBrokerFeeIsNotTooHigh
+        whenBrokerFeeNotExceedMaxValue
     {
         address nonContract = address(8128);
 
@@ -294,18 +294,18 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsAreOrdered
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+        whenTimestampsStrictlyIncreasing
         whenDepositAmountNotEqualsSegmentAmountsSum
-        whenBrokerFeeIsNotTooHigh
+        whenBrokerFeeNotExceedMaxValue
         whenAssetIsContract
     {
         testCreateWithTimestamps(address(usdt));
     }
 
-    function test_WhenAssetDoesNotMissERC20ReturnValue()
+    function test_WhenAssetNotMissERC20ReturnValue()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -313,12 +313,12 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsAreOrdered
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+        whenTimestampsStrictlyIncreasing
         whenDepositAmountNotEqualsSegmentAmountsSum
-        whenBrokerFeeIsNotTooHigh
+        whenBrokerFeeNotExceedMaxValue
         whenAssetIsContract
     {
         testCreateWithTimestamps(address(dai));

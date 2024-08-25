@@ -37,16 +37,16 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Lockup_Integration
         testStreamIds[2] = createDefaultStream();
     }
 
-    modifier givenNoStreamsWithDEPLETEDStatus() {
+    modifier givenNoDEPLETEDStreams() {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         _;
     }
 
-    modifier givenNotNull() {
+    modifier givenNoNullStreams() {
         _;
     }
 
-    modifier givenNoStreamIDsReferenceToNull() {
+    modifier givenNotNull() {
         _;
     }
 
@@ -74,19 +74,15 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Lockup_Integration
         _;
     }
 
-    modifier whenAuthorizedCaller() {
-        _;
-    }
-
     modifier whenNoAmountOverdraws() {
         _;
     }
 
-    modifier whenNoAmountsAreZero() {
+    modifier whenNoDelegateCall() {
         _;
     }
 
-    modifier whenNoDelegateCall() {
+    modifier whenNoZeroAmounts() {
         _;
     }
 

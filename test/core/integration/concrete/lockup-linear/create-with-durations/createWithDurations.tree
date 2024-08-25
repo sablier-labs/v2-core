@@ -2,12 +2,19 @@ CreateWithDurations_LockupLinear_Integration_Concrete_Test
 ├── when delegate call
 │  └── it should revert
 └── when no delegate call
-   ├── when cliff duration calculation overflows
-   │  └── it should revert
-   └── when cliff duration calculation does not overflow
-      ├── when total duration calculation overflows
+   ├── when cliff duration is not zero
+   │  ├── when cliff time calculation overflows
+   │  │  └── it should revert
+   │  └── when cliff time calculation not overflow
+   │     ├── it should create the stream
+   │     ├── it should bump the next stream ID
+   │     ├── it should mint the NFT
+   │     ├── it should perform the ERC-20 transfers
+   │     └── it should emit {CreateLockupLinearStream} and {MetadataUpdate} events
+   └── when cliff duration is zero
+      ├── when end time calculation overflows
       │  └── it should revert
-      └── when total duration calculation does not overflow
+      └── when end time calculation not overflow
          ├── it should create the stream
          ├── it should bump the next stream ID
          ├── it should mint the NFT

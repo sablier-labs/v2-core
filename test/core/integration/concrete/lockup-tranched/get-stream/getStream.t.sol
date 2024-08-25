@@ -24,7 +24,7 @@ contract GetStream_LockupTranched_Integration_Concrete_Test is LockupTranched_In
         _;
     }
 
-    function test_GivenStreamIsSettled() external givenNotNull {
+    function test_GivenSettledStream() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
 
         // It should return the stream struct.
@@ -35,7 +35,7 @@ contract GetStream_LockupTranched_Integration_Concrete_Test is LockupTranched_In
         assertEq(actualStream, expectedStream);
     }
 
-    function test_GivenStreamIsNotSettled() external givenNotNull {
+    function test_GivenNotSettledStream() external givenNotNull {
         uint256 streamId = createDefaultStream();
         // It should return the stream struct.
         LockupTranched.StreamLT memory actualStream = lockupTranched.getStream(streamId);

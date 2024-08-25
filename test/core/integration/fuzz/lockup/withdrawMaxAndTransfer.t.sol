@@ -24,7 +24,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
         whenNoDelegateCall
         givenNotNull
         whenCallerCurrentRecipient
-        givenNFTHasNotBeenBurned
+        givenNotBurnedNFT
         givenTransferableStream
     {
         vm.assume(newRecipient != address(0));

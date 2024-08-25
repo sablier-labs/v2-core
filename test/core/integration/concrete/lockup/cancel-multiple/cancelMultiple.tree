@@ -2,29 +2,21 @@ CancelMultiple_Integration_Concrete_Test
 ├── when delegate call
 │  └── it should revert
 └── when no delegate call
-   ├── when array length is zero
+   ├── when zero array length
    │  └── it should do nothing
-   └── when array length is not zero
-      ├── given all stream IDs reference to null
+   └── when non zero array length
+      ├── given atleast one null stream
       │  └── it should revert
-      ├── given some stream IDs reference to null
-      │  └── it should revert
-      └── given no stream IDs reference to null
-         ├── given all streams are cold
+      └── given no null streams
+         ├── given atleast one cold stream
          │  └── it should revert
-         ├── given some streams are cold
-         │  └── it should revert
-         └── given all streams are warm
-            ├── when caller unauthorized for all streams
+         └── given no cold streams
+            ├── when caller unauthorized for any
             │  └── it should revert
-            ├── when caller unauthorized for some streams
-            │  └── it should revert
-            └── when caller authorized for all streams
-               ├── given no stream is cancelable
+            └── when caller authorized for all
+               ├── given atleast one non cancelable stream
                │  └── it should revert
-               ├── given some streams are cancelable
-               │  └── it should revert
-               └── given all streams are cancelable
+               └── given no non cancelable streams
                   ├── it should mark the streams as canceled
                   ├── it should make the streams as non cancelable
                   ├── it should refund the sender

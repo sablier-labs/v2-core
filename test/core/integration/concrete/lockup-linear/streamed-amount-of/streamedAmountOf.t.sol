@@ -19,11 +19,11 @@ contract StreamedAmountOf_LockupLinear_Integration_Concrete_Test is
         StreamedAmountOf_Integration_Concrete_Test.setUp();
     }
 
-    modifier givenStatusIsPENDING() {
+    modifier givenPENDINGStatus() {
         _;
     }
 
-    function test_GivenCliffTimeIsZero() external givenStatusIsPENDING {
+    function test_GivenCliffTimeIsZero() external givenPENDINGStatus {
         vm.warp({ newTimestamp: defaults.START_TIME() - 1 });
 
         LockupLinear.Timestamps memory timestamps = defaults.lockupLinearTimestamps();
@@ -35,20 +35,20 @@ contract StreamedAmountOf_LockupLinear_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCliffTimeInFuture() external view givenStatusIsSTREAMING {
+    function test_GivenCliffTimeInFuture() external view givenSTREAMINGStatus {
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 0;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCliffTimeInPresent() external givenStatusIsSTREAMING {
+    function test_GivenCliffTimeInPresent() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = defaults.CLIFF_AMOUNT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCliffTimeInPast() external givenStatusIsSTREAMING {
+    function test_GivenCliffTimeInPast() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 2600e18;

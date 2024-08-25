@@ -2,9 +2,9 @@ IsCancelable_Integration_Concrete_Test
 ├── given null
 │  └── it should revert
 └── given not null
-   ├── given stream is cold
+   ├── given cold stream
    │  └── it should return true
-   └── given stream is not cold
+   └── given warm stream
       ├── given cancelable stream
       │  └── it should return true
       └── given non cancelable stream

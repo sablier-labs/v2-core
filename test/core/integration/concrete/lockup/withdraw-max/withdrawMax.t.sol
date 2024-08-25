@@ -11,7 +11,7 @@ abstract contract WithdrawMax_Integration_Concrete_Test is Integration_Test, Wit
         WithdrawMax_Integration_Shared_Test.setUp();
     }
 
-    function test_GivenEndTimeIsNotInFuture() external {
+    function test_GivenEndTimeNotInFuture() external {
         // Warp to the stream's end.
         vm.warp({ newTimestamp: defaults.END_TIME() + 1 seconds });
 
@@ -48,13 +48,13 @@ abstract contract WithdrawMax_Integration_Concrete_Test is Integration_Test, Wit
         bool isCancelable = lockup.isCancelable(defaultStreamId);
         assertFalse(isCancelable, "isCancelable");
 
-        // Assert that the NFT has not been burned.
+        // Assert that the not burned NFT.
         address actualNFTowner = lockup.ownerOf({ tokenId: defaultStreamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");
     }
 
-    function test_GivenEndTimeIsInFuture() external {
+    function test_GivenEndTimeInFuture() external {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 

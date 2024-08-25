@@ -29,16 +29,16 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_TrancheCountTooHigh() external whenNoDelegateCall {
+    function test_RevertWhen_TrancheCountExceedsMaxValue() external whenNoDelegateCall {
         LockupTranched.TrancheWithDuration[] memory tranches = new LockupTranched.TrancheWithDuration[](25_000);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupTranched_TrancheCountTooHigh.selector, 25_000));
         createDefaultStreamWithDurations(tranches);
     }
 
-    function test_RevertWhen_IndexOneOrHigherContainsZeroDuration()
+    function test_RevertWhen_FirstIndexHasZeroDuration()
         external
         whenNoDelegateCall
-        whenTrancheCountIsNotTooHigh
+        whenTrancheCountNotExceedMaxValue
     {
         uint40 startTime = getBlockTimestamp();
         LockupTranched.TrancheWithDuration[] memory tranches = defaults.createWithDurationsLT().tranches;
@@ -55,12 +55,12 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithDurations(tranches);
     }
 
-    function test_RevertWhen_StartTimeIsGreaterThanFirstTrancheTimestamp()
+    function test_RevertWhen_StartTimeExceedsFirstTimestamp()
         external
         whenNoDelegateCall
-        whenTrancheCountIsNotTooHigh
-        whenIndexOneOrHigherNotContainZeroDuration
-        whenTrancheTimestampCalculationsOverflow
+        whenTrancheCountNotExceedMaxValue
+        whenFirstIndexHasNonZeroDuration
+        whenTimestampsCalculationOverflows
     {
         unchecked {
             uint40 startTime = getBlockTimestamp();
@@ -77,12 +77,13 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
         }
     }
 
-    function test_RevertWhen_TrancheTimestampsAreNotOrdered()
+    function test_RevertWhen_TimestampsAreNotStrictlyIncreasing()
         external
         whenNoDelegateCall
-        whenTrancheCountIsNotTooHigh
-        whenIndexOneOrHigherNotContainZeroDuration
-        whenTrancheTimestampCalculationsOverflow
+        whenTrancheCountNotExceedMaxValue
+        whenFirstIndexHasNonZeroDuration
+        whenTimestampsCalculationOverflows
+        whenStartTimeNotExceedsFirstTimestamp
     {
         unchecked {
             uint40 startTime = getBlockTimestamp();
@@ -109,11 +110,11 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is
         }
     }
 
-    function test_WhenTrancheTimestampCalculationsDoNotOverflow()
+    function test_WhenTimestampsCalculationNotOverflow()
         external
         whenNoDelegateCall
-        whenTrancheCountIsNotTooHigh
-        whenIndexOneOrHigherNotContainZeroDuration
+        whenTrancheCountNotExceedMaxValue
+        whenFirstIndexHasNonZeroDuration
     {
         // Make the Sender the stream's funder
         address funder = users.sender;

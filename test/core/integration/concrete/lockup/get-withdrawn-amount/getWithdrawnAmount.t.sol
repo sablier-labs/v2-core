@@ -20,7 +20,7 @@ abstract contract GetWithdrawnAmount_Integration_Concrete_Test is
         lockup.getWithdrawnAmount(nullStreamId);
     }
 
-    function test_GivenNoWithdrawalsHistory() external givenNotNull {
+    function test_GivenNoPreviousWithdrawals() external givenNotNull {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
@@ -30,7 +30,7 @@ abstract contract GetWithdrawnAmount_Integration_Concrete_Test is
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    function test_GivenWithdrawalsHistory() external givenNotNull {
+    function test_GivenPreviousWithdrawal() external givenNotNull {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 

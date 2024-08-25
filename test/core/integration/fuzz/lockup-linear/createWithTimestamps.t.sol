@@ -109,10 +109,10 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
         whenRecipientIsNotZeroAddress
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
-        whenCliffTimeIsLessThanEndTime
-        whenBrokerFeeIsNotTooHigh
+        whenCliffTimeLessThanEndTime
+        whenBrokerFeeNotExceedMaxValue
         whenAssetIsContract
-        whenAssetERC20
+        whenAssetIsERC20
     {
         vm.assume(
             funder != address(0) && params.sender != address(0) && params.recipient != address(0)

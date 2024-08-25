@@ -23,7 +23,7 @@ abstract contract GetRecipient_Integration_Concrete_Test is Integration_Test, Lo
         _;
     }
 
-    function test_RevertGiven_NFTHasBeenBurned() external givenNotNull {
+    function test_RevertGiven_BurnedNFT() external givenNotNull {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.END_TIME() });
 

@@ -27,21 +27,21 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         lockup.cancel(nullStreamId);
     }
 
-    function test_RevertGiven_StatusIsDEPLETED() external whenNoDelegateCall givenNotNull givenStreamIsCold {
+    function test_RevertGiven_DEPLETEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamDepleted.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
-    function test_RevertGiven_StatusIsCANCELED() external whenNoDelegateCall givenNotNull givenStreamIsCold {
+    function test_RevertGiven_CANCELEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamCanceled.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
     }
 
-    function test_RevertGiven_StatusIsSETTLED() external whenNoDelegateCall givenNotNull givenStreamIsCold {
+    function test_RevertGiven_SETTLEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamSettled.selector, defaultStreamId));
         lockup.cancel(defaultStreamId);
@@ -51,7 +51,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenUnauthorizedCaller
     {
         // Make Eve the caller in this test.
@@ -66,7 +66,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenUnauthorizedCaller
     {
         // Make the Recipient the caller in this test.
@@ -83,7 +83,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
     {
         uint256 streamId = createDefaultStreamNotCancelable();
@@ -91,11 +91,11 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         lockup.cancel(streamId);
     }
 
-    function test_GivenStatusIsPENDING()
+    function test_GivenPENDINGStatus()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
     {
@@ -115,14 +115,14 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         assertFalse(isCancelable, "isCancelable");
     }
 
-    function test_GivenRecipientIsNotAllowedToHook()
+    function test_GivenRecipientNotAllowedToHook()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
-        givenStatusIsSTREAMING
+        givenSTREAMINGStatus
     {
         // Create the stream with a recipient contract that implements {ISablierLockupRecipient}.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
@@ -147,15 +147,15 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         assertEq(actualStatus, expectedStatus);
     }
 
-    function test_WhenRecipientReverts()
+    function test_WhenRevertingRecipient()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
-        givenStatusIsSTREAMING
-        givenRecipientIsAllowedToHook
+        givenSTREAMINGStatus
+        givenRecipientAllowedToHook
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
@@ -176,12 +176,12 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
-        givenStatusIsSTREAMING
-        givenRecipientIsAllowedToHook
-        whenRecipientDoesNotRevert
+        givenSTREAMINGStatus
+        givenRecipientAllowedToHook
+        whenNonRevertingRecipient
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
@@ -204,12 +204,12 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
-        givenStatusIsSTREAMING
-        givenRecipientIsAllowedToHook
-        whenRecipientDoesNotRevert
+        givenSTREAMINGStatus
+        givenRecipientAllowedToHook
+        whenNonRevertingRecipient
         whenRecipientReturnsValidSelector
     {
         // Allow the recipient to hook.
@@ -253,12 +253,12 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
-        givenStatusIsSTREAMING
-        givenRecipientIsAllowedToHook
-        whenRecipientDoesNotRevert
+        givenSTREAMINGStatus
+        givenRecipientAllowedToHook
+        whenNonRevertingRecipient
         whenRecipientReturnsValidSelector
     {
         // Allow the recipient to hook.

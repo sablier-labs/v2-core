@@ -2,7 +2,7 @@ IsTransferable_Integration_Concrete_Test
 ├── given null
 │   └── it should revert
 └── given not null
-    ├── given stream is not transferable
+    ├── given non transferable stream
     │   └── it should return false
-    └── given stream is transferable
+    └── given transferable stream
         └── it should return true

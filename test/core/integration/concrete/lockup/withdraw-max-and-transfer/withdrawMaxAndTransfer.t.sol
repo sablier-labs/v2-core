@@ -34,7 +34,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         lockup.withdrawMaxAndTransfer({ streamId: notTransferableStreamId, newRecipient: users.recipient });
     }
 
-    function test_RevertGiven_NFTHasBeenBurned() external whenNoDelegateCall givenNotNull givenTransferableStream {
+    function test_RevertGiven_BurnedNFT() external whenNoDelegateCall givenNotNull givenTransferableStream {
         // Deplete the stream.
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -54,7 +54,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         whenNoDelegateCall
         givenNotNull
         givenTransferableStream
-        givenNFTHasNotBeenBurned
+        givenNotBurnedNFT
     {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -74,7 +74,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         whenNoDelegateCall
         givenNotNull
         givenTransferableStream
-        givenNFTHasNotBeenBurned
+        givenNotBurnedNFT
         givenWithdrawableAmountIsNotZero
     {
         // Make Eve the caller in this test.
@@ -90,7 +90,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         whenNoDelegateCall
         givenNotNull
         givenTransferableStream
-        givenNFTHasNotBeenBurned
+        givenNotBurnedNFT
         givenWithdrawableAmountIsNotZero
     {
         // Simulate the passage of time.

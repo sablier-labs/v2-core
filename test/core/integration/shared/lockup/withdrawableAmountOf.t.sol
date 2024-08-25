@@ -10,19 +10,15 @@ abstract contract WithdrawableAmountOf_Integration_Shared_Test is Lockup_Integra
         defaultStreamId = createDefaultStream();
     }
 
+    modifier givenNotCanceledStream() {
+        _;
+    }
+
     modifier givenNotNull() {
         _;
     }
 
-    modifier givenStatusIsSTREAMING() {
-        _;
-    }
-
-    modifier givenStreamHasBeenCanceled() {
-        _;
-    }
-
-    modifier givenNotCanceledStream() {
+    modifier givenSTREAMINGStatus() {
         _;
     }
 }

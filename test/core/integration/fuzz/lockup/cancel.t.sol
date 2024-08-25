@@ -17,7 +17,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
     {
@@ -50,12 +50,12 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
-        givenStatusIsSTREAMING
-        givenRecipientIsAllowedToHook
-        whenRecipientDoesNotRevert
+        givenSTREAMINGStatus
+        givenRecipientAllowedToHook
+        whenNonRevertingRecipient
         whenRecipientReturnsValidSelector
         whenRecipientNotReentrant
     {
@@ -104,7 +104,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integ
         bool isCancelable = lockup.isCancelable(streamId);
         assertFalse(isCancelable, "isCancelable");
 
-        // Assert that the NFT has not been burned.
+        // Assert that the not burned NFT.
         address actualNFTOwner = lockup.ownerOf({ tokenId: streamId });
         address expectedNFTOwner = address(recipientGood);
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");

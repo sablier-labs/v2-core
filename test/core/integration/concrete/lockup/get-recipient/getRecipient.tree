@@ -2,7 +2,7 @@ GetRecipient_Integration_Concrete_Test
 ├── given null
 │  └── it should revert
 └── given not null
-   ├── given NFT has been burned
+   ├── given burned NFT
    │  └── it should revert
-   └── given NFT has not been burned
+   └── given not burned NFT
       └── it should return the correct recipient

@@ -34,32 +34,32 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    modifier givenStreamIsCold() {
+    modifier givenColdStream() {
         _;
     }
 
-    function test_RevertGiven_StatusIsDEPLETED() external whenNoDelegateCall givenNotNull givenStreamIsCold {
+    function test_RevertGiven_DEPLETEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamDepleted.selector, defaultStreamId));
         lockup.renounce(defaultStreamId);
     }
 
-    function test_RevertGiven_StatusIsCANCELED() external whenNoDelegateCall givenNotNull givenStreamIsCold {
+    function test_RevertGiven_CANCELEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamCanceled.selector, defaultStreamId));
         lockup.renounce(defaultStreamId);
     }
 
-    function test_RevertGiven_StatusIsSETTLED() external whenNoDelegateCall givenNotNull givenStreamIsCold {
+    function test_RevertGiven_SETTLEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamSettled.selector, defaultStreamId));
         lockup.renounce(defaultStreamId);
     }
 
     /// @dev This modifier runs the test twice: once with a "PENDING" status, and once with a "STREAMING" status.
-    modifier givenStreamIsWarm() {
+    modifier givenWarmStream() {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
         _;
 
@@ -68,7 +68,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_RevertWhen_CallerIsNotSender() external whenNoDelegateCall givenNotNull givenStreamIsWarm {
+    function test_RevertWhen_CallerIsNotSender() external whenNoDelegateCall givenNotNull givenWarmStream {
         // Make Eve the caller in this test.
         resetPrank({ msgSender: users.eve });
 
@@ -85,7 +85,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamIsWarm
+        givenWarmStream
         whenCallerIsSender
     {
         // Create the not cancelable stream.
@@ -98,13 +98,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         lockup.renounce(notCancelableStreamId);
     }
 
-    function test_GivenCancelableStream()
-        external
-        whenNoDelegateCall
-        givenNotNull
-        givenStreamIsWarm
-        whenCallerIsSender
-    {
+    function test_GivenCancelableStream() external whenNoDelegateCall givenNotNull givenWarmStream whenCallerIsSender {
         // Create the stream with a contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 

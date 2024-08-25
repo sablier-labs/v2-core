@@ -47,7 +47,7 @@ contract Withdraw_LockupDynamic_Integration_Fuzz_Test is
         whenNoDelegateCall
         givenNotNull
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
     {
         vm.assume(params.segments.length != 0);

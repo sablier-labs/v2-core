@@ -2,18 +2,19 @@ CreateWithDurations_LockupDynamic_Integration_Concrete_Test
 ├── when delegate call
 │  └── it should revert
 └── when no delegate call
-   ├── when segment count too high
+   ├── when segment count exceeds max value
    │  └── it should revert
-   └── when segment count not too high
-       ├── when index one or higher contains zero duration
+   └── when segment count not exceed max value
+       ├── when first index has zero duration
        │  └── it should revert
-       └── when index one or higher not contain zero duration
-          ├── when segment timestamp calculations overflow
-          │  ├── when start time is greater than first segment timestamp
+       └── when first index has non zero duration
+          ├── when timestamps calculation overflows
+          │  ├── when start time exceeds first timestamp
           │  │  └── it should revert
-          │  └── when segment timestamps are not ordered
-          │     └── it should revert
-          └── when segment timestamp calculations do not overflow
+          │  └── when start time not exceeds first timestamp
+          │     └── when timestamps not strictly increasing
+          │        └── it should revert
+          └── when timestamps calculation not overflow
              ├── it should create the stream
              ├── it should bump the next stream ID
              ├── it should mint the NFT

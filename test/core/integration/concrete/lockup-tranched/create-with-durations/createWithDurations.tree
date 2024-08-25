@@ -2,20 +2,21 @@ CreateWithDurations_LockupTranched_Integration_Concrete_Test
 ├── when delegate call
 │  └── it should revert
 └── when no delegate call
-   ├── when tranche count too high
+   ├── when tranche count exceeds max value
    │  └── it should revert
-   └── when tranche count not too high
-       ├── when index one or higher contains zero duration
+   └── when tranche count not exceed max value
+       ├── when first index has zero duration
        │  └── it should revert
-       └── when index one or higher not contain zero duration
-          ├── when tranche timestamp calculations overflow
-          │  ├── when start time is greater than first tranche timestamp
+       └── when first index has non zero duration
+          ├── when timestamps calculation overflows
+          │  ├── when start time exceeds first timestamp
           │  │  └── it should revert
-          │  └── when tranche timestamps are not ordered
-          │     └── it should revert
-          └── when tranche timestamp calculations do not overflow
+          │  └── when start time not exceeds first timestamp
+          │     └── when timestamps not strictly increasing
+          │        └── it should revert
+          └── when timestamps calculation not overflow
              ├── it should create the stream
              ├── it should bump the next stream ID
              ├── it should mint the NFT
-             ├── it should emit {MetadataUpdate} and {CreateLockupTranchedStream} events
+             ├── it should emit {CreateLockupDynamicStream} and {MetadataUpdate} events
              └── it should perform the ERC-20 transfers

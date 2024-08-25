@@ -24,10 +24,10 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         whenNoDelegateCall
         whenArraysEqual
         givenNotNull
-        givenNoStreamsWithDEPLETEDStatus
+        givenNoDEPLETEDStreams
         whenCallerAuthorizedAllStreams
         whenWithdrawalAddressIsNotZero
-        whenNoAmountsAreZero
+        whenNoZeroAmounts
         whenNoAmountOverdraws
     {
         timeJump = _bound(timeJump, defaults.TOTAL_DURATION(), defaults.TOTAL_DURATION() * 2 - 1 seconds);

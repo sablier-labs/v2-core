@@ -15,20 +15,20 @@ CreateWithTimestamps_LockupLinear_Integration_Concrete_Test
             │  └── it should revert
             └── when start time is not zero
                ├── when cliff time is zero
-               │  ├── when start time is not less than end time
+               │  ├── when start time not less than end time
                │  │  └── it should revert
-               │  └── when start time is less than end time
+               │  └── when start time less than end time
                │     └── it should create the stream
-               └── when cliff time is greater than zero
-                  ├── when start time is not less than cliff time
+               └── when cliff time is not zero
+                  ├── when start time not less than cliff time
                   │  └── it should revert
-                  └── when start time is less than cliff time
-                     ├── when cliff time is not less than end time
+                  └── when start time less than cliff time
+                     ├── when cliff time not less than end time
                      │  └── it should revert
-                     └── when cliff time is less than end time
-                        ├── when broker fee is too high
+                     └── when cliff time less than end time
+                        ├── when broker fee exceeds max value
                         │  └── it should revert
-                        └── when broker fee is not too high
+                        └── when broker fee not exceed max value
                            ├── when asset is not contract
                            │  └── it should revert
                            └── when asset is contract
@@ -38,7 +38,7 @@ CreateWithTimestamps_LockupLinear_Integration_Concrete_Test
                               │  ├── it should mint the NFT
                               │  ├── it should emit {MetadataUpdate} and {CreateLockupLinearStream} events
                               │  └── it should perform the ERC-20 transfers
-                              └── when asset does not miss ERC20 return value
+                              └── when asset not miss ERC20 return value
                                  ├── it should create the stream
                                  ├── it should bump the next stream ID
                                  ├── it should mint the NFT

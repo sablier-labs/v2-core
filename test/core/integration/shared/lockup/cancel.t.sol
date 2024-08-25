@@ -15,27 +15,27 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         _;
     }
 
+    modifier givenColdStream() {
+        _;
+    }
+
     modifier givenNotNull() {
         _;
     }
 
-    modifier givenRecipientIsAllowedToHook() {
+    modifier givenRecipientAllowedToHook() {
         _;
     }
 
     /// @dev In LockupLinear, the streaming starts after the cliff time, whereas in LockupDynamic, the streaming starts
     /// after the start time.
-    modifier givenStatusIsSTREAMING() {
+    modifier givenSTREAMINGStatus() {
         // Warp to the future, after the stream's start time but before the stream's end time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
-    modifier givenStreamIsCold() {
-        _;
-    }
-
-    modifier givenStreamIsWarm() {
+    modifier givenWarmStream() {
         _;
     }
 
@@ -47,7 +47,7 @@ abstract contract Cancel_Integration_Shared_Test is Lockup_Integration_Shared_Te
         _;
     }
 
-    modifier whenRecipientDoesNotRevert() {
+    modifier whenNonRevertingRecipient() {
         _;
     }
 

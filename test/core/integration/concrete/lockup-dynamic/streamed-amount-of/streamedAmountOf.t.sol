@@ -19,23 +19,23 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         StreamedAmountOf_Integration_Concrete_Test.setUp();
     }
 
-    function test_GivenStartTimeIsInFuture() external givenStatusIsSTREAMING {
+    function test_GivenStartTimeInFuture() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: 0 });
         uint128 actualStreamedAmount = lockupDynamic.streamedAmountOf(defaultStreamId);
         assertEq(actualStreamedAmount, 0, "streamedAmount");
     }
 
-    function test_GivenStartTimeIsInPresent() external givenStatusIsSTREAMING {
+    function test_GivenStartTimeInPresent() external {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         uint128 actualStreamedAmount = lockupDynamic.streamedAmountOf(defaultStreamId);
         assertEq(actualStreamedAmount, 0, "streamedAmount");
     }
 
-    modifier givenStartTimeIsInPast() {
+    modifier givenStartTimeInPast() {
         _;
     }
 
-    function test_GivenSingleSegment() external givenStatusIsSTREAMING givenStartTimeIsInPast {
+    function test_GivenSingleSegment() external givenStartTimeInPast givenSTREAMINGStatus {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + 2000 seconds });
 
@@ -60,11 +60,11 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         _;
     }
 
-    function test_GivenCurrentTime1SecondAheadOfStartTime()
+    function test_GivenStartTimeBehindCurrentTime()
         external
-        givenStatusIsSTREAMING
-        givenStartTimeIsInPast
+        givenStartTimeInPast
         givenMultipleSegments
+        givenSTREAMINGStatus
     {
         // Warp 1 second to the future.
         vm.warp({ newTimestamp: defaults.START_TIME() + 1 seconds });
@@ -75,11 +75,11 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCurrentTimestampFarAheadOfStartTime()
+    function test_GivenStartTimeNotBehindCurrentTime()
         external
-        givenStatusIsSTREAMING
-        givenStartTimeIsInPast
+        givenStartTimeInPast
         givenMultipleSegments
+        givenSTREAMINGStatus
     {
         // Simulate the passage of time. 750 seconds is ~10% of the way in the second segment.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() + 750 seconds });

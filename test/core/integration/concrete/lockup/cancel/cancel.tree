@@ -5,14 +5,14 @@ Cancel_Integration_Concrete_Test
    ├── given null
    │  └── it should revert
    └── given not null
-      ├── given stream is cold
-      │  ├── given status is "DEPLETED"
+      ├── given cold stream
+      │  ├── given DEPLETED status
       │  │  └── it should revert
-      │  ├── given status is "CANCELED"
+      │  ├── given CANCELED status
       │  │  └── it should revert
-      │  └── given status is "SETTLED"
+      │  └── given SETTLED status
       │     └── it should revert
-      └── given stream is warm
+      └── given warm stream
          ├── when unauthorized caller
          │  ├── when caller is malicious third party
          │  │  └── it should revert
@@ -22,17 +22,17 @@ Cancel_Integration_Concrete_Test
             ├── given non cancelable stream
             │  └── it should revert
             └── given cancelable stream
-               ├── given status is "PENDING"
+               ├── given PENDING status
                │  ├── it should mark the stream as depleted
                │  └── it should make the stream not cancelable
-               └── given status is "STREAMING"
-                  ├── given recipient is not allowed to hook
+               └── given STREAMING status
+                  ├── given recipient not allowed to hook
                   │  ├── it should mark the stream as canceled
                   │  └── it should not make Sablier run the recipient hook
-                  └── given recipient is allowed to hook
-                     ├── when recipient reverts
+                  └── given recipient allowed to hook
+                     ├── when reverting recipient
                      │  └── it should revert the entire transaction
-                     └── when recipient does not revert
+                     └── when non reverting recipient
                         ├── when recipient returns invalid selector
                         │  └── it should revert
                         └── when recipient returns valid selector

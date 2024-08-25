@@ -18,7 +18,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Concrete_Test is
         WithdrawableAmountOf_Integration_Concrete_Test.setUp();
     }
 
-    function test_GivenStartTimeIsInPresent() external givenStatusIsSTREAMING {
+    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         uint128 actualWithdrawableAmount = lockupDynamic.withdrawableAmountOf(defaultStreamId);
         uint128 expectedWithdrawableAmount = 0;
@@ -29,7 +29,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Concrete_Test is
         _;
     }
 
-    function test_GivenNoWithdrawalsHistory() external givenStatusIsSTREAMING givenStartTimeIsPast {
+    function test_GivenNoPreviousWithdrawals() external givenSTREAMINGStatus givenStartTimeIsPast {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() + 3750 seconds });
 
@@ -40,7 +40,7 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Concrete_Test is
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    function test_GivenWithdrawalsHistory() external givenStatusIsSTREAMING givenStartTimeIsPast {
+    function test_GivenPreviousWithdrawal() external givenSTREAMINGStatus givenStartTimeIsPast {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() + 3750 seconds });
 

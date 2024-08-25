@@ -82,7 +82,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_TrancheCountIsTooHigh()
+    function test_RevertWhen_TrancheCountExceedsMaxValue()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -105,7 +105,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
+        whenTrancheCountNotExceedMaxValue
     {
         LockupTranched.Tranche[] memory tranches = defaults.tranches();
         tranches[0].amount = MAX_UINT128;
@@ -114,7 +114,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_StartTimeIsGreaterThanFirstTrancheTimestamp()
+    function test_RevertWhen_StartTimeGreaterThanFirstTimestamp()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -122,8 +122,8 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
-        whenTrancheAmountsSumDoesNotOverflow
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
     {
         // Change the timestamp of the first tranche.
         LockupTranched.Tranche[] memory tranches = defaults.tranches();
@@ -142,7 +142,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_StartTimeIsEqualToFirstTrancheTimestamp()
+    function test_RevertWhen_StartTimeEqualsFirstTimestamp()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -150,8 +150,8 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
-        whenTrancheAmountsSumDoesNotOverflow
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
     {
         // Change the timestamp of the first tranche.
         LockupTranched.Tranche[] memory tranches = defaults.tranches();
@@ -170,7 +170,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         createDefaultStreamWithTranches(tranches);
     }
 
-    function test_RevertWhen_TrancheTimestampsAreNotOrdered()
+    function test_RevertWhen_TimestampsNotStrictlyIncreasing()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -178,9 +178,9 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
-        whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
     {
         // Swap the tranche timestamps.
         LockupTranched.Tranche[] memory tranches = defaults.tranches();
@@ -209,9 +209,9 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
-        whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
         whenTrancheTimestampsAreOrdered
     {
         resetPrank({ msgSender: users.sender });
@@ -237,7 +237,7 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         lockupTranched.createWithTimestamps(params);
     }
 
-    function test_RevertWhen_BrokerFeeIsTooHigh()
+    function test_RevertWhen_BrokerFeeExceedsMaxValue()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -245,11 +245,11 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
-        whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
         whenTrancheTimestampsAreOrdered
-        whenTheDepositAmountEqualsTrancheAmountsSum
+        whenDepositAmountNotEqualTrancheAmountsSum
     {
         UD60x18 brokerFee = MAX_BROKER_FEE + ud(1);
         vm.expectRevert(
@@ -266,12 +266,12 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
-        whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
         whenTrancheTimestampsAreOrdered
-        whenTheDepositAmountEqualsTrancheAmountsSum
-        whenBrokerFeeIsNotTooHigh
+        whenDepositAmountNotEqualTrancheAmountsSum
+        whenBrokerFeeNotExceedMaxValue
     {
         address nonContract = address(8128);
 
@@ -290,18 +290,18 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
-        whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
         whenTrancheTimestampsAreOrdered
-        whenTheDepositAmountEqualsTrancheAmountsSum
-        whenBrokerFeeIsNotTooHigh
+        whenDepositAmountNotEqualTrancheAmountsSum
+        whenBrokerFeeNotExceedMaxValue
         whenAssetIsContract
     {
         testCreateWithTimestamps(address(usdt));
     }
 
-    function test_WhenAssetDoesNotMissERC20ReturnValue()
+    function test_WhenAssetNotMissERC20ReturnValue()
         external
         whenNoDelegateCall
         whenSenderIsNotZeroAddress
@@ -309,12 +309,12 @@ contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenTrancheCountIsNotZero
-        whenTrancheCountIsNotTooHigh
-        whenTrancheAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstTrancheTimestamp
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
         whenTrancheTimestampsAreOrdered
-        whenTheDepositAmountEqualsTrancheAmountsSum
-        whenBrokerFeeIsNotTooHigh
+        whenDepositAmountNotEqualTrancheAmountsSum
+        whenBrokerFeeNotExceedMaxValue
         whenAssetIsContract
     {
         testCreateWithTimestamps(address(dai));

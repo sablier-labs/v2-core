@@ -1,9 +1,9 @@
 WithdrawableAmountOf_LockupDynamic_Integration_Concrete_Test
-└── given status is "STREAMING"
-   ├── given start time is in present
+└── given STREAMING status
+   ├── given start time in present
    │  └── it should return zero
    └── given start time is past
-      ├── given no withdrawals history
+      ├── given no previous withdrawals
       │  └── it should return the correct withdrawable amount
-      └── given withdrawals history
+      └── given previous withdrawal
          └── it should return the correct withdrawable amount

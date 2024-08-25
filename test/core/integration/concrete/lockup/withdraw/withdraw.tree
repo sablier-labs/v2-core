@@ -5,22 +5,22 @@ Withdraw_Integration_Concrete_Test
    ├── given null
    │  └── it should revert
    └── given not null
-      ├── given status is "DEPLETED"
+      ├── given DEPLETED status
       │  └── it should revert
-      └── given status is not "DEPLETED"
+      └── given not DEPLETED status
          ├── when withdrawal address is zero
          │  └── it should revert
          └── when withdrawal address is not zero
-            ├── when withdraw amount is zero
+            ├── when zero withdraw amount
             │  └── it should revert
-            └── when withdraw amount is not zero
+            └── when non zero withdraw amount
                ├── when withdraw amount overdraws
                │  └── it should revert
                └── when withdraw amount does not overdraw
                   ├── when withdrawal address is not recipient
-                  │  ├── when caller is not approved third party or recipient
+                  │  ├── when caller not approved third party or recipient
                   │  │  └── it should revert
-                  │  └── when caller is approved third party or recipient
+                  │  └── when caller approved third party or recipient
                   │     ├── it should make the withdrawal
                   │     ├── it should update the withdrawn amount
                   │     └── it should emit {WithdrawFromLockupStream} and {MetadataUpdate} events
@@ -32,7 +32,7 @@ Withdraw_Integration_Concrete_Test
                      │  ├── it should make the withdrawal
                      │  └── it should update the withdrawn amount
                      └── when caller is sender
-                        ├── given the end time is not in the future
+                        ├── given the end time not in future
                         │  ├── it should make the withdrawal
                         │  ├── it should mark the stream as depleted
                         │  └── it should make the stream not cancelable
@@ -43,17 +43,17 @@ Withdraw_Integration_Concrete_Test
                            │  ├── it should update the withdrawn amount
                            │  └── it should emit {WithdrawFromLockupStream} and {MetadataUpdate} events
                            └── given not canceled stream
-                              ├── given recipient is not allowed to hook
+                              ├── given recipient not allowed to hook
                               │  ├── it should make the withdrawal
                               │  ├── it should update the withdrawn amount
                               │  └── it should not make Sablier run the recipient hook
-                              └── given recipient is allowed to hook
-                                 ├── when recipient reverts
+                              └── given recipient allowed to hook
+                                 ├── when reverting recipient
                                  │  └── it should revert
-                                 └── when recipient does not revert
-                                    ├── when recipient hook returns invalid selector
+                                 └── when non reverting recipient
+                                    ├── when hook returns invalid selector
                                     │  └── it should revert
-                                    └── when recipient hook returns valid selector
+                                    └── when hook returns valid selector
                                        ├── when reentrancy
                                        │  ├── it should make multiple withdrawals
                                        │  ├── it should update the withdrawn amounts

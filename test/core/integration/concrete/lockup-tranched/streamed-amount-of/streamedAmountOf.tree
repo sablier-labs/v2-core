@@ -1,11 +1,11 @@
 StreamedAmountOf_LockupTranched_Integration_Concrete_Test
-└── given status is "STREAMING"
+└── given STREAMING status
    ├── given start time in future
    │  └── it should return zero
    ├── given start time in present
    │  └── it should return zero
    └── given start time in past
-      ├── given current time 1 second ahead of start time
+      ├── given start time behind current time
       │  └── it should return the correct streamed amount
-      └── given current timestamp far ahead of start time
+      └── given start time not behind current timetime
          └── it should return the correct streamed amount

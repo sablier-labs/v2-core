@@ -30,7 +30,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: nullStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
-    function test_RevertGiven_StatusIsDEPLETED() external whenNoDelegateCall givenNotNull {
+    function test_RevertGiven_DEPLETEDStatus() external whenNoDelegateCall givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
@@ -43,18 +43,18 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
     {
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_WithdrawToZeroAddress.selector, defaultStreamId));
         lockup.withdraw({ streamId: defaultStreamId, to: address(0), amount: withdrawAmount });
     }
 
-    function test_RevertWhen_WithdrawAmountIsZero()
+    function test_RevertWhen_ZeroWithdrawAmount()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
     {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_WithdrawAmountZero.selector, defaultStreamId));
@@ -65,9 +65,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
     {
         uint128 withdrawableAmount = 0;
         vm.expectRevert(
@@ -109,13 +109,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         }
     }
 
-    function test_RevertWhen_CallerIsNotApprovedThirdPartyOrRecipient()
+    function test_RevertWhen_CallerNotApprovedThirdPartyOrRecipient()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsNotRecipient(false)
     {
@@ -134,13 +134,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.alice, amount: withdrawAmount });
     }
 
-    function test_WhenCallerIsApprovedThirdPartyOrRecipient()
+    function test_WhenCallerApprovedThirdPartyOrRecipient()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsNotRecipient(true)
     {
@@ -171,9 +171,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
     {
@@ -196,9 +196,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
     {
@@ -214,13 +214,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    function test_GivenTheEndTimeIsNotInTheFuture()
+    function test_GivenEndTimeNotInFuture()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
         whenCallerIsSender
@@ -240,7 +240,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         bool isCancelable = lockup.isCancelable(defaultStreamId);
         assertFalse(isCancelable, "isCancelable");
 
-        // Assert that the NFT has not been burned.
+        // Assert that the not burned NFT.
         address actualNFTowner = lockup.ownerOf({ tokenId: defaultStreamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");
@@ -250,9 +250,9 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
         whenCallerIsSender
@@ -288,19 +288,19 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         uint128 expectedWithdrawnAmount = withdrawAmount;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
 
-        // Assert that the NFT has not been burned.
+        // Assert that the not burned NFT.
         address actualNFTowner = lockup.ownerOf({ tokenId: defaultStreamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");
     }
 
-    function test_GivenRecipientIsNotAllowedToHook()
+    function test_GivenRecipientNotAllowedToHook()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
         whenCallerIsSender
@@ -330,19 +330,19 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    function test_RevertWhen_RecipientReverts()
+    function test_RevertWhen_RevertingRecipient()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
         whenCallerIsSender
         givenEndTimeInFuture
         givenNotCanceledStream
-        givenRecipientIsAllowedToHook
+        givenRecipientAllowedToHook
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
@@ -360,20 +360,20 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: streamId, to: address(recipientReverting), amount: withdrawAmount });
     }
 
-    function test_RevertWhen_RecipientHookReturnsInvalidSelector()
+    function test_RevertWhen_HookReturnsInvalidSelector()
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
         whenCallerIsSender
         givenEndTimeInFuture
         givenNotCanceledStream
-        givenRecipientIsAllowedToHook
-        whenRecipientDoesNotRevert
+        givenRecipientAllowedToHook
+        whenNonRevertingRecipient
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
@@ -397,17 +397,17 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
         whenCallerIsSender
         givenEndTimeInFuture
         givenNotCanceledStream
-        givenRecipientIsAllowedToHook
-        whenRecipientDoesNotRevert
-        whenRecipientHookReturnsValidSelector
+        givenRecipientAllowedToHook
+        whenNonRevertingRecipient
+        whenHookReturnsValidSelector
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });
@@ -447,17 +447,17 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         whenWithdrawalAddressIsRecipient
         whenCallerIsSender
         givenEndTimeInFuture
         givenNotCanceledStream
-        givenRecipientIsAllowedToHook
-        whenRecipientDoesNotRevert
-        whenRecipientHookReturnsValidSelector
+        givenRecipientAllowedToHook
+        whenNonRevertingRecipient
+        whenHookReturnsValidSelector
     {
         // Allow the recipient to hook.
         resetPrank({ msgSender: users.admin });

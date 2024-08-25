@@ -50,7 +50,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         whenRecipientIsNotZeroAddress
         whenDepositAmountIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
+        whenSegmentCountNotExceedMaxValue
     {
         amount0 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
         amount1 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
@@ -70,8 +70,8 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         whenRecipientIsNotZeroAddress
         whenDepositAmountIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
     {
         firstTimestamp = boundUint40(firstTimestamp, 0, defaults.START_TIME());
 
@@ -101,10 +101,10 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         whenRecipientIsNotZeroAddress
         whenDepositAmountIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsAreOrdered
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+        whenTimestampsStrictlyIncreasing
     {
         depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
 
@@ -140,11 +140,11 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         whenRecipientIsNotZeroAddress
         whenDepositAmountIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsAreOrdered
-        whenDepositAmountEqualToSegmentAmountsSum
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+        whenTimestampsStrictlyIncreasing
+        whenDepositAmountNotEqualSegmentAmountsSum
     {
         vm.assume(broker.account != address(0));
         broker.fee = _bound(broker.fee, MAX_BROKER_FEE + ud(1), MAX_UD60x18);
@@ -188,14 +188,14 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
         whenDepositAmountIsNotZero
         whenStartTimeIsNotZero
         whenSegmentCountIsNotZero
-        whenSegmentCountIsNotTooHigh
-        whenSegmentAmountsSumDoesNotOverflow
-        whenStartTimeIsLessThanFirstSegmentTimestamp
-        whenSegmentTimestampsAreOrdered
-        whenDepositAmountEqualToSegmentAmountsSum
-        whenBrokerFeeIsNotTooHigh
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+        whenTimestampsStrictlyIncreasing
+        whenDepositAmountNotEqualSegmentAmountsSum
+        whenBrokerFeeNotExceedMaxValue
         whenAssetIsContract
-        whenAssetERC20
+        whenAssetIsERC20
     {
         vm.assume(
             funder != address(0) && params.sender != address(0) && params.recipient != address(0)

@@ -21,7 +21,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         whenNoDelegateCall
         givenNotNull
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
     {
         vm.assume(caller != users.sender && caller != users.recipient);
@@ -55,9 +55,9 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         external
         whenNoDelegateCall
         givenNotNull
-        givenStatusIsNotDEPLETED
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
     {
         vm.assume(to != address(0));
@@ -99,9 +99,9 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         whenNoDelegateCall
         givenNotNull
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenCallerRecipient
+        whenCallerIsRecipient
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
         vm.assume(to != address(0));
@@ -144,7 +144,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         uint128 expectedWithdrawnAmount = withdrawAmount;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
 
-        // Assert that the NFT has not been burned.
+        // Assert that the not burned NFT.
         address actualNFTowner = lockup.ownerOf({ tokenId: defaultStreamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");
@@ -166,7 +166,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         whenNoDelegateCall
         givenNotNull
         whenWithdrawalAddressIsNotZero
-        whenWithdrawAmountIsNotZero
+        whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
         givenNotCanceledStream
     {
@@ -214,7 +214,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         uint128 expectedWithdrawnAmount = withdrawAmount;
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
 
-        // Assert that the NFT has not been burned.
+        // Assert that the not burned NFT.
         address actualNFTowner = lockup.ownerOf({ tokenId: defaultStreamId });
         address expectedNFTOwner = users.recipient;
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");

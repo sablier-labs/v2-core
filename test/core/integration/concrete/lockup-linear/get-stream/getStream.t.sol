@@ -24,7 +24,7 @@ contract GetStream_LockupLinear_Integration_Concrete_Test is LockupLinear_Integr
         _;
     }
 
-    function test_GivenStreamIsSettled() external givenNotNull {
+    function test_GivenSettledStream() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
 
         // It should return the stream struct.
@@ -35,7 +35,7 @@ contract GetStream_LockupLinear_Integration_Concrete_Test is LockupLinear_Integr
         assertEq(actualStream, expectedStream);
     }
 
-    function test_GivenStreamIsNotSettled() external givenNotNull {
+    function test_GivenNotSettledStream() external givenNotNull {
         // It should return the stream struct.
         LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(defaultStreamId);
         LockupLinear.StreamLL memory expectedStream = defaults.lockupLinearStream();

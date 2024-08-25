@@ -2,14 +2,14 @@ StreamedAmountOf_Integration_Concrete_Test
 ├── given null
 │  └── it should revert
 └── given not null
-   ├── given canceled stream with "CANCELED" status
+   ├── given canceled stream and CANCELED status
    │  └── it should return the correct streamed amount
-   ├── given canceled stream with "DEPLETED" status
+   ├── given canceled stream and DEPLETED status
    │  └── it should return the correct streamed amount
    └── given not canceled stream
-      ├── given status is "PENDING"
+      ├── given PENDING status
       │  └── it should return zero
-      ├── given status is "STREAMING"
+      ├── given STREAMING status
       │  └── it should return the deposited amount
-      └── given status is "DEPLETED"
+      └── given DEPLETED status
          └── it should return the correct streamed amount

@@ -39,9 +39,8 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenTrancheCountIsNotTooHigh
-        whenDurationsNotZero
-        whenTimestampsCalculationsDoNotOverflow
+        whenTrancheCountNotExceedMaxValue
+        whenTimestampsCalculationNotOverflow
     {
         vm.assume(tranches.length != 0);
 

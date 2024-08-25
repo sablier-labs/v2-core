@@ -2,13 +2,13 @@ IsCold_Integration_Concrete_Test
 ├── given null
 │  └── it should revert
 └── given not null
-   ├── given status is "PENDING"
+   ├── given PENDING status
    │  └── it should return false
-   ├── given status is "STREAMING"
+   ├── given STREAMING status
    │  └── it should return false
-   ├── given status is "SETTLED"
+   ├── given SETTLED status
    │  └── it should return true
-   ├── given status is "CANCELED"
+   ├── given CANCELED status
    │  └── it should return true
-   └── given status is "DEPLETED"
+   └── given DEPLETED status
       └── it should return true

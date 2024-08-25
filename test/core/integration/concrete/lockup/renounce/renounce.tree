@@ -4,15 +4,15 @@ Renounce_Integration_Concrete_Test
 └── when no delegate call
    ├── given null
    │  └── it should revert
-   └──  given not null
-      ├── given stream is cold
-      │  ├── given status is "DEPLETED"
+   └── given not null
+      ├── given cold stream
+      │  ├── given DEPLETED status
       │  │  └── it should revert
-      │  ├── given status is "CANCELED"
+      │  ├── given CANCELED status
       │  │  └── it should revert
-      │  └── given status is "SETTLED"
+      │  └── given SETTLED status
       │     └── it should revert
-      └── given stream is warm
+      └── given warm stream
          ├── when caller is not sender
          │  └── it should revert
          └── when caller is sender
@@ -20,5 +20,4 @@ Renounce_Integration_Concrete_Test
             │  └── it should revert
             └── given cancelable stream
                ├── it should emit {MetadataUpdate} and {RenounceLockupStream} events
-               ├── it should make stream non cancelable
-               └── it should emit a {} event
+               └── it should make stream non cancelable

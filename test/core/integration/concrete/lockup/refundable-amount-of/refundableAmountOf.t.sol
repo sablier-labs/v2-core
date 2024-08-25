@@ -30,11 +30,11 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         assertEq(actualRefundableAmount, expectedRefundableAmount, "refundableAmount");
     }
 
-    modifier givenStreamIsCancelable() {
+    modifier givenCancelableStream() {
         _;
     }
 
-    function test_GivenCanceledStreamWithCANCELEDStatus() external givenNotNull givenStreamIsCancelable {
+    function test_GivenCanceledStreamAndCANCELEDStatus() external givenNotNull givenCancelableStream {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
@@ -42,7 +42,7 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         assertEq(actualRefundableAmount, expectedRefundableAmount, "refundableAmount");
     }
 
-    function test_GivenCanceledStreamWithDEPLETEDStatus() external givenNotNull givenStreamIsCancelable {
+    function test_GivenCanceledStreamAndDEPLETEDStatus() external givenNotNull givenCancelableStream {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -56,28 +56,28 @@ abstract contract RefundableAmountOf_Integration_Concrete_Test is Integration_Te
         _;
     }
 
-    function test_GivenStatusIsPENDING() external givenNotNull givenStreamIsCancelable givenNotCanceledStream {
+    function test_GivenPENDINGStatus() external givenNotNull givenCancelableStream givenNotCanceledStream {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
         uint128 expectedReturnableAmount = defaults.DEPOSIT_AMOUNT();
         assertEq(actualRefundableAmount, expectedReturnableAmount, "refundableAmount");
     }
 
-    function test_GivenStatusIsSTREAMING() external givenNotNull givenStreamIsCancelable givenNotCanceledStream {
+    function test_GivenSTREAMINGStatus() external givenNotNull givenCancelableStream givenNotCanceledStream {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
         uint128 expectedReturnableAmount = defaults.REFUND_AMOUNT();
         assertEq(actualRefundableAmount, expectedReturnableAmount, "refundableAmount");
     }
 
-    function test_GivenStatusIsSETTLED() external givenNotNull givenStreamIsCancelable givenNotCanceledStream {
+    function test_GivenSETTLEDStatus() external givenNotNull givenCancelableStream givenNotCanceledStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);
         uint128 expectedReturnableAmount = 0;
         assertEq(actualRefundableAmount, expectedReturnableAmount, "refundableAmount");
     }
 
-    function test_GivenStatusIsDEPLETED() external givenNotNull givenStreamIsCancelable givenNotCanceledStream {
+    function test_GivenDEPLETEDStatus() external givenNotNull givenCancelableStream givenNotCanceledStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         uint128 actualRefundableAmount = lockup.refundableAmountOf(defaultStreamId);

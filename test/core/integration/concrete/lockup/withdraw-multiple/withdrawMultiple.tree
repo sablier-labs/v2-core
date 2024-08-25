@@ -2,26 +2,22 @@ WithdrawMultiple_Integration_Concrete_Test
 ├── when delegate call
 │  └── it should revert
 └── when no delegate call
-   ├── when arrays have unequal length
+   ├── when unequal arrays length
    │  └── it should revert
-   └── when arrays have equal length
-      ├── when array length is zero
+   └── when equal arrays length
+      ├── when zero array length
       │  └── it should do nothing
-      └── when array length is not zero
-         ├── given all stream IDs reference to null
+      └── when non zero array length
+         ├── given atleast one null stream
          │  └── it should revert
-         ├── given some stream IDs reference to null
-         │  └── it should revert
-         └── given no stream IDs reference to null
-            ├── given all streams with "DEPLETED" status
+         └── given no null streams
+            ├── given atleast one DEPLETED stream
             │  └── it should revert
-            ├── given some streams with "DEPLETED" status
-            │  └── it should revert
-            └── given no streams with "DEPLETED" status
-               ├── when some amounts are zero
+            └── given no DEPLETED streams
+               ├── when atleast one zero amount
                │  └── it should revert
-               └── when no amounts are zero
-                  ├── when some amounts overdraw
+               └── when no zero amounts
+                  ├── when atleast one amount overdraws
                   │  └── it should revert
                   └── when no amounts overdraw
                      ├── it should make the withdrawals

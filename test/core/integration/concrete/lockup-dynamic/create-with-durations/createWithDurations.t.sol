@@ -31,16 +31,16 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_SegmentCountTooHigh() external whenNoDelegateCall {
+    function test_RevertWhen_SegmentCountExceedsMaxValue() external whenNoDelegateCall {
         LockupDynamic.SegmentWithDuration[] memory segments = new LockupDynamic.SegmentWithDuration[](25_000);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupDynamic_SegmentCountTooHigh.selector, 25_000));
         createDefaultStreamWithDurations(segments);
     }
 
-    function test_RevertWhen_IndexOneOrHigherContainsZeroDuration()
+    function test_RevertWhen_FirstIndexHasZeroDuration()
         external
         whenNoDelegateCall
-        whenSegmentCountIsNotTooHigh
+        whenSegmentCountNotExceedMaxValue
     {
         uint40 startTime = getBlockTimestamp();
         LockupDynamic.SegmentWithDuration[] memory segments = defaults.createWithDurationsLD().segments;
@@ -57,12 +57,12 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         createDefaultStreamWithDurations(segments);
     }
 
-    function test_RevertWhen_StartTimeIsGreaterThanFirstSegmentTimestamp()
+    function test_RevertWhen_StartTimeExceedsFirstTimestamp()
         external
         whenNoDelegateCall
-        whenSegmentCountIsNotTooHigh
-        whenIndexOneOrHigherNotContainZeroDuration
-        whenSegmentTimestampCalculationsOverflow
+        whenSegmentCountNotExceedMaxValue
+        whenFirstIndexHasNonZeroDuration
+        whenTimestampsCalculationOverflows
     {
         unchecked {
             uint40 startTime = getBlockTimestamp();
@@ -79,12 +79,13 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         }
     }
 
-    function test_RevertWhen_SegmentTimestampsAreNotOrdered()
+    function test_RevertWhen_TimestampsAreNotStrictlyIncreasing()
         external
         whenNoDelegateCall
-        whenSegmentCountIsNotTooHigh
-        whenIndexOneOrHigherNotContainZeroDuration
-        whenSegmentTimestampCalculationsOverflow
+        whenSegmentCountNotExceedMaxValue
+        whenFirstIndexHasNonZeroDuration
+        whenTimestampsCalculationOverflows
+        whenStartTimeNotExceedsFirstTimestamp
     {
         unchecked {
             uint40 startTime = getBlockTimestamp();
@@ -115,11 +116,11 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         }
     }
 
-    function test_WhenSegmentTimestampCalculationsDoNotOverflow()
+    function test_WhenTimestampsCalculationNotOverflow()
         external
         whenNoDelegateCall
-        whenSegmentCountIsNotTooHigh
-        whenIndexOneOrHigherNotContainZeroDuration
+        whenSegmentCountNotExceedMaxValue
+        whenFirstIndexHasNonZeroDuration
     {
         // Make the Sender the stream's funder
         address funder = users.sender;

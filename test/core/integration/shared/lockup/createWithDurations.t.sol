@@ -10,15 +10,23 @@ abstract contract CreateWithDurations_Integration_Shared_Test is Lockup_Integrat
         streamId = lockup.nextStreamId();
     }
 
-    modifier whenCliffDurationCalculationDoesNotOverflow() {
+    modifier whenCliffDurationIsNotZero() {
         _;
     }
 
-    modifier whenDurationsNotZero() {
+    modifier whenCliffDurationIsZero() {
         _;
     }
 
-    modifier whenIndexOneOrHigherNotContainZeroDuration() {
+    modifier WhenCliffTimeCalculationNotOverflow() {
+        _;
+    }
+
+    modifier whenEndTimeCalculationNotOverflow() {
+        _;
+    }
+
+    modifier whenFirstIndexHasNonZeroDuration() {
         _;
     }
 
@@ -26,27 +34,23 @@ abstract contract CreateWithDurations_Integration_Shared_Test is Lockup_Integrat
         _;
     }
 
-    modifier whenSegmentCountIsNotTooHigh() {
+    modifier whenSegmentCountNotExceedMaxValue() {
         _;
     }
 
-    modifier whenSegmentTimestampCalculationsOverflow() {
+    modifier whenStartTimeNotExceedsFirstTimestamp() {
         _;
     }
 
-    modifier whenTimestampsCalculationsDoNotOverflow() {
+    modifier whenTimestampsCalculationNotOverflow() {
         _;
     }
 
-    modifier whenTotalDurationCalculationDoesNotOverflow() {
+    modifier whenTimestampsCalculationOverflows() {
         _;
     }
 
-    modifier whenTrancheCountIsNotTooHigh() {
-        _;
-    }
-
-    modifier whenTrancheTimestampCalculationsOverflow() {
+    modifier whenTrancheCountNotExceedMaxValue() {
         _;
     }
 }

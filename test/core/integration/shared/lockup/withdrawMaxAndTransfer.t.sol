@@ -11,7 +11,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Shared_Test is Lockup_Integ
         resetPrank({ msgSender: users.recipient });
     }
 
-    modifier givenNFTHasNotBeenBurned() {
+    modifier givenNotBurnedNFT() {
         _;
     }
 

@@ -20,7 +20,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is
         lockup.streamedAmountOf(nullStreamId);
     }
 
-    function test_GivenCanceledStreamWithCANCELEDStatus() external givenNotNull {
+    function test_GivenCanceledStreamAndCANCELEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
 
@@ -31,7 +31,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is
     }
 
     /// @dev This test warps a second time to ensure that {streamedAmountOf} ignores the current time.
-    function test_GivenCanceledStreamWithDEPLETEDStatus() external givenNotNull {
+    function test_GivenCanceledStreamAndDEPLETEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
 
@@ -45,7 +45,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenStatusIsPENDING() external givenNotNull givenNotCanceledStream {
+    function test_GivenPENDINGStatus() external givenNotNull givenNotCanceledStream {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
 
         // It should return zero.
@@ -54,7 +54,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenStatusIsSTREAMING() external givenNotNull givenNotCanceledStream {
+    function test_GivenSTREAMINGStatus() external givenNotNull givenNotCanceledStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
 
         // It should return the deposited amount.
@@ -63,7 +63,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenStatusIsDEPLETED() external givenNotNull givenNotCanceledStream {
+    function test_GivenDEPLETEDStatus() external givenNotNull givenNotCanceledStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         // Withdraw max to deplete the stream.
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });

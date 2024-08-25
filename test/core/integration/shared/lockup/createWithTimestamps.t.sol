@@ -14,19 +14,15 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenAssetERC20() {
+    modifier whenAssetIsERC20() {
         _;
     }
 
-    modifier whenBrokerFeeIsNotTooHigh() {
+    modifier whenBrokerFeeNotExceedMaxValue() {
         _;
     }
 
-    modifier whenCliffTimeIsGreaterThanZero() {
-        _;
-    }
-
-    modifier whenCliffTimeIsLessThanEndTime() {
+    modifier whenCliffTimeIsNotZero() {
         _;
     }
 
@@ -34,15 +30,19 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenDepositAmountEqualToSegmentAmountsSum() {
-        _;
-    }
-
-    modifier whenTheDepositAmountEqualsTrancheAmountsSum() {
+    modifier whenCliffTimeLessThanEndTime() {
         _;
     }
 
     modifier whenDepositAmountIsNotZero() {
+        _;
+    }
+
+    modifier whenDepositAmountNotEqualSegmentAmountsSum() {
+        _;
+    }
+
+    modifier whenDepositAmountNotEqualTrancheAmountsSum() {
         _;
     }
 
@@ -54,11 +54,7 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenSegmentAmountsSumDoesNotOverflow() {
-        _;
-    }
-
-    modifier whenSegmentCountIsNotTooHigh() {
+    modifier whenSegmentAmountsSumNotOverflow() {
         _;
     }
 
@@ -66,7 +62,7 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenSegmentTimestampsAreOrdered() {
+    modifier whenSegmentCountNotExceedMaxValue() {
         _;
     }
 
@@ -74,7 +70,11 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenStartTimeIsLessThanCliffTime() {
+    modifier whenStartTimeIsNotZero() {
+        _;
+    }
+
+    modifier whenStartTimeLessThanCliffTime() {
         _;
     }
 
@@ -82,27 +82,23 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenStartTimeIsLessThanFirstSegmentTimestamp() {
+    modifier whenStartTimeLessThanFirstTimestamp() {
         _;
     }
 
-    modifier whenStartTimeIsLessThanFirstTrancheTimestamp() {
+    modifier whenTimestampsStrictlyIncreasing() {
         _;
     }
 
-    modifier whenStartTimeIsNotZero() {
-        _;
-    }
-
-    modifier whenTrancheAmountsSumDoesNotOverflow() {
-        _;
-    }
-
-    modifier whenTrancheCountIsNotTooHigh() {
+    modifier whenTrancheAmountsSumNotOverflow() {
         _;
     }
 
     modifier whenTrancheCountIsNotZero() {
+        _;
+    }
+
+    modifier whenTrancheCountNotExceedMaxValue() {
         _;
     }
 

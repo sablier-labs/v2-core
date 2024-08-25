@@ -5,16 +5,16 @@ Burn_Integration_Concrete_Test
    ├── given null
    │  └── it should revert
    └── given not null
-      ├── given stream has not been depleted
-      │  ├── given status is "PENDING"
+      ├── given not depleted stream
+      │  ├── given PENDING status
       │  │  └── it should revert
-      │  ├── given status is "STREAMING"
+      │  ├── given STREAMING status
       │  │  └── it should revert
-      │  ├── given status is "SETTLED"
+      │  ├── given SETTLED status
       │  │  └── it should revert
-      │  └── given status is "CANCELED"
+      │  └── given CANCELED status
       │     └── it should revert
-      └── given stream has been depleted
+      └── given depleted stream
          ├── when unauthorized caller
          │  └── it should revert
          └── when authorized caller

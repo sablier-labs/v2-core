@@ -19,7 +19,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         resetPrank({ msgSender: users.sender });
     }
 
-    function test_GivenRecipientIsSameAsSender() external {
+    function test_GivenRecipientSameAsSender() external {
         // Create a stream with identical sender and recipient.
         uint256 streamId = createDefaultStreamWithIdenticalUsers(users.sender);
 
@@ -39,11 +39,11 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: users.sender, amount: withdrawAmount });
     }
 
-    modifier givenRecipientIsNotSameAsSender() {
+    modifier givenRecipientNotSameAsSender() {
         _;
     }
 
-    function test_WhenCallerIsUnknown() external givenRecipientIsNotSameAsSender {
+    function test_WhenCallerIsUnknown() external givenRecipientNotSameAsSender {
         // Create the test stream.
         uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
@@ -68,7 +68,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
-    function test_WhenCallerIsApprovedThirdParty() external givenRecipientIsNotSameAsSender {
+    function test_WhenCallerIsApprovedThirdParty() external givenRecipientNotSameAsSender {
         // Create the test stream.
         uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
@@ -96,7 +96,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
-    function test_WhenCallerIsSender() external givenRecipientIsNotSameAsSender {
+    function test_WhenCallerIsSender() external givenRecipientNotSameAsSender {
         // Create the test stream.
         uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
@@ -120,7 +120,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
-    function test_WhenCallerIsRecipient() external givenRecipientIsNotSameAsSender {
+    function test_WhenCallerIsRecipient() external givenRecipientNotSameAsSender {
         // Create the test stream.
         uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 

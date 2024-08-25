@@ -1,8 +1,8 @@
 StreamedAmountOf_LockupLinear_Integration_Concrete_Test
-├── given status is "PENDING"
+├── given PENDING status
 │  └── given cliff time is zero
 │     └── it should return zero
-└── given status is "STREAMING"
+└── given STREAMING status
    ├── given cliff time in future
    │  └── it should return zero
    ├── given cliff time in present

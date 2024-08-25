@@ -41,49 +41,29 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    modifier givenStreamHasNotBeenDepleted() {
+    modifier givenNotDepletedStream() {
         _;
     }
 
-    function test_RevertGiven_StatusIsPENDING()
-        external
-        whenNoDelegateCall
-        givenNotNull
-        givenStreamHasNotBeenDepleted
-    {
+    function test_RevertGiven_PENDINGStatus() external whenNoDelegateCall givenNotNull givenNotDepletedStream {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
 
-    function test_RevertGiven_StatusIsSTREAMING()
-        external
-        whenNoDelegateCall
-        givenNotNull
-        givenStreamHasNotBeenDepleted
-    {
+    function test_RevertGiven_STREAMINGStatus() external whenNoDelegateCall givenNotNull givenNotDepletedStream {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
 
-    function test_RevertGiven_StatusIsSETTLED()
-        external
-        whenNoDelegateCall
-        givenNotNull
-        givenStreamHasNotBeenDepleted
-    {
+    function test_RevertGiven_SETTLEDStatus() external whenNoDelegateCall givenNotNull givenNotDepletedStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamNotDepleted.selector, streamId));
         lockup.burn(streamId);
     }
 
-    function test_RevertGiven_StatusIsCANCELED()
-        external
-        whenNoDelegateCall
-        givenNotNull
-        givenStreamHasNotBeenDepleted
-    {
+    function test_RevertGiven_CANCELEDStatus() external whenNoDelegateCall givenNotNull givenNotDepletedStream {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         resetPrank({ msgSender: users.sender });
         lockup.cancel(streamId);
@@ -92,7 +72,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.burn(streamId);
     }
 
-    modifier givenStreamHasBeenDepleted(uint256 streamId_) {
+    modifier givenDepletedStream(uint256 streamId_) {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: streamId_, to: users.recipient });
         _;
@@ -102,7 +82,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamHasBeenDepleted(streamId)
+        givenDepletedStream(streamId)
     {
         resetPrank({ msgSender: users.eve });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_Unauthorized.selector, streamId, users.eve));
@@ -117,7 +97,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamHasBeenDepleted(streamId)
+        givenDepletedStream(streamId)
         whenAuthorizedCaller
     {
         // Burn the NFT so that it no longer exists.
@@ -136,7 +116,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamHasBeenDepleted(notTransferableStreamId)
+        givenDepletedStream(notTransferableStreamId)
         whenAuthorizedCaller
         givenNFTExists
     {
@@ -160,7 +140,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamHasBeenDepleted(streamId)
+        givenDepletedStream(streamId)
         whenAuthorizedCaller
         givenNFTExists
         givenTransferableNFT
@@ -187,7 +167,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         external
         whenNoDelegateCall
         givenNotNull
-        givenStreamHasBeenDepleted(streamId)
+        givenDepletedStream(streamId)
         whenAuthorizedCaller
         givenNFTExists
         givenTransferableNFT

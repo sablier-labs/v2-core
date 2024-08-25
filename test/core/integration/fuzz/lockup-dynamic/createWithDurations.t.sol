@@ -39,9 +39,8 @@ contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSegmentCountIsNotTooHigh
-        whenDurationsNotZero
-        whenTimestampsCalculationsDoNotOverflow
+        whenSegmentCountNotExceedMaxValue
+        whenTimestampsCalculationNotOverflow
     {
         vm.assume(segments.length != 0);
 

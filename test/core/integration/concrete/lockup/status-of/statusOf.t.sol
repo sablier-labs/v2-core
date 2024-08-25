@@ -23,7 +23,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_GivenAssetsHaveBeenFullyWithdrawn() external givenNotNull {
+    function test_GivenAssetsAreFullyWithdrawn() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
@@ -33,11 +33,11 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         assertEq(actualStatus, expectedStatus);
     }
 
-    modifier givenAssetsHaveNotBeenFullyWithdrawn() {
+    modifier givenAssetsAreNotFullyWithdrawn() {
         _;
     }
 
-    function test_GivenCanceledStream() external givenNotNull givenAssetsHaveNotBeenFullyWithdrawn {
+    function test_GivenCanceledStream() external givenNotNull givenAssetsAreNotFullyWithdrawn {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
 
@@ -51,10 +51,10 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_GivenStartTimeInTheFuture()
+    function test_GivenStartTimeInFuture()
         external
         givenNotNull
-        givenAssetsHaveNotBeenFullyWithdrawn
+        givenAssetsAreNotFullyWithdrawn
         givenNotCanceledStream
     {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
@@ -65,16 +65,16 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         assertEq(actualStatus, expectedStatus);
     }
 
-    modifier givenStartTimeNotInTheFuture() {
+    modifier givenStartTimeNotInFuture() {
         _;
     }
 
-    function test_GivenRefundableAmountIsZero()
+    function test_GivenZeroRefundableAmount()
         external
         givenNotNull
-        givenAssetsHaveNotBeenFullyWithdrawn
+        givenAssetsAreNotFullyWithdrawn
         givenNotCanceledStream
-        givenStartTimeNotInTheFuture
+        givenStartTimeNotInFuture
     {
         vm.warp({ newTimestamp: defaults.END_TIME() });
 
@@ -84,12 +84,12 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         assertEq(actualStatus, expectedStatus);
     }
 
-    function test_GivenRefundableAmountIsNotZero()
+    function test_NonZeroGivenRefundableAmount()
         external
         givenNotNull
-        givenAssetsHaveNotBeenFullyWithdrawn
+        givenAssetsAreNotFullyWithdrawn
         givenNotCanceledStream
-        givenStartTimeNotInTheFuture
+        givenStartTimeNotInFuture
     {
         vm.warp({ newTimestamp: defaults.START_TIME() + 1 seconds });
 

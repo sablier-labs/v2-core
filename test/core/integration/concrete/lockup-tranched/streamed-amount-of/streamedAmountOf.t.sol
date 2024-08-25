@@ -16,14 +16,14 @@ contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
         StreamedAmountOf_Integration_Concrete_Test.setUp();
     }
 
-    function test_GivenStartTimeInFuture() external givenStatusIsSTREAMING {
+    function test_GivenStartTimeInFuture() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: 0 });
         uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 0;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenStartTimeInPresent() external givenStatusIsSTREAMING {
+    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 0;
@@ -34,7 +34,7 @@ contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
         _;
     }
 
-    function test_GivenCurrentTime1SecondAheadOfStartTime() external givenStatusIsSTREAMING givenStartTimeInPast {
+    function test_GivenStartTimeBehindCurrentTime() external givenSTREAMINGStatus givenStartTimeInPast {
         // Warp 1 second to the future.
         vm.warp({ newTimestamp: defaults.START_TIME() + 1 seconds });
 
@@ -44,7 +44,7 @@ contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCurrentTimestampFarAheadOfStartTime() external givenStatusIsSTREAMING givenStartTimeInPast {
+    function test_GivenStartTimeNotBehindCurrentTime() external givenSTREAMINGStatus givenStartTimeInPast {
         vm.warp({ newTimestamp: defaults.END_TIME() - 1 seconds });
 
         // Run the test.

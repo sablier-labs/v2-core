@@ -18,20 +18,24 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         _;
     }
 
-    modifier givenNotNull() {
+    modifier givenNotCanceledStream() {
         _;
     }
 
-    modifier givenRecipientIsAllowedToHook() {
-        _;
-    }
-
-    modifier givenStatusIsNotDEPLETED() {
+    modifier givenNotDEPLETEDStatus() {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         _;
     }
 
-    modifier whenCallerRecipient() {
+    modifier givenNotNull() {
+        _;
+    }
+
+    modifier givenRecipientAllowedToHook() {
+        _;
+    }
+
+    modifier whenCallerIsRecipient() {
         _;
     }
 
@@ -40,7 +44,7 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         _;
     }
 
-    modifier whenWithdrawAmountDoesNotOverdraw() {
+    modifier whenHookReturnsValidSelector() {
         _;
     }
 
@@ -48,19 +52,11 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         _;
     }
 
-    modifier whenRecipientNotReentrant() {
+    modifier whenNonRevertingRecipient() {
         _;
     }
 
-    modifier whenRecipientDoesNotRevert() {
-        _;
-    }
-
-    modifier whenRecipientHookReturnsValidSelector() {
-        _;
-    }
-
-    modifier givenNotCanceledStream() {
+    modifier whenNonZeroWithdrawAmount() {
         _;
     }
 
@@ -72,11 +68,7 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         _;
     }
 
-    modifier whenWithdrawalAddressNotRecipient() {
-        _;
-    }
-
-    modifier whenWithdrawAmountIsNotZero() {
+    modifier whenWithdrawAmountDoesNotOverdraw() {
         _;
     }
 }
