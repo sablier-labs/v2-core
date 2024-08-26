@@ -1,9 +1,9 @@
-createMerkleLT.t.sol
-├── when the campaign name is too long
+CreateMerkleLT_Integration_Test
+├── when campaign name exceeds 32 bytes
 │  └── it should revert
-└── when the campaign name is not too long
-   ├── given the campaign has been created already
+└── when campaign name not exceeds 32 bytes
+   ├── given campaign already exists
    │  └── it should revert
-   └── given the campaign has not been created already
+   └── given campaign does not exist
       ├── it should create the campaign
       └── it should emit a {CreateMerkleLT} event

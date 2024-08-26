@@ -8,7 +8,7 @@ import { MerkleBase, MerkleLL } from "src/periphery/types/DataTypes.sol";
 import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
 
 contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
-    function test_RevertWhen_CampaignNameTooLong() external {
+    function test_RevertWhen_CampaignNameExceeds32Bytes() external {
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
         bool cancelable = defaults.CANCELABLE();
         bool transferable = defaults.TRANSFERABLE();
@@ -35,12 +35,12 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
         });
     }
 
-    modifier whenCampaignNameNotTooLong() {
+    modifier whenCampaignNameNotExceeds32Bytes() {
         _;
     }
 
     /// @dev This test works because a default MerkleLL contract is deployed in {Integration_Test.setUp}
-    function test_RevertGiven_CreatedAlready() external whenCampaignNameNotTooLong {
+    function test_RevertGiven_CampaignAlreadyExists() external whenCampaignNameNotExceeds32Bytes {
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
         bool cancelable = defaults.CANCELABLE();
         bool transferable = defaults.TRANSFERABLE();
@@ -61,17 +61,12 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
         });
     }
 
-    modifier givenNotCreatedAlready() {
-        _;
-    }
-
-    function testFuzz_CreateMerkleLL(
+    function test_GivenCampaignDoesNotExist(
         address admin,
         uint40 expiration
     )
         external
-        whenCampaignNameNotTooLong
-        givenNotCreatedAlready
+        whenCampaignNameNotExceeds32Bytes
     {
         vm.assume(admin != users.admin);
         address expectedLL = computeMerkleLLAddress(admin, expiration);
