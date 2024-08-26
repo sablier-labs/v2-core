@@ -515,8 +515,17 @@ contract Defaults is Constants, Merkle {
     }
 
     /// @dev Mirros the logic from {SablierMerkleLT._calculateTranches}.
-    function tranchesMerkleLT(uint128 totalAmount) public view returns (LockupTranched.Tranche[] memory tranches_) {
+    function tranchesMerkleLT(
+        uint40 startTime,
+        uint128 totalAmount
+    )
+        public
+        view
+        returns (LockupTranched.Tranche[] memory tranches_)
+    {
         tranches_ = tranchesMerkleLT();
+        tranches_[0].timestamp = startTime + CLIFF_DURATION;
+        tranches_[1].timestamp = startTime + TOTAL_DURATION;
 
         uint128 amount0 = ud(totalAmount).mul(tranchesWithPercentages()[0].unlockPercentage.intoUD60x18()).intoUint128();
         uint128 amount1 = ud(totalAmount).mul(tranchesWithPercentages()[1].unlockPercentage.intoUD60x18()).intoUint128();
