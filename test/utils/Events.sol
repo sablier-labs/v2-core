@@ -10,7 +10,7 @@ import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/c
 import { ISablierMerkleInstant } from "../../src/periphery/interfaces/ISablierMerkleInstant.sol";
 import { ISablierMerkleLL } from "../../src/periphery/interfaces/ISablierMerkleLL.sol";
 import { ISablierMerkleLT } from "../../src/periphery/interfaces/ISablierMerkleLT.sol";
-import { MerkleBase, MerkleLL,MerkleLT } from "../../src/periphery/types/DataTypes.sol";
+import { MerkleBase, MerkleLL, MerkleLT } from "../../src/periphery/types/DataTypes.sol";
 
 /// @notice Abstract contract containing all the events emitted by the protocol.
 abstract contract Events {
@@ -137,5 +137,4 @@ abstract contract Events {
         uint256 aggregateAmount,
         uint256 recipientCount
     );
-
 }
