@@ -160,10 +160,17 @@ contract SablierMerkleLT is
             uint128 calculatedAmount = claimAmountUD.mul(percentage).intoUint128();
 
             // Create the tranche.
-            tranches[i] = LockupTranched.Tranche({
-                amount: calculatedAmount,
-                timestamp: startTime + tranchesWithPercentages[i].duration
-            });
+            if (i > 0) {
+                tranches[i] = LockupTranched.Tranche({
+                    amount: calculatedAmount,
+                    timestamp: tranches[i - 1].timestamp + tranchesWithPercentages[i].duration
+                });
+            } else {
+                tranches[i] = LockupTranched.Tranche({
+                    amount: calculatedAmount,
+                    timestamp: startTime + tranchesWithPercentages[i].duration
+                });
+            }
 
             // Add the calculated tranche amount.
             calculatedAmountsSum += calculatedAmount;
