@@ -18,7 +18,15 @@ abstract contract WithdrawableAmountOf_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
+    modifier givenPreviousWithdrawal() {
+        _;
+    }
+
     modifier givenSTREAMINGStatus() {
+        _;
+    }
+
+    modifier givenStartTimeInPast() {
         _;
     }
 }

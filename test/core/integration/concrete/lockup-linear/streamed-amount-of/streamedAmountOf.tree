@@ -1,6 +1,8 @@
 StreamedAmountOf_LockupLinear_Integration_Concrete_Test
 ├── given PENDING status
-│  └── given cliff time is zero
+│  ├── given cliff time is zero
+│  │  └── it should return zero
+│  └── given cliff time is not zero
 │     └── it should return zero
 └── given STREAMING status
    ├── given cliff time in future
@@ -8,4 +10,7 @@ StreamedAmountOf_LockupLinear_Integration_Concrete_Test
    ├── given cliff time in present
    │  └── it should return the correct streamed amount
    └── given cliff time in past
-      └── it should return the correct streamed amount
+      ├── given end time not in future
+      │  └── it should return the deposited amount
+      └── given end time in future
+         └── it should return the correct streamed amount

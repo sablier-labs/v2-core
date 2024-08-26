@@ -16,13 +16,6 @@ contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
         StreamedAmountOf_Integration_Concrete_Test.setUp();
     }
 
-    function test_GivenStartTimeInFuture() external givenSTREAMINGStatus {
-        vm.warp({ newTimestamp: 0 });
-        uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(defaultStreamId);
-        uint128 expectedStreamedAmount = 0;
-        assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
-    }
-
     function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(defaultStreamId);
@@ -30,24 +23,38 @@ contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    modifier givenStartTimeInPast() {
-        _;
+    function test_GivenEndTimeNotInFuture() external givenSTREAMINGStatus givenStartTimeInPast {
+        vm.warp({ newTimestamp: defaults.END_TIME() + 1 seconds });
+
+        // It should return the deposited amount.
+        uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(defaultStreamId);
+        uint128 expectedStreamedAmount = defaults.DEPOSIT_AMOUNT();
+        assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenStartTimeBehindCurrentTime() external givenSTREAMINGStatus givenStartTimeInPast {
-        // Warp 1 second to the future.
+    function test_GivenFirstTrancheTimestampInFuture()
+        external
+        givenSTREAMINGStatus
+        givenStartTimeInPast
+        givenEndTimeInFuture
+    {
         vm.warp({ newTimestamp: defaults.START_TIME() + 1 seconds });
 
-        // Run the test.
+        // It should return 0.
         uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 0;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenStartTimeNotBehindCurrentTime() external givenSTREAMINGStatus givenStartTimeInPast {
+    function test_GivenFirstTrancheTimestampNotInFuture()
+        external
+        givenSTREAMINGStatus
+        givenStartTimeInPast
+        givenEndTimeInFuture
+    {
         vm.warp({ newTimestamp: defaults.END_TIME() - 1 seconds });
 
-        // Run the test.
+        // It should return the correct streamed amount.
         uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = defaults.tranches()[0].amount + defaults.tranches()[1].amount;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");

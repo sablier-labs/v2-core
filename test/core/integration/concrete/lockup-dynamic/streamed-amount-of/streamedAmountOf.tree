@@ -1,14 +1,12 @@
 StreamedAmountOf_LockupDynamic_Integration_Concrete_Test
 └── given STREAMING status
-   ├── given start time in future
-   │  └── it should return zero
    ├── given start time in present
    │  └── it should return zero
    └── given start time in past
-      ├── given single segment
-      │  └── it should return the correct streamed amount
-      └── given multiple segments
-         ├── given start time behind current time
+      ├── given end time not in future
+      │  └── it should return the deposited amount
+      └── given end time in future
+         ├── given single segment
          │  └── it should return the correct streamed amount
-         └── given start time not behind current time
+         └── given multiple segments
             └── it should return the correct streamed amount

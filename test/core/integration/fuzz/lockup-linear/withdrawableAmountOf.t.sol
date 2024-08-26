@@ -75,10 +75,6 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    modifier givenPreviousWithdrawal() {
-        _;
-    }
-
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past

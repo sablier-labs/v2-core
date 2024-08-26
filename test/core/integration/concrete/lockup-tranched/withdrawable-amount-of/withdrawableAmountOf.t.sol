@@ -25,10 +25,6 @@ contract WithdrawableAmountOf_LockupTranched_Integration_Concrete_Test is
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    modifier givenStartTimeInPast() {
-        _;
-    }
-
     function test_GivenNoPreviousWithdrawals() external givenSTREAMINGStatus givenStartTimeInPast {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
