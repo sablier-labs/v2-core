@@ -87,7 +87,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
         _;
     }
 
-    function test_ClaimLT_TimestampsInThePast()
+    function test_Claim_TimestampsInThePast()
         external
         whenTotalPercentageOneHundred
         givenCampaignNotExpired
@@ -110,29 +110,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
 
         vm.warp(defaults.END_TIME() + 1);
 
-        uint256 expectedStreamId = lockupTranched.nextStreamId();
-        vm.expectEmit({ emitter: address(merkleLT) });
-        emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
-
-        merkleLT.claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), defaults.index1Proof());
-        LockupTranched.StreamLT memory actualStream = lockupTranched.getStream(expectedStreamId);
-        LockupTranched.StreamLT memory expectedStream = LockupTranched.StreamLT({
-            amounts: Lockup.Amounts({ deposited: defaults.CLAIM_AMOUNT(), refunded: 0, withdrawn: 0 }),
-            asset: dai,
-            endTime: streamStartTime + defaults.TOTAL_DURATION(),
-            isCancelable: defaults.CANCELABLE(),
-            isDepleted: false,
-            isStream: true,
-            isTransferable: defaults.TRANSFERABLE(),
-            recipient: users.recipient1,
-            sender: users.admin,
-            startTime: streamStartTime,
-            tranches: defaults.tranchesMerkleLT(streamStartTime, defaults.CLAIM_AMOUNT()),
-            wasCanceled: false
-        });
-
-        assertEq(actualStream, expectedStream);
-        assertTrue(merkleLT.hasClaimed(defaults.INDEX1()), "not claimed");
+        _test_Claim(streamStartTime);
     }
 
     function test_Claim()
@@ -144,24 +122,28 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
         givenIncludedInMerkleTree
         whenCalculatedAmountsSumEqualsClaimAmount
     {
+        _test_Claim(getBlockTimestamp());
+    }
+
+    function _test_Claim(uint40 startTime) private {
         uint256 expectedStreamId = lockupTranched.nextStreamId();
         vm.expectEmit({ emitter: address(merkleLT) });
         emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
 
-        claim();
+        merkleLT.claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), defaults.index1Proof());
         LockupTranched.StreamLT memory actualStream = lockupTranched.getStream(expectedStreamId);
         LockupTranched.StreamLT memory expectedStream = LockupTranched.StreamLT({
             amounts: Lockup.Amounts({ deposited: defaults.CLAIM_AMOUNT(), refunded: 0, withdrawn: 0 }),
             asset: dai,
-            endTime: getBlockTimestamp() + defaults.TOTAL_DURATION(),
+            endTime: startTime + defaults.TOTAL_DURATION(),
             isCancelable: defaults.CANCELABLE(),
             isDepleted: false,
             isStream: true,
             isTransferable: defaults.TRANSFERABLE(),
             recipient: users.recipient1,
             sender: users.admin,
-            startTime: getBlockTimestamp(),
-            tranches: defaults.tranchesMerkleLT(),
+            startTime: startTime,
+            tranches: defaults.tranchesMerkleLT(startTime, defaults.CLAIM_AMOUNT()),
             wasCanceled: false
         });
 

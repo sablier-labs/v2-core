@@ -12,7 +12,7 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
         super.setUp();
     }
 
-    function test_ClaimLL_TimestampsInThePast()
+    function test_Claim_TimestampsInThePast()
         external
         givenCampaignNotExpired
         givenNotClaimed
@@ -33,9 +33,17 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
         });
         deal({ token: address(dai), to: address(merkleLL), give: defaults.AGGREGATE_AMOUNT() });
 
-        uint256 expectedStreamId = lockupLinear.nextStreamId();
-
         vm.warp(defaults.END_TIME() + 1);
+
+        _test_Claim(schedule.startTime, 0);
+    }
+
+    function test_Claim() external override givenCampaignNotExpired givenNotClaimed givenIncludedInMerkleTree {
+        _test_Claim(getBlockTimestamp(), getBlockTimestamp() + defaults.CLIFF_DURATION());
+    }
+
+    function _test_Claim(uint40 startTime, uint40 cliffTime) private {
+        uint256 expectedStreamId = lockupLinear.nextStreamId();
 
         vm.expectEmit({ emitter: address(merkleLL) });
         emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
@@ -45,42 +53,15 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
         LockupLinear.StreamLL memory expectedStream = LockupLinear.StreamLL({
             amounts: Lockup.Amounts({ deposited: defaults.CLAIM_AMOUNT(), refunded: 0, withdrawn: 0 }),
             asset: dai,
-            cliffTime: 0,
-            endTime: schedule.startTime + defaults.TOTAL_DURATION(),
+            cliffTime: cliffTime,
+            endTime: startTime + defaults.TOTAL_DURATION(),
             isCancelable: defaults.CANCELABLE(),
             isDepleted: false,
             isStream: true,
             isTransferable: defaults.TRANSFERABLE(),
             recipient: users.recipient1,
             sender: users.admin,
-            startTime: schedule.startTime,
-            wasCanceled: false
-        });
-
-        assertEq(actualStream, expectedStream);
-        assertTrue(merkleLL.hasClaimed(defaults.INDEX1()), "not claimed");
-    }
-
-    function test_ClaimLL() external givenCampaignNotExpired givenNotClaimed givenIncludedInMerkleTree {
-        uint256 expectedStreamId = lockupLinear.nextStreamId();
-
-        vm.expectEmit({ emitter: address(merkleLL) });
-        emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
-        claim();
-
-        LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(expectedStreamId);
-        LockupLinear.StreamLL memory expectedStream = LockupLinear.StreamLL({
-            amounts: Lockup.Amounts({ deposited: defaults.CLAIM_AMOUNT(), refunded: 0, withdrawn: 0 }),
-            asset: dai,
-            cliffTime: getBlockTimestamp() + defaults.CLIFF_DURATION(),
-            endTime: getBlockTimestamp() + defaults.TOTAL_DURATION(),
-            isCancelable: defaults.CANCELABLE(),
-            isDepleted: false,
-            isStream: true,
-            isTransferable: defaults.TRANSFERABLE(),
-            recipient: users.recipient1,
-            sender: users.admin,
-            startTime: getBlockTimestamp(),
+            startTime: startTime,
             wasCanceled: false
         });
 
