@@ -69,7 +69,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
     }
 
-    function test_RevertWhen_CallerIsNotCurrentRecipient()
+    function test_RevertWhen_CallerNotCurrentRecipient()
         external
         whenNoDelegateCall
         givenNotNull
@@ -85,7 +85,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.eve });
     }
 
-    function test_WhenCallerIsCurrentRecipient()
+    function test_WhenCallerCurrentRecipient()
         external
         whenNoDelegateCall
         givenNotNull

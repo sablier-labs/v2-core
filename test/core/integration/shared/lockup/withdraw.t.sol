@@ -35,11 +35,11 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         _;
     }
 
-    modifier whenCallerIsRecipient() {
+    modifier whenCallerRecipient() {
         _;
     }
 
-    modifier whenCallerIsSender() {
+    modifier whenCallerSender() {
         resetPrank({ msgSender: users.sender });
         _;
     }
@@ -60,11 +60,11 @@ abstract contract Withdraw_Integration_Shared_Test is Lockup_Integration_Shared_
         _;
     }
 
-    modifier whenWithdrawalAddressIsNotZero() {
+    modifier whenWithdrawalAddressNotZero() {
         _;
     }
 
-    modifier whenWithdrawalAddressIsRecipient() {
+    modifier whenWithdrawalAddressRecipient() {
         _;
     }
 

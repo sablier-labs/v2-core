@@ -28,10 +28,10 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenSegmentCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
     {
         uint256 defaultMax = defaults.MAX_SEGMENT_COUNT();
         segmentCount = _bound(segmentCount, defaultMax + 1, defaultMax * 2);
@@ -46,10 +46,10 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenSegmentCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
         whenSegmentCountNotExceedMaxValue
     {
         amount0 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
@@ -66,10 +66,10 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenSegmentCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
         whenSegmentCountNotExceedMaxValue
         whenSegmentAmountsSumNotOverflow
     {
@@ -97,10 +97,10 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenSegmentCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
         whenSegmentCountNotExceedMaxValue
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
@@ -136,10 +136,10 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenSegmentCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenSegmentCountNotZero
         whenSegmentCountNotExceedMaxValue
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
@@ -183,19 +183,19 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenSegmentCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenSegmentCountNotZero
         whenSegmentCountNotExceedMaxValue
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
         whenTimestampsStrictlyIncreasing
         whenDepositAmountNotEqualSegmentAmountsSum
         whenBrokerFeeNotExceedMaxValue
-        whenAssetIsContract
-        whenAssetIsERC20
+        whenAssetContract
+        whenAssetERC20
     {
         vm.assume(
             funder != address(0) && params.sender != address(0) && params.recipient != address(0)

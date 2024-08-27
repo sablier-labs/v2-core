@@ -27,9 +27,9 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
     {
         vm.assume(broker.account != address(0));
         broker.fee = _bound(broker.fee, MAX_BROKER_FEE + ud(1), MAX_UD60x18);
@@ -44,9 +44,9 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
     {
         startTime = boundUint40(startTime, defaults.CLIFF_TIME() + 1 seconds, defaults.END_TIME() - 1 seconds);
         vm.expectRevert(
@@ -63,9 +63,9 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
     {
         uint40 startTime = defaults.START_TIME();
         endTime = boundUint40(endTime, startTime + 1 seconds, startTime + 2 weeks);
@@ -105,14 +105,14 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
         whenCliffTimeLessThanEndTime
         whenBrokerFeeNotExceedMaxValue
-        whenAssetIsContract
-        whenAssetIsERC20
+        whenAssetContract
+        whenAssetERC20
     {
         vm.assume(
             funder != address(0) && params.sender != address(0) && params.recipient != address(0)

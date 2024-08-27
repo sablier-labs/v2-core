@@ -6,7 +6,7 @@ import { Errors } from "src/core/libraries/Errors.sol";
 import { Adminable_Unit_Shared_Test } from "../../../shared/Adminable.t.sol";
 
 contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
-    function test_RevertWhen_CallerIsNotAdmin() external {
+    function test_RevertWhen_CallerNotAdmin() external {
         // Make Eve the caller in this test.
         resetPrank(users.eve);
 
@@ -15,11 +15,11 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         adminableMock.transferAdmin(users.eve);
     }
 
-    modifier whenCallerIsAdmin() {
+    modifier whenCallerAdmin() {
         _;
     }
 
-    function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerIsAdmin {
+    function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
         // It should emit a {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.admin });
@@ -37,7 +37,7 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         _;
     }
 
-    function test_WhenNewAdminIsZeroAddress() external whenCallerIsAdmin whenNewAdminNotSameAsCurrentAdmin {
+    function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
         // It should emit a {TransferAdmin}.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: address(0) });
@@ -51,7 +51,7 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         assertEq(actualAdmin, expectedAdmin, "admin");
     }
 
-    function test_WhenNewAdminIsNotZeroAddress() external whenCallerIsAdmin whenNewAdminNotSameAsCurrentAdmin {
+    function test_WhenNewAdminNotZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
         // It should emit a {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
         emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.alice });

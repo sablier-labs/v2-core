@@ -136,7 +136,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         _;
     }
 
-    function test_WhenCallerIsApprovedThirdParty()
+    function test_WhenCallerApprovedThirdParty()
         external
         whenNoDelegateCall
         givenNotNull
@@ -163,7 +163,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test, Lockup_Int
         lockup.getRecipient(streamId);
     }
 
-    function test_WhenCallerIsNFTOwner()
+    function test_WhenCallerNFTOwner()
         external
         whenNoDelegateCall
         givenNotNull

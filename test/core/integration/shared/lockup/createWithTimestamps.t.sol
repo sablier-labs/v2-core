@@ -10,11 +10,11 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         streamId = lockup.nextStreamId();
     }
 
-    modifier whenAssetIsContract() {
+    modifier whenAssetContract() {
         _;
     }
 
-    modifier whenAssetIsERC20() {
+    modifier whenAssetERC20() {
         _;
     }
 
@@ -22,11 +22,11 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenCliffTimeIsNotZero() {
+    modifier whenCliffTimeNotZero() {
         _;
     }
 
-    modifier whenCliffTimeIsZero() {
+    modifier whenCliffTimeZero() {
         _;
     }
 
@@ -34,7 +34,7 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenDepositAmountIsNotZero() {
+    modifier whenDepositAmountNotZero() {
         _;
     }
 
@@ -50,7 +50,7 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenRecipientIsNotZeroAddress() {
+    modifier whenRecipientNotZeroAddress() {
         _;
     }
 
@@ -58,7 +58,7 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenSegmentCountIsNotZero() {
+    modifier whenSegmentCountNotZero() {
         _;
     }
 
@@ -66,11 +66,11 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenSenderIsNotZeroAddress() {
+    modifier whenSenderNotZeroAddress() {
         _;
     }
 
-    modifier whenStartTimeIsNotZero() {
+    modifier whenStartTimeNotZero() {
         _;
     }
 
@@ -94,7 +94,7 @@ abstract contract CreateWithTimestamps_Integration_Shared_Test is Lockup_Integra
         _;
     }
 
-    modifier whenTrancheCountIsNotZero() {
+    modifier whenTrancheCountNotZero() {
         _;
     }
 

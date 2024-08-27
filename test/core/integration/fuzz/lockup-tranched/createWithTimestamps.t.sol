@@ -28,10 +28,10 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenTrancheCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenTrancheCountNotZero
     {
         uint256 defaultMax = defaults.MAX_TRANCHE_COUNT();
         trancheCount = _bound(trancheCount, defaultMax + 1, defaultMax * 10);
@@ -46,10 +46,10 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenTrancheCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenTrancheCountNotZero
         whenTrancheCountNotExceedMaxValue
     {
         amount0 = boundUint128(amount0, MAX_UINT128 / 2 + 1, MAX_UINT128);
@@ -66,10 +66,10 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenTrancheCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenTrancheCountNotZero
         whenTrancheCountNotExceedMaxValue
         whenTrancheAmountsSumNotOverflow
     {
@@ -97,10 +97,10 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenTrancheCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenTrancheCountNotZero
         whenTrancheCountNotExceedMaxValue
         whenTrancheAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
@@ -136,10 +136,10 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenTrancheCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenTrancheCountNotZero
         whenTrancheCountNotExceedMaxValue
         whenTrancheAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
@@ -183,19 +183,19 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
     )
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenTrancheCountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenTrancheCountNotZero
         whenTrancheCountNotExceedMaxValue
         whenTrancheAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
         whenTrancheTimestampsAreOrdered
         whenDepositAmountNotEqualTrancheAmountsSum
         whenBrokerFeeNotExceedMaxValue
-        whenAssetIsContract
-        whenAssetIsERC20
+        whenAssetContract
+        whenAssetERC20
     {
         vm.assume(
             funder != address(0) && params.sender != address(0) && params.recipient != address(0)

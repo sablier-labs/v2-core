@@ -33,33 +33,33 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_SenderIsZeroAddress() external whenNoDelegateCall {
+    function test_RevertWhen_SenderZeroAddress() external whenNoDelegateCall {
         vm.expectRevert(Errors.SablierLockup_SenderZeroAddress.selector);
         createDefaultStreamWithSender(address(0));
     }
 
-    function test_RevertWhen_RecipientIsZeroAddress() external whenNoDelegateCall whenSenderIsNotZeroAddress {
+    function test_RevertWhen_RecipientZeroAddress() external whenNoDelegateCall whenSenderNotZeroAddress {
         address recipient = address(0);
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721InvalidReceiver.selector, recipient));
         createDefaultStreamWithRecipient(recipient);
     }
 
-    function test_RevertWhen_DepositAmountIsZero()
+    function test_RevertWhen_DepositAmountZero()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
     {
         vm.expectRevert(Errors.SablierLockup_DepositAmountZero.selector);
         createDefaultStreamWithTotalAmount(0);
     }
 
-    function test_RevertWhen_StartTimeIsZero()
+    function test_RevertWhen_StartTimeZero()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
     {
         uint40 cliffTime = defaults.CLIFF_TIME();
         uint40 endTime = defaults.END_TIME();
@@ -71,11 +71,11 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
     function test_RevertWhen_StartTimeNotLessThanEndTime()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenCliffTimeIsZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenCliffTimeZero
     {
         uint40 startTime = defaults.END_TIME();
         uint40 endTime = defaults.START_TIME();
@@ -89,11 +89,11 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
     function test_WhenStartTimeLessThanEndTime()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenCliffTimeIsZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenCliffTimeZero
     {
         createDefaultStreamWithTimestamps(
             LockupLinear.Timestamps({ start: defaults.START_TIME(), cliff: 0, end: defaults.END_TIME() })
@@ -119,11 +119,11 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
     function test_RevertWhen_StartTimeNotLessThanCliffTime()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenCliffTimeIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenCliffTimeNotZero
     {
         uint40 startTime = defaults.CLIFF_TIME();
         uint40 cliffTime = defaults.START_TIME();
@@ -139,11 +139,11 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
     function test_RevertWhen_CliffTimeNotLessThanEndTime()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenCliffTimeIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenCliffTimeNotZero
         whenStartTimeLessThanCliffTime
     {
         uint40 startTime = defaults.START_TIME();
@@ -158,11 +158,11 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
     function test_RevertWhen_BrokerFeeExceedsMaxValue()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenCliffTimeIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenCliffTimeNotZero
         whenStartTimeLessThanCliffTime
         whenCliffTimeLessThanEndTime
     {
@@ -173,14 +173,14 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithBroker(Broker({ account: users.broker, fee: brokerFee }));
     }
 
-    function test_RevertWhen_AssetIsNotContract()
+    function test_RevertWhen_AssetNotContract()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenCliffTimeIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenCliffTimeNotZero
         whenStartTimeLessThanCliffTime
         whenCliffTimeLessThanEndTime
         whenBrokerFeeNotExceedMaxValue
@@ -193,15 +193,15 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
     function test_WhenAssetMissesERC20ReturnValue()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenCliffTimeIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenCliffTimeNotZero
         whenStartTimeLessThanCliffTime
         whenCliffTimeLessThanEndTime
         whenBrokerFeeNotExceedMaxValue
-        whenAssetIsContract
+        whenAssetContract
     {
         testCreateWithTimestamps(address(usdt));
     }
@@ -209,15 +209,15 @@ contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is
     function test_WhenAssetNotMissERC20ReturnValue()
         external
         whenNoDelegateCall
-        whenSenderIsNotZeroAddress
-        whenRecipientIsNotZeroAddress
-        whenDepositAmountIsNotZero
-        whenStartTimeIsNotZero
-        whenCliffTimeIsNotZero
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenCliffTimeNotZero
         whenStartTimeLessThanCliffTime
         whenCliffTimeLessThanEndTime
         whenBrokerFeeNotExceedMaxValue
-        whenAssetIsContract
+        whenAssetContract
     {
         testCreateWithTimestamps(address(dai));
     }

@@ -10,11 +10,11 @@ abstract contract CreateWithDurations_Integration_Shared_Test is Lockup_Integrat
         streamId = lockup.nextStreamId();
     }
 
-    modifier whenCliffDurationIsNotZero() {
+    modifier whenCliffDurationNotZero() {
         _;
     }
 
-    modifier whenCliffDurationIsZero() {
+    modifier whenCliffDurationZero() {
         _;
     }
 

@@ -28,7 +28,7 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         expectRevertDueToDelegateCall(success, returnData);
     }
 
-    function test_RevertWhen_CliffTimeCalculationOverflows() external whenNoDelegateCall whenCliffDurationIsNotZero {
+    function test_RevertWhen_CliffTimeCalculationOverflows() external whenNoDelegateCall whenCliffDurationNotZero {
         uint40 startTime = getBlockTimestamp();
         uint40 cliffDuration = MAX_UINT40 - startTime + 2 seconds;
         uint40 totalDuration = defaults.TOTAL_DURATION();
@@ -50,12 +50,12 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithDurations(LockupLinear.Durations({ cliff: cliffDuration, total: totalDuration }));
     }
 
-    function test_WhenCliffTimeCalculationNotOverflow() external whenNoDelegateCall whenCliffDurationIsNotZero {
+    function test_WhenCliffTimeCalculationNotOverflow() external whenNoDelegateCall whenCliffDurationNotZero {
         LockupLinear.Durations memory durations = defaults.durations();
         _test_CreateWithDurations(durations);
     }
 
-    function test_RevertWhen_EndTimeCalculationOverflows() external whenNoDelegateCall whenCliffDurationIsZero {
+    function test_RevertWhen_EndTimeCalculationOverflows() external whenNoDelegateCall whenCliffDurationZero {
         uint40 startTime = getBlockTimestamp();
         LockupLinear.Durations memory durations =
             LockupLinear.Durations({ cliff: 0, total: MAX_UINT40 - startTime + 1 seconds });
@@ -77,7 +77,7 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         createDefaultStreamWithDurations(durations);
     }
 
-    function test_WhenEndTimeCalculationNotOverflow() external whenNoDelegateCall whenCliffDurationIsZero {
+    function test_WhenEndTimeCalculationNotOverflow() external whenNoDelegateCall whenCliffDurationZero {
         LockupLinear.Durations memory durations = defaults.durations();
         durations.cliff = 0;
         _test_CreateWithDurations(durations);

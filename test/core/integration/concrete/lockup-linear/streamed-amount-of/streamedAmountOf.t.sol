@@ -19,7 +19,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Concrete_Test is
         StreamedAmountOf_Integration_Concrete_Test.setUp();
     }
 
-    function test_GivenCliffTimeIsZero() external givenPENDINGStatus {
+    function test_GivenCliffTimeZero() external givenPENDINGStatus {
         vm.warp({ newTimestamp: defaults.START_TIME() - 1 });
 
         LockupLinear.Timestamps memory timestamps = defaults.lockupLinearTimestamps();
@@ -31,7 +31,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCliffTimeIsNotZero() external givenPENDINGStatus {
+    function test_GivenCliffTimeNotZero() external givenPENDINGStatus {
         vm.warp({ newTimestamp: defaults.START_TIME() - 1 });
 
         LockupLinear.Timestamps memory timestamps = defaults.lockupLinearTimestamps();

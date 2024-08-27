@@ -2,21 +2,21 @@ CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test
 ├── when delegate call
 │  └── it should revert
 └── when no delegate call
-   ├── when sender is zero address
+   ├── when sender zero address
    │  └── it should revert
-   └── when sender is not zero address
-      ├── when recipient is zero address
+   └── when sender not zero address
+      ├── when recipient zero address
       │  └── it should revert
-      └── when recipient is not zero address
-         ├── when deposit amount is zero
+      └── when recipient not zero address
+         ├── when deposit amount zero
          │  └── it should revert
-         └── when deposit amount is not zero
-            ├── when start time is zero
+         └── when deposit amount not zero
+            ├── when start time zero
             │  └── it should revert
-            └── when start time is not zero
-               ├── when segment count is zero
+            └── when start time not zero
+               ├── when segment count zero
                │  └── it should revert
-               └── when segment count is not zero
+               └── when segment count not zero
                   ├── when segment count exceeds max value
                   │  └── it should revert
                   └── when segment count not exceed max value
@@ -37,9 +37,9 @@ CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test
                                  ├── when broker fee exceeds max value
                                  │  └── it should revert
                                  └── when broker fee not exceed max value
-                                    ├── when asset is not contract
+                                    ├── when asset not contract
                                     │  └── it should revert
-                                    └── when asset is contract
+                                    └── when asset contract
                                        ├── when asset misses ERC20 return value
                                        │  ├── it should create the stream
                                        │  ├── it should bump the next stream ID

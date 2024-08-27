@@ -68,7 +68,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_RevertWhen_CallerIsNotSender() external whenNoDelegateCall givenNotNull givenWarmStream {
+    function test_RevertWhen_CallerNotSender() external whenNoDelegateCall givenNotNull givenWarmStream {
         // Make Eve the caller in this test.
         resetPrank({ msgSender: users.eve });
 
@@ -77,7 +77,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         lockup.renounce(defaultStreamId);
     }
 
-    modifier whenCallerIsSender() {
+    modifier whenCallerSender() {
         _;
     }
 
@@ -86,7 +86,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerIsSender
+        whenCallerSender
     {
         // Create the not cancelable stream.
         uint256 notCancelableStreamId = createDefaultStreamNotCancelable();
@@ -98,7 +98,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test, Lockup
         lockup.renounce(notCancelableStreamId);
     }
 
-    function test_GivenCancelableStream() external whenNoDelegateCall givenNotNull givenWarmStream whenCallerIsSender {
+    function test_GivenCancelableStream() external whenNoDelegateCall givenNotNull givenWarmStream whenCallerSender {
         // Create the stream with a contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 

@@ -26,7 +26,7 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         givenNotNull
         givenNoDEPLETEDStreams
         whenCallerAuthorizedAllStreams
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNoZeroAmounts
         whenNoAmountOverdraws
     {

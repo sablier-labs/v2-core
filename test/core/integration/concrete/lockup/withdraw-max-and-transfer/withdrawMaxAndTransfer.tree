@@ -15,9 +15,9 @@ WithdrawMaxAndTransfer_Integration_Concrete_Test
             │  ├── it should not expect a transfer call on asset
             │  └── it should emit {Transfer} event on NFT
             └── given non zero withdrawable amount
-               ├── when caller is not current recipient
+               ├── when caller not current recipient
                │  └── it should revert
-               └── when caller is current recipient
+               └── when caller current recipient
                   ├── it should update the withdrawn amount
                   ├── it should transfer the NFT
                   └── it should emit {Transfer}, {WithdrawFromLockupStream} and {MetadataUpdate} events

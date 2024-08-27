@@ -43,7 +43,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         _;
     }
 
-    function test_WhenCallerIsUnknown() external givenRecipientNotSameAsSender {
+    function test_WhenCallerUnknown() external givenRecipientNotSameAsSender {
         // Create the test stream.
         uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
@@ -68,7 +68,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
-    function test_WhenCallerIsApprovedThirdParty() external givenRecipientNotSameAsSender {
+    function test_WhenCallerApprovedThirdParty() external givenRecipientNotSameAsSender {
         // Create the test stream.
         uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
@@ -96,7 +96,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
-    function test_WhenCallerIsSender() external givenRecipientNotSameAsSender {
+    function test_WhenCallerSender() external givenRecipientNotSameAsSender {
         // Create the test stream.
         uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 
@@ -120,7 +120,7 @@ abstract contract WithdrawHooks_Integration_Concrete_Test is Integration_Test, W
         lockup.withdraw({ streamId: streamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
-    function test_WhenCallerIsRecipient() external givenRecipientNotSameAsSender {
+    function test_WhenCallerRecipient() external givenRecipientNotSameAsSender {
         // Create the test stream.
         uint256 streamId = createDefaultStreamWithUsers({ recipient: address(recipientGood), sender: users.sender });
 

@@ -47,7 +47,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         lockup.cancel(defaultStreamId);
     }
 
-    function test_RevertWhen_CallerIsMaliciousThirdParty()
+    function test_RevertWhen_CallerMaliciousThirdParty()
         external
         whenNoDelegateCall
         givenNotNull
@@ -62,7 +62,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         lockup.cancel(defaultStreamId);
     }
 
-    function test_RevertWhen_CallerIsRecipient()
+    function test_RevertWhen_CallerRecipient()
         external
         whenNoDelegateCall
         givenNotNull

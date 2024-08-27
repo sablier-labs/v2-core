@@ -39,12 +39,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_WithdrawalAddressIsZero()
-        external
-        whenNoDelegateCall
-        givenNotNull
-        givenNotDEPLETEDStatus
-    {
+    function test_RevertWhen_WithdrawalAddressZero() external whenNoDelegateCall givenNotNull givenNotDEPLETEDStatus {
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_WithdrawToZeroAddress.selector, defaultStreamId));
         lockup.withdraw({ streamId: defaultStreamId, to: address(0), amount: withdrawAmount });
@@ -55,7 +50,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
     {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_WithdrawAmountZero.selector, defaultStreamId));
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: 0 });
@@ -66,7 +61,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
     {
         uint128 withdrawableAmount = 0;
@@ -78,7 +73,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: MAX_UINT128 });
     }
 
-    modifier whenWithdrawalAddressIsNotRecipient(bool isCallerRecipient) {
+    modifier whenWithdrawalAddressNotRecipient(bool isCallerRecipient) {
         if (!isCallerRecipient) {
             // When caller is unknown.
             caller = users.eve;
@@ -114,10 +109,10 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsNotRecipient(false)
+        whenWithdrawalAddressNotRecipient(false)
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -139,10 +134,10 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsNotRecipient(true)
+        whenWithdrawalAddressNotRecipient(true)
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -167,15 +162,15 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    function test_WhenCallerIsUnknown()
+    function test_WhenCallerUnknown()
         external
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
+        whenWithdrawalAddressRecipient
     {
         // Make the unknown address the caller in this test.
         resetPrank({ msgSender: address(0xCAFE) });
@@ -192,15 +187,15 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
     }
 
-    function test_WhenCallerIsRecipient()
+    function test_WhenCallerRecipient()
         external
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
+        whenWithdrawalAddressRecipient
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -219,11 +214,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
-        whenCallerIsSender
+        whenWithdrawalAddressRecipient
+        whenCallerSender
     {
         // Warp to the stream's end.
         vm.warp({ newTimestamp: defaults.END_TIME() });
@@ -251,11 +246,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
-        whenCallerIsSender
+        whenWithdrawalAddressRecipient
+        whenCallerSender
         givenEndTimeInFuture
     {
         // Cancel the stream.
@@ -299,11 +294,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
-        whenCallerIsSender
+        whenWithdrawalAddressRecipient
+        whenCallerSender
         givenEndTimeInFuture
         givenNotCanceledStream
     {
@@ -335,11 +330,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
-        whenCallerIsSender
+        whenWithdrawalAddressRecipient
+        whenCallerSender
         givenEndTimeInFuture
         givenNotCanceledStream
         givenRecipientAllowedToHook
@@ -365,11 +360,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
-        whenCallerIsSender
+        whenWithdrawalAddressRecipient
+        whenCallerSender
         givenEndTimeInFuture
         givenNotCanceledStream
         givenRecipientAllowedToHook
@@ -398,11 +393,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
-        whenCallerIsSender
+        whenWithdrawalAddressRecipient
+        whenCallerSender
         givenEndTimeInFuture
         givenNotCanceledStream
         givenRecipientAllowedToHook
@@ -448,11 +443,11 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
         whenNoDelegateCall
         givenNotNull
         givenNotDEPLETEDStatus
-        whenWithdrawalAddressIsNotZero
+        whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountDoesNotOverdraw
-        whenWithdrawalAddressIsRecipient
-        whenCallerIsSender
+        whenWithdrawalAddressRecipient
+        whenCallerSender
         givenEndTimeInFuture
         givenNotCanceledStream
         givenRecipientAllowedToHook

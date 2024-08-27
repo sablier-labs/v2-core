@@ -6,18 +6,18 @@ import { ERC20Bytes32 } from "test/mocks/erc20/ERC20Bytes32.sol";
 import { NFTDescriptor_Integration_Shared_Test } from "../../../shared/nft-descriptor/NFTDescriptor.t.sol";
 
 contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_Shared_Test {
-    function test_WhenAssetIsNotContract() external view {
+    function test_WhenAssetNotContract() external view {
         address eoa = vm.addr({ privateKey: 1 });
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(eoa));
         string memory expectedSymbol = "ERC20";
         assertEq(actualSymbol, expectedSymbol, "symbol");
     }
 
-    modifier whenAssetIsContract() {
+    modifier whenAssetContract() {
         _;
     }
 
-    function test_GivenSymbolNotImplemented() external view whenAssetIsContract {
+    function test_GivenSymbolNotImplemented() external view whenAssetContract {
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(noop));
         string memory expectedSymbol = "ERC20";
         assertEq(actualSymbol, expectedSymbol, "symbol");
@@ -27,7 +27,7 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
         _;
     }
 
-    function test_GivenSymbolAsBytes32() external whenAssetIsContract givenSymbolImplemented {
+    function test_GivenSymbolAsBytes32() external whenAssetContract givenSymbolImplemented {
         ERC20Bytes32 asset = new ERC20Bytes32();
         string memory actualSymbol = nftDescriptorMock.safeAssetSymbol_(address(asset));
         string memory expectedSymbol = "ERC20";
@@ -40,7 +40,7 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
 
     function test_GivenSymbolLongerThan30Chars()
         external
-        whenAssetIsContract
+        whenAssetContract
         givenSymbolImplemented
         givenSymbolAsString
     {
@@ -59,7 +59,7 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
 
     function test_GivenSymbolContainsNon_alphanumericChars()
         external
-        whenAssetIsContract
+        whenAssetContract
         givenSymbolImplemented
         givenSymbolAsString
         givenSymbolNotLongerThan30Chars
@@ -73,7 +73,7 @@ contract SafeAssetSymbol_Integration_Concrete_Test is NFTDescriptor_Integration_
     function test_GivenSymbolContainsAlphanumericChars()
         external
         view
-        whenAssetIsContract
+        whenAssetContract
         givenSymbolImplemented
         givenSymbolAsString
         givenSymbolNotLongerThan30Chars

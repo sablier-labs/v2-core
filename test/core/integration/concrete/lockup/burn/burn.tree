@@ -25,9 +25,9 @@ Burn_Integration_Concrete_Test
                │  ├── it should burn the NFT
                │  └── it should emit a {MetadataUpdate} event
                └── given transferable NFT
-                  ├── when caller is approved third party
+                  ├── when caller approved third party
                   │  ├── it should burn the NFT
                   │  └── it should emit a {MetadataUpdate} event
-                  └── when caller is NFT owner
+                  └── when caller NFT owner
                      ├── it should burn the NFT
                      └── it should emit a {MetadataUpdate} event

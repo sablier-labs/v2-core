@@ -86,7 +86,7 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Lockup_Integration
         _;
     }
 
-    modifier whenWithdrawalAddressIsNotZero() {
+    modifier whenWithdrawalAddressNotZero() {
         _;
     }
 }

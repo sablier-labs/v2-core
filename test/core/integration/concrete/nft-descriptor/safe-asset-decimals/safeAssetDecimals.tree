@@ -1,7 +1,7 @@
 SafeAssetDecimals_Integration_Concrete_Test
-├── when asset is not contract
+├── when asset not contract
 │   └── it should return 0
-└── when asset is contract
+└── when asset contract
     ├── when decimals not implemented
     │   └── it should return 0
     └── when decimals implemented

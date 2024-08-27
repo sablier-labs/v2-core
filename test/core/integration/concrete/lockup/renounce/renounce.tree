@@ -13,9 +13,9 @@ Renounce_Integration_Concrete_Test
       │  └── given SETTLED status
       │     └── it should revert
       └── given warm stream
-         ├── when caller is not sender
+         ├── when caller not sender
          │  └── it should revert
-         └── when caller is sender
+         └── when caller sender
             ├── given non cancelable stream
             │  └── it should revert
             └── given cancelable stream

@@ -15,7 +15,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         defaultStreamId = createDefaultStream();
     }
 
-    function test_RevertWhen_CallerIsNotAdmin() external {
+    function test_RevertWhen_CallerNotAdmin() external {
         // Make Eve the caller in this test.
         resetPrank({ msgSender: users.eve });
 
@@ -24,13 +24,13 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.setNFTDescriptor(ILockupNFTDescriptor(users.eve));
     }
 
-    modifier whenCallerIsAdmin() {
+    modifier whenCallerAdmin() {
         // Make the Admin the caller in the rest of this test suite.
         resetPrank({ msgSender: users.admin });
         _;
     }
 
-    function test_WhenProvidedAddressMatchesCurrentNFTDescriptor() external whenCallerIsAdmin {
+    function test_WhenProvidedAddressMatchesCurrentNFTDescriptor() external whenCallerAdmin {
         // It should emit {SetNFTDescriptor} and {BatchMetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });
         emit SetNFTDescriptor(users.admin, nftDescriptor, nftDescriptor);
@@ -45,7 +45,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.tokenURI({ tokenId: defaultStreamId });
     }
 
-    function test_WhenProvidedAddressNotMatchCurrentNFTDescriptor() external whenCallerIsAdmin {
+    function test_WhenProvidedAddressNotMatchCurrentNFTDescriptor() external whenCallerAdmin {
         // Deploy another NFT descriptor.
         ILockupNFTDescriptor newNFTDescriptor = new LockupNFTDescriptor();
 
