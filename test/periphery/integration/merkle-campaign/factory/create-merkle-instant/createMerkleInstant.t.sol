@@ -47,13 +47,7 @@ contract CreateMerkleInstant_Integration_Test is MerkleCampaign_Integration_Test
         });
     }
 
-    function test_GivenCampaignDoesNotExist(
-        address admin,
-        uint40 expiration
-    )
-        external
-        whenCampaignNameNotExceeds32Bytes
-    {
+    function test_GivenCampaignNotExists(address admin, uint40 expiration) external whenCampaignNameNotExceeds32Bytes {
         vm.assume(admin != users.admin);
         address expectedMerkleInstant = computeMerkleInstantAddress(admin, expiration);
 

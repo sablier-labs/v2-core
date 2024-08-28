@@ -4,6 +4,6 @@ CreateMerkleInstant_Integration_Test
 └── when campaign name not exceeds 32 bytes
    ├── given campaign already exists
    │  └── it should revert
-   └── given campaign does not exist
+   └── given campaign not exists
       ├── it should create the campaign
       └── it should emit a {CreateMerkleInstant} event
