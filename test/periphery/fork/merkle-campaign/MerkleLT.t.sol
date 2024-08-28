@@ -119,7 +119,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             lockupTranched: lockupTranched,
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
-            streamStartTime: defaults.STREAM_START_TIME(),
+            streamStartTime: defaults.ZERO_STREAM_START_TIME(),
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             totalDuration: defaults.TOTAL_DURATION(),
             aggregateAmount: vars.aggregateAmount,
@@ -131,7 +131,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             lockupTranched: lockupTranched,
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
-            streamStartTime: defaults.STREAM_START_TIME(),
+            streamStartTime: defaults.ZERO_STREAM_START_TIME(),
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             aggregateAmount: vars.aggregateAmount,
             recipientCount: vars.recipientCount
@@ -192,7 +192,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             sender: params.admin,
             startTime: getBlockTimestamp(),
             tranches: defaults.tranchesMerkleLT({
-                startTime: getBlockTimestamp(),
+                streamStartTime: defaults.ZERO_STREAM_START_TIME(),
                 totalAmount: vars.amounts[params.posBeforeSort]
             }),
             wasCanceled: false

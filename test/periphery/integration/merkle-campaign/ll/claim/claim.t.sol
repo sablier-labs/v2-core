@@ -8,22 +8,22 @@ import { MerkleLL_Integration_Shared_Test } from "../MerkleLL.t.sol";
 import { Claim_Integration_Test } from "../../shared/claim/claim.t.sol";
 
 contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Integration_Shared_Test {
+    MerkleLL.Schedule internal schedule;
+
     function setUp() public override(Claim_Integration_Test, MerkleLL_Integration_Shared_Test) {
         super.setUp();
+        schedule = defaults.schedule();
     }
 
-    function test_Claim_TimestampsInThePast()
-        external
-        givenCampaignNotExpired
-        givenNotClaimed
-        givenIncludedInMerkleTree
-    {
-        MerkleLL.Schedule memory schedule = defaults.schedule();
-        schedule.startTime = getBlockTimestamp();
+    modifier whenScheduledStartTimeZero() {
+        _;
+    }
+
+    function test_WhenScheduledCliffDurationZero() external whenScheduledStartTimeZero {
         schedule.cliffDuration = 0;
 
         merkleLL = merkleFactory.createMerkleLL({
-            baseParams: defaults.baseParams(users.admin, dai, defaults.EXPIRATION(), defaults.MERKLE_ROOT()),
+            baseParams: defaults.baseParams("cliff-duration-zero", dai),
             lockupLinear: lockupLinear,
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
@@ -31,22 +31,59 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
             recipientCount: defaults.RECIPIENT_COUNT()
         });
+
+        // It should create a stream with block.timestamp as start time.
+        // It should create a stream with cliff as zero.
+        _test_Claim({ startTime: getBlockTimestamp(), cliffTime: 0 });
+    }
+
+    function test_WhenScheduledCliffDurationNotZero() external whenScheduledStartTimeZero {
+        merkleLL = merkleFactory.createMerkleLL({
+            baseParams: defaults.baseParams("cliff-duration-not-zero", dai),
+            lockupLinear: lockupLinear,
+            cancelable: defaults.CANCELABLE(),
+            transferable: defaults.TRANSFERABLE(),
+            schedule: schedule,
+            aggregateAmount: defaults.AGGREGATE_AMOUNT(),
+            recipientCount: defaults.RECIPIENT_COUNT()
+        });
+
+        // It should create a stream with block.timestamp as start time.
+        // It should create a stream with cliff as start time + cliff duration.
+        _test_Claim({ startTime: getBlockTimestamp(), cliffTime: getBlockTimestamp() + defaults.CLIFF_DURATION() });
+    }
+
+    function test_WhenScheduledStartTimeNotZero() external {
+        schedule.startTime = defaults.NON_ZERO_STREAM_START_TIME();
+
+        merkleLL = merkleFactory.createMerkleLL({
+            baseParams: defaults.baseParams("ll-start-time-not-zero", dai),
+            lockupLinear: lockupLinear,
+            cancelable: defaults.CANCELABLE(),
+            transferable: defaults.TRANSFERABLE(),
+            schedule: schedule,
+            aggregateAmount: defaults.AGGREGATE_AMOUNT(),
+            recipientCount: defaults.RECIPIENT_COUNT()
+        });
+
+        // It should create a stream with scheduled start time as start time.
+        _test_Claim({
+            startTime: defaults.NON_ZERO_STREAM_START_TIME(),
+            cliffTime: defaults.NON_ZERO_STREAM_START_TIME() + defaults.CLIFF_DURATION()
+        });
+    }
+
+    /// @dev Helper function to test claim.
+    function _test_Claim(uint40 startTime, uint40 cliffTime) private {
         deal({ token: address(dai), to: address(merkleLL), give: defaults.AGGREGATE_AMOUNT() });
 
-        vm.warp(defaults.END_TIME() + 1);
-
-        _test_Claim(schedule.startTime, 0);
-    }
-
-    function test_Claim() external override givenCampaignNotExpired givenNotClaimed givenIncludedInMerkleTree {
-        _test_Claim(getBlockTimestamp(), getBlockTimestamp() + defaults.CLIFF_DURATION());
-    }
-
-    function _test_Claim(uint40 startTime, uint40 cliffTime) private {
         uint256 expectedStreamId = lockupLinear.nextStreamId();
 
+        // It should emit a {Claim} event.
         vm.expectEmit({ emitter: address(merkleLL) });
         emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
+
+        // Claim the airstream.
         merkleLL.claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), defaults.index1Proof());
 
         LockupLinear.StreamLL memory actualStream = lockupLinear.getStream(expectedStreamId);

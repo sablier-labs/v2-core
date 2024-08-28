@@ -4,8 +4,8 @@ pragma solidity >=0.8.22;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD2x18 } from "@prb/math/src/UD2x18.sol";
 
-import { Broker, LockupDynamic, LockupLinear, LockupTranched } from "../../core/types/DataTypes.sol";
 import { ISablierLockupTranched } from "../../core/interfaces/ISablierLockupTranched.sol";
+import { Broker, LockupDynamic, LockupLinear, LockupTranched } from "../../core/types/DataTypes.sol";
 
 library BatchLockup {
     /// @notice A struct encapsulating all parameters of {SablierLockupDynamic.createWithDurations} except for the

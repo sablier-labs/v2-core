@@ -12,7 +12,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
         bool cancelable = defaults.CANCELABLE();
         bool transferable = defaults.TRANSFERABLE();
-        uint40 streamStartTime = defaults.STREAM_START_TIME();
+        uint40 streamStartTime = defaults.ZERO_STREAM_START_TIME();
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = defaults.tranchesWithPercentages();
         uint256 aggregateAmount = defaults.AGGREGATE_AMOUNT();
         uint256 recipientCount = defaults.RECIPIENT_COUNT();
@@ -46,7 +46,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
         bool cancelable = defaults.CANCELABLE();
         bool transferable = defaults.TRANSFERABLE();
-        uint40 streamStartTime = defaults.STREAM_START_TIME();
+        uint40 streamStartTime = defaults.ZERO_STREAM_START_TIME();
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = defaults.tranchesWithPercentages();
         uint256 aggregateAmount = defaults.AGGREGATE_AMOUNT();
         uint256 recipientCount = defaults.RECIPIENT_COUNT();
@@ -80,26 +80,26 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         vm.assume(admin != users.admin);
         address expectedLT = computeMerkleLTAddress(admin, expiration);
 
-        // MerkleBase.ConstructorParams memory baseParams = defaults.baseParams({
-        //     admin: admin,
-        //     asset_: dai,
-        //     merkleRoot: defaults.MERKLE_ROOT(),
-        //     expiration: expiration
-        // });
+        MerkleBase.ConstructorParams memory baseParams = defaults.baseParams({
+            admin: admin,
+            asset_: dai,
+            merkleRoot: defaults.MERKLE_ROOT(),
+            expiration: expiration
+        });
 
-        // vm.expectEmit({ emitter: address(merkleFactory) });
-        // emit CreateMerkleLT({
-        //     merkleLT: ISablierMerkleLT(expectedLT),
-        //     baseParams: baseParams,
-        //     lockupTranched: lockupTranched,
-        //     cancelable: defaults.CANCELABLE(),
-        //     transferable: defaults.TRANSFERABLE(),
-        //     streamStartTime: defaults.STREAM_START_TIME(),
-        //     tranchesWithPercentages: defaults.tranchesWithPercentages(),
-        //     totalDuration: defaults.TOTAL_DURATION(),
-        //     aggregateAmount: defaults.AGGREGATE_AMOUNT(),
-        //     recipientCount: defaults.RECIPIENT_COUNT()
-        // });
+        vm.expectEmit({ emitter: address(merkleFactory) });
+        emit CreateMerkleLT({
+            merkleLT: ISablierMerkleLT(expectedLT),
+            baseParams: baseParams,
+            lockupTranched: lockupTranched,
+            cancelable: defaults.CANCELABLE(),
+            transferable: defaults.TRANSFERABLE(),
+            streamStartTime: defaults.ZERO_STREAM_START_TIME(),
+            tranchesWithPercentages: defaults.tranchesWithPercentages(),
+            totalDuration: defaults.TOTAL_DURATION(),
+            aggregateAmount: defaults.AGGREGATE_AMOUNT(),
+            recipientCount: defaults.RECIPIENT_COUNT()
+        });
 
         address actualLT = address(createMerkleLT(admin, expiration));
         assertGt(actualLT.code.length, 0, "MerkleLT contract not created");

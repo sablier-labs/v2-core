@@ -43,7 +43,7 @@ contract Constructor_MerkleLT_Integration_Test is MerkleCampaign_Integration_Tes
             lockupTranched,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
-            defaults.STREAM_START_TIME(),
+            defaults.ZERO_STREAM_START_TIME(),
             defaults.tranchesWithPercentages()
         );
 
@@ -82,7 +82,7 @@ contract Constructor_MerkleLT_Integration_Test is MerkleCampaign_Integration_Tes
         assertEq(vars.actualLockupTranched, vars.expectedLockupTranched, "lockupTranched");
 
         vars.actualStreamStartTime = constructedLT.STREAM_START_TIME();
-        vars.expectedStreamStartTime = defaults.STREAM_START_TIME();
+        vars.expectedStreamStartTime = defaults.ZERO_STREAM_START_TIME();
         assertEq(vars.actualStreamStartTime, vars.expectedStreamStartTime, "streamStartTime");
 
         vars.actualTotalPercentage = constructedLT.TOTAL_PERCENTAGE();
