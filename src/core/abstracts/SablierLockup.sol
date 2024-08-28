@@ -374,6 +374,15 @@ abstract contract SablierLockup is
             revert Errors.SablierLockup_WithdrawToZeroAddress(streamId);
         }
 
+        // Retrieve the recipient from storage.
+        address recipient = _ownerOf(streamId);
+
+        // Check: if `msg.sender` is neither the stream's recipient nor an approved third party, the withdrawal address
+        // must be the recipient.
+        if (to != recipient && !_isCallerStreamRecipientOrApproved(streamId)) {
+            revert Errors.SablierLockup_WithdrawalAddressNotRecipient(streamId, msg.sender, to);
+        }
+
         // Check: the withdraw amount is not zero.
         if (amount == 0) {
             revert Errors.SablierLockup_WithdrawAmountZero(streamId);
@@ -383,15 +392,6 @@ abstract contract SablierLockup is
         uint128 withdrawableAmount = _withdrawableAmountOf(streamId);
         if (amount > withdrawableAmount) {
             revert Errors.SablierLockup_Overdraw(streamId, amount, withdrawableAmount);
-        }
-
-        // Retrieve the recipient from storage.
-        address recipient = _ownerOf(streamId);
-
-        // Check: if `msg.sender` is neither the stream's recipient nor an approved third party, the withdrawal address
-        // must be the recipient.
-        if (to != recipient && !_isCallerStreamRecipientOrApproved(streamId)) {
-            revert Errors.SablierLockup_WithdrawalAddressNotRecipient(streamId, msg.sender, to);
         }
 
         // Effects and Interactions: make the withdrawal.
