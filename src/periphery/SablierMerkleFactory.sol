@@ -5,7 +5,6 @@ import { uUNIT } from "@prb/math/src/UD2x18.sol";
 
 import { ISablierLockupLinear } from "../core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockupTranched } from "../core/interfaces/ISablierLockupTranched.sol";
-import { LockupLinear } from "../core/types/DataTypes.sol";
 
 import { ISablierMerkleFactory } from "./interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleInstant } from "./interfaces/ISablierMerkleInstant.sol";

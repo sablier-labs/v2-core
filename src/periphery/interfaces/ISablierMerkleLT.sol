@@ -27,7 +27,7 @@ interface ISablierMerkleLT is ISablierMerkleBase {
     /// @notice The address of the {SablierLockupTranched} contract.
     function LOCKUP_TRANCHED() external view returns (ISablierLockupTranched);
 
-    /// @notice The start time of the stream created in the `claim` function.
+    /// @notice The start time of the streams created through `claim` function.
     /// @dev A start time value of zero will be considered as `block.timestamp`.
     function STREAM_START_TIME() external returns (uint40);
 

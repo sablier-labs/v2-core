@@ -38,7 +38,6 @@ contract Defaults is Constants, Merkle {
     uint128 public constant REFUND_AMOUNT = DEPOSIT_AMOUNT - CLIFF_AMOUNT;
     uint256 public constant SEGMENT_COUNT = 2;
     uint40 public immutable START_TIME;
-    uint40 public immutable STREAM_START_TIME = 0; // used only in merkle campaigns
     uint128 public constant TOTAL_AMOUNT = 10_030.090270812437311935e18; // deposit + broker fee
     uint40 public constant TOTAL_DURATION = 10_000 seconds;
     uint256 public constant TRANCHE_COUNT = 3;
@@ -65,6 +64,8 @@ contract Defaults is Constants, Merkle {
     bytes32 public MERKLE_ROOT;
     string public constant NAME = "Airdrop Campaign";
     bytes32 public constant NAME_BYTES32 = bytes32(abi.encodePacked("Airdrop Campaign"));
+    uint40 public immutable STREAM_START_TIME_NON_ZERO = JULY_1_2024 - 2 days;
+    uint40 public immutable STREAM_START_TIME_ZERO = 0;
     uint64 public constant TOTAL_PERCENTAGE = uUNIT;
     bool public constant TRANSFERABLE = false;
 
@@ -503,29 +504,28 @@ contract Defaults is Constants, Merkle {
     }
 
     function schedule() public pure returns (MerkleLL.Schedule memory schedule_) {
-        schedule_.startTime = STREAM_START_TIME;
+        schedule_.startTime = STREAM_START_TIME_ZERO;
         schedule_.cliffDuration = CLIFF_DURATION;
         schedule_.totalDuration = TOTAL_DURATION;
     }
 
-    function tranchesMerkleLT() public view returns (LockupTranched.Tranche[] memory tranches_) {
-        tranches_ = new LockupTranched.Tranche[](2);
-        tranches_[0] = LockupTranched.Tranche({ amount: 2500e18, timestamp: uint40(block.timestamp) + CLIFF_DURATION });
-        tranches_[1] = LockupTranched.Tranche({ amount: 7500e18, timestamp: uint40(block.timestamp) + TOTAL_DURATION });
-    }
-
-    /// @dev Mirros the logic from {SablierMerkleLT._calculateTranches}.
+    /// @dev Mirros the logic from {SablierMerkleLT._calculateStartTimeAndTranches}.
     function tranchesMerkleLT(
-        uint40 startTime,
+        uint40 streamStartTime,
         uint128 totalAmount
     )
         public
         view
         returns (LockupTranched.Tranche[] memory tranches_)
     {
-        tranches_ = tranchesMerkleLT();
-        tranches_[0].timestamp = startTime + CLIFF_DURATION;
-        tranches_[1].timestamp = startTime + TOTAL_DURATION;
+        tranches_ = new LockupTranched.Tranche[](2);
+        if (streamStartTime == 0) {
+            tranches_[0].timestamp = uint40(block.timestamp) + CLIFF_DURATION;
+            tranches_[1].timestamp = uint40(block.timestamp) + TOTAL_DURATION;
+        } else {
+            tranches_[0].timestamp = streamStartTime + CLIFF_DURATION;
+            tranches_[1].timestamp = streamStartTime + TOTAL_DURATION;
+        }
 
         uint128 amount0 = ud(totalAmount).mul(tranchesWithPercentages()[0].unlockPercentage.intoUD60x18()).intoUint128();
         uint128 amount1 = ud(totalAmount).mul(tranchesWithPercentages()[1].unlockPercentage.intoUD60x18()).intoUint128();

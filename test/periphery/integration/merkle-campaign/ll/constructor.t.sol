@@ -56,13 +56,6 @@ contract Constructor_MerkleLL_Integration_Test is MerkleCampaign_Integration_Tes
         vars.expectedCancelable = defaults.CANCELABLE();
         assertEq(vars.actualCancelable, vars.expectedCancelable, "cancelable");
 
-        (vars.actualSchedule.startTime, vars.actualSchedule.cliffDuration, vars.actualSchedule.totalDuration) =
-            constructedLL.schedule();
-        vars.expectedSchedule = defaults.schedule();
-        assertEq(vars.actualSchedule.startTime, vars.expectedSchedule.startTime, "schedule.startTime");
-        assertEq(vars.actualSchedule.cliffDuration, vars.expectedSchedule.cliffDuration, "schedule.cliffDuration");
-        assertEq(vars.actualSchedule.totalDuration, vars.expectedSchedule.totalDuration, "schedule.totalDuration");
-
         vars.actualExpiration = constructedLL.EXPIRATION();
         vars.expectedExpiration = defaults.EXPIRATION();
         assertEq(vars.actualExpiration, vars.expectedExpiration, "expiration");
@@ -82,6 +75,13 @@ contract Constructor_MerkleLL_Integration_Test is MerkleCampaign_Integration_Tes
         vars.actualName = constructedLL.name();
         vars.expectedName = defaults.NAME_BYTES32();
         assertEq(bytes32(abi.encodePacked(vars.actualName)), vars.expectedName, "name");
+
+        (vars.actualSchedule.startTime, vars.actualSchedule.cliffDuration, vars.actualSchedule.totalDuration) =
+            constructedLL.schedule();
+        vars.expectedSchedule = defaults.schedule();
+        assertEq(vars.actualSchedule.startTime, vars.expectedSchedule.startTime, "schedule.startTime");
+        assertEq(vars.actualSchedule.cliffDuration, vars.expectedSchedule.cliffDuration, "schedule.cliffDuration");
+        assertEq(vars.actualSchedule.totalDuration, vars.expectedSchedule.totalDuration, "schedule.totalDuration");
 
         vars.actualTransferable = constructedLL.TRANSFERABLE();
         vars.expectedTransferable = defaults.TRANSFERABLE();
