@@ -1,7 +1,7 @@
 CreateMerkleInstant_Integration_Test
-├── when campaign name exceeds 32 bytes
+├── when name too long
 │  └── it should revert
-└── when campaign name not exceeds 32 bytes
+└── when name not too long
    ├── given campaign already exists
    │  └── it should revert
    └── given campaign not exists
