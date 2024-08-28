@@ -4,7 +4,6 @@ pragma solidity >=0.8.22;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { UD2x18 } from "@prb/math/src/UD2x18.sol";
 
-import { ISablierLockupTranched } from "../../core/interfaces/ISablierLockupTranched.sol";
 import { Broker, LockupDynamic, LockupLinear, LockupTranched } from "../../core/types/DataTypes.sol";
 
 library BatchLockup {
@@ -116,15 +115,6 @@ library MerkleLL {
 }
 
 library MerkleLT {
-    struct CreateMerkleLTParams {
-        MerkleBase.ConstructorParams baseParams;
-        ISablierLockupTranched lockupTranched;
-        bool cancelable;
-        bool transferable;
-        uint40 streamStartTime;
-        TrancheWithPercentage[] tranchesWithPercentages;
-    }
-
     /// @notice Struct encapsulating the unlock percentage and duration of a tranche.
     /// @dev Since users may have different amounts allocated, this struct makes it possible to calculate the amounts
     /// at claim time. An 18-decimal format is used to represent percentages: 100% = 1e18. For more information, see

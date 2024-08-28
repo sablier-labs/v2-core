@@ -105,7 +105,7 @@ contract Periphery_Test is Base_Test {
                 lockupTranched,
                 defaults.CANCELABLE(),
                 defaults.TRANSFERABLE(),
-                defaults.ZERO_STREAM_START_TIME(),
+                defaults.STREAM_START_TIME_ZERO(),
                 abi.encode(defaults.tranchesWithPercentages())
             )
         );
@@ -176,7 +176,7 @@ contract Periphery_Test is Base_Test {
             lockupTranched,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
-            defaults.ZERO_STREAM_START_TIME(),
+            defaults.STREAM_START_TIME_ZERO(),
             defaults.tranchesWithPercentages()
         );
         if (!isTestOptimizedProfile()) {

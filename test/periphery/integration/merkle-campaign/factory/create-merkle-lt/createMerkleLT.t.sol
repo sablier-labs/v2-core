@@ -12,7 +12,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
         bool cancelable = defaults.CANCELABLE();
         bool transferable = defaults.TRANSFERABLE();
-        uint40 streamStartTime = defaults.ZERO_STREAM_START_TIME();
+        uint40 streamStartTime = defaults.STREAM_START_TIME_ZERO();
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = defaults.tranchesWithPercentages();
         uint256 aggregateAmount = defaults.AGGREGATE_AMOUNT();
         uint256 recipientCount = defaults.RECIPIENT_COUNT();
@@ -46,7 +46,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
         bool cancelable = defaults.CANCELABLE();
         bool transferable = defaults.TRANSFERABLE();
-        uint40 streamStartTime = defaults.ZERO_STREAM_START_TIME();
+        uint40 streamStartTime = defaults.STREAM_START_TIME_ZERO();
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages = defaults.tranchesWithPercentages();
         uint256 aggregateAmount = defaults.AGGREGATE_AMOUNT();
         uint256 recipientCount = defaults.RECIPIENT_COUNT();
@@ -94,7 +94,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
             lockupTranched: lockupTranched,
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
-            streamStartTime: defaults.ZERO_STREAM_START_TIME(),
+            streamStartTime: defaults.STREAM_START_TIME_ZERO(),
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             totalDuration: defaults.TOTAL_DURATION(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),

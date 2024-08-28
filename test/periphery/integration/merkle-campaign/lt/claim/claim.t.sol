@@ -30,7 +30,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
             lockupTranched,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
-            defaults.ZERO_STREAM_START_TIME(),
+            defaults.STREAM_START_TIME_ZERO(),
             tranchesWithPercentages,
             defaults.AGGREGATE_AMOUNT(),
             defaults.RECIPIENT_COUNT()
@@ -60,7 +60,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
             lockupTranched,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
-            defaults.ZERO_STREAM_START_TIME(),
+            defaults.STREAM_START_TIME_ZERO(),
             tranchesWithPercentages,
             defaults.AGGREGATE_AMOUNT(),
             defaults.RECIPIENT_COUNT()
@@ -95,17 +95,6 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
         givenIncludedInMerkleTree
         whenCalculatedAmountsSumEqualsClaimAmount
     {
-        merkleLT = merkleFactory.createMerkleLT({
-            baseParams: defaults.baseParams("lt-start-time-zero", dai),
-            lockupTranched: lockupTranched,
-            cancelable: defaults.CANCELABLE(),
-            transferable: defaults.TRANSFERABLE(),
-            streamStartTime: 0,
-            tranchesWithPercentages: defaults.tranchesWithPercentages(),
-            aggregateAmount: defaults.AGGREGATE_AMOUNT(),
-            recipientCount: defaults.RECIPIENT_COUNT()
-        });
-
         // It should create a stream with block.timestamp as start time.
         _test_Claim({ streamStartTime: 0, startTime: getBlockTimestamp() });
     }
@@ -119,11 +108,11 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
         whenCalculatedAmountsSumEqualsClaimAmount
     {
         merkleLT = merkleFactory.createMerkleLT({
-            baseParams: defaults.baseParams("lt-start-time-not-zero", dai),
+            baseParams: defaults.baseParams(),
             lockupTranched: lockupTranched,
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
-            streamStartTime: defaults.NON_ZERO_STREAM_START_TIME(),
+            streamStartTime: defaults.STREAM_START_TIME_NON_ZERO(),
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
             recipientCount: defaults.RECIPIENT_COUNT()
@@ -131,8 +120,8 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
 
         // It should create a stream with `STREAM_START_TIME` as start time.
         _test_Claim({
-            streamStartTime: defaults.NON_ZERO_STREAM_START_TIME(),
-            startTime: defaults.NON_ZERO_STREAM_START_TIME()
+            streamStartTime: defaults.STREAM_START_TIME_NON_ZERO(),
+            startTime: defaults.STREAM_START_TIME_NON_ZERO()
         });
     }
 

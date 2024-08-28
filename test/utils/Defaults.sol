@@ -35,7 +35,6 @@ contract Defaults is Constants, Merkle {
     uint256 public constant MAX_SEGMENT_COUNT = 10_000;
     uint40 public immutable MAX_SEGMENT_DURATION;
     uint256 public constant MAX_TRANCHE_COUNT = 10_000;
-    uint40 public immutable NON_ZERO_STREAM_START_TIME = JULY_1_2024 - 2 days; // sets airstreams start time
     uint128 public constant REFUND_AMOUNT = DEPOSIT_AMOUNT - CLIFF_AMOUNT;
     uint256 public constant SEGMENT_COUNT = 2;
     uint40 public immutable START_TIME;
@@ -45,7 +44,6 @@ contract Defaults is Constants, Merkle {
     uint128 public constant TOTAL_TRANSFER_AMOUNT = DEPOSIT_AMOUNT * uint128(BATCH_SIZE);
     uint128 public constant WITHDRAW_AMOUNT = 2600e18;
     uint40 public immutable WARP_26_PERCENT; // 26% of the way through the stream
-    uint40 public immutable ZERO_STREAM_START_TIME = 0; // sets airstreams start time to block.timestamp
 
     /*//////////////////////////////////////////////////////////////////////////
                                   MERKLE-LOCKUP
@@ -66,6 +64,8 @@ contract Defaults is Constants, Merkle {
     bytes32 public MERKLE_ROOT;
     string public constant NAME = "Airdrop Campaign";
     bytes32 public constant NAME_BYTES32 = bytes32(abi.encodePacked("Airdrop Campaign"));
+    uint40 public immutable STREAM_START_TIME_NON_ZERO = JULY_1_2024 - 2 days;
+    uint40 public immutable STREAM_START_TIME_ZERO = 0;
     uint64 public constant TOTAL_PERCENTAGE = uUNIT;
     bool public constant TRANSFERABLE = false;
 
@@ -455,17 +455,6 @@ contract Defaults is Constants, Merkle {
         return baseParams(users.admin, asset, EXPIRATION, MERKLE_ROOT);
     }
 
-    function baseParams(string memory name, IERC20 asset_) public view returns (MerkleBase.ConstructorParams memory) {
-        return MerkleBase.ConstructorParams({
-            asset: asset_,
-            expiration: EXPIRATION,
-            initialAdmin: users.admin,
-            ipfsCID: IPFS_CID,
-            merkleRoot: MERKLE_ROOT,
-            name: name
-        });
-    }
-
     function baseParams(
         address admin,
         IERC20 asset_,
@@ -515,7 +504,7 @@ contract Defaults is Constants, Merkle {
     }
 
     function schedule() public pure returns (MerkleLL.Schedule memory schedule_) {
-        schedule_.startTime = ZERO_STREAM_START_TIME;
+        schedule_.startTime = STREAM_START_TIME_ZERO;
         schedule_.cliffDuration = CLIFF_DURATION;
         schedule_.totalDuration = TOTAL_DURATION;
     }

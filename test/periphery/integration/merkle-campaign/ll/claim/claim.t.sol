@@ -23,7 +23,7 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
         schedule.cliffDuration = 0;
 
         merkleLL = merkleFactory.createMerkleLL({
-            baseParams: defaults.baseParams("cliff-duration-zero", dai),
+            baseParams: defaults.baseParams(),
             lockupLinear: lockupLinear,
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
@@ -38,26 +38,16 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
     }
 
     function test_WhenScheduledCliffDurationNotZero() external whenScheduledStartTimeZero {
-        merkleLL = merkleFactory.createMerkleLL({
-            baseParams: defaults.baseParams("cliff-duration-not-zero", dai),
-            lockupLinear: lockupLinear,
-            cancelable: defaults.CANCELABLE(),
-            transferable: defaults.TRANSFERABLE(),
-            schedule: schedule,
-            aggregateAmount: defaults.AGGREGATE_AMOUNT(),
-            recipientCount: defaults.RECIPIENT_COUNT()
-        });
-
         // It should create a stream with block.timestamp as start time.
         // It should create a stream with cliff as start time + cliff duration.
         _test_Claim({ startTime: getBlockTimestamp(), cliffTime: getBlockTimestamp() + defaults.CLIFF_DURATION() });
     }
 
     function test_WhenScheduledStartTimeNotZero() external {
-        schedule.startTime = defaults.NON_ZERO_STREAM_START_TIME();
+        schedule.startTime = defaults.STREAM_START_TIME_NON_ZERO();
 
         merkleLL = merkleFactory.createMerkleLL({
-            baseParams: defaults.baseParams("ll-start-time-not-zero", dai),
+            baseParams: defaults.baseParams(),
             lockupLinear: lockupLinear,
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
@@ -68,8 +58,8 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
 
         // It should create a stream with scheduled start time as start time.
         _test_Claim({
-            startTime: defaults.NON_ZERO_STREAM_START_TIME(),
-            cliffTime: defaults.NON_ZERO_STREAM_START_TIME() + defaults.CLIFF_DURATION()
+            startTime: defaults.STREAM_START_TIME_NON_ZERO(),
+            cliffTime: defaults.STREAM_START_TIME_NON_ZERO() + defaults.CLIFF_DURATION()
         });
     }
 
