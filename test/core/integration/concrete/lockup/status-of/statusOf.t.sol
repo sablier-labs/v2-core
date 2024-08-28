@@ -23,7 +23,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_GivenAssetsAreFullyWithdrawn() external givenNotNull {
+    function test_GivenAssetsFullyWithdrawn() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
@@ -33,11 +33,11 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         assertEq(actualStatus, expectedStatus);
     }
 
-    modifier givenAssetsAreNotFullyWithdrawn() {
+    modifier givenAssetsNotFullyWithdrawn() {
         _;
     }
 
-    function test_GivenCanceledStream() external givenNotNull givenAssetsAreNotFullyWithdrawn {
+    function test_GivenCanceledStream() external givenNotNull givenAssetsNotFullyWithdrawn {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         lockup.cancel(defaultStreamId);
 
@@ -51,12 +51,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
         _;
     }
 
-    function test_GivenStartTimeInFuture()
-        external
-        givenNotNull
-        givenAssetsAreNotFullyWithdrawn
-        givenNotCanceledStream
-    {
+    function test_GivenStartTimeInFuture() external givenNotNull givenAssetsNotFullyWithdrawn givenNotCanceledStream {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
 
         // It should return PENDING.
@@ -72,7 +67,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
     function test_GivenZeroRefundableAmount()
         external
         givenNotNull
-        givenAssetsAreNotFullyWithdrawn
+        givenAssetsNotFullyWithdrawn
         givenNotCanceledStream
         givenStartTimeNotInFuture
     {
@@ -87,7 +82,7 @@ abstract contract StatusOf_Integration_Concrete_Test is Integration_Test, Lockup
     function test_GivenNonZeroRefundableAmount()
         external
         givenNotNull
-        givenAssetsAreNotFullyWithdrawn
+        givenAssetsNotFullyWithdrawn
         givenNotCanceledStream
         givenStartTimeNotInFuture
     {
