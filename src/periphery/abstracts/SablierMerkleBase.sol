@@ -71,9 +71,6 @@ abstract contract SablierMerkleBase is
         SABLIER_FEE = sablierFee;
     }
 
-    /// @dev Implements the receive Ether function to be able to receive sablier fee during claim.
-    receive() external payable { }
-
     /*//////////////////////////////////////////////////////////////////////////
                            USER-FACING CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
