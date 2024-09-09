@@ -72,7 +72,7 @@ contract DeployDeterministicProtocol is DeploymentLogger("deterministic") {
 
         // Deploy Periphery.
         batchLockup = new SablierBatchLockup{ salt: salt }();
-        merkleLockupFactory = new SablierMerkleFactory{ salt: salt }();
+        merkleLockupFactory = new SablierMerkleFactory{ salt: salt }(initialAdmin);
 
         appendToFileDeployedAddresses(
             address(lockupDynamic),

@@ -102,14 +102,14 @@ contract Precompiles_Test is Base_Test {
     }
 
     function test_DeployMerkleFactory() external onlyTestOptimizedProfile {
-        address actualFactory = address(precompiles.deployMerkleFactory());
+        address actualFactory = address(precompiles.deployMerkleFactory(users.admin));
         address expectedFactory = address(deployOptimizedMerkleFactory());
         assertEq(actualFactory.code, expectedFactory.code, "bytecodes mismatch");
     }
 
     function test_DeployPeriphery() external onlyTestOptimizedProfile {
         (ISablierBatchLockup actualBatchLockup, ISablierMerkleFactory actualMerkleFactory) =
-            precompiles.deployPeriphery();
+            precompiles.deployPeriphery(users.admin);
 
         (ISablierBatchLockup expectedBatchLockup, ISablierMerkleFactory expectedMerkleFactory) =
             deployOptimizedPeriphery();

@@ -95,8 +95,11 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
         // Make the caller the admin.
         resetPrank({ msgSender: params.admin });
 
-        vars.expectedMerkleInstant =
-            computeMerkleInstantAddress(params.admin, params.admin, FORK_ASSET, vars.merkleRoot, params.expiration);
+        uint256 sablierFee = defaults.SABLIER_FEE();
+
+        vars.expectedMerkleInstant = computeMerkleInstantAddress(
+            params.admin, params.admin, FORK_ASSET, vars.merkleRoot, params.expiration, sablierFee
+        );
 
         vars.baseParams = defaults.baseParams({
             admin: params.admin,
@@ -163,7 +166,7 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
             value: vars.amounts[params.posBeforeSort]
         });
 
-        vars.merkleInstant.claim({
+        vars.merkleInstant.claim{ value: sablierFee }({
             index: vars.indexes[params.posBeforeSort],
             recipient: vars.recipients[params.posBeforeSort],
             amount: vars.amounts[params.posBeforeSort],

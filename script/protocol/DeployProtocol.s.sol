@@ -65,7 +65,7 @@ contract DeployProtocol is DeploymentLogger("non_deterministic") {
         lockupLinear = new SablierLockupLinear(initialAdmin, nftDescriptor);
         lockupTranched = new SablierLockupTranched(initialAdmin, nftDescriptor, trancheCountMap[block.chainid]);
         batchLockup = new SablierBatchLockup();
-        merkleLockupFactory = new SablierMerkleFactory();
+        merkleLockupFactory = new SablierMerkleFactory(initialAdmin);
 
         appendToFileDeployedAddresses(
             address(lockupDynamic),

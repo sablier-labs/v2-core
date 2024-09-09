@@ -23,7 +23,8 @@ contract Periphery_Test is Base_Test {
         address admin,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
@@ -40,7 +41,8 @@ contract Periphery_Test is Base_Test {
                 defaults.NAME_BYTES32()
             )
         );
-        bytes32 creationBytecodeHash = keccak256(getMerkleInstantBytecode(admin, asset_, merkleRoot, expiration));
+        bytes32 creationBytecodeHash =
+            keccak256(getMerkleInstantBytecode(admin, asset_, merkleRoot, expiration, sablierFee));
         return vm.computeCreate2Address({
             salt: salt,
             initCodeHash: creationBytecodeHash,
@@ -53,7 +55,8 @@ contract Periphery_Test is Base_Test {
         address admin,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
@@ -74,7 +77,7 @@ contract Periphery_Test is Base_Test {
                 abi.encode(defaults.schedule())
             )
         );
-        bytes32 creationBytecodeHash = keccak256(getMerkleLLBytecode(admin, asset_, merkleRoot, expiration));
+        bytes32 creationBytecodeHash = keccak256(getMerkleLLBytecode(admin, asset_, merkleRoot, expiration, sablierFee));
         return vm.computeCreate2Address({
             salt: salt,
             initCodeHash: creationBytecodeHash,
@@ -87,7 +90,8 @@ contract Periphery_Test is Base_Test {
         address admin,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
@@ -109,7 +113,7 @@ contract Periphery_Test is Base_Test {
                 abi.encode(defaults.tranchesWithPercentages())
             )
         );
-        bytes32 creationBytecodeHash = keccak256(getMerkleLTBytecode(admin, asset_, merkleRoot, expiration));
+        bytes32 creationBytecodeHash = keccak256(getMerkleLTBytecode(admin, asset_, merkleRoot, expiration, sablierFee));
         return vm.computeCreate2Address({
             salt: salt,
             initCodeHash: creationBytecodeHash,
@@ -121,13 +125,15 @@ contract Periphery_Test is Base_Test {
         address admin,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
         returns (bytes memory)
     {
-        bytes memory constructorArgs = abi.encode(defaults.baseParams(admin, asset_, expiration, merkleRoot));
+        bytes memory constructorArgs =
+            abi.encode(defaults.baseParams(admin, asset_, expiration, merkleRoot), sablierFee);
         if (!isTestOptimizedProfile()) {
             return bytes.concat(type(SablierMerkleInstant).creationCode, constructorArgs);
         } else {
@@ -141,7 +147,8 @@ contract Periphery_Test is Base_Test {
         address admin,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
@@ -152,7 +159,8 @@ contract Periphery_Test is Base_Test {
             lockupLinear,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
-            defaults.schedule()
+            defaults.schedule(),
+            sablierFee
         );
         if (!isTestOptimizedProfile()) {
             return bytes.concat(type(SablierMerkleLL).creationCode, constructorArgs);
@@ -165,7 +173,8 @@ contract Periphery_Test is Base_Test {
         address admin,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
@@ -177,7 +186,8 @@ contract Periphery_Test is Base_Test {
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
             defaults.STREAM_START_TIME_ZERO(),
-            defaults.tranchesWithPercentages()
+            defaults.tranchesWithPercentages(),
+            sablierFee
         );
         if (!isTestOptimizedProfile()) {
             return bytes.concat(type(SablierMerkleLT).creationCode, constructorArgs);
