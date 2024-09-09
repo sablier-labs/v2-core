@@ -30,10 +30,16 @@ abstract contract SablierMerkleBase is
     uint40 public immutable override EXPIRATION;
 
     /// @inheritdoc ISablierMerkleBase
+    address public immutable FACTORY;
+
+    /// @inheritdoc ISablierMerkleBase
     bytes32 public immutable override MERKLE_ROOT;
 
     /// @dev The name of the campaign stored as bytes32.
     bytes32 internal immutable NAME;
+
+    /// @inheritdoc ISablierMerkleBase
+    uint256 public immutable SABLIER_FEE;
 
     /// @inheritdoc ISablierMerkleBase
     string public ipfsCID;
@@ -49,7 +55,7 @@ abstract contract SablierMerkleBase is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Constructs the contract by initializing the immutable state variables.
-    constructor(MerkleBase.ConstructorParams memory params) {
+    constructor(MerkleBase.ConstructorParams memory params, uint256 sablierFee) {
         // Check: the campaign name is not greater than 32 bytes
         if (bytes(params.name).length > 32) {
             revert Errors.SablierMerkleBase_CampaignNameTooLong({ nameLength: bytes(params.name).length, maxLength: 32 });
@@ -61,6 +67,8 @@ abstract contract SablierMerkleBase is
         ipfsCID = params.ipfsCID;
         MERKLE_ROOT = params.merkleRoot;
         NAME = bytes32(abi.encodePacked(params.name));
+        FACTORY = msg.sender;
+        SABLIER_FEE = sablierFee;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -99,11 +107,17 @@ abstract contract SablierMerkleBase is
         bytes32[] calldata merkleProof
     )
         external
+        payable
         override
     {
         // Check: the campaign has not expired.
         if (hasExpired()) {
             revert Errors.SablierMerkleBase_CampaignExpired({ blockTimestamp: block.timestamp, expiration: EXPIRATION });
+        }
+
+        // Check: `msg.value` is not less than the sablier fee.
+        if (msg.value < SABLIER_FEE) {
+            revert Errors.SablierMerkleBase_InsufficientFeePayment(msg.value, SABLIER_FEE);
         }
 
         // Check: the index has not been claimed.
@@ -148,6 +162,22 @@ abstract contract SablierMerkleBase is
 
         // Log the clawback.
         emit Clawback(admin, to, amount);
+    }
+
+    /// @inheritdoc ISablierMerkleBase
+    function withdrawFees(address payable to, uint256 feeAmount) external {
+        // Check: the caller is the factory.
+        if (msg.sender != FACTORY) {
+            revert Errors.SablierMerkleBase_CallerNotFactory(FACTORY, msg.sender);
+        }
+
+        // Effect: transfer the fees to the provided address.
+        (bool success,) = to.call{ value: feeAmount }("");
+
+        // Revert if the call failed.
+        if (!success) {
+            revert Errors.SablierMerkleBase_FeeWithdrawFailed(to, feeAmount);
+        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////

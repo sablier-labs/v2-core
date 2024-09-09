@@ -27,9 +27,15 @@ interface ISablierMerkleBase is IAdminable {
     /// @dev This is an immutable state variable.
     function EXPIRATION() external returns (uint40);
 
+    /// @notice Retrieves the address of the factory contract.
+    function FACTORY() external view returns (address);
+
     /// @notice The root of the Merkle tree used to validate the proofs of inclusion.
     /// @dev This is an immutable state variable.
     function MERKLE_ROOT() external returns (bytes32);
+
+    /// @notice Retrieves the minimum fee required to claim Airstream, paid in ETH.
+    function SABLIER_FEE() external view returns (uint256);
 
     /// @notice Returns the timestamp when the first claim is made.
     function getFirstClaimTime() external view returns (uint40);
@@ -61,12 +67,13 @@ interface ISablierMerkleBase is IAdminable {
     /// - The campaign must not have expired.
     /// - The stream must not have been claimed already.
     /// - The Merkle proof must be valid.
+    /// - The `msg.value` must not be less than `SABLIER_FEE`.
     ///
     /// @param index The index of the recipient in the Merkle tree.
     /// @param recipient The address of the airdrop recipient.
     /// @param amount The amount of ERC-20 assets to be transferred to the recipient.
     /// @param merkleProof The proof of inclusion in the Merkle tree.
-    function claim(uint256 index, address recipient, uint128 amount, bytes32[] calldata merkleProof) external;
+    function claim(uint256 index, address recipient, uint128 amount, bytes32[] calldata merkleProof) external payable;
 
     /// @notice Claws back the unclaimed tokens from the campaign.
     ///
@@ -81,4 +88,16 @@ interface ISablierMerkleBase is IAdminable {
     /// @param to The address to receive the tokens.
     /// @param amount The amount of tokens to claw back.
     function clawback(address to, uint128 amount) external;
+
+    /// @notice Withdraws the Sablier fees accrued to the provided address.
+    ///
+    /// @dev This function transfers ETH to the provided address. If the receiver is a contract, it must be able to
+    /// receive ETH.
+    ///
+    /// Requirements:
+    /// - The caller must be the Factory contract.
+    ///
+    /// @param to The address to receive the Sablier fees.
+    /// @param feeAmount The fee amount to withdraw from the contract.
+    function withdrawFees(address payable to, uint256 feeAmount) external;
 }

@@ -3,9 +3,11 @@ pragma solidity >=0.8.22;
 
 import { uUNIT } from "@prb/math/src/UD2x18.sol";
 
+import { Adminable } from "../core/abstracts/Adminable.sol";
 import { ISablierLockupLinear } from "../core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockupTranched } from "../core/interfaces/ISablierLockupTranched.sol";
 
+import { ISablierMerkleBase } from "./interfaces/ISablierMerkleBase.sol";
 import { ISablierMerkleFactory } from "./interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleInstant } from "./interfaces/ISablierMerkleInstant.sol";
 import { ISablierMerkleLL } from "./interfaces/ISablierMerkleLL.sol";
@@ -17,7 +19,28 @@ import { MerkleBase, MerkleLL, MerkleLT } from "./types/DataTypes.sol";
 
 /// @title SablierMerkleFactory
 /// @notice See the documentation in {ISablierMerkleFactory}.
-contract SablierMerkleFactory is ISablierMerkleFactory {
+contract SablierMerkleFactory is
+    ISablierMerkleFactory, // 2 inherited components
+    Adminable // 1 inherited component
+{
+    /*//////////////////////////////////////////////////////////////////////////
+                                  STATE VARIABLES
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc ISablierMerkleFactory
+    uint256 public sablierFee;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                     CONSTRUCTOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev Emits a {TransferAdmin} event.
+    /// @param initialAdmin The address of the initial contract admin.
+    constructor(address initialAdmin) {
+        admin = initialAdmin;
+        emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                            USER-FACING CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -37,10 +60,33 @@ contract SablierMerkleFactory is ISablierMerkleFactory {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
+                         ADMIN-FACING NON-CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc ISablierMerkleFactory
+    function setSablierFee(uint256 fee) external onlyAdmin {
+        // Effect: update the Sablier fee.
+        sablierFee = fee;
+
+        emit SetSablierFee(msg.sender, fee);
+    }
+
+    /// @inheritdoc ISablierMerkleFactory
+    function withdrawFees(address payable to, ISablierMerkleBase merkleLockup) external onlyAdmin {
+        uint256 feesAccrued = address(merkleLockup).balance;
+
+        // Effect: call `withdrawFees` on the MerkleLockup contract.
+        merkleLockup.withdrawFees(to, feesAccrued);
+
+        // Log the withdrawal.
+        emit WithdrawSablierFees(msg.sender, to, feesAccrued);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice inheritdoc ISablierMerkleFactory
+    /// @inheritdoc ISablierMerkleFactory
     function createMerkleInstant(
         MerkleBase.ConstructorParams memory baseParams,
         uint256 aggregateAmount,
@@ -63,13 +109,13 @@ contract SablierMerkleFactory is ISablierMerkleFactory {
         );
 
         // Deploy the MerkleInstant contract with CREATE2.
-        merkleInstant = new SablierMerkleInstant{ salt: salt }(baseParams);
+        merkleInstant = new SablierMerkleInstant{ salt: salt }(baseParams, sablierFee);
 
         // Log the creation of the MerkleInstant contract, including some metadata that is not stored on-chain.
         emit CreateMerkleInstant(merkleInstant, baseParams, aggregateAmount, recipientCount);
     }
 
-    /// @notice inheritdoc ISablierMerkleFactory
+    /// @inheritdoc ISablierMerkleFactory
     function createMerkleLL(
         MerkleBase.ConstructorParams memory baseParams,
         ISablierLockupLinear lockupLinear,
@@ -100,7 +146,8 @@ contract SablierMerkleFactory is ISablierMerkleFactory {
         );
 
         // Deploy the MerkleLL contract with CREATE2.
-        merkleLL = new SablierMerkleLL{ salt: salt }(baseParams, lockupLinear, cancelable, transferable, schedule);
+        merkleLL =
+            new SablierMerkleLL{ salt: salt }(baseParams, lockupLinear, cancelable, transferable, schedule, sablierFee);
 
         // Log the creation of the MerkleLL contract, including some metadata that is not stored on-chain.
         emit CreateMerkleLL(
@@ -108,7 +155,7 @@ contract SablierMerkleFactory is ISablierMerkleFactory {
         );
     }
 
-    /// @notice inheritdoc ISablierMerkleFactory
+    /// @inheritdoc ISablierMerkleFactory
     function createMerkleLT(
         MerkleBase.ConstructorParams memory baseParams,
         ISablierLockupTranched lockupTranched,
@@ -189,7 +236,7 @@ contract SablierMerkleFactory is ISablierMerkleFactory {
 
         // Deploy the MerkleLT contract with CREATE2.
         merkleLT = new SablierMerkleLT{ salt: salt }(
-            baseParams, lockupTranched, cancelable, transferable, streamStartTime, tranchesWithPercentages
+            baseParams, lockupTranched, cancelable, transferable, streamStartTime, tranchesWithPercentages, sablierFee
         );
     }
 }
