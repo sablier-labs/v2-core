@@ -92,7 +92,7 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
             vars.merkleRoot = getRoot(leaves.toBytes32());
         }
 
-        // Make the caller the admin.
+        // Make the admin as the caller.
         resetPrank({ msgSender: params.admin });
 
         uint256 sablierFee = defaults.SABLIER_FEE();
@@ -136,6 +136,10 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
                                           CLAIM
         //////////////////////////////////////////////////////////////////////////*/
 
+        // Make the recipient as the caller.
+        resetPrank({ msgSender: vars.recipients[params.posBeforeSort] });
+        vm.deal(vars.recipients[params.posBeforeSort], 1 ether);
+
         assertFalse(vars.merkleInstant.hasClaimed(vars.indexes[params.posBeforeSort]));
 
         vars.leafToClaim = MerkleBuilder.computeLeaf(
@@ -178,6 +182,9 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
         /*//////////////////////////////////////////////////////////////////////////
                                         CLAWBACK
         //////////////////////////////////////////////////////////////////////////*/
+
+        // Make the admin as the caller.
+        resetPrank({ msgSender: params.admin });
 
         if (params.expiration > 0) {
             vars.clawbackAmount = uint128(FORK_ASSET.balanceOf(address(vars.merkleInstant)));
