@@ -2,7 +2,6 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { Errors as CoreErrors } from "src/core/libraries/Errors.sol";
-import { Errors } from "src/periphery/libraries/Errors.sol";
 
 import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
 
