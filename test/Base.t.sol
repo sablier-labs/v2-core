@@ -12,6 +12,7 @@ import { SablierLockupLinear } from "src/core/SablierLockupLinear.sol";
 import { SablierLockupTranched } from "src/core/SablierLockupTranched.sol";
 import { LockupDynamic, LockupLinear, LockupTranched } from "src/core/types/DataTypes.sol";
 import { ISablierBatchLockup } from "src/periphery/interfaces/ISablierBatchLockup.sol";
+import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleInstant } from "src/periphery/interfaces/ISablierMerkleInstant.sol";
 import { ISablierMerkleLL } from "src/periphery/interfaces/ISablierMerkleLL.sol";
@@ -86,6 +87,9 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         // Deploy the protocol.
         deployProtocolConditionally();
 
+        // Set the Sablier fee on the Merkle factory.
+        merkleFactory.setSablierFee(defaults.SABLIER_FEE());
+
         // Create users for testing.
         users.alice = createUser("Alice");
         users.broker = createUser("Broker");
@@ -153,7 +157,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
             lockupDynamic = new SablierLockupDynamic(users.admin, nftDescriptor, defaults.MAX_SEGMENT_COUNT());
             lockupLinear = new SablierLockupLinear(users.admin, nftDescriptor);
             lockupTranched = new SablierLockupTranched(users.admin, nftDescriptor, defaults.MAX_TRANCHE_COUNT());
-            merkleFactory = new SablierMerkleFactory();
+            merkleFactory = new SablierMerkleFactory(users.admin);
         } else {
             (nftDescriptor, lockupDynamic, lockupLinear, lockupTranched, batchLockup, merkleFactory) =
                 deployOptimizedProtocol(users.admin, defaults.MAX_SEGMENT_COUNT(), defaults.MAX_TRANCHE_COUNT());
@@ -216,6 +220,22 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
             count: count,
             data: abi.encodeCall(IERC20.transferFrom, (from, to, value))
         });
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                            CALL EXPECTS - MERKLE LOCKUP
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev Expects a call to {ISablierMerkleBase.claim} with msgValue as `msg.value`.
+    function expectCallToClaimWithMsgValue(address merkleLockup, uint256 msgValue) internal {
+        vm.expectCall(
+            merkleLockup,
+            msgValue,
+            abi.encodeCall(
+                ISablierMerkleBase.claim,
+                (defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), defaults.index1Proof())
+            )
+        );
     }
 
     /*//////////////////////////////////////////////////////////////////////////

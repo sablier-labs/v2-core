@@ -37,6 +37,6 @@ contract DeployDeterministicProtocol is BaseScript {
 
         // Deploy Periphery.
         batchLockup = new SablierBatchLockup{ salt: salt }();
-        merkleFactory = new SablierMerkleFactory{ salt: salt }();
+        merkleFactory = new SablierMerkleFactory{ salt: salt }(initialAdmin);
     }
 }

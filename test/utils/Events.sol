@@ -137,4 +137,8 @@ abstract contract Events {
         uint256 aggregateAmount,
         uint256 recipientCount
     );
+
+    event SetSablierFee(address indexed admin, uint256 sablierFee);
+
+    event WithdrawSablierFees(address indexed admin, address indexed to, uint256 sablierFees);
 }
