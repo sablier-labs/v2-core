@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
+import { IAdminable } from "../../core/interfaces/IAdminable.sol";
 import { ISablierLockupLinear } from "../../core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockupTranched } from "../../core/interfaces/ISablierLockupTranched.sol";
 
+import { ISablierMerkleBase } from "../interfaces/ISablierMerkleBase.sol";
 import { MerkleBase, MerkleLL, MerkleLT } from "../types/DataTypes.sol";
 import { ISablierMerkleInstant } from "./ISablierMerkleInstant.sol";
 import { ISablierMerkleLL } from "./ISablierMerkleLL.sol";
@@ -16,7 +18,7 @@ import { ISablierMerkleLT } from "./ISablierMerkleLT.sol";
 /// enables instant airdrops where tokens are unlocked and distributed immediately. See the Sablier docs for more
 /// guidance: https://docs.sablier.com
 /// @dev Deploys Merkle Lockup and Merkle Instant campaigns with CREATE2.
-interface ISablierMerkleFactory {
+interface ISablierMerkleFactory is IAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
@@ -55,6 +57,12 @@ interface ISablierMerkleFactory {
         uint256 recipientCount
     );
 
+    /// @notice Emitted when the Sablier fee is set by the admin.
+    event SetSablierFee(address indexed admin, uint256 sablierFee);
+
+    /// @notice Emitted when the sablier fees are claimed by the sablier admin.
+    event WithdrawSablierFees(address indexed admin, address indexed to, uint256 sablierFees);
+
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -67,6 +75,10 @@ interface ISablierMerkleFactory {
         external
         pure
         returns (bool result);
+
+    /// @notice Retrieves the sablier fee required to claim an airstream.
+    /// @dev A minimum of this fee must be paid in ETH during `claim`.
+    function sablierFee() external view returns (uint256);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
@@ -135,4 +147,29 @@ interface ISablierMerkleFactory {
     )
         external
         returns (ISablierMerkleLT merkleLT);
+
+    /// @notice Sets the Sablier fee for claiming an airstream.
+    /// @dev Emits a {SetSablierFee} event.
+    ///
+    /// Notes:
+    /// - The new fee will only be applied to the future campaigns.
+    ///
+    /// Requiurements:
+    /// - The caller must be the admin.
+    ///
+    /// @param fee The new fee to be set.
+    function setSablierFee(uint256 fee) external;
+
+    /// @notice Withdraws the Sablier fees accrued on `merkleLockup` to the provided address.
+    /// @dev Emits a {WithdrawSablierFees} event.
+    ///
+    /// Notes:
+    /// - This function transfers ETH to the provided address. If the receiver is a contract, it must be able to receive
+    /// ETH.
+    ///
+    /// Requirements:
+    /// - The caller must be the admin.
+    ///
+    /// @param to The address to receive the Sablier fees.
+    function withdrawFees(address payable to, ISablierMerkleBase merkleLockup) external;
 }
