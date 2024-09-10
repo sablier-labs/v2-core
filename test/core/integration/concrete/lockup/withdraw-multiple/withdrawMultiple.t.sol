@@ -33,20 +33,12 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         lockup.withdrawMultiple(streamIds, amounts);
     }
 
-    modifier whenEqualArraysLength() {
-        _;
-    }
-
     function test_WhenZeroArrayLength() external whenNoDelegateCall whenEqualArraysLength {
         uint256[] memory streamIds = new uint256[](0);
         uint128[] memory amounts = new uint128[](0);
 
         // It should do nothing.
         lockup.withdrawMultiple(streamIds, amounts);
-    }
-
-    modifier whenNonZeroArrayLength() {
-        _;
     }
 
     function test_RevertGiven_AtleastOneNullStream()

@@ -4,9 +4,9 @@ pragma solidity >=0.8.22 <0.9.0;
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 import { SablierLockupTranched } from "src/core/SablierLockupTranched.sol";
 
-import { LockupTranched_Integration_Concrete_Test } from "./LockupTranched.t.sol";
+import { LockupTranched_Integration_Shared_Test } from "./LockupTranched.t.sol";
 
-contract Constructor_LockupTranched_Integration_Concrete_Test is LockupTranched_Integration_Concrete_Test {
+contract Constructor_LockupTranched_Integration_Concrete_Test is LockupTranched_Integration_Shared_Test {
     function test_Constructor() external {
         // Expect the relevant event to be emitted.
         vm.expectEmit();

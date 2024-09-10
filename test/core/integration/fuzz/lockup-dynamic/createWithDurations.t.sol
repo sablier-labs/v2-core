@@ -3,20 +3,15 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
-import { CreateWithDurations_Integration_Shared_Test } from "../../shared/lockup/createWithDurations.t.sol";
-import { LockupDynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
+import { LockupDynamic_Integration_Shared_Test } from "./LockupDynamic.t.sol";
 
-contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is
-    LockupDynamic_Integration_Fuzz_Test,
-    CreateWithDurations_Integration_Shared_Test
-{
-    function setUp()
-        public
-        virtual
-        override(LockupDynamic_Integration_Fuzz_Test, CreateWithDurations_Integration_Shared_Test)
-    {
-        LockupDynamic_Integration_Fuzz_Test.setUp();
-        CreateWithDurations_Integration_Shared_Test.setUp();
+contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is LockupDynamic_Integration_Shared_Test {
+    uint256 streamId;
+
+    function setUp() public virtual override(LockupDynamic_Integration_Shared_Test) {
+        LockupDynamic_Integration_Shared_Test.setUp();
+
+        streamId = lockupDynamic.nextStreamId();
     }
 
     struct Vars {

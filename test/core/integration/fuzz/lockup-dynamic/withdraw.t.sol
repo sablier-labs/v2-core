@@ -4,18 +4,17 @@ pragma solidity >=0.8.22 <0.9.0;
 import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
 import { Withdraw_Integration_Fuzz_Test } from "../lockup/withdraw.t.sol";
-import { LockupDynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
+import { LockupDynamic_Integration_Shared_Test, Integration_Test } from "./LockupDynamic.t.sol";
 
 /// @dev This contract complements the tests in {Withdraw_Integration_Fuzz_Test} by testing the withdraw function
 /// against
 /// streams created with fuzzed segments.
 contract Withdraw_LockupDynamic_Integration_Fuzz_Test is
-    LockupDynamic_Integration_Fuzz_Test,
+    LockupDynamic_Integration_Shared_Test,
     Withdraw_Integration_Fuzz_Test
 {
-    function setUp() public virtual override(LockupDynamic_Integration_Fuzz_Test, Withdraw_Integration_Fuzz_Test) {
-        LockupDynamic_Integration_Fuzz_Test.setUp();
-        Withdraw_Integration_Fuzz_Test.setUp();
+    function setUp() public virtual override(LockupDynamic_Integration_Shared_Test, Integration_Test) {
+        LockupDynamic_Integration_Shared_Test.setUp();
     }
 
     struct Params {

@@ -7,20 +7,11 @@ import { stdError } from "forge-std/src/StdError.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Broker, Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 
-import { CreateWithTimestamps_Integration_Shared_Test } from "../../shared/lockup/createWithTimestamps.t.sol";
-import { LockupTranched_Integration_Fuzz_Test } from "./LockupTranched.t.sol";
+import { LockupTranched_Integration_Shared_Test } from "./LockupTranched.t.sol";
 
-contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
-    LockupTranched_Integration_Fuzz_Test,
-    CreateWithTimestamps_Integration_Shared_Test
-{
-    function setUp()
-        public
-        virtual
-        override(LockupTranched_Integration_Fuzz_Test, CreateWithTimestamps_Integration_Shared_Test)
-    {
-        LockupTranched_Integration_Fuzz_Test.setUp();
-        CreateWithTimestamps_Integration_Shared_Test.setUp();
+contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is LockupTranched_Integration_Shared_Test {
+    function setUp() public virtual override(LockupTranched_Integration_Shared_Test) {
+        LockupTranched_Integration_Shared_Test.setUp();
     }
 
     function testFuzz_RevertWhen_TrancheCountTooHigh(uint256 trancheCount)
@@ -218,6 +209,8 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is
 
         // Approve {SablierLockupTranched} to transfer the assets from the fuzzed funder.
         dai.approve({ spender: address(lockupTranched), value: MAX_UINT256 });
+
+        uint256 streamId = lockupTranched.nextStreamId();
 
         // Expect the assets to be transferred from the funder to {SablierLockupTranched}.
         expectCallToTransferFrom({ from: funder, to: address(lockupTranched), value: vars.createAmounts.deposit });

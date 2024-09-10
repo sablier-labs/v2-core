@@ -2,14 +2,10 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../Integration.t.sol";
-import { WithdrawMax_Integration_Shared_Test } from "./../../shared/lockup/withdrawMax.t.sol";
 
-abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test, WithdrawMax_Integration_Shared_Test {
-    function setUp() public virtual override(Integration_Test, WithdrawMax_Integration_Shared_Test) {
-        WithdrawMax_Integration_Shared_Test.setUp();
-    }
+import { Integration_Test } from "../../Integration.t.sol";
 
+abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test {
     function testFuzz_WithdrawMax_EndTimeNotInFuture(uint256 timeJump) external {
         timeJump = _bound(timeJump, defaults.TOTAL_DURATION(), defaults.TOTAL_DURATION() * 2);
 
