@@ -9,20 +9,16 @@ import { stdError } from "forge-std/src/StdError.sol";
 import { ISablierLockupDynamic } from "src/core/interfaces/ISablierLockupDynamic.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Broker, Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
-import { CreateWithTimestamps_Integration_Shared_Test } from "./../../../shared/lockup/createWithTimestamps.t.sol";
-import { LockupDynamic_Integration_Concrete_Test } from "./../LockupDynamic.t.sol";
 
-contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
-    LockupDynamic_Integration_Concrete_Test,
-    CreateWithTimestamps_Integration_Shared_Test
-{
-    function setUp()
-        public
-        virtual
-        override(LockupDynamic_Integration_Concrete_Test, CreateWithTimestamps_Integration_Shared_Test)
-    {
-        LockupDynamic_Integration_Concrete_Test.setUp();
-        CreateWithTimestamps_Integration_Shared_Test.setUp();
+import { LockupDynamic_Integration_Shared_Test } from "../LockupDynamic.t.sol";
+
+contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Integration_Shared_Test {
+    uint256 streamId;
+
+    function setUp() public virtual override(LockupDynamic_Integration_Shared_Test) {
+        LockupDynamic_Integration_Shared_Test.setUp();
+
+        streamId = lockupDynamic.nextStreamId();
     }
 
     function test_RevertWhen_DelegateCall() external {
@@ -235,10 +231,6 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         lockupDynamic.createWithTimestamps(params);
     }
 
-    modifier whenDepositAmountNotEqualsSegmentAmountsSum() {
-        _;
-    }
-
     function test_RevertWhen_BrokerFeeExceedsMaxValue()
         external
         whenNoDelegateCall
@@ -251,7 +243,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
         whenTimestampsStrictlyIncreasing
-        whenDepositAmountNotEqualsSegmentAmountsSum
+        whenDepositAmountNotEqualSegmentAmountsSum
     {
         UD60x18 brokerFee = MAX_BROKER_FEE + ud(1);
         vm.expectRevert(
@@ -272,7 +264,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
         whenTimestampsStrictlyIncreasing
-        whenDepositAmountNotEqualsSegmentAmountsSum
+        whenDepositAmountNotEqualSegmentAmountsSum
         whenBrokerFeeNotExceedMaxValue
     {
         address nonContract = address(8128);
@@ -296,7 +288,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
         whenTimestampsStrictlyIncreasing
-        whenDepositAmountNotEqualsSegmentAmountsSum
+        whenDepositAmountNotEqualSegmentAmountsSum
         whenBrokerFeeNotExceedMaxValue
         whenAssetContract
     {
@@ -315,7 +307,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
         whenTimestampsStrictlyIncreasing
-        whenDepositAmountNotEqualsSegmentAmountsSum
+        whenDepositAmountNotEqualSegmentAmountsSum
         whenBrokerFeeNotExceedMaxValue
         whenAssetContract
     {

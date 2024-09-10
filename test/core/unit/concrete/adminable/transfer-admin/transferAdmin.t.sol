@@ -15,10 +15,6 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         adminableMock.transferAdmin(users.eve);
     }
 
-    modifier whenCallerAdmin() {
-        _;
-    }
-
     function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
         // It should emit a {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
@@ -31,10 +27,6 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         address actualAdmin = adminableMock.admin();
         address expectedAdmin = users.admin;
         assertEq(actualAdmin, expectedAdmin, "admin");
-    }
-
-    modifier whenNewAdminNotSameAsCurrentAdmin() {
-        _;
     }
 
     function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {

@@ -4,16 +4,10 @@ pragma solidity >=0.8.22 <0.9.0;
 import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { LockupNFTDescriptor } from "src/core/LockupNFTDescriptor.sol";
-import { Integration_Test } from "./../../../Integration.t.sol";
-import { Lockup_Integration_Shared_Test } from "./../../../shared/lockup/Lockup.t.sol";
 
-abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test, Lockup_Integration_Shared_Test {
-    uint256 internal defaultStreamId;
+import { Integration_Test } from "../../../Integration.t.sol";
 
-    function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) {
-        defaultStreamId = createDefaultStream();
-    }
-
+abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
         // Make Eve the caller in this test.
         resetPrank({ msgSender: users.eve });
@@ -21,12 +15,6 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
         lockup.setNFTDescriptor(ILockupNFTDescriptor(users.eve));
-    }
-
-    modifier whenCallerAdmin() {
-        // Make the Admin the caller in the rest of this test suite.
-        resetPrank({ msgSender: users.admin });
-        _;
     }
 
     function test_WhenProvidedAddressMatchesCurrentNFTDescriptor() external whenCallerAdmin {

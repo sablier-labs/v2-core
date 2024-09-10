@@ -2,16 +2,10 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { Errors } from "src/core/libraries/Errors.sol";
-import { Integration_Test } from "./../../../Integration.t.sol";
-import { Lockup_Integration_Shared_Test } from "./../../../shared/lockup/Lockup.t.sol";
 
-abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Lockup_Integration_Shared_Test {
-    uint256 internal defaultStreamId;
+import { Integration_Test } from "../../../Integration.t.sol";
 
-    function setUp() public virtual override(Integration_Test, Lockup_Integration_Shared_Test) {
-        defaultStreamId = createDefaultStream();
-    }
-
+abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
         // Make Eve the caller in this test.
         resetPrank({ msgSender: users.eve });
@@ -21,20 +15,10 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test, Loc
         lockup.allowToHook(users.eve);
     }
 
-    modifier whenCallerAdmin() {
-        // Make the Admin the caller in the rest of this test suite.
-        resetPrank({ msgSender: users.admin });
-        _;
-    }
-
     function test_RevertWhen_ProvidedAddressNotContract() external whenCallerAdmin {
         address eoa = vm.addr({ privateKey: 1 });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_AllowToHookZeroCodeSize.selector, eoa));
         lockup.allowToHook(eoa);
-    }
-
-    modifier whenProvidedAddressContract() {
-        _;
     }
 
     function test_RevertWhen_ProvidedAddressNotReturnInterfaceId()

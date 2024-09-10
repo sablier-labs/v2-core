@@ -3,19 +3,18 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 
-import { Withdraw_Integration_Fuzz_Test } from "../lockup/withdraw.t.sol";
-import { LockupTranched_Integration_Fuzz_Test } from "./LockupTranched.t.sol";
+import { Withdraw_Integration_Fuzz_Test, Integration_Test } from "../lockup/withdraw.t.sol";
+import { LockupTranched_Integration_Shared_Test } from "./LockupTranched.t.sol";
 
 /// @dev This contract complements the tests in {Withdraw_Integration_Fuzz_Test} by testing the withdraw function
 /// against
 /// streams created with fuzzed tranches.
 contract Withdraw_LockupTranched_Integration_Fuzz_Test is
-    LockupTranched_Integration_Fuzz_Test,
+    LockupTranched_Integration_Shared_Test,
     Withdraw_Integration_Fuzz_Test
 {
-    function setUp() public virtual override(LockupTranched_Integration_Fuzz_Test, Withdraw_Integration_Fuzz_Test) {
-        LockupTranched_Integration_Fuzz_Test.setUp();
-        Withdraw_Integration_Fuzz_Test.setUp();
+    function setUp() public virtual override(LockupTranched_Integration_Shared_Test, Integration_Test) {
+        LockupTranched_Integration_Shared_Test.setUp();
     }
 
     struct Params {

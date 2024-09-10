@@ -1,17 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { Integration_Test } from "./../../Integration.t.sol";
-import { WithdrawMaxAndTransfer_Integration_Shared_Test } from "./../../shared/lockup/withdrawMaxAndTransfer.t.sol";
+import { Integration_Test } from "../../Integration.t.sol";
 
-abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
-    Integration_Test,
-    WithdrawMaxAndTransfer_Integration_Shared_Test
-{
-    function setUp() public virtual override(Integration_Test, WithdrawMaxAndTransfer_Integration_Shared_Test) {
-        WithdrawMaxAndTransfer_Integration_Shared_Test.setUp();
-    }
-
+abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is Integration_Test {
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - New recipient same and different from the current one
@@ -53,6 +45,8 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
         emit Transfer({ from: users.recipient, to: newRecipient, tokenId: defaultStreamId });
+
+        resetPrank({ msgSender: users.recipient });
 
         // Make the max withdrawal and transfer the NFT.
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: newRecipient });

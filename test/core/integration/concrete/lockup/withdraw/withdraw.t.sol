@@ -5,13 +5,11 @@ import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { ISablierLockupRecipient } from "src/core/interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../../Integration.t.sol";
-import { Withdraw_Integration_Shared_Test } from "./../../../shared/lockup/withdraw.t.sol";
 
-abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdraw_Integration_Shared_Test {
-    function setUp() public virtual override(Integration_Test, Withdraw_Integration_Shared_Test) {
-        Withdraw_Integration_Shared_Test.setUp();
-    }
+import { Integration_Test } from "../../../Integration.t.sol";
+
+abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
+    address caller;
 
     function test_RevertWhen_DelegateCall() external {
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
@@ -89,6 +87,8 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test, Withdr
             lockup.transferFrom(caller, users.eve, defaultStreamId);
             _;
         } else {
+            resetPrank({ msgSender: users.recipient });
+
             // When caller is approved third party.
             caller = users.operator;
             lockup.approve({ to: caller, tokenId: defaultStreamId });

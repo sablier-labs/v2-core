@@ -7,20 +7,11 @@ import { stdError } from "forge-std/src/StdError.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Broker, Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
-import { CreateWithTimestamps_Integration_Shared_Test } from "../../shared/lockup/createWithTimestamps.t.sol";
-import { LockupDynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
+import { LockupDynamic_Integration_Shared_Test } from "./LockupDynamic.t.sol";
 
-contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
-    LockupDynamic_Integration_Fuzz_Test,
-    CreateWithTimestamps_Integration_Shared_Test
-{
-    function setUp()
-        public
-        virtual
-        override(LockupDynamic_Integration_Fuzz_Test, CreateWithTimestamps_Integration_Shared_Test)
-    {
-        LockupDynamic_Integration_Fuzz_Test.setUp();
-        CreateWithTimestamps_Integration_Shared_Test.setUp();
+contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is LockupDynamic_Integration_Shared_Test {
+    function setUp() public virtual override(LockupDynamic_Integration_Shared_Test) {
+        LockupDynamic_Integration_Shared_Test.setUp();
     }
 
     function testFuzz_RevertWhen_SegmentCountTooHigh(uint256 segmentCount)
@@ -217,6 +208,8 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is
 
         // Approve {SablierLockupDynamic} to transfer the assets from the fuzzed funder.
         dai.approve({ spender: address(lockupDynamic), value: MAX_UINT256 });
+
+        uint256 streamId = lockupDynamic.nextStreamId();
 
         // Expect the assets to be transferred from the funder to {SablierLockupDynamic}.
         expectCallToTransferFrom({ from: funder, to: address(lockupDynamic), value: vars.createAmounts.deposit });

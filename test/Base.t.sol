@@ -28,10 +28,11 @@ import { Defaults } from "./utils/Defaults.sol";
 import { DeployOptimized } from "./utils/DeployOptimized.sol";
 import { Events } from "./utils/Events.sol";
 import { Fuzzers } from "./utils/Fuzzers.sol";
+import { Modifiers } from "./utils/Modifiers.t.sol";
 import { Users } from "./utils/Types.sol";
 
 /// @notice Base test contract with common logic needed by all tests.
-abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimized, Events, Fuzzers {
+abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimized, Events, Fuzzers, Modifiers {
     /*//////////////////////////////////////////////////////////////////////////
                                      VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
@@ -103,6 +104,9 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
 
         defaults.setUsers(users);
         defaults.initMerkleTree();
+
+        // Set the variables in modifiers.
+        setVariables(defaults, users);
 
         // Warp to July 1, 2024 at 00:00 UTC to provide a more realistic testing environment.
         vm.warp({ newTimestamp: JULY_1_2024 });

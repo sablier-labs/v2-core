@@ -2,14 +2,10 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../Integration.t.sol";
-import { Cancel_Integration_Shared_Test } from "./../../shared/lockup/cancel.t.sol";
 
-abstract contract Cancel_Integration_Fuzz_Test is Integration_Test, Cancel_Integration_Shared_Test {
-    function setUp() public virtual override(Integration_Test, Cancel_Integration_Shared_Test) {
-        Cancel_Integration_Shared_Test.setUp();
-    }
+import { Integration_Test } from "../../Integration.t.sol";
 
+abstract contract Cancel_Integration_Fuzz_Test is Integration_Test {
     function testFuzz_Cancel_StatusPending(uint256 timeJump)
         external
         whenNoDelegateCall

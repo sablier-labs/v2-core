@@ -36,10 +36,6 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(testStreamIds[0], nullStreamId) });
     }
 
-    modifier givenNoNullStreams() {
-        _;
-    }
-
     function test_RevertGiven_AtleastOneColdStream()
         external
         whenNoDelegateCall

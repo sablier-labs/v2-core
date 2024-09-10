@@ -94,6 +94,10 @@ contract Defaults is Constants, Merkle {
                                       HELPERS
     //////////////////////////////////////////////////////////////////////////*/
 
+    function getUsers() public view returns (Users memory) {
+        return users;
+    }
+
     /// @dev We need a separate function to initialize the Merkle tree because, at the construction time, the users are
     /// not yet set.
     function initMerkleTree() public {

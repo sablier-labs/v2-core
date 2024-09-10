@@ -9,20 +9,16 @@ import { stdError } from "forge-std/src/StdError.sol";
 import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Broker, Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
-import { CreateWithTimestamps_Integration_Shared_Test } from "./../../../shared/lockup/createWithTimestamps.t.sol";
-import { LockupTranched_Integration_Concrete_Test } from "./../LockupTranched.t.sol";
 
-contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is
-    LockupTranched_Integration_Concrete_Test,
-    CreateWithTimestamps_Integration_Shared_Test
-{
-    function setUp()
-        public
-        virtual
-        override(LockupTranched_Integration_Concrete_Test, CreateWithTimestamps_Integration_Shared_Test)
-    {
-        LockupTranched_Integration_Concrete_Test.setUp();
-        CreateWithTimestamps_Integration_Shared_Test.setUp();
+import { LockupTranched_Integration_Shared_Test } from "../LockupTranched.t.sol";
+
+contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is LockupTranched_Integration_Shared_Test {
+    uint256 streamId;
+
+    function setUp() public virtual override(LockupTranched_Integration_Shared_Test) {
+        LockupTranched_Integration_Shared_Test.setUp();
+
+        streamId = lockupTranched.nextStreamId();
     }
 
     function test_RevertWhen_DelegateCall() external {

@@ -5,20 +5,11 @@ import { ISablierLockupLinear } from "src/core/interfaces/ISablierLockupLinear.s
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
 
-import { CreateWithDurations_Integration_Shared_Test } from "../../../shared/lockup/createWithDurations.t.sol";
-import { LockupLinear_Integration_Concrete_Test } from "../LockupLinear.t.sol";
+import { LockupLinear_Integration_Shared_Test } from "../LockupLinear.t.sol";
 
-contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
-    LockupLinear_Integration_Concrete_Test,
-    CreateWithDurations_Integration_Shared_Test
-{
-    function setUp()
-        public
-        virtual
-        override(LockupLinear_Integration_Concrete_Test, CreateWithDurations_Integration_Shared_Test)
-    {
-        LockupLinear_Integration_Concrete_Test.setUp();
-        CreateWithDurations_Integration_Shared_Test.setUp();
+contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is LockupLinear_Integration_Shared_Test {
+    function setUp() public virtual override(LockupLinear_Integration_Shared_Test) {
+        LockupLinear_Integration_Shared_Test.setUp();
     }
 
     function test_RevertWhen_DelegateCall() external {
@@ -96,6 +87,8 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is
         });
 
         if (durations.cliff == 0) timestamps.cliff = 0;
+
+        uint256 streamId = lockupLinear.nextStreamId();
 
         // It should perform the ERC-20 transfers.
         expectCallToTransferFrom({ from: funder, to: address(lockupLinear), value: defaults.DEPOSIT_AMOUNT() });

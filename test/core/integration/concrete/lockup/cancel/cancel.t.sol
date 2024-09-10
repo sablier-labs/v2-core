@@ -5,14 +5,10 @@ import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { ISablierLockupRecipient } from "src/core/interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../../Integration.t.sol";
-import { Cancel_Integration_Shared_Test } from "./../../../shared/lockup/cancel.t.sol";
 
-abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_Integration_Shared_Test {
-    function setUp() public virtual override(Integration_Test, Cancel_Integration_Shared_Test) {
-        Cancel_Integration_Shared_Test.setUp();
-    }
+import { Integration_Test } from "../../../Integration.t.sol";
 
+abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_DelegateCall() external {
         bytes memory callData = abi.encodeCall(ISablierLockup.cancel, defaultStreamId);
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
@@ -82,7 +78,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
     {
         uint256 streamId = createDefaultStreamNotCancelable();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamNotCancelable.selector, streamId));
@@ -94,7 +90,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
         givenCancelableStream
     {
         // Warp to the past.
@@ -118,7 +114,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
         givenCancelableStream
         givenSTREAMINGStatus
     {
@@ -150,7 +146,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
         givenCancelableStream
         givenSTREAMINGStatus
         givenRecipientAllowedToHook
@@ -175,7 +171,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
         givenCancelableStream
         givenSTREAMINGStatus
         givenRecipientAllowedToHook
@@ -203,7 +199,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
         givenCancelableStream
         givenSTREAMINGStatus
         givenRecipientAllowedToHook
@@ -252,7 +248,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
         givenCancelableStream
         givenSTREAMINGStatus
         givenRecipientAllowedToHook
