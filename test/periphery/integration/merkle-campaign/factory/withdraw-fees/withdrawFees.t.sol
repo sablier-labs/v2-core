@@ -38,6 +38,15 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Shared_Test
     function test_WhenProvidedAddressNotContract() external whenCallerAdmin whenProvidedMerkleLockupValid {
         uint256 previousToBalance = users.eve.balance;
 
+        // It should emit {WithdrawSablierFees} event.
+        vm.expectEmit({ emitter: address(merkleFactory) });
+        emit WithdrawSablierFees({
+            admin: users.admin,
+            merkleLockup: merkleBase,
+            to: users.eve,
+            sablierFees: defaults.SABLIER_FEE()
+        });
+
         merkleFactory.withdrawFees(users.eve, merkleBase);
 
         // It should set the ETH balance to 0.
@@ -72,6 +81,15 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Shared_Test
         whenProvidedAddressContract
     {
         address payable receiveEth = payable(address(contractWithReceiveEth));
+
+        // It should emit {WithdrawSablierFees} event.
+        vm.expectEmit({ emitter: address(merkleFactory) });
+        emit WithdrawSablierFees({
+            admin: users.admin,
+            merkleLockup: merkleBase,
+            to: receiveEth,
+            sablierFees: defaults.SABLIER_FEE()
+        });
 
         merkleFactory.withdrawFees(receiveEth, merkleBase);
 

@@ -7,6 +7,7 @@ import { ILockupNFTDescriptor } from "../../src/core/interfaces/ILockupNFTDescri
 import { ISablierLockupLinear } from "../../src/core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockupTranched } from "../../src/core/interfaces/ISablierLockupTranched.sol";
 import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/core/types/DataTypes.sol";
+import { ISablierMerkleBase } from "../../src/periphery/interfaces/ISablierMerkleBase.sol";
 import { ISablierMerkleInstant } from "../../src/periphery/interfaces/ISablierMerkleInstant.sol";
 import { ISablierMerkleLL } from "../../src/periphery/interfaces/ISablierMerkleLL.sol";
 import { ISablierMerkleLT } from "../../src/periphery/interfaces/ISablierMerkleLT.sol";
@@ -140,5 +141,7 @@ abstract contract Events {
 
     event SetSablierFee(address indexed admin, uint256 sablierFee);
 
-    event WithdrawSablierFees(address indexed admin, address indexed to, uint256 sablierFees);
+    event WithdrawSablierFees(
+        address indexed admin, ISablierMerkleBase indexed merkleLockup, address to, uint256 sablierFees
+    );
 }

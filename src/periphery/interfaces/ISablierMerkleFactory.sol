@@ -61,7 +61,9 @@ interface ISablierMerkleFactory is IAdminable {
     event SetSablierFee(address indexed admin, uint256 sablierFee);
 
     /// @notice Emitted when the sablier fees are claimed by the sablier admin.
-    event WithdrawSablierFees(address indexed admin, address indexed to, uint256 sablierFees);
+    event WithdrawSablierFees(
+        address indexed admin, ISablierMerkleBase indexed merkleLockup, address to, uint256 sablierFees
+    );
 
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS

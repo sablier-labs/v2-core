@@ -77,7 +77,7 @@ contract SablierMerkleFactory is
         uint256 fees = merkleLockup.withdrawFees(to);
 
         // Log the withdrawal.
-        emit WithdrawSablierFees(msg.sender, to, fees);
+        emit WithdrawSablierFees({ admin: msg.sender, merkleLockup: merkleLockup, to: to, sablierFees: fees });
     }
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -64,10 +64,10 @@ abstract contract SablierMerkleBase is
         admin = params.initialAdmin;
         ASSET = params.asset;
         EXPIRATION = params.expiration;
+        FACTORY = msg.sender;
         ipfsCID = params.ipfsCID;
         MERKLE_ROOT = params.merkleRoot;
         NAME = bytes32(abi.encodePacked(params.name));
-        FACTORY = msg.sender;
         SABLIER_FEE = sablierFee;
     }
 
