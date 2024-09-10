@@ -103,7 +103,7 @@ contract Precompiles_Test is Base_Test {
 
     function test_DeployMerkleFactory() external onlyTestOptimizedProfile {
         address actualFactory = address(precompiles.deployMerkleFactory(users.admin));
-        address expectedFactory = address(deployOptimizedMerkleFactory());
+        address expectedFactory = address(deployOptimizedMerkleFactory(users.admin));
         assertEq(actualFactory.code, expectedFactory.code, "bytecodes mismatch");
     }
 
@@ -112,7 +112,7 @@ contract Precompiles_Test is Base_Test {
             precompiles.deployPeriphery(users.admin);
 
         (ISablierBatchLockup expectedBatchLockup, ISablierMerkleFactory expectedMerkleFactory) =
-            deployOptimizedPeriphery();
+            deployOptimizedPeriphery(users.admin);
 
         assertEq(address(actualBatchLockup).code, address(expectedBatchLockup).code, "bytecodes mismatch");
         assertEq(address(actualMerkleFactory).code, address(expectedMerkleFactory).code, "bytecodes mismatch");

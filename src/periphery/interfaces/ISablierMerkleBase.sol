@@ -98,6 +98,6 @@ interface ISablierMerkleBase is IAdminable {
     /// - The caller must be the Factory contract.
     ///
     /// @param to The address to receive the Sablier fees.
-    /// @param feeAmount The fee amount to withdraw from the contract.
-    function withdrawFees(address payable to, uint256 feeAmount) external;
+    /// @return feeAmount The amount of ETH transferred to the provided address.
+    function withdrawFees(address payable to) external returns (uint256 feeAmount);
 }

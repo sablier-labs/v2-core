@@ -64,7 +64,7 @@ contract SablierMerkleFactory is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierMerkleFactory
-    function setSablierFee(uint256 fee) external onlyAdmin {
+    function setSablierFee(uint256 fee) external override onlyAdmin {
         // Effect: update the Sablier fee.
         sablierFee = fee;
 
@@ -72,14 +72,12 @@ contract SablierMerkleFactory is
     }
 
     /// @inheritdoc ISablierMerkleFactory
-    function withdrawFees(address payable to, ISablierMerkleBase merkleLockup) external onlyAdmin {
-        uint256 feesAccrued = address(merkleLockup).balance;
-
+    function withdrawFees(address payable to, ISablierMerkleBase merkleLockup) external override onlyAdmin {
         // Effect: call `withdrawFees` on the MerkleLockup contract.
-        merkleLockup.withdrawFees(to, feesAccrued);
+        uint256 fees = merkleLockup.withdrawFees(to);
 
         // Log the withdrawal.
-        emit WithdrawSablierFees(msg.sender, to, feesAccrued);
+        emit WithdrawSablierFees(msg.sender, to, fees);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -93,6 +91,7 @@ contract SablierMerkleFactory is
         uint256 recipientCount
     )
         external
+        override
         returns (ISablierMerkleInstant merkleInstant)
     {
         // Hash the parameters to generate a salt.
@@ -126,6 +125,7 @@ contract SablierMerkleFactory is
         uint256 recipientCount
     )
         external
+        override
         returns (ISablierMerkleLL merkleLL)
     {
         // Hash the parameters to generate a salt.
@@ -167,6 +167,7 @@ contract SablierMerkleFactory is
         uint256 recipientCount
     )
         external
+        override
         returns (ISablierMerkleLT merkleLT)
     {
         // Calculate the sum of percentages and durations across all tranches.
