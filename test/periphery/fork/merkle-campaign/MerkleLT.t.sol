@@ -4,6 +4,7 @@ pragma solidity >=0.8.22 <0.9.0;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { Arrays } from "@openzeppelin/contracts/utils/Arrays.sol";
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
+import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol";
 import { MerkleBase } from "src/periphery/types/DataTypes.sol";
 import { MerkleBuilder } from "./../../../utils/MerkleBuilder.sol";
@@ -178,6 +179,21 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             vars.merkleProof = getProof(leaves.toBytes32(), vars.leafPos);
         }
 
+        // Expect call to `claim` with `sablierFee` as msg.value on the merkleLL contract.
+        vm.expectCall(
+            address(vars.merkleLT),
+            sablierFee,
+            abi.encodeCall(
+                ISablierMerkleBase.claim,
+                (
+                    vars.indexes[params.posBeforeSort],
+                    vars.recipients[params.posBeforeSort],
+                    vars.amounts[params.posBeforeSort],
+                    vars.merkleProof
+                )
+            )
+        );
+
         vars.merkleLT.claim{ value: sablierFee }({
             index: vars.indexes[params.posBeforeSort],
             recipient: vars.recipients[params.posBeforeSort],
@@ -224,5 +240,24 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             emit Clawback({ to: params.admin, admin: params.admin, amount: vars.clawbackAmount });
             vars.merkleLT.clawback({ to: params.admin, amount: vars.clawbackAmount });
         }
+
+        /*//////////////////////////////////////////////////////////////////////////
+                                        WITHDRAW-FEE
+        //////////////////////////////////////////////////////////////////////////*/
+
+        // Make the factory admin as the caller.
+        resetPrank({ msgSender: users.admin });
+
+        vm.expectEmit({ emitter: address(merkleFactory) });
+        emit WithdrawSablierFees({
+            admin: users.admin,
+            merkleLockup: vars.merkleLT,
+            to: users.admin,
+            sablierFees: sablierFee
+        });
+        merkleFactory.withdrawFees({ to: payable(users.admin), merkleLockup: vars.merkleLT });
+
+        assertEq(address(vars.merkleLT).balance, 0, "merkle lockup ether balance");
+        assertEq(users.admin.balance, sablierFee, "admin ether balance");
     }
 }
