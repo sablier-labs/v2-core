@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.22;
 
 import { uUNIT } from "@prb/math/src/UD2x18.sol";
