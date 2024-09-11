@@ -12,7 +12,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Te
 
     function test_RevertGiven_CampaignExpired() external {
         uint40 expiration = defaults.EXPIRATION();
-        uint256 sablierFee = defaults.SABLIER_FEE();
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
         uint256 warpTime = expiration + 1 seconds;
         bytes32[] memory merkleProof;
         vm.warp({ newTimestamp: warpTime });
@@ -29,7 +29,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Te
         uint256 index1 = defaults.INDEX1();
         uint128 amount = defaults.CLAIM_AMOUNT();
         bytes32[] memory merkleProof = defaults.index1Proof();
-        uint256 sablierFee = defaults.SABLIER_FEE();
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
 
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierMerkleBase_InsufficientFeePayment.selector, 0, sablierFee));
         merkleBase.claim{ value: 0 }(index1, users.recipient1, amount, merkleProof);
@@ -43,7 +43,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Te
         claim();
         uint256 index1 = defaults.INDEX1();
         uint128 amount = defaults.CLAIM_AMOUNT();
-        uint256 sablierFee = defaults.SABLIER_FEE();
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
         bytes32[] memory merkleProof = defaults.index1Proof();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierMerkleBase_StreamClaimed.selector, index1));
         merkleBase.claim{ value: sablierFee }(index1, users.recipient1, amount, merkleProof);
@@ -61,7 +61,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Te
     {
         uint256 invalidIndex = 1337;
         uint128 amount = defaults.CLAIM_AMOUNT();
-        uint256 sablierFee = defaults.SABLIER_FEE();
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
         bytes32[] memory merkleProof = defaults.index1Proof();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierMerkleBase_InvalidProof.selector));
         merkleBase.claim{ value: sablierFee }(invalidIndex, users.recipient1, amount, merkleProof);
@@ -81,7 +81,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Te
         uint256 index1 = defaults.INDEX1();
         address invalidRecipient = address(1337);
         uint128 amount = defaults.CLAIM_AMOUNT();
-        uint256 sablierFee = defaults.SABLIER_FEE();
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
         bytes32[] memory merkleProof = defaults.index1Proof();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierMerkleBase_InvalidProof.selector));
         merkleBase.claim{ value: sablierFee }(index1, invalidRecipient, amount, merkleProof);
@@ -101,7 +101,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Te
     {
         uint256 index1 = defaults.INDEX1();
         uint128 invalidAmount = 1337;
-        uint256 sablierFee = defaults.SABLIER_FEE();
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
         bytes32[] memory merkleProof = defaults.index1Proof();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierMerkleBase_InvalidProof.selector));
         merkleBase.claim{ value: sablierFee }(index1, users.recipient1, invalidAmount, merkleProof);
@@ -122,7 +122,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Te
     {
         uint256 index1 = defaults.INDEX1();
         uint128 amount = defaults.CLAIM_AMOUNT();
-        uint256 sablierFee = defaults.SABLIER_FEE();
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
         bytes32[] memory invalidMerkleProof = defaults.index2Proof();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierMerkleBase_InvalidProof.selector));
         merkleBase.claim{ value: sablierFee }(index1, users.recipient1, amount, invalidMerkleProof);

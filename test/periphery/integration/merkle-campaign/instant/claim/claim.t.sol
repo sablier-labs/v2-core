@@ -25,11 +25,11 @@ contract Claim_MerkleInstant_Integration_Test is Claim_Integration_Test, MerkleI
         emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT());
 
         expectCallToTransfer({ to: users.recipient1, value: defaults.CLAIM_AMOUNT() });
-        expectCallToClaimWithMsgValue(address(merkleInstant), defaults.SABLIER_FEE());
+        expectCallToClaimWithMsgValue(address(merkleInstant), defaults.DEFAULT_SABLIER_FEE());
         claim();
 
         assertTrue(merkleInstant.hasClaimed(defaults.INDEX1()), "not claimed");
 
-        assertEq(address(merkleInstant).balance, previousFeeAccrued + defaults.SABLIER_FEE(), "fee collected");
+        assertEq(address(merkleInstant).balance, previousFeeAccrued + defaults.DEFAULT_SABLIER_FEE(), "fee collected");
     }
 }
