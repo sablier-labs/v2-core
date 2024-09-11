@@ -81,7 +81,7 @@ contract SablierMerkleFactory is
         delete _sablierFeeByUser[campaignCreator];
 
         // Log the reset.
-        emit ResetSablierFeeFor({ admin: msg.sender, user: campaignCreator });
+        emit ResetSablierFee({ admin: msg.sender, campaignCreator: campaignCreator });
     }
 
     /// @inheritdoc ISablierMerkleFactory
@@ -103,7 +103,7 @@ contract SablierMerkleFactory is
         feeByUser.fee = fee;
 
         // Log the update.
-        emit UpdateSablierFeeFor({ admin: msg.sender, user: campaignCreator, sablierFee: fee });
+        emit SetSablierFee({ admin: msg.sender, campaignCreator: campaignCreator, sablierFee: fee });
     }
 
     /// @inheritdoc ISablierMerkleFactory

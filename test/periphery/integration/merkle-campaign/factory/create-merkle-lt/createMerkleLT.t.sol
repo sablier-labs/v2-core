@@ -65,8 +65,66 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         );
     }
 
-    function test_GivenCampaignNotExists(address campaignOwner, uint40 expiration) external whenNameNotTooLong {
-        vm.assume(campaignOwner != users.campaignOwner);
+    modifier givenCampaignNotExists() {
+        _;
+    }
+
+    function test_GivenCustomFeeSet(
+        address campaignOwner,
+        uint40 expiration,
+        uint256 customFee
+    )
+        external
+        whenNameNotTooLong
+        givenCampaignNotExists
+    {
+        // Set the Sablier fee to 0 for this test.
+        resetPrank(users.admin);
+        merkleFactory.setSablierFeeByUser(users.campaignOwner, customFee);
+
+        resetPrank(users.campaignOwner);
+        address expectedLT = computeMerkleLTAddress(campaignOwner, expiration, customFee);
+
+        MerkleBase.ConstructorParams memory baseParams = defaults.baseParams({
+            campaignOwner: campaignOwner,
+            asset_: dai,
+            merkleRoot: defaults.MERKLE_ROOT(),
+            expiration: expiration
+        });
+
+        // It should emit a {CreateMerkleLT} event.
+        vm.expectEmit({ emitter: address(merkleFactory) });
+        emit CreateMerkleLT({
+            merkleLT: ISablierMerkleLT(expectedLT),
+            baseParams: baseParams,
+            lockupTranched: lockupTranched,
+            cancelable: defaults.CANCELABLE(),
+            transferable: defaults.TRANSFERABLE(),
+            streamStartTime: defaults.STREAM_START_TIME_ZERO(),
+            tranchesWithPercentages: defaults.tranchesWithPercentages(),
+            totalDuration: defaults.TOTAL_DURATION(),
+            aggregateAmount: defaults.AGGREGATE_AMOUNT(),
+            recipientCount: defaults.RECIPIENT_COUNT()
+        });
+
+        ISablierMerkleLT actualLT = createMerkleLT(campaignOwner, expiration);
+        assertGt(address(actualLT).code.length, 0, "MerkleLT contract not created");
+        assertEq(address(actualLT), expectedLT, "MerkleLT contract does not match computed address");
+
+        // It should create the campaign with custom fee.
+        assertEq(actualLT.SABLIER_FEE(), customFee, "sablier fee");
+        // It should set the current factory address.
+        assertEq(actualLT.FACTORY(), address(merkleFactory), "factory");
+    }
+
+    function test_GivenCustomFeeNotSet(
+        address campaignOwner,
+        uint40 expiration
+    )
+        external
+        whenNameNotTooLong
+        givenCampaignNotExists
+    {
         address expectedLT = computeMerkleLTAddress(campaignOwner, expiration);
 
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams({
@@ -90,8 +148,13 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
             recipientCount: defaults.RECIPIENT_COUNT()
         });
 
-        address actualLT = address(createMerkleLT(campaignOwner, expiration));
-        assertGt(actualLT.code.length, 0, "MerkleLT contract not created");
-        assertEq(actualLT, expectedLT, "MerkleLT contract does not match computed address");
+        ISablierMerkleLT actualLT = createMerkleLT(campaignOwner, expiration);
+        assertGt(address(actualLT).code.length, 0, "MerkleLT contract not created");
+        assertEq(address(actualLT), expectedLT, "MerkleLT contract does not match computed address");
+
+        // It should create the campaign with custom fee.
+        assertEq(actualLT.SABLIER_FEE(), defaults.DEFAULT_SABLIER_FEE(), "default sablier fee");
+        // It should set the current factory address.
+        assertEq(actualLT.FACTORY(), address(merkleFactory), "factory");
     }
 }
