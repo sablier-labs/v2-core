@@ -28,7 +28,7 @@ contract SablierMerkleFactory is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierMerkleFactory
-    uint256 public sablierFee;
+    uint256 public defaultSablierFee;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR
@@ -64,11 +64,11 @@ contract SablierMerkleFactory is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierMerkleFactory
-    function setSablierFee(uint256 fee) external override onlyAdmin {
-        // Effect: update the Sablier fee.
-        sablierFee = fee;
+    function setDefaultSablierFee(uint256 defaultFee) external override onlyAdmin {
+        // Effect: update the default Sablier fee.
+        defaultSablierFee = defaultFee;
 
-        emit SetSablierFee(msg.sender, fee);
+        emit SetDefaultSablierFee(msg.sender, defaultFee);
     }
 
     /// @inheritdoc ISablierMerkleFactory
@@ -108,7 +108,7 @@ contract SablierMerkleFactory is
         );
 
         // Deploy the MerkleInstant contract with CREATE2.
-        merkleInstant = new SablierMerkleInstant{ salt: salt }(baseParams, sablierFee);
+        merkleInstant = new SablierMerkleInstant{ salt: salt }(baseParams, defaultSablierFee);
 
         // Log the creation of the MerkleInstant contract, including some metadata that is not stored on-chain.
         emit CreateMerkleInstant(merkleInstant, baseParams, aggregateAmount, recipientCount);
@@ -146,8 +146,9 @@ contract SablierMerkleFactory is
         );
 
         // Deploy the MerkleLL contract with CREATE2.
-        merkleLL =
-            new SablierMerkleLL{ salt: salt }(baseParams, lockupLinear, cancelable, transferable, schedule, sablierFee);
+        merkleLL = new SablierMerkleLL{ salt: salt }(
+            baseParams, lockupLinear, cancelable, transferable, schedule, defaultSablierFee
+        );
 
         // Log the creation of the MerkleLL contract, including some metadata that is not stored on-chain.
         emit CreateMerkleLL(
@@ -237,7 +238,13 @@ contract SablierMerkleFactory is
 
         // Deploy the MerkleLT contract with CREATE2.
         merkleLT = new SablierMerkleLT{ salt: salt }(
-            baseParams, lockupTranched, cancelable, transferable, streamStartTime, tranchesWithPercentages, sablierFee
+            baseParams,
+            lockupTranched,
+            cancelable,
+            transferable,
+            streamStartTime,
+            tranchesWithPercentages,
+            defaultSablierFee
         );
     }
 }

@@ -35,20 +35,22 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
 
     function computeMerkleInstantAddress() internal view returns (address) {
         return computeMerkleInstantAddress(
-            users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.SABLIER_FEE()
+            users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE()
         );
     }
 
     function computeMerkleInstantAddress(address admin) internal view returns (address) {
-        return computeMerkleInstantAddress(admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.SABLIER_FEE());
+        return computeMerkleInstantAddress(
+            admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE()
+        );
     }
 
     function computeMerkleInstantAddress(address admin, uint40 expiration) internal view returns (address) {
-        return computeMerkleInstantAddress(admin, defaults.MERKLE_ROOT(), expiration, defaults.SABLIER_FEE());
+        return computeMerkleInstantAddress(admin, defaults.MERKLE_ROOT(), expiration, defaults.DEFAULT_SABLIER_FEE());
     }
 
     function computeMerkleInstantAddress(address admin, bytes32 merkleRoot) internal view returns (address) {
-        return computeMerkleInstantAddress(admin, merkleRoot, defaults.EXPIRATION(), defaults.SABLIER_FEE());
+        return computeMerkleInstantAddress(admin, merkleRoot, defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE());
     }
 
     function computeMerkleInstantAddress(
@@ -89,20 +91,22 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function computeMerkleLLAddress() internal view returns (address) {
-        return
-            computeMerkleLLAddress(users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.SABLIER_FEE());
+        return computeMerkleLLAddress(
+            users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE()
+        );
     }
 
     function computeMerkleLLAddress(address admin) internal view returns (address) {
-        return computeMerkleLLAddress(admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.SABLIER_FEE());
+        return
+            computeMerkleLLAddress(admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE());
     }
 
     function computeMerkleLLAddress(address admin, uint40 expiration) internal view returns (address) {
-        return computeMerkleLLAddress(admin, defaults.MERKLE_ROOT(), expiration, defaults.SABLIER_FEE());
+        return computeMerkleLLAddress(admin, defaults.MERKLE_ROOT(), expiration, defaults.DEFAULT_SABLIER_FEE());
     }
 
     function computeMerkleLLAddress(address admin, bytes32 merkleRoot) internal view returns (address) {
-        return computeMerkleLLAddress(admin, merkleRoot, defaults.EXPIRATION(), defaults.SABLIER_FEE());
+        return computeMerkleLLAddress(admin, merkleRoot, defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE());
     }
 
     function computeMerkleLLAddress(
@@ -147,20 +151,22 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function computeMerkleLTAddress() internal view returns (address) {
-        return
-            computeMerkleLTAddress(users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.SABLIER_FEE());
+        return computeMerkleLTAddress(
+            users.admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE()
+        );
     }
 
     function computeMerkleLTAddress(address admin) internal view returns (address) {
-        return computeMerkleLTAddress(admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.SABLIER_FEE());
+        return
+            computeMerkleLTAddress(admin, defaults.MERKLE_ROOT(), defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE());
     }
 
     function computeMerkleLTAddress(address admin, uint40 expiration) internal view returns (address) {
-        return computeMerkleLTAddress(admin, defaults.MERKLE_ROOT(), expiration, defaults.SABLIER_FEE());
+        return computeMerkleLTAddress(admin, defaults.MERKLE_ROOT(), expiration, defaults.DEFAULT_SABLIER_FEE());
     }
 
     function computeMerkleLTAddress(address admin, bytes32 merkleRoot) internal view returns (address) {
-        return computeMerkleLTAddress(admin, merkleRoot, defaults.EXPIRATION(), defaults.SABLIER_FEE());
+        return computeMerkleLTAddress(admin, merkleRoot, defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE());
     }
 
     function computeMerkleLTAddress(

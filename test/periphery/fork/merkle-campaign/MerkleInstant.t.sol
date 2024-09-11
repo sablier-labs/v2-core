@@ -96,7 +96,7 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
         // Make the admin as the caller.
         resetPrank({ msgSender: params.admin });
 
-        uint256 sablierFee = defaults.SABLIER_FEE();
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
 
         vars.expectedMerkleInstant = computeMerkleInstantAddress(
             params.admin, params.admin, FORK_ASSET, vars.merkleRoot, params.expiration, sablierFee

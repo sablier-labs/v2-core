@@ -88,7 +88,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         deployProtocolConditionally();
 
         // Set the Sablier fee on the Merkle factory.
-        merkleFactory.setSablierFee(defaults.SABLIER_FEE());
+        merkleFactory.setDefaultSablierFee(defaults.DEFAULT_SABLIER_FEE());
 
         // Create users for testing.
         users.alice = createUser("Alice");

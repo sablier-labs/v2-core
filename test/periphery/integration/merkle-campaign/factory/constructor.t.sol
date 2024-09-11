@@ -12,7 +12,7 @@ contract Constructor_MerkleFactory_Integration_Test is MerkleCampaign_Integratio
         address actualAdmin = constructedFactory.admin();
         assertEq(actualAdmin, users.admin, "factory admin");
 
-        uint256 actualSablierFee = constructedFactory.sablierFee();
-        assertEq(actualSablierFee, 0, "sablier fee");
+        uint256 actualDefaultSablierFee = constructedFactory.defaultSablierFee();
+        assertEq(actualDefaultSablierFee, 0, "default sablier fee");
     }
 }

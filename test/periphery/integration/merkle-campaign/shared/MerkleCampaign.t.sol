@@ -19,7 +19,7 @@ abstract contract MerkleCampaign_Integration_Shared_Test is MerkleCampaign_Integ
     //////////////////////////////////////////////////////////////////////////*/
 
     function claim() internal {
-        merkleBase.claim{ value: defaults.SABLIER_FEE() }({
+        merkleBase.claim{ value: defaults.DEFAULT_SABLIER_FEE() }({
             index: defaults.INDEX1(),
             recipient: users.recipient1,
             amount: defaults.CLAIM_AMOUNT(),

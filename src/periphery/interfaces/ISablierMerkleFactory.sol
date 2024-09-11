@@ -57,8 +57,8 @@ interface ISablierMerkleFactory is IAdminable {
         uint256 recipientCount
     );
 
-    /// @notice Emitted when the Sablier fee is set by the admin.
-    event SetSablierFee(address indexed admin, uint256 sablierFee);
+    /// @notice Emitted when the default Sablier fee is set by the admin.
+    event SetDefaultSablierFee(address indexed admin, uint256 defaultSablierFee);
 
     /// @notice Emitted when the sablier fees are claimed by the sablier admin.
     event WithdrawSablierFees(
@@ -78,9 +78,9 @@ interface ISablierMerkleFactory is IAdminable {
         pure
         returns (bool result);
 
-    /// @notice Retrieves the sablier fee required to claim an airstream.
+    /// @notice Retrieves the default sablier fee required to claim an airstream.
     /// @dev A minimum of this fee must be paid in ETH during `claim`.
-    function sablierFee() external view returns (uint256);
+    function defaultSablierFee() external view returns (uint256);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
@@ -150,17 +150,17 @@ interface ISablierMerkleFactory is IAdminable {
         external
         returns (ISablierMerkleLT merkleLT);
 
-    /// @notice Sets the Sablier fee for claiming an airstream.
-    /// @dev Emits a {SetSablierFee} event.
+    /// @notice Sets the default Sablier fee for claiming an airstream.
+    /// @dev Emits a {SetDefaultSablierFee} event.
     ///
     /// Notes:
-    /// - The new fee will only be applied to the future campaigns.
+    /// - The new default fee will only be applied to the future campaigns.
     ///
     /// Requiurements:
     /// - The caller must be the admin.
     ///
-    /// @param fee The new fee to be set.
-    function setSablierFee(uint256 fee) external;
+    /// @param defaultFee The new detault fee to be set.
+    function setDefaultSablierFee(uint256 defaultFee) external;
 
     /// @notice Withdraws the Sablier fees accrued on `merkleLockup` to the provided address.
     /// @dev Emits a {WithdrawSablierFees} event.
