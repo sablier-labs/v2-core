@@ -31,7 +31,7 @@ contract SablierMerkleFactory is
     uint256 public defaultSablierFee;
 
     /// @dev A mapping of custom Sablier fees by user.
-    mapping(address campaignCreator => MerkleFactory.SablierFee) private _sablierFeeByUser;
+    mapping(address campaignCreator => MerkleFactory.SablierFee customFee) private _sablierFeeByUser;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR
