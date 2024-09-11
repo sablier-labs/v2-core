@@ -152,7 +152,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
             isStream: true,
             isTransferable: defaults.TRANSFERABLE(),
             recipient: users.recipient1,
-            sender: users.admin,
+            sender: users.campaignOwner,
             startTime: startTime,
             tranches: defaults.tranchesMerkleLT({ streamStartTime: streamStartTime, totalAmount: defaults.CLAIM_AMOUNT() }),
             wasCanceled: false

@@ -447,11 +447,11 @@ contract Defaults is Constants, Merkle {
     //////////////////////////////////////////////////////////////////////////*/
 
     function baseParams() public view returns (MerkleBase.ConstructorParams memory) {
-        return baseParams(users.admin, asset, EXPIRATION, MERKLE_ROOT);
+        return baseParams(users.campaignOwner, asset, EXPIRATION, MERKLE_ROOT);
     }
 
     function baseParams(
-        address admin,
+        address campaignOwner,
         IERC20 asset_,
         uint40 expiration,
         bytes32 merkleRoot
@@ -463,7 +463,7 @@ contract Defaults is Constants, Merkle {
         return MerkleBase.ConstructorParams({
             asset: asset_,
             expiration: expiration,
-            initialAdmin: admin,
+            initialAdmin: campaignOwner,
             ipfsCID: IPFS_CID,
             merkleRoot: merkleRoot,
             name: NAME

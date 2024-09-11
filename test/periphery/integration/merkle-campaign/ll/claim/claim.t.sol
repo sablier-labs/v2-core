@@ -94,7 +94,7 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
             isStream: true,
             isTransferable: defaults.TRANSFERABLE(),
             recipient: users.recipient1,
-            sender: users.admin,
+            sender: users.campaignOwner,
             startTime: startTime,
             wasCanceled: false
         });

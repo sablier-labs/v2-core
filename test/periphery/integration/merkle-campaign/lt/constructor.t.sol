@@ -58,7 +58,7 @@ contract Constructor_MerkleLT_Integration_Test is MerkleCampaign_Integration_Tes
         Vars memory vars;
 
         vars.actualAdmin = constructedLT.admin();
-        vars.expectedAdmin = users.admin;
+        vars.expectedAdmin = users.campaignOwner;
         assertEq(vars.actualAdmin, vars.expectedAdmin, "admin");
 
         vars.actualAllowance = dai.allowance(address(constructedLT), address(lockupTranched));

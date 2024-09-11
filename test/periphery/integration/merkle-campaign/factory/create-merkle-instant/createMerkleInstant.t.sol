@@ -47,12 +47,12 @@ contract CreateMerkleInstant_Integration_Test is MerkleCampaign_Integration_Test
         });
     }
 
-    function test_GivenCampaignNotExists(address admin, uint40 expiration) external whenNameNotTooLong {
-        vm.assume(admin != users.admin);
-        address expectedMerkleInstant = computeMerkleInstantAddress(admin, expiration);
+    function test_GivenCampaignNotExists(address campaignOwner, uint40 expiration) external whenNameNotTooLong {
+        vm.assume(campaignOwner != users.campaignOwner);
+        address expectedMerkleInstant = computeMerkleInstantAddress(campaignOwner, expiration);
 
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams({
-            admin: admin,
+            campaignOwner: campaignOwner,
             asset_: dai,
             merkleRoot: defaults.MERKLE_ROOT(),
             expiration: expiration
@@ -66,7 +66,7 @@ contract CreateMerkleInstant_Integration_Test is MerkleCampaign_Integration_Test
             recipientCount: defaults.RECIPIENT_COUNT()
         });
 
-        address actualInstant = address(createMerkleInstant(admin, expiration));
+        address actualInstant = address(createMerkleInstant(campaignOwner, expiration));
         assertGt(actualInstant.code.length, 0, "MerkleInstant contract not created");
         assertEq(actualInstant, expectedMerkleInstant, "MerkleInstant contract does not match computed address");
     }

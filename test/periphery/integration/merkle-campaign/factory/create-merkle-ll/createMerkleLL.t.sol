@@ -61,12 +61,12 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
         });
     }
 
-    function test_GivenCampaignNotExists(address admin, uint40 expiration) external whenNameNotTooLong {
-        vm.assume(admin != users.admin);
-        address expectedLL = computeMerkleLLAddress(admin, expiration);
+    function test_GivenCampaignNotExists(address campaignOwner, uint40 expiration) external whenNameNotTooLong {
+        vm.assume(campaignOwner != users.campaignOwner);
+        address expectedLL = computeMerkleLLAddress(campaignOwner, expiration);
 
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams({
-            admin: admin,
+            campaignOwner: campaignOwner,
             asset_: dai,
             merkleRoot: defaults.MERKLE_ROOT(),
             expiration: expiration
@@ -84,7 +84,7 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
             recipientCount: defaults.RECIPIENT_COUNT()
         });
 
-        address actualLL = address(createMerkleLL(admin, expiration));
+        address actualLL = address(createMerkleLL(campaignOwner, expiration));
         assertGt(actualLL.code.length, 0, "MerkleLL contract not created");
         assertEq(actualLL, expectedLL, "MerkleLL contract does not match computed address");
     }
