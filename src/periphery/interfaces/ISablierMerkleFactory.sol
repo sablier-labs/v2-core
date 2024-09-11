@@ -58,13 +58,13 @@ interface ISablierMerkleFactory is IAdminable {
     );
 
     /// @notice Emitted when the admin resets Sablier fee to default for a specific user.
-    event ResetSablierFeeFor(address indexed admin, address indexed user);
+    event ResetSablierFee(address indexed admin, address indexed campaignCreator);
 
     /// @notice Emitted when the default Sablier fee is set by the admin.
     event SetDefaultSablierFee(address indexed admin, uint256 defaultSablierFee);
 
     /// @notice Emitted when the admin sets Sablier fee for a specific user.
-    event UpdateSablierFeeFor(address indexed admin, address indexed user, uint256 sablierFee);
+    event SetSablierFee(address indexed admin, address indexed campaignCreator, uint256 sablierFee);
 
     /// @notice Emitted when the sablier fees are claimed by the sablier admin.
     event WithdrawSablierFees(
@@ -182,7 +182,7 @@ interface ISablierMerkleFactory is IAdminable {
         returns (ISablierMerkleLT merkleLT);
 
     /// @notice Resets the Sablier fee to default.
-    /// @dev Emits a {ResetSablierFeeFor} event.
+    /// @dev Emits a {ResetSablierFee} event.
     ///
     /// Notes:
     /// - The default fee will only be applied to the future campaigns.
@@ -194,7 +194,7 @@ interface ISablierMerkleFactory is IAdminable {
     function resetSablierFeeByUser(address campaignCreator) external;
 
     /// @notice Sets the custom Sablier fee for a campaign creator.
-    /// @dev Emits a {UpdateSablierFeeFor} event.
+    /// @dev Emits a {SetSablierFee} event.
     ///
     /// Notes:
     /// - The new fee will only be applied to the future campaigns.

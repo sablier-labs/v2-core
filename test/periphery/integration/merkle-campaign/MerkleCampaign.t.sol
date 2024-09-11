@@ -15,8 +15,8 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
     function setUp() public virtual override {
         Periphery_Test.setUp();
 
-        // Make Alice the caller.
-        resetPrank(users.alice);
+        // Make campaign owner the caller.
+        resetPrank(users.campaignOwner);
 
         // Create the default Merkle contracts.
         merkleInstant = createMerkleInstant();
@@ -51,6 +51,18 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
         );
     }
 
+    function computeMerkleInstantAddress(
+        address campaignOwner,
+        uint40 expiration,
+        uint256 sablierFee
+    )
+        internal
+        view
+        returns (address)
+    {
+        return computeMerkleInstantAddress(campaignOwner, defaults.MERKLE_ROOT(), expiration, sablierFee);
+    }
+
     function computeMerkleInstantAddress(address campaignOwner, bytes32 merkleRoot) internal view returns (address) {
         return computeMerkleInstantAddress(
             campaignOwner, merkleRoot, defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE()
@@ -67,7 +79,14 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
         view
         returns (address)
     {
-        return computeMerkleInstantAddress(users.alice, campaignOwner, dai, merkleRoot, expiration, sablierFee);
+        return computeMerkleInstantAddress({
+            caller: users.campaignOwner,
+            campaignOwner: campaignOwner,
+            asset_: dai,
+            merkleRoot: merkleRoot,
+            expiration: expiration,
+            sablierFee: sablierFee
+        });
     }
 
     function createMerkleInstant() internal returns (ISablierMerkleInstant) {
@@ -110,6 +129,18 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
         return computeMerkleLLAddress(campaignOwner, defaults.MERKLE_ROOT(), expiration, defaults.DEFAULT_SABLIER_FEE());
     }
 
+    function computeMerkleLLAddress(
+        address campaignOwner,
+        uint40 expiration,
+        uint256 sablierFee
+    )
+        internal
+        view
+        returns (address)
+    {
+        return computeMerkleLLAddress(campaignOwner, defaults.MERKLE_ROOT(), expiration, sablierFee);
+    }
+
     function computeMerkleLLAddress(address campaignOwner, bytes32 merkleRoot) internal view returns (address) {
         return computeMerkleLLAddress(campaignOwner, merkleRoot, defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE());
     }
@@ -124,7 +155,14 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
         view
         returns (address)
     {
-        return computeMerkleLLAddress(users.alice, campaignOwner, dai, merkleRoot, expiration, sablierFee);
+        return computeMerkleLLAddress({
+            caller: users.campaignOwner,
+            campaignOwner: campaignOwner,
+            asset_: dai,
+            merkleRoot: merkleRoot,
+            expiration: expiration,
+            sablierFee: sablierFee
+        });
     }
 
     function createMerkleLL() internal returns (ISablierMerkleLL) {
@@ -171,6 +209,18 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
         return computeMerkleLTAddress(campaignOwner, defaults.MERKLE_ROOT(), expiration, defaults.DEFAULT_SABLIER_FEE());
     }
 
+    function computeMerkleLTAddress(
+        address campaignOwner,
+        uint40 expiration,
+        uint256 sablierFee
+    )
+        internal
+        view
+        returns (address)
+    {
+        return computeMerkleLTAddress(campaignOwner, defaults.MERKLE_ROOT(), expiration, sablierFee);
+    }
+
     function computeMerkleLTAddress(address campaignOwner, bytes32 merkleRoot) internal view returns (address) {
         return computeMerkleLTAddress(campaignOwner, merkleRoot, defaults.EXPIRATION(), defaults.DEFAULT_SABLIER_FEE());
     }
@@ -185,7 +235,14 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
         view
         returns (address)
     {
-        return computeMerkleLTAddress(users.alice, campaignOwner, dai, merkleRoot, expiration, sablierFee);
+        return computeMerkleLTAddress({
+            caller: users.campaignOwner,
+            campaignOwner: campaignOwner,
+            asset_: dai,
+            merkleRoot: merkleRoot,
+            expiration: expiration,
+            sablierFee: sablierFee
+        });
     }
 
     function createMerkleLT() internal returns (ISablierMerkleLT) {
