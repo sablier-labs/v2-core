@@ -45,6 +45,11 @@ abstract contract MerkleCampaign_Integration_Shared_Test is MerkleCampaign_Integ
         _;
     }
 
+    modifier whenCallerCampaignOwner() {
+        resetPrank({ msgSender: users.campaignOwner });
+        _;
+    }
+
     modifier whenExpirationNotZero() {
         _;
     }
@@ -55,8 +60,8 @@ abstract contract MerkleCampaign_Integration_Shared_Test is MerkleCampaign_Integ
         // Make the first claim to set `_firstClaimTime`.
         claim();
 
-        // Reset the prank back to the users.admin.
-        resetPrank(users.admin);
+        // Reset the prank back to the campaign owner.
+        resetPrank(users.campaignOwner);
         _;
     }
 

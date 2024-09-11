@@ -65,12 +65,12 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         );
     }
 
-    function test_GivenCampaignNotExists(address admin, uint40 expiration) external whenNameNotTooLong {
-        vm.assume(admin != users.admin);
-        address expectedLT = computeMerkleLTAddress(admin, expiration);
+    function test_GivenCampaignNotExists(address campaignOwner, uint40 expiration) external whenNameNotTooLong {
+        vm.assume(campaignOwner != users.campaignOwner);
+        address expectedLT = computeMerkleLTAddress(campaignOwner, expiration);
 
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams({
-            admin: admin,
+            campaignOwner: campaignOwner,
             asset_: dai,
             merkleRoot: defaults.MERKLE_ROOT(),
             expiration: expiration
@@ -90,7 +90,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
             recipientCount: defaults.RECIPIENT_COUNT()
         });
 
-        address actualLT = address(createMerkleLT(admin, expiration));
+        address actualLT = address(createMerkleLT(campaignOwner, expiration));
         assertGt(actualLT.code.length, 0, "MerkleLT contract not created");
         assertEq(actualLT, expectedLT, "MerkleLT contract does not match computed address");
     }

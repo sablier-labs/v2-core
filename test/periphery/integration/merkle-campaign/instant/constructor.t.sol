@@ -36,7 +36,7 @@ contract Constructor_MerkleInstant_Integration_Test is MerkleCampaign_Integratio
         Vars memory vars;
 
         vars.actualAdmin = constructedInstant.admin();
-        vars.expectedAdmin = users.admin;
+        vars.expectedAdmin = users.campaignOwner;
         assertEq(vars.actualAdmin, vars.expectedAdmin, "admin");
 
         vars.actualAsset = address(constructedInstant.ASSET());

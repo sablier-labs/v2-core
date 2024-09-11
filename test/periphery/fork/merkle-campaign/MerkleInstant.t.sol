@@ -22,7 +22,7 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
     }
 
     struct Params {
-        address admin;
+        address campaignOwner;
         uint40 expiration;
         LeafData[] leafData;
         uint256 posBeforeSort;
@@ -48,9 +48,9 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
     uint256[] public leaves;
 
     function testForkFuzz_MerkleInstant(Params memory params) external {
-        vm.assume(params.admin != address(0) && params.admin != users.admin);
+        vm.assume(params.campaignOwner != address(0) && params.campaignOwner != users.campaignOwner);
         vm.assume(params.leafData.length > 0);
-        assumeNoBlacklisted({ token: address(FORK_ASSET), addr: params.admin });
+        assumeNoBlacklisted({ token: address(FORK_ASSET), addr: params.campaignOwner });
         params.posBeforeSort = _bound(params.posBeforeSort, 0, params.leafData.length - 1);
 
         // The expiration must be either zero or greater than the block timestamp.
@@ -93,17 +93,17 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
             vars.merkleRoot = getRoot(leaves.toBytes32());
         }
 
-        // Make the admin as the caller.
-        resetPrank({ msgSender: params.admin });
+        // Make the campaign owner as the caller.
+        resetPrank({ msgSender: params.campaignOwner });
 
         uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
 
         vars.expectedMerkleInstant = computeMerkleInstantAddress(
-            params.admin, params.admin, FORK_ASSET, vars.merkleRoot, params.expiration, sablierFee
+            params.campaignOwner, params.campaignOwner, FORK_ASSET, vars.merkleRoot, params.expiration, sablierFee
         );
 
         vars.baseParams = defaults.baseParams({
-            admin: params.admin,
+            campaignOwner: params.campaignOwner,
             asset_: FORK_ASSET,
             merkleRoot: vars.merkleRoot,
             expiration: params.expiration
@@ -199,17 +199,17 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
                                         CLAWBACK
         //////////////////////////////////////////////////////////////////////////*/
 
-        // Make the admin as the caller.
-        resetPrank({ msgSender: params.admin });
+        // Make the campaign owner as the caller.
+        resetPrank({ msgSender: params.campaignOwner });
 
         if (params.expiration > 0) {
             vars.clawbackAmount = uint128(FORK_ASSET.balanceOf(address(vars.merkleInstant)));
             vm.warp({ newTimestamp: uint256(params.expiration) + 1 seconds });
 
-            expectCallToTransfer({ asset: FORK_ASSET, to: params.admin, value: vars.clawbackAmount });
+            expectCallToTransfer({ asset: FORK_ASSET, to: params.campaignOwner, value: vars.clawbackAmount });
             vm.expectEmit({ emitter: address(vars.merkleInstant) });
-            emit Clawback({ to: params.admin, admin: params.admin, amount: vars.clawbackAmount });
-            vars.merkleInstant.clawback({ to: params.admin, amount: vars.clawbackAmount });
+            emit Clawback({ to: params.campaignOwner, admin: params.campaignOwner, amount: vars.clawbackAmount });
+            vars.merkleInstant.clawback({ to: params.campaignOwner, amount: vars.clawbackAmount });
         }
 
         /*//////////////////////////////////////////////////////////////////////////

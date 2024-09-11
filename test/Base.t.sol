@@ -93,6 +93,7 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
         // Create users for testing.
         users.alice = createUser("Alice");
         users.broker = createUser("Broker");
+        users.campaignOwner = createUser("CampaignOwner");
         users.eve = createUser("Eve");
         users.operator = createUser("Operator");
         users.recipient = createUser("Recipient");
