@@ -15,7 +15,7 @@ import { ISablierMerkleLT } from "./interfaces/ISablierMerkleLT.sol";
 import { SablierMerkleInstant } from "./SablierMerkleInstant.sol";
 import { SablierMerkleLL } from "./SablierMerkleLL.sol";
 import { SablierMerkleLT } from "./SablierMerkleLT.sol";
-import { MerkleBase, MerkleLL, MerkleLT } from "./types/DataTypes.sol";
+import { MerkleBase, MerkleFactory, MerkleLL, MerkleLT } from "./types/DataTypes.sol";
 
 /// @title SablierMerkleFactory
 /// @notice See the documentation in {ISablierMerkleFactory}.
@@ -29,6 +29,9 @@ contract SablierMerkleFactory is
 
     /// @inheritdoc ISablierMerkleFactory
     uint256 public defaultSablierFee;
+
+    /// @dev A mapping of custom Sablier fees by user.
+    mapping(address campaignCreator => MerkleFactory.SablierFee) private _sablierFeeByUser;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR
@@ -59,9 +62,27 @@ contract SablierMerkleFactory is
         return totalPercentage == uUNIT;
     }
 
+    /// @inheritdoc ISablierMerkleFactory
+    function sablierFeeByUser(address campaignCreator)
+        external
+        view
+        override
+        returns (MerkleFactory.SablierFee memory)
+    {
+        return _sablierFeeByUser[campaignCreator];
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                          ADMIN-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc ISablierMerkleFactory
+    function resetSablierFeeByUser(address campaignCreator) external override onlyAdmin {
+        delete _sablierFeeByUser[campaignCreator];
+
+        // Log the reset.
+        emit ResetSablierFeeFor({ admin: msg.sender, user: campaignCreator });
+    }
 
     /// @inheritdoc ISablierMerkleFactory
     function setDefaultSablierFee(uint256 defaultFee) external override onlyAdmin {
@@ -69,6 +90,20 @@ contract SablierMerkleFactory is
         defaultSablierFee = defaultFee;
 
         emit SetDefaultSablierFee(msg.sender, defaultFee);
+    }
+
+    /// @inheritdoc ISablierMerkleFactory
+    function setSablierFeeByUser(address campaignCreator, uint256 fee) external override onlyAdmin {
+        MerkleFactory.SablierFee storage feeByUser = _sablierFeeByUser[campaignCreator];
+
+        // If user does not belong to the custom fee list.
+        if (!feeByUser.enabled) feeByUser.enabled = true;
+
+        // Effect: update the Sablier fee for the given campaign creator.
+        feeByUser.fee = fee;
+
+        // Log the update.
+        emit UpdateSablierFeeFor({ admin: msg.sender, user: campaignCreator, sablierFee: fee });
     }
 
     /// @inheritdoc ISablierMerkleFactory
@@ -107,8 +142,12 @@ contract SablierMerkleFactory is
             )
         );
 
+        // Fetch the Sablier fee for the user, or use the default fee.
+        uint256 sablierFee =
+            _sablierFeeByUser[msg.sender].enabled ? _sablierFeeByUser[msg.sender].fee : defaultSablierFee;
+
         // Deploy the MerkleInstant contract with CREATE2.
-        merkleInstant = new SablierMerkleInstant{ salt: salt }(baseParams, defaultSablierFee);
+        merkleInstant = new SablierMerkleInstant{ salt: salt }(baseParams, sablierFee);
 
         // Log the creation of the MerkleInstant contract, including some metadata that is not stored on-chain.
         emit CreateMerkleInstant(merkleInstant, baseParams, aggregateAmount, recipientCount);
@@ -145,10 +184,13 @@ contract SablierMerkleFactory is
             )
         );
 
+        // Fetch the Sablier fee for the user, or use the default fee.
+        uint256 sablierFee =
+            _sablierFeeByUser[msg.sender].enabled ? _sablierFeeByUser[msg.sender].fee : defaultSablierFee;
+
         // Deploy the MerkleLL contract with CREATE2.
-        merkleLL = new SablierMerkleLL{ salt: salt }(
-            baseParams, lockupLinear, cancelable, transferable, schedule, defaultSablierFee
-        );
+        merkleLL =
+            new SablierMerkleLL{ salt: salt }(baseParams, lockupLinear, cancelable, transferable, schedule, sablierFee);
 
         // Log the creation of the MerkleLL contract, including some metadata that is not stored on-chain.
         emit CreateMerkleLL(
@@ -236,15 +278,13 @@ contract SablierMerkleFactory is
             )
         );
 
+        // Fetch the Sablier fee for the user, or use the default fee.
+        uint256 sablierFee =
+            _sablierFeeByUser[msg.sender].enabled ? _sablierFeeByUser[msg.sender].fee : defaultSablierFee;
+
         // Deploy the MerkleLT contract with CREATE2.
         merkleLT = new SablierMerkleLT{ salt: salt }(
-            baseParams,
-            lockupTranched,
-            cancelable,
-            transferable,
-            streamStartTime,
-            tranchesWithPercentages,
-            defaultSablierFee
+            baseParams, lockupTranched, cancelable, transferable, streamStartTime, tranchesWithPercentages, sablierFee
         );
     }
 }
