@@ -75,8 +75,8 @@ jobs:
       match-path: "test/fork/**/*.sol"
       name: "Fork tests"
 
-  notify_on_failure:
-    if: failure() # This job only runs if a failure occurs in any previous jobs
+  notify-on-failure:
+    if: failure() # Runs only if a failure occurs in any previous jobs
     runs-on: "ubuntu-latest"
     steps:
       - name: "Send Slack notification"
