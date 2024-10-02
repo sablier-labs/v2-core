@@ -17,7 +17,7 @@ contract GenerateSVG is BaseScript, SablierV2NFTDescriptor {
     address internal constant DAI = address(uint160(uint256(keccak256("DAI"))));
     address internal constant LOCKUP_LINEAR = address(uint160(uint256(keccak256("SablierV2LockupLinear"))));
 
-    /// @param progress The streamed amount as a numerical percentage with 4 implied decimals.
+    /// @param progress The streamed amount is a numerical percentage with 4 implied decimals.
     /// @param status The status of the stream, as a string.
     /// @param amount The abbreviated deposited amount, as a string.
     /// @param duration The total duration of the stream in days, as a number.
