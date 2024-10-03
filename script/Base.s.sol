@@ -15,6 +15,9 @@ contract BaseScript is Script {
     /// @dev The default value for `segmentCountMap` and `trancheCountMap`.
     uint256 internal constant DEFAULT_MAX_COUNT = 500;
 
+    /// @dev The address of the Sablier deployer.
+    address internal constant SABLIER_DEPLOYER = 0xb1bEF51ebCA01EB12001a639bDBbFF6eEcA12B9F;
+
     /// @dev Included to enable compilation of the script without a $MNEMONIC environment variable.
     string internal constant TEST_MNEMONIC = "test test test test test test test test test test test junk";
 
@@ -75,11 +78,15 @@ contract BaseScript is Script {
     /// - The version is obtained from `package.json`.
     function constructCreate2Salt() public view returns (bytes32) {
         string memory chainId = block.chainid.toString();
-        string memory json = vm.readFile("package.json");
-        string memory version = json.readString(".version");
+        string memory version = getVersion();
         string memory create2Salt = string.concat("ChainID ", chainId, ", Version ", version);
         console2.log("The CREATE2 salt is \"%s\"", create2Salt);
         return bytes32(abi.encodePacked(create2Salt));
+    }
+
+    function getVersion() public view returns (string memory) {
+        string memory json = vm.readFile("package.json");
+        return json.readString(".version");
     }
 
     /// @dev Populates the segment & tranche count map. Values can be updated using the `update-counts.sh` script.
