@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
+import { IAdminable } from "../../core/interfaces/IAdminable.sol";
 import { ISablierLockupLinear } from "../../core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockupTranched } from "../../core/interfaces/ISablierLockupTranched.sol";
 
-import { MerkleBase, MerkleLL, MerkleLT } from "../types/DataTypes.sol";
+import { ISablierMerkleBase } from "../interfaces/ISablierMerkleBase.sol";
+import { MerkleBase, MerkleFactory, MerkleLL, MerkleLT } from "../types/DataTypes.sol";
 import { ISablierMerkleInstant } from "./ISablierMerkleInstant.sol";
 import { ISablierMerkleLL } from "./ISablierMerkleLL.sol";
 import { ISablierMerkleLT } from "./ISablierMerkleLT.sol";
@@ -16,7 +18,7 @@ import { ISablierMerkleLT } from "./ISablierMerkleLT.sol";
 /// enables instant airdrops where tokens are unlocked and distributed immediately. See the Sablier docs for more
 /// guidance: https://docs.sablier.com
 /// @dev Deploys Merkle Lockup and Merkle Instant campaigns with CREATE2.
-interface ISablierMerkleFactory {
+interface ISablierMerkleFactory is IAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
@@ -55,6 +57,20 @@ interface ISablierMerkleFactory {
         uint256 recipientCount
     );
 
+    /// @notice Emitted when the admin resets Sablier fee to default for a specific user.
+    event ResetSablierFee(address indexed admin, address indexed campaignCreator);
+
+    /// @notice Emitted when the default Sablier fee is set by the admin.
+    event SetDefaultSablierFee(address indexed admin, uint256 defaultSablierFee);
+
+    /// @notice Emitted when the admin sets Sablier fee for a specific user.
+    event SetSablierFee(address indexed admin, address indexed campaignCreator, uint256 sablierFee);
+
+    /// @notice Emitted when the sablier fees are claimed by the sablier admin.
+    event WithdrawSablierFees(
+        address indexed admin, ISablierMerkleBase indexed merkleLockup, address to, uint256 sablierFees
+    );
+
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -68,12 +84,30 @@ interface ISablierMerkleFactory {
         pure
         returns (bool result);
 
+    /// @notice Retrieves the default sablier fee required to claim an airstream.
+    /// @dev A minimum of this fee must be paid in ETH during `claim`.
+    function defaultSablierFee() external view returns (uint256);
+
+    /// @notice Retrieves the custom sablier fee struct for a specified campaign creator.
+    /// @dev It return two fields:
+    ///   - `enabled` indicates if the custom fee is enabled. If it is not enabled, the default fee will be used for
+    /// campaigns.
+    ///   - `fee` is the custom fee set by the admin.
+    /// @param campaignCreator The user for whom the details are being queried.
+    function sablierFeeByUser(address campaignCreator) external view returns (MerkleFactory.SablierFee memory);
+
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Creates a new MerkleInstant campaign for instant distribution of assets.
+    ///
     /// @dev Emits a {CreateMerkleInstant} event.
+    ///
+    /// Notes:
+    /// - The MerkleInstant contract is created with CREATE2.
+    /// - The immutable sablier fee will be set to the default value unless a custom fee is set.
+    ///
     /// @param baseParams Struct encapsulating the {SablierMerkleBase} parameters, which are documented in
     /// {DataTypes}.
     /// @param aggregateAmount The total amount of ERC-20 assets to be distributed to all recipients.
@@ -88,7 +122,13 @@ interface ISablierMerkleFactory {
         returns (ISablierMerkleInstant merkleInstant);
 
     /// @notice Creates a new Merkle Lockup campaign with a LockupLinear distribution.
+    ///
     /// @dev Emits a {CreateMerkleLL} event.
+    ///
+    /// Notes:
+    /// - The MerkleLL contract is created with CREATE2.
+    /// - The immutable sablier fee will be set to the default value unless a custom fee is set.
+    ///
     /// @param baseParams Struct encapsulating the {SablierMerkleBase} parameters, which are documented in
     /// {DataTypes}.
     /// @param lockupLinear The address of the {SablierLockupLinear} contract.
@@ -111,7 +151,12 @@ interface ISablierMerkleFactory {
         returns (ISablierMerkleLL merkleLL);
 
     /// @notice Creates a new Merkle Lockup campaign with a LockupTranched distribution.
+    ///
     /// @dev Emits a {CreateMerkleLT} event.
+    ///
+    /// Notes:
+    /// - The MerkleLT contract is created with CREATE2.
+    /// - The immutable sablier fee will be set to the default value unless a custom fee is set.
     ///
     /// @param baseParams Struct encapsulating the {SablierMerkleBase} parameters, which are documented in
     /// {DataTypes}.
@@ -135,4 +180,54 @@ interface ISablierMerkleFactory {
     )
         external
         returns (ISablierMerkleLT merkleLT);
+
+    /// @notice Resets the Sablier fee to default.
+    /// @dev Emits a {ResetSablierFee} event.
+    ///
+    /// Notes:
+    /// - The default fee will only be applied to the future campaigns.
+    ///
+    /// Requiurements:
+    /// - The caller must be the admin.
+    ///
+    /// @param campaignCreator The user for whom the fee is being reset for.
+    function resetSablierFeeByUser(address campaignCreator) external;
+
+    /// @notice Sets the custom Sablier fee for a campaign creator.
+    /// @dev Emits a {SetSablierFee} event.
+    ///
+    /// Notes:
+    /// - The new fee will only be applied to the future campaigns.
+    ///
+    /// Requiurements:
+    /// - The caller must be the admin.
+    ///
+    /// @param campaignCreator The user for whom the fee is being set.
+    /// @param fee The new fee to be set.
+    function setSablierFeeByUser(address campaignCreator, uint256 fee) external;
+
+    /// @notice Sets the default Sablier fee for claiming an airstream.
+    /// @dev Emits a {SetDefaultSablierFee} event.
+    ///
+    /// Notes:
+    /// - The new default fee will only be applied to the future campaigns.
+    ///
+    /// Requiurements:
+    /// - The caller must be the admin.
+    ///
+    /// @param defaultFee The new detault fee to be set.
+    function setDefaultSablierFee(uint256 defaultFee) external;
+
+    /// @notice Withdraws the Sablier fees accrued on `merkleLockup` to the provided address.
+    /// @dev Emits a {WithdrawSablierFees} event.
+    ///
+    /// Notes:
+    /// - This function transfers ETH to the provided address. If the receiver is a contract, it must be able to receive
+    /// ETH.
+    ///
+    /// Requirements:
+    /// - The caller must be the admin.
+    ///
+    /// @param to The address to receive the Sablier fees.
+    function withdrawFees(address payable to, ISablierMerkleBase merkleLockup) external;
 }

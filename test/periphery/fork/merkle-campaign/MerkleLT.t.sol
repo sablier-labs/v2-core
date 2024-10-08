@@ -4,6 +4,7 @@ pragma solidity >=0.8.22 <0.9.0;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { Arrays } from "@openzeppelin/contracts/utils/Arrays.sol";
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
+import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol";
 import { MerkleBase } from "src/periphery/types/DataTypes.sol";
 import { MerkleBuilder } from "./../../../utils/MerkleBuilder.sol";
@@ -22,7 +23,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
     }
 
     struct Params {
-        address admin;
+        address campaignOwner;
         uint40 expiration;
         LeafData[] leafData;
         uint256 posBeforeSort;
@@ -52,9 +53,9 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
     uint256[] public leaves;
 
     function testForkFuzz_MerkleLT(Params memory params) external {
-        vm.assume(params.admin != address(0) && params.admin != users.admin);
+        vm.assume(params.campaignOwner != address(0) && params.campaignOwner != users.campaignOwner);
         vm.assume(params.leafData.length > 0);
-        assumeNoBlacklisted({ token: address(FORK_ASSET), addr: params.admin });
+        assumeNoBlacklisted({ token: address(FORK_ASSET), addr: params.campaignOwner });
         params.posBeforeSort = _bound(params.posBeforeSort, 0, params.leafData.length - 1);
 
         // The expiration must be either zero or greater than the block timestamp.
@@ -97,14 +98,17 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             vars.merkleRoot = getRoot(leaves.toBytes32());
         }
 
-        // Make the caller the admin.
-        resetPrank({ msgSender: params.admin });
+        // Make the campaign owner as the caller.
+        resetPrank({ msgSender: params.campaignOwner });
 
-        vars.expectedLT =
-            computeMerkleLTAddress(params.admin, params.admin, FORK_ASSET, vars.merkleRoot, params.expiration);
+        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
+
+        vars.expectedLT = computeMerkleLTAddress(
+            params.campaignOwner, params.campaignOwner, FORK_ASSET, vars.merkleRoot, params.expiration, sablierFee
+        );
 
         vars.baseParams = defaults.baseParams({
-            admin: params.admin,
+            campaignOwner: params.campaignOwner,
             asset_: FORK_ASSET,
             merkleRoot: vars.merkleRoot,
             expiration: params.expiration
@@ -145,6 +149,10 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
                                           CLAIM
         //////////////////////////////////////////////////////////////////////////*/
 
+        // Make the recipient as the caller.
+        resetPrank({ msgSender: vars.recipients[params.posBeforeSort] });
+        vm.deal(vars.recipients[params.posBeforeSort], 1 ether);
+
         assertFalse(vars.merkleLT.hasClaimed(vars.indexes[params.posBeforeSort]));
 
         vars.leafToClaim = MerkleBuilder.computeLeaf(
@@ -171,7 +179,22 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             vars.merkleProof = getProof(leaves.toBytes32(), vars.leafPos);
         }
 
-        vars.merkleLT.claim({
+        // Expect call to `claim` with `sablierFee` as msg.value on the merkleLL contract.
+        vm.expectCall(
+            address(vars.merkleLT),
+            sablierFee,
+            abi.encodeCall(
+                ISablierMerkleBase.claim,
+                (
+                    vars.indexes[params.posBeforeSort],
+                    vars.recipients[params.posBeforeSort],
+                    vars.amounts[params.posBeforeSort],
+                    vars.merkleProof
+                )
+            )
+        );
+
+        vars.merkleLT.claim{ value: sablierFee }({
             index: vars.indexes[params.posBeforeSort],
             recipient: vars.recipients[params.posBeforeSort],
             amount: vars.amounts[params.posBeforeSort],
@@ -188,7 +211,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             isStream: true,
             isTransferable: defaults.TRANSFERABLE(),
             recipient: vars.recipients[params.posBeforeSort],
-            sender: params.admin,
+            sender: params.campaignOwner,
             startTime: getBlockTimestamp(),
             tranches: defaults.tranchesMerkleLT({
                 streamStartTime: defaults.STREAM_START_TIME_ZERO(),
@@ -204,15 +227,37 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
                                         CLAWBACK
         //////////////////////////////////////////////////////////////////////////*/
 
+        // Make the campaign owner as the caller.
+        resetPrank({ msgSender: params.campaignOwner });
+
         if (params.expiration > 0) {
             vars.clawbackAmount = uint128(FORK_ASSET.balanceOf(address(vars.merkleLT)));
             vm.warp({ newTimestamp: uint256(params.expiration) + 1 seconds });
 
-            resetPrank({ msgSender: params.admin });
-            expectCallToTransfer({ asset: FORK_ASSET, to: params.admin, value: vars.clawbackAmount });
+            resetPrank({ msgSender: params.campaignOwner });
+            expectCallToTransfer({ asset: FORK_ASSET, to: params.campaignOwner, value: vars.clawbackAmount });
             vm.expectEmit({ emitter: address(vars.merkleLT) });
-            emit Clawback({ to: params.admin, admin: params.admin, amount: vars.clawbackAmount });
-            vars.merkleLT.clawback({ to: params.admin, amount: vars.clawbackAmount });
+            emit Clawback({ to: params.campaignOwner, admin: params.campaignOwner, amount: vars.clawbackAmount });
+            vars.merkleLT.clawback({ to: params.campaignOwner, amount: vars.clawbackAmount });
         }
+
+        /*//////////////////////////////////////////////////////////////////////////
+                                        WITHDRAW-FEE
+        //////////////////////////////////////////////////////////////////////////*/
+
+        // Make the factory admin as the caller.
+        resetPrank({ msgSender: users.admin });
+
+        vm.expectEmit({ emitter: address(merkleFactory) });
+        emit WithdrawSablierFees({
+            admin: users.admin,
+            merkleLockup: vars.merkleLT,
+            to: users.admin,
+            sablierFees: sablierFee
+        });
+        merkleFactory.withdrawFees({ to: payable(users.admin), merkleLockup: vars.merkleLT });
+
+        assertEq(address(vars.merkleLT).balance, 0, "merkle lockup ether balance");
+        assertEq(users.admin.balance, sablierFee, "admin ether balance");
     }
 }

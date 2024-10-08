@@ -33,6 +33,6 @@ contract DeployProtocol is BaseScript {
 
         // Deploy Periphery.
         batchLockup = new SablierBatchLockup();
-        merkleFactory = new SablierMerkleFactory();
+        merkleFactory = new SablierMerkleFactory(initialAdmin);
     }
 }
