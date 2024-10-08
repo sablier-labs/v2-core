@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Integration_Test } from "./../../../Integration.t.sol";
-import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
-
 import { WithdrawMaxAndTransfer_Integration_Shared_Test } from "./../../../shared/lockup/withdrawMaxAndTransfer.t.sol";
 
 abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
@@ -84,13 +83,13 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.eve });
     }
 
-    function test_WhenCallerApprovedOperator()
+    function test_WhenCallerApprovedThirdParty()
         external
         whenNoDelegateCall
         givenNotNull
+        givenTransferableStream
         givenNotBurnedNFT
         givenNonZeroWithdrawableAmount
-        givenTransferableStream
     {
         // Approve the operator to handle the stream.
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });

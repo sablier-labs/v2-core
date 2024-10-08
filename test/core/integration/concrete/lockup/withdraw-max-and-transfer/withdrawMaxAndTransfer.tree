@@ -17,7 +17,7 @@ WithdrawMaxAndTransfer_Integration_Concrete_Test
             └── given non zero withdrawable amount
                ├── when caller not current recipient
                │  └── it should revert
-               ├── when caller is an approved third party
+               ├── when caller approved third party
                │  ├── it should update the withdrawn amount
                │  └── it should transfer the NFT
                └── when caller current recipient
