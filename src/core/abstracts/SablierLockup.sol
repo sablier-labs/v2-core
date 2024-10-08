@@ -266,10 +266,13 @@ abstract contract SablierLockup is
             revert Errors.SablierLockup_StreamNotDepleted(streamId);
         }
 
+        // Retrieve the current owner.
+        address currentRecipient = _ownerOf(streamId);
+
         // Check:
         // 1. NFT exists (see {IERC721.getApproved}).
         // 2. `msg.sender` is either the owner of the NFT or an approved third party.
-        if (!_isCallerStreamRecipientOrApproved(streamId)) {
+        if (!_isCallerStreamRecipientOrApproved(streamId, currentRecipient)) {
             revert Errors.SablierLockup_Unauthorized(streamId, msg.sender);
         }
 
@@ -468,13 +471,6 @@ abstract contract SablierLockup is
     /// @notice Calculates the streamed amount of the stream without looking up the stream's status.
     /// @dev This function is implemented by child contracts, so the logic varies depending on the model.
     function _calculateStreamedAmount(uint256 streamId) internal view virtual returns (uint128);
-
-    /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party.
-    /// @param streamId The stream ID for the query.
-    function _isCallerStreamRecipientOrApproved(uint256 streamId) internal view returns (bool) {
-        address recipient = _ownerOf(streamId);
-        return _isCallerStreamRecipientOrApproved(streamId, recipient);
-    }
 
     /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party, when the
     /// `recipient` is known in advance.
