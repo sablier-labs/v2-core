@@ -364,7 +364,7 @@ abstract contract SablierLockup is
         // Retrieve the recipient from storage.
         address recipient = _ownerOf(streamId);
 
-        // Check: if `msg.sender` is neither the stream's recipient nor an approved third party, the withdrawal address
+        // Check: `msg.sender` is neither the stream's recipient nor an approved third party, the withdrawal address
         // must be the recipient.
         if (to != recipient && !_isCallerStreamRecipientOrApproved(streamId, recipient)) {
             revert Errors.SablierLockup_WithdrawalAddressNotRecipient(streamId, msg.sender, to);
@@ -420,10 +420,10 @@ abstract contract SablierLockup is
         notNull(streamId)
         returns (uint128 withdrawnAmount)
     {
-        // Check: NFT exists and retrieve the current owner.
+        // Retrieve the current owner. This also checks that the NFT was not burned.
         address currentRecipient = _ownerOf(streamId);
 
-        // Check: `msg.sender` is either the owner of the NFT or an approved third party.
+        // Check: `msg.sender` is neither the stream's recipient nor an approved third party.
         if (!_isCallerStreamRecipientOrApproved(streamId, currentRecipient)) {
             revert Errors.SablierLockup_Unauthorized(streamId, msg.sender);
         }
