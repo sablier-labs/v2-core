@@ -141,7 +141,7 @@ else
     echo -e "${WC}Missing '.env.deployment'. Provide details below: ${NC}\n"
 
     # initialize chains
-    initialize_interactive    
+    initialize_interactive
 fi
 
 # Check for arguments passed to the script
@@ -201,7 +201,7 @@ for ((i=1; i<=$#; i++)); do
 
     # Check if '--script' flag is provided in the arguments
     if [[ ${arg} == "--script" || ${arg} == "-s" ]]; then
-        files=(script/*.s.sol)
+        files=(script/**/*.s.sol)
 
         # Present the list of available scripts
         echo "Please select a script:"
@@ -288,7 +288,7 @@ for chain in "${provided_chains[@]}"; do
     if [[ ${DETERMINISTIC_DEPLOYMENT} == true ]]; then
         echo -e "${SC}+${NC} Deterministic address"
         if [[ ${sol_script} == "" ]]; then
-            deployment_command+=("script" "script/DeployDeterministicCore.s.sol")
+            deployment_command+=("script" "script/DeployDeterministicProtocol.s.sol")
         else
             deployment_command+=("script" "${sol_script}")
         fi
@@ -307,7 +307,7 @@ for chain in "${provided_chains[@]}"; do
     else
         # Construct the command
         if [[ ${sol_script} == "" ]]; then
-            deployment_command+=("script" "script/DeployCore.s.sol")
+            deployment_command+=("script" "script/DeployProtocol.s.sol")
         else
             deployment_command+=("script" "${sol_script}")
         fi
@@ -356,17 +356,23 @@ for chain in "${provided_chains[@]}"; do
         touch "${chain_file}"
 
         # Extract and save contract addresses
+        batchLockup_address=$(echo "${output}" | awk '/batchLockup: contract/{print $NF}')
         lockupDynamic_address=$(echo "${output}" | awk '/lockupDynamic: contract/{print $NF}')
         lockupLinear_address=$(echo "${output}" | awk '/lockupLinear: contract/{print $NF}')
         lockupTranched_address=$(echo "${output}" | awk '/lockupTranched: contract/{print $NF}')
+        merkleFactory_address=$(echo "${output}" | awk '/merkleFactory: contract/{print $NF}')
         nftDescriptor_address=$(echo "${output}" | awk '/nftDescriptor: contract/{print $NF}')
 
         # Save to the chain file
         {
-            echo "SablierV2LockupDynamic = ${lockupDynamic_address}"
-            echo "SablierV2LockupLinear = ${lockupLinear_address}"
-            echo "SablierV2LockupTranched = ${lockupTranched_address}"
-            echo "SablierV2NFTDescriptor = ${nftDescriptor_address}"
+            echo "Core Contracts"
+            echo "LockupNFTDescriptor = ${nftDescriptor_address}"
+            echo "SablierLockupDynamic = ${lockupDynamic_address}"
+            echo "SablierLockupLinear = ${lockupLinear_address}"
+            echo "SablierLockupTranched = ${lockupTranched_address}"
+            echo "Periphery Contracts"
+            echo "SablierBatchLockup = ${batchLockup_address}"
+            echo "SablierMerkleFactory = ${merkleFactory_address}"
         } >> "$chain_file"
 
         echo -e "${SC}${TICK} Deployed on ${chain}. You can find the addresses in ${chain_file}${NC}"

@@ -5,7 +5,7 @@ import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { PRBMathUtils } from "@prb/math/test/utils/Utils.sol";
 import { CommonBase } from "forge-std/src/Base.sol";
 
-import { LockupDynamic, LockupTranched } from "../../src/types/DataTypes.sol";
+import { LockupDynamic, LockupTranched } from "../../src/core/types/DataTypes.sol";
 
 abstract contract Utils is CommonBase, PRBMathUtils {
     /// @dev Bounds a `uint128` number.
@@ -80,13 +80,10 @@ abstract contract Utils is CommonBase, PRBMathUtils {
     }
 
     /// @dev Returns the largest of the provided `uint40` numbers.
-    function maxOfThree(uint40 a, uint40 b, uint40 c) internal pure returns (uint40) {
+    function maxOfTwo(uint40 a, uint40 b) internal pure returns (uint40) {
         uint40 max = a;
         if (b > max) {
             max = b;
-        }
-        if (c > max) {
-            max = c;
         }
         return max;
     }

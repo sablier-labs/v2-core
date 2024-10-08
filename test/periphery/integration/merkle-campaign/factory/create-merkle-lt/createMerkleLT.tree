@@ -1,0 +1,9 @@
+CreateMerkleLT_Integration_Test
+├── when name too long
+│  └── it should revert
+└── when name not too long
+   ├── given campaign already exists
+   │  └── it should revert
+   └── given campaign not exists
+      ├── it should create the campaign
+      └── it should emit a {CreateMerkleLT} event

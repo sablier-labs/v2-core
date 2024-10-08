@@ -2,8 +2,8 @@
 pragma solidity >=0.8.22;
 
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
-import { ISablierV2Lockup } from "../src/interfaces/ISablierV2Lockup.sol";
 
+import { ISablierLockup } from "../src/core/interfaces/ISablierLockup.sol";
 import { Base_Test } from "../test/Base.t.sol";
 
 /// @notice Benchmark contract with common logic needed by all tests.
@@ -14,7 +14,6 @@ abstract contract Benchmark_Test is Base_Test {
 
     uint128 internal immutable AMOUNT_PER_SEGMENT = 100e18;
     uint128 internal immutable AMOUNT_PER_TRANCHE = 100e18;
-    uint256[7] internal streamIds = [50, 51, 52, 53, 54, 55, 56];
 
     /// @dev The directory where the benchmark files are stored.
     string internal benchmarkResults = "benchmark/results/";
@@ -25,14 +24,16 @@ abstract contract Benchmark_Test is Base_Test {
     /// @dev A variable used to store the content to append to the results file.
     string internal contentToAppend;
 
-    ISablierV2Lockup internal lockup;
+    ISablierLockup internal lockup;
+
+    uint256[7] internal streamIds = [50, 51, 52, 53, 54, 55, 56];
 
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
 
     function setUp() public virtual override {
-        super.setUp();
+        Base_Test.setUp();
 
         deal({ token: address(dai), to: users.sender, give: type(uint256).max });
         resetPrank({ msgSender: users.sender });
