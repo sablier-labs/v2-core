@@ -103,16 +103,30 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         // Get the withdraw amount.
         uint128 expectedWithdrawnAmount = lockup.withdrawableAmountOf(defaultStreamId);
 
+        // Expect the assets to be transferred to the Recipient.
+        expectCallToTransfer({ to: users.recipient, value: expectedWithdrawnAmount });
+
+        // It should emit {Transfer} and {WithdrawFromLockupStream} events.
+        vm.expectEmit({ emitter: address(lockup) });
+        emit WithdrawFromLockupStream({
+            streamId: defaultStreamId,
+            to: users.recipient,
+            amount: expectedWithdrawnAmount,
+            asset: dai
+        });
+        vm.expectEmit({ emitter: address(lockup) });
+        emit Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
+
         // Make the max withdrawal and transfer the NFT.
         uint128 actualWithdrawnAmount =
-            lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.operator });
+            lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
 
         // Assert that the withdrawn amount has been updated.
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
 
         // Assert that the operator is the new stream recipient (and NFT owner).
         address actualRecipient = lockup.getRecipient(defaultStreamId);
-        address expectedRecipient = users.operator;
+        address expectedRecipient = users.alice;
         assertEq(actualRecipient, expectedRecipient, "recipient");
     }
 
