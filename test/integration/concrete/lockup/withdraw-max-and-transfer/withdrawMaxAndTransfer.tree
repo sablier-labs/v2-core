@@ -16,6 +16,10 @@ withdrawMaxAndTransfer.t.sol
             └── given the withdrawable amount is not zero
                ├── when the caller is not the current recipient
                │  └── it should revert
+               ├── when the caller is an approved third party
+               │  ├── it should make the max withdrawal
+               │  ├── it should update the withdrawn amount
+               │  └── it should transfer the NFT
                └── when the caller is the current recipient
                   ├── it should make the max withdrawal
                   ├── it should update the withdrawn amount
