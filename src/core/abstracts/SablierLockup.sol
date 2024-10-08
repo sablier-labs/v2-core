@@ -366,7 +366,7 @@ abstract contract SablierLockup is
 
         // Check: if `msg.sender` is neither the stream's recipient nor an approved third party, the withdrawal address
         // must be the recipient.
-        if (to != recipient && !_isCallerStreamRecipientOrApproved(streamId)) {
+        if (to != recipient && !_isCallerStreamRecipientOrApproved(streamId, recipient)) {
             revert Errors.SablierLockup_WithdrawalAddressNotRecipient(streamId, msg.sender, to);
         }
 
@@ -420,9 +420,11 @@ abstract contract SablierLockup is
         notNull(streamId)
         returns (uint128 withdrawnAmount)
     {
-        // Check: the caller is the current recipient. This also checks that the NFT was not burned.
+        // Check: NFT exists and retrieve the current owner.
         address currentRecipient = _ownerOf(streamId);
-        if (msg.sender != currentRecipient) {
+
+        // Check: `msg.sender` is either the owner of the NFT or an approved third party.
+        if (!_isCallerStreamRecipientOrApproved(streamId, currentRecipient)) {
             revert Errors.SablierLockup_Unauthorized(streamId, msg.sender);
         }
 
@@ -471,6 +473,14 @@ abstract contract SablierLockup is
     /// @param streamId The stream ID for the query.
     function _isCallerStreamRecipientOrApproved(uint256 streamId) internal view returns (bool) {
         address recipient = _ownerOf(streamId);
+        return _isCallerStreamRecipientOrApproved(streamId, recipient);
+    }
+
+    /// @notice Checks whether `msg.sender` is the stream's recipient or an approved third party, when the
+    /// `recipient` is known in advance.
+    /// @param streamId The stream ID for the query.
+    /// @param recipient The address of the stream's recipient.
+    function _isCallerStreamRecipientOrApproved(uint256 streamId, address recipient) internal view returns (bool) {
         return msg.sender == recipient || isApprovedForAll({ owner: recipient, operator: msg.sender })
             || getApproved(streamId) == msg.sender;
     }
