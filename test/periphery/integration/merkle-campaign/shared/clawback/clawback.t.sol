@@ -2,6 +2,7 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { Errors as CoreErrors } from "src/core/libraries/Errors.sol";
+import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 
 import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
@@ -60,7 +61,7 @@ abstract contract Clawback_Integration_Test is MerkleCampaign_Integration_Shared
         expectCallToTransfer({ to: to, value: clawbackAmount });
         // It should emit a {Clawback} event.
         vm.expectEmit({ emitter: address(merkleBase) });
-        emit Clawback({ admin: users.campaignOwner, to: to, amount: clawbackAmount });
+        emit ISablierMerkleBase.Clawback({ admin: users.campaignOwner, to: to, amount: clawbackAmount });
         merkleBase.clawback({ to: to, amount: clawbackAmount });
     }
 }

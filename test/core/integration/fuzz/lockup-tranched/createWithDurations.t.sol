@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 
 import { LockupTranched_Integration_Shared_Test } from "./LockupTranched.t.sol";
@@ -65,7 +66,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is LockupTranc
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockupTranched) });
-        emit CreateLockupTranchedStream({
+        emit ISablierLockupTranched.CreateLockupTranchedStream({
             streamId: streamId,
             funder: vars.funder,
             sender: users.sender,

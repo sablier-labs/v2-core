@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 
 import { ISablierLockupDynamic } from "src/core/interfaces/ISablierLockupDynamic.sol";
@@ -136,9 +137,9 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is LockupDy
 
         // It should emit {CreateLockupDynamicStream} and {MetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockupDynamic) });
-        emit MetadataUpdate({ _tokenId: streamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: streamId });
         vm.expectEmit({ emitter: address(lockupDynamic) });
-        emit CreateLockupDynamicStream({
+        emit ISablierLockupDynamic.CreateLockupDynamicStream({
             streamId: streamId,
             funder: funder,
             sender: users.sender,

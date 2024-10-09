@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleInstant } from "src/periphery/interfaces/ISablierMerkleInstant.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 import { MerkleBase } from "src/periphery/types/DataTypes.sol";
@@ -76,7 +77,7 @@ contract CreateMerkleInstant_Integration_Test is MerkleCampaign_Integration_Test
 
         // It should emit a {CreateMerkleInstant} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit CreateMerkleInstant({
+        emit ISablierMerkleFactory.CreateMerkleInstant({
             merkleInstant: ISablierMerkleInstant(expectedMerkleInstant),
             baseParams: baseParams,
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),

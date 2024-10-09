@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
+
 import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
@@ -132,9 +134,9 @@ contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is LockupT
 
         // It should emit {MetadataUpdate} and {CreateLockupTranchedStream} events.
         vm.expectEmit({ emitter: address(lockupTranched) });
-        emit MetadataUpdate({ _tokenId: streamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: streamId });
         vm.expectEmit({ emitter: address(lockupTranched) });
-        emit CreateLockupTranchedStream({
+        emit ISablierLockupTranched.CreateLockupTranchedStream({
             streamId: streamId,
             funder: funder,
             sender: users.sender,

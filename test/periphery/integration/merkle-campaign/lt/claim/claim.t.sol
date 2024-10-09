@@ -4,6 +4,7 @@ pragma solidity >=0.8.22 <0.9.0;
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
+import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 import { MerkleLT } from "src/periphery/types/DataTypes.sol";
 
@@ -131,7 +132,7 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
 
         // It should emit a {Claim} event.
         vm.expectEmit({ emitter: address(merkleLT) });
-        emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
+        emit ISablierMerkleLT.Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), expectedStreamId);
 
         expectCallToTransferFrom({ from: address(merkleLT), to: address(lockupTranched), value: defaults.CLAIM_AMOUNT() });
         expectCallToClaimWithMsgValue(address(merkleLT), sablierFee);

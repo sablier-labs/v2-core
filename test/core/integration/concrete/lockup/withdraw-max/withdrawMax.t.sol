@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
 
 import { Integration_Test } from "../../../Integration.t.sol";
@@ -15,7 +16,7 @@ abstract contract WithdrawMax_Integration_Concrete_Test is Integration_Test {
 
         // It should emit a {WithdrawFromLockupStream} event.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
             amount: defaults.DEPOSIT_AMOUNT(),
@@ -61,7 +62,7 @@ abstract contract WithdrawMax_Integration_Concrete_Test is Integration_Test {
 
         // It should emit a {WithdrawFromLockupStream} event.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
             amount: expectedWithdrawnAmount,

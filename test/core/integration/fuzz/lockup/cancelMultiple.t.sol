@@ -3,6 +3,7 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Solarray } from "solarray/src/Solarray.sol";
 
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
 
 import { Integration_Test } from "../../Integration.t.sol";
@@ -44,7 +45,7 @@ abstract contract CancelMultiple_Integration_Fuzz_Test is Integration_Test, Canc
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit CancelLockupStream({
+        emit ISablierLockup.CancelLockupStream({
             streamId: streamIds[0],
             sender: users.sender,
             recipient: users.recipient,
@@ -53,7 +54,7 @@ abstract contract CancelMultiple_Integration_Fuzz_Test is Integration_Test, Canc
             recipientAmount: defaults.DEPOSIT_AMOUNT() - senderAmount0
         });
         vm.expectEmit({ emitter: address(lockup) });
-        emit CancelLockupStream({
+        emit ISablierLockup.CancelLockupStream({
             streamId: streamIds[1],
             sender: users.sender,
             recipient: users.recipient,

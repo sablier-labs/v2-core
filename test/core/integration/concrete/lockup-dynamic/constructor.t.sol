@@ -2,6 +2,8 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
+
+import { IAdminable } from "src/core/interfaces/IAdminable.sol";
 import { SablierLockupDynamic } from "src/core/SablierLockupDynamic.sol";
 
 import { LockupDynamic_Integration_Shared_Test } from "./LockupDynamic.t.sol";
@@ -10,7 +12,7 @@ contract Constructor_LockupDynamic_Integration_Concrete_Test is LockupDynamic_In
     function test_Constructor() external {
         // Expect the relevant event to be emitted.
         vm.expectEmit();
-        emit TransferAdmin({ oldAdmin: address(0), newAdmin: users.admin });
+        emit IAdminable.TransferAdmin({ oldAdmin: address(0), newAdmin: users.admin });
 
         // Construct the contract.
         SablierLockupDynamic constructedLockupDynamic = new SablierLockupDynamic({

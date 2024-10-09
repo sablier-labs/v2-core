@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierLockupLinear } from "src/core/interfaces/ISablierLockupLinear.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
 
@@ -66,7 +67,7 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is LockupLinear_
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockupLinear) });
-        emit CreateLockupLinearStream({
+        emit ISablierLockupLinear.CreateLockupLinearStream({
             streamId: streamId,
             funder: funder,
             sender: users.sender,

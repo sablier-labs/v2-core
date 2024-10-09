@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleLT } from "src/periphery/interfaces/ISablierMerkleLT.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 import { MerkleBase, MerkleLT } from "src/periphery/types/DataTypes.sol";
@@ -136,7 +137,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         });
 
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit CreateMerkleLT({
+        emit ISablierMerkleFactory.CreateMerkleLT({
             merkleLT: ISablierMerkleLT(expectedLT),
             baseParams: baseParams,
             lockupTranched: lockupTranched,

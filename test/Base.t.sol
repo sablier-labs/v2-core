@@ -26,13 +26,12 @@ import { Calculations } from "./utils/Calculations.sol";
 import { Constants } from "./utils/Constants.sol";
 import { Defaults } from "./utils/Defaults.sol";
 import { DeployOptimized } from "./utils/DeployOptimized.sol";
-import { Events } from "./utils/Events.sol";
 import { Fuzzers } from "./utils/Fuzzers.sol";
 import { Modifiers } from "./utils/Modifiers.t.sol";
 import { Users } from "./utils/Types.sol";
 
 /// @notice Base test contract with common logic needed by all tests.
-abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimized, Events, Fuzzers, Modifiers {
+abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimized, Fuzzers, Modifiers {
     /*//////////////////////////////////////////////////////////////////////////
                                      VARIABLES
     //////////////////////////////////////////////////////////////////////////*/

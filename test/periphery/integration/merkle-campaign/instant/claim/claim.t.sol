@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierMerkleInstant } from "src/periphery/interfaces/ISablierMerkleInstant.sol";
+
 import { Claim_Integration_Test } from "./../../shared/claim/claim.t.sol";
 import { MerkleInstant_Integration_Shared_Test } from "./../MerkleInstant.t.sol";
 
@@ -22,7 +24,7 @@ contract Claim_MerkleInstant_Integration_Test is Claim_Integration_Test, MerkleI
         uint256 previousFeeAccrued = address(merkleInstant).balance;
 
         vm.expectEmit({ emitter: address(merkleInstant) });
-        emit Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT());
+        emit ISablierMerkleInstant.Claim(defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT());
 
         expectCallToTransfer({ to: users.recipient1, value: defaults.CLAIM_AMOUNT() });
         expectCallToClaimWithMsgValue(address(merkleInstant), defaults.DEFAULT_SABLIER_FEE());

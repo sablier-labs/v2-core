@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 import { Errors } from "src/core/libraries/Errors.sol";
 
 import { Integration_Test } from "../../../Integration.t.sol";
@@ -18,9 +21,9 @@ abstract contract TransferFrom_Integration_Concrete_Test is Integration_Test {
 
         // It should emit {MetadataUpdate} and {Transfer} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit MetadataUpdate({ _tokenId: streamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: streamId });
         vm.expectEmit({ emitter: address(lockup) });
-        emit Transfer({ from: users.recipient, to: users.alice, tokenId: streamId });
+        emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: streamId });
 
         resetPrank({ msgSender: users.recipient });
 
