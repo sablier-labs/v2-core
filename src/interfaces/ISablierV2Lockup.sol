@@ -268,6 +268,22 @@ interface ISablierV2Lockup is
     /// @param streamId The ID of the stream to renounce.
     function renounce(uint256 streamId) external;
 
+    /// @notice Removes the right of the stream's sender to cancel multiple streams.
+    /// 
+    /// @dev Emits a {MultipleStreamsRenounced} event for all streams.
+    /// 
+    /// Notes:
+    /// - This operation is irreversible for each stream.
+    /// 
+    /// Requirements:
+    /// - Must not be delegate called.
+    /// - Each `streamId` must reference a warm stream.
+    /// - `msg.sender` must be the sender of each stream.
+    /// - All streams must be cancelable.
+    /// 
+    /// @param streamIds An array of stream IDs to renounce.
+    function renounceMultiple(uint256[] calldata streamIds) external;
+
     /// @notice Sets a new NFT descriptor contract, which produces the URI describing the Sablier stream NFTs.
     ///
     /// @dev Emits a {SetNFTDescriptor} and {BatchMetadataUpdate} event.
