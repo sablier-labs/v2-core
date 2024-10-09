@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
 
 import { Integration_Test } from "../../Integration.t.sol";
@@ -17,7 +18,7 @@ abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test {
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
             asset: dai,
@@ -61,7 +62,7 @@ abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test {
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
             asset: dai,

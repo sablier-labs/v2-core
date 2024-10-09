@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 
@@ -59,7 +62,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
 
         // It should emit {Transfer} event on NFT.
         vm.expectEmit({ emitter: address(lockup) });
-        emit Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
+        emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
     }
@@ -105,14 +108,14 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
 
         // It should emit {Transfer} and {WithdrawFromLockupStream} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
             amount: expectedWithdrawnAmount,
             asset: dai
         });
         vm.expectEmit({ emitter: address(lockup) });
-        emit Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
+        emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
         // Make the max withdrawal and transfer the NFT.
         uint128 actualWithdrawnAmount =
@@ -147,16 +150,16 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
 
         // It should emit {Transfer}, {WithdrawFromLockupStream} and {MetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
             amount: expectedWithdrawnAmount,
             asset: dai
         });
         vm.expectEmit({ emitter: address(lockup) });
-        emit MetadataUpdate({ _tokenId: defaultStreamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: defaultStreamId });
         vm.expectEmit({ emitter: address(lockup) });
-        emit Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
+        emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
         // Make the max withdrawal and transfer the NFT.
         uint128 actualWithdrawnAmount =

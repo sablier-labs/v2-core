@@ -4,6 +4,7 @@ pragma solidity >=0.8.22 <0.9.0;
 import { MAX_UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 import { stdError } from "forge-std/src/StdError.sol";
 
+import { ISablierLockupDynamic } from "src/core/interfaces/ISablierLockupDynamic.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Broker, Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
@@ -225,7 +226,7 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is LockupDynam
             start: params.startTime,
             end: params.segments[params.segments.length - 1].timestamp
         });
-        emit CreateLockupDynamicStream({
+        emit ISablierLockupDynamic.CreateLockupDynamicStream({
             streamId: streamId,
             funder: funder,
             sender: params.sender,

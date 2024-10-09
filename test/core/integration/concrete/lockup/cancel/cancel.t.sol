@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
+
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { ISablierLockupRecipient } from "src/core/interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
@@ -278,9 +280,11 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
 
         // It should emit {MetadataUpdate} and {CancelLockupStream} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit CancelLockupStream(streamId, users.sender, address(recipientGood), dai, senderAmount, recipientAmount);
+        emit ISablierLockup.CancelLockupStream(
+            streamId, users.sender, address(recipientGood), dai, senderAmount, recipientAmount
+        );
         vm.expectEmit({ emitter: address(lockup) });
-        emit MetadataUpdate({ _tokenId: streamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: streamId });
 
         // Cancel the stream.
         lockup.cancel(streamId);

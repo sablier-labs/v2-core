@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
+
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 
 import { Withdraw_Integration_Fuzz_Test, Integration_Test } from "../lockup/withdraw.t.sol";
@@ -99,9 +102,14 @@ contract Withdraw_LockupTranched_Integration_Fuzz_Test is
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockupTranched) });
-        emit WithdrawFromLockupStream({ streamId: vars.streamId, to: params.to, asset: dai, amount: vars.withdrawAmount });
+        emit ISablierLockup.WithdrawFromLockupStream({
+            streamId: vars.streamId,
+            to: params.to,
+            asset: dai,
+            amount: vars.withdrawAmount
+        });
         vm.expectEmit({ emitter: address(lockupTranched) });
-        emit MetadataUpdate({ _tokenId: vars.streamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: vars.streamId });
 
         // Make the withdrawal.
         lockupTranched.withdraw({ streamId: vars.streamId, to: params.to, amount: vars.withdrawAmount });

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 
 import { Integration_Test } from "../../../Integration.t.sol";
@@ -42,7 +43,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test {
     function test_WhenProvidedAddressReturnsInterfaceId() external whenCallerAdmin whenProvidedAddressContract {
         // It should emit a {AllowToHook} event.
         vm.expectEmit({ emitter: address(lockup) });
-        emit AllowToHook(users.admin, address(recipientGood));
+        emit ISablierLockup.AllowToHook(users.admin, address(recipientGood));
 
         // Allow the provided address to hook.
         lockup.allowToHook(address(recipientGood));
