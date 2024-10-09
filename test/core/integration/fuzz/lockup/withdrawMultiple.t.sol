@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
+
 import { Solarray } from "solarray/src/Solarray.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
+
 import { Integration_Test } from "./../../Integration.t.sol";
 import { WithdrawMultiple_Integration_Shared_Test } from "./../../shared/lockup/withdrawMultiple.t.sol";
 
@@ -55,14 +58,14 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: ongoingStreamId,
             to: users.recipient,
             asset: dai,
             amount: ongoingWithdrawAmount
         });
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: settledStreamId,
             to: users.recipient,
             asset: dai,

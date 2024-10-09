@@ -1,22 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
 import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 
-import { CreateWithDurations_Integration_Shared_Test } from "../../shared/lockup/createWithDurations.t.sol";
-import { LockupTranched_Integration_Fuzz_Test } from "./LockupTranched.t.sol";
+import { LockupTranched_Integration_Shared_Test } from "./LockupTranched.t.sol";
 
-contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
-    LockupTranched_Integration_Fuzz_Test,
-    CreateWithDurations_Integration_Shared_Test
-{
-    function setUp()
-        public
-        virtual
-        override(LockupTranched_Integration_Fuzz_Test, CreateWithDurations_Integration_Shared_Test)
-    {
-        LockupTranched_Integration_Fuzz_Test.setUp();
-        CreateWithDurations_Integration_Shared_Test.setUp();
+contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is LockupTranched_Integration_Shared_Test {
+    function setUp() public virtual override(LockupTranched_Integration_Shared_Test) {
+        LockupTranched_Integration_Shared_Test.setUp();
     }
 
     struct Vars {
@@ -55,6 +47,8 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
         // Mint enough assets to the fuzzed funder.
         deal({ token: address(dai), to: vars.funder, give: vars.totalAmount });
 
+        uint256 streamId = lockupTranched.nextStreamId();
+
         // Expect the assets to be transferred from the funder to {SablierLockupTranched}.
         expectCallToTransferFrom({ from: vars.funder, to: address(lockupTranched), value: vars.createAmounts.deposit });
 
@@ -72,7 +66,7 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockupTranched) });
-        emit CreateLockupTranchedStream({
+        emit ISablierLockupTranched.CreateLockupTranchedStream({
             streamId: streamId,
             funder: vars.funder,
             sender: users.sender,

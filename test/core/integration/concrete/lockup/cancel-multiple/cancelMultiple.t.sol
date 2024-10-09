@@ -36,10 +36,6 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(testStreamIds[0], nullStreamId) });
     }
 
-    modifier givenNoNullStreams() {
-        _;
-    }
-
     function test_RevertGiven_AtleastOneColdStream()
         external
         whenNoDelegateCall
@@ -103,7 +99,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
 
         // It should emit {CancelLockupStream} events for all streams.
         vm.expectEmit({ emitter: address(lockup) });
-        emit CancelLockupStream({
+        emit ISablierLockup.CancelLockupStream({
             streamId: testStreamIds[0],
             sender: users.sender,
             recipient: users.recipient,
@@ -112,7 +108,7 @@ abstract contract CancelMultiple_Integration_Concrete_Test is
             recipientAmount: defaults.DEPOSIT_AMOUNT() - senderAmount0
         });
         vm.expectEmit({ emitter: address(lockup) });
-        emit CancelLockupStream({
+        emit ISablierLockup.CancelLockupStream({
             streamId: testStreamIds[1],
             sender: users.sender,
             recipient: users.recipient,
