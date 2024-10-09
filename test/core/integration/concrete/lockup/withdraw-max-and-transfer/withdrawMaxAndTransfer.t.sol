@@ -91,6 +91,8 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
         givenNotBurnedNFT
         givenNonZeroWithdrawableAmount
     {
+        resetPrank({ msgSender: users.recipient });
+
         // Approve the operator to handle the stream.
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });
 
