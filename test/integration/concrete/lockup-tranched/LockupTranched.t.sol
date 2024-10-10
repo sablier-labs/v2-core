@@ -26,6 +26,7 @@ import { IsTransferable_Integration_Concrete_Test } from "../lockup/is-transfera
 import { IsWarm_Integration_Concrete_Test } from "../lockup/is-warm/isWarm.t.sol";
 import { RefundableAmountOf_Integration_Concrete_Test } from "../lockup/refundable-amount-of/refundableAmountOf.t.sol";
 import { Renounce_Integration_Concrete_Test } from "../lockup/renounce/renounce.t.sol";
+import { RenounceMultiple_Integration_Concrete_Test } from "../lockup/renounce-multiple/renounceMultiple.t.sol";
 import { SetNFTDescriptor_Integration_Concrete_Test } from "../lockup/set-nft-descriptor/setNFTDescriptor.t.sol";
 import { StatusOf_Integration_Concrete_Test } from "../lockup/status-of/statusOf.t.sol";
 import { TransferFrom_Integration_Concrete_Test } from "../lockup/transfer-from/transferFrom.t.sol";
@@ -352,6 +353,20 @@ contract Renounce_LockupTranched_Integration_Concrete_Test is
     {
         LockupTranched_Integration_Concrete_Test.setUp();
         Renounce_Integration_Concrete_Test.setUp();
+    }
+}
+
+contract RenounceMultiple_LockupTranched_Integration_Concrete_Test is
+    LockupTranched_Integration_Concrete_Test,
+    RenounceMultiple_Integration_Concrete_Test
+{
+    function setUp()
+        public
+        virtual
+        override(LockupTranched_Integration_Concrete_Test, RenounceMultiple_Integration_Concrete_Test)
+    {
+        LockupTranched_Integration_Concrete_Test.setUp();
+        RenounceMultiple_Integration_Concrete_Test.setUp();
     }
 }
 
