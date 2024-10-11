@@ -1,10 +1,10 @@
 # Contributing
 
-Feel free to dive in! [Open](https://github.com/sablier-labs/v2-core/issues/new) an issue,
-[start](https://github.com/sablier-labs/v2-core/discussions/new) a discussion or submit a PR. For any informal concerns
+Feel free to dive in! [Open](https://github.com/sablier-labs/lockup/issues/new) an issue,
+[start](https://github.com/sablier-labs/lockup/discussions/new) a discussion or submit a PR. For any informal concerns
 or feedback, please join our [Discord server](https://discord.gg/bSwRCwWRsT).
 
-Contributions to Sablier V2 Core are welcome by anyone interested in writing more tests, improving readability,
+Contributions to Sablier Lockup are welcome by anyone interested in writing more tests, improving readability,
 optimizing for gas efficiency, or extending the protocol via new features.
 
 ## Pre Requisites
@@ -23,7 +23,7 @@ In addition, familiarity with [Solidity](https://soliditylang.org/) is requisite
 Clone this repository including submodules:
 
 ```shell
-$ git clone --recurse-submodules -j8 git@github.com:sablier-labs/v2-core.git
+$ git clone --recurse-submodules -j8 git@github.com:sablier-labs/lockup.git
 ```
 
 Then, inside the project's directory, run this to install the Node.js dependencies and build the contracts:
@@ -31,6 +31,12 @@ Then, inside the project's directory, run this to install the Node.js dependenci
 ```shell
 $ bun install
 $ bun run build
+```
+
+Switch to the `staging` branch, where all development work should be done:
+
+```shell
+$ git switch staging
 ```
 
 Now you can start making changes.
@@ -45,6 +51,7 @@ $ bun run
 
 When making a pull request, ensure that:
 
+- The base branch is `staging`.
 - All tests pass.
   - Fork testing requires environment variables to be set up in the forked repo.
 - Code coverage remains the same or greater.

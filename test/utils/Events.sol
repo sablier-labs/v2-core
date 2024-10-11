@@ -3,8 +3,14 @@ pragma solidity >=0.8.22;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import { ISablierV2NFTDescriptor } from "../../src/interfaces/ISablierV2NFTDescriptor.sol";
-import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/types/DataTypes.sol";
+import { ILockupNFTDescriptor } from "../../src/core/interfaces/ILockupNFTDescriptor.sol";
+import { ISablierLockupLinear } from "../../src/core/interfaces/ISablierLockupLinear.sol";
+import { ISablierLockupTranched } from "../../src/core/interfaces/ISablierLockupTranched.sol";
+import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/core/types/DataTypes.sol";
+import { ISablierMerkleInstant } from "../../src/periphery/interfaces/ISablierMerkleInstant.sol";
+import { ISablierMerkleLL } from "../../src/periphery/interfaces/ISablierMerkleLL.sol";
+import { ISablierMerkleLT } from "../../src/periphery/interfaces/ISablierMerkleLT.sol";
+import { MerkleBase, MerkleLL, MerkleLT } from "../../src/periphery/types/DataTypes.sol";
 
 /// @notice Abstract contract containing all the events emitted by the protocol.
 abstract contract Events {
@@ -29,7 +35,7 @@ abstract contract Events {
     event TransferAdmin(address indexed oldAdmin, address indexed newAdmin);
 
     /*//////////////////////////////////////////////////////////////////////////
-                                 SABLIER-V2-LOCKUP
+                                        CORE
     //////////////////////////////////////////////////////////////////////////*/
 
     event AllowToHook(address indexed admin, address recipient);
@@ -42,18 +48,13 @@ abstract contract Events {
         uint128 senderAmount,
         uint128 recipientAmount
     );
-
     event RenounceLockupStream(uint256 indexed streamId);
 
     event SetNFTDescriptor(
-        address indexed admin, ISablierV2NFTDescriptor oldNFTDescriptor, ISablierV2NFTDescriptor newNFTDescriptor
+        address indexed admin, ILockupNFTDescriptor oldNFTDescriptor, ILockupNFTDescriptor newNFTDescriptor
     );
 
     event WithdrawFromLockupStream(uint256 indexed streamId, address indexed to, IERC20 indexed asset, uint128 amount);
-
-    /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-V2-LOCKUP-DYNAMIC
-    //////////////////////////////////////////////////////////////////////////*/
 
     event CreateLockupDynamicStream(
         uint256 streamId,
@@ -69,10 +70,6 @@ abstract contract Events {
         address broker
     );
 
-    /*//////////////////////////////////////////////////////////////////////////
-                              SABLIER-V2-LOCKUP-LINEAR
-    //////////////////////////////////////////////////////////////////////////*/
-
     event CreateLockupLinearStream(
         uint256 streamId,
         address funder,
@@ -86,10 +83,6 @@ abstract contract Events {
         address broker
     );
 
-    /*//////////////////////////////////////////////////////////////////////////
-                             SABLIER-V2-LOCKUP-TRANCHED
-    //////////////////////////////////////////////////////////////////////////*/
-
     event CreateLockupTranchedStream(
         uint256 streamId,
         address funder,
@@ -102,5 +95,46 @@ abstract contract Events {
         LockupTranched.Tranche[] tranches,
         LockupTranched.Timestamps timestamps,
         address broker
+    );
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                     PERIPHERY
+    //////////////////////////////////////////////////////////////////////////*/
+
+    event Claim(uint256 index, address indexed recipient, uint128 amount);
+
+    event Claim(uint256 index, address indexed recipient, uint128 amount, uint256 indexed streamId);
+
+    event Clawback(address indexed admin, address indexed to, uint128 amount);
+
+    event CreateMerkleInstant(
+        ISablierMerkleInstant indexed merkleInstant,
+        MerkleBase.ConstructorParams baseParams,
+        uint256 aggregateAmount,
+        uint256 recipientCount
+    );
+
+    event CreateMerkleLL(
+        ISablierMerkleLL indexed merkleLL,
+        MerkleBase.ConstructorParams baseParams,
+        ISablierLockupLinear lockupLinear,
+        bool cancelable,
+        bool transferable,
+        MerkleLL.Schedule schedule,
+        uint256 aggregateAmount,
+        uint256 recipientCount
+    );
+
+    event CreateMerkleLT(
+        ISablierMerkleLT indexed merkleLT,
+        MerkleBase.ConstructorParams baseParams,
+        ISablierLockupTranched lockupTranched,
+        bool cancelable,
+        bool transferable,
+        uint40 streamStartTime,
+        MerkleLT.TrancheWithPercentage[] tranchesWithPercentages,
+        uint256 totalDuration,
+        uint256 aggregateAmount,
+        uint256 recipientCount
     );
 }

@@ -3,7 +3,7 @@ pragma solidity >=0.8.22;
 
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
-import { Broker, LockupTranched } from "../src/types/DataTypes.sol";
+import { LockupTranched } from "../src/core/types/DataTypes.sol";
 
 import { Benchmark_Test } from "./Benchmark.t.sol";
 
@@ -22,7 +22,7 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function setUp() public override {
-        super.setUp();
+        Benchmark_Test.setUp();
 
         lockup = lockupTranched;
     }
@@ -33,7 +33,7 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
 
     function testGas_Implementations() external {
         // Set the file path.
-        benchmarkResultsFile = string.concat(benchmarkResults, "SablierV2LockupTranched.md");
+        benchmarkResultsFile = string.concat(benchmarkResults, "SablierLockupTranched.md");
 
         // Create the file if it doesn't exist, otherwise overwrite it.
         vm.writeFile({
@@ -167,7 +167,7 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
     )
         private
         view
-        returns (LockupTranched.CreateWithDurations memory)
+        returns (LockupTranched.CreateWithDurations memory params)
     {
         LockupTranched.TrancheWithDuration[] memory tranches_ = new LockupTranched.TrancheWithDuration[](totalTranches);
 
@@ -180,16 +180,11 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
 
         uint128 depositAmount = AMOUNT_PER_SEGMENT * totalTranches;
 
-        return LockupTranched.CreateWithDurations({
-            sender: users.sender,
-            recipient: users.recipient,
-            totalAmount: _calculateTotalAmount(depositAmount, brokerFee),
-            asset: dai,
-            cancelable: true,
-            transferable: true,
-            tranches: tranches_,
-            broker: Broker({ account: users.broker, fee: brokerFee })
-        });
+        params = defaults.createWithDurationsLT();
+        params.broker.fee = brokerFee;
+        params.totalAmount = _calculateTotalAmount(depositAmount, brokerFee);
+        params.tranches = tranches_;
+        return params;
     }
 
     function _createWithTimestampParams(
@@ -198,7 +193,7 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
     )
         private
         view
-        returns (LockupTranched.CreateWithTimestamps memory)
+        returns (LockupTranched.CreateWithTimestamps memory params)
     {
         LockupTranched.Tranche[] memory tranches_ = new LockupTranched.Tranche[](totalTranches);
 
@@ -214,16 +209,11 @@ contract LockupTranched_Gas_Test is Benchmark_Test {
 
         uint128 depositAmount = AMOUNT_PER_SEGMENT * totalTranches;
 
-        return LockupTranched.CreateWithTimestamps({
-            sender: users.sender,
-            recipient: users.recipient,
-            totalAmount: _calculateTotalAmount(depositAmount, brokerFee),
-            asset: dai,
-            cancelable: true,
-            transferable: true,
-            startTime: getBlockTimestamp(),
-            tranches: tranches_,
-            broker: Broker({ account: users.broker, fee: brokerFee })
-        });
+        params = defaults.createWithTimestampsLT();
+        params.broker.fee = brokerFee;
+        params.startTime = getBlockTimestamp();
+        params.totalAmount = _calculateTotalAmount(depositAmount, brokerFee);
+        params.tranches = tranches_;
+        return params;
     }
 }

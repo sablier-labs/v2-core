@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { LibString } from "solady/src/utils/LibString.sol";
-
 import { Precompiles } from "precompiles/Precompiles.sol";
-import { ISablierV2LockupDynamic } from "src/interfaces/ISablierV2LockupDynamic.sol";
-import { ISablierV2LockupLinear } from "src/interfaces/ISablierV2LockupLinear.sol";
-import { ISablierV2LockupTranched } from "src/interfaces/ISablierV2LockupTranched.sol";
-import { ISablierV2NFTDescriptor } from "src/interfaces/ISablierV2NFTDescriptor.sol";
-
-import { Base_Test } from "../Base.t.sol";
+import { LibString } from "solady/src/utils/LibString.sol";
+import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
+import { ISablierLockupDynamic } from "src/core/interfaces/ISablierLockupDynamic.sol";
+import { ISablierLockupLinear } from "src/core/interfaces/ISablierLockupLinear.sol";
+import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
+import { ISablierBatchLockup } from "src/periphery/interfaces/ISablierBatchLockup.sol";
+import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
+import { Base_Test } from "./../Base.t.sol";
 
 contract Precompiles_Test is Base_Test {
     using LibString for address;
@@ -21,6 +21,10 @@ contract Precompiles_Test is Base_Test {
             _;
         }
     }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                        CORE
+    //////////////////////////////////////////////////////////////////////////*/
 
     function test_DeployLockupDynamic() external onlyTestOptimizedProfile {
         address actualLockupDynamic = address(precompiles.deployLockupDynamic(users.admin, nftDescriptor));
@@ -56,17 +60,17 @@ contract Precompiles_Test is Base_Test {
 
     function test_DeployCore() external onlyTestOptimizedProfile {
         (
-            ISablierV2LockupDynamic actualLockupDynamic,
-            ISablierV2LockupLinear actualLockupLinear,
-            ISablierV2LockupTranched actualLockupTranched,
-            ISablierV2NFTDescriptor actualNFTDescriptor
+            ILockupNFTDescriptor actualNFTDescriptor,
+            ISablierLockupDynamic actualLockupDynamic,
+            ISablierLockupLinear actualLockupLinear,
+            ISablierLockupTranched actualLockupTranched
         ) = precompiles.deployCore(users.admin);
 
         (
-            ISablierV2LockupDynamic expectedLockupDynamic,
-            ISablierV2LockupLinear expectedLockupLinear,
-            ISablierV2LockupTranched expectedLockupTranched,
-            ISablierV2NFTDescriptor expectedNFTDescriptor
+            ILockupNFTDescriptor expectedNFTDescriptor,
+            ISablierLockupDynamic expectedLockupDynamic,
+            ISablierLockupLinear expectedLockupLinear,
+            ISablierLockupTranched expectedLockupTranched
         ) = deployOptimizedCore(users.admin, precompiles.MAX_SEGMENT_COUNT(), precompiles.MAX_TRANCHE_COUNT());
 
         bytes memory expectedLockupDynamicCode = adjustBytecode(
@@ -87,7 +91,38 @@ contract Precompiles_Test is Base_Test {
         assertEq(address(actualNFTDescriptor).code, address(expectedNFTDescriptor).code, "bytecodes mismatch");
     }
 
-    /// @dev The expected bytecode has to be adjusted because {SablierV2Lockup} inherits from {NoDelegateCall}, which
+    /*//////////////////////////////////////////////////////////////////////////
+                                     PERIPHERY
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_DeployBatchLockup() external onlyTestOptimizedProfile {
+        address actualBatchLockup = address(precompiles.deployBatchLockup());
+        address expectedBatchLockup = address(deployOptimizedBatchLockup());
+        assertEq(actualBatchLockup.code, expectedBatchLockup.code, "bytecodes mismatch");
+    }
+
+    function test_DeployMerkleFactory() external onlyTestOptimizedProfile {
+        address actualFactory = address(precompiles.deployMerkleFactory());
+        address expectedFactory = address(deployOptimizedMerkleFactory());
+        assertEq(actualFactory.code, expectedFactory.code, "bytecodes mismatch");
+    }
+
+    function test_DeployPeriphery() external onlyTestOptimizedProfile {
+        (ISablierBatchLockup actualBatchLockup, ISablierMerkleFactory actualMerkleFactory) =
+            precompiles.deployPeriphery();
+
+        (ISablierBatchLockup expectedBatchLockup, ISablierMerkleFactory expectedMerkleFactory) =
+            deployOptimizedPeriphery();
+
+        assertEq(address(actualBatchLockup).code, address(expectedBatchLockup).code, "bytecodes mismatch");
+        assertEq(address(actualMerkleFactory).code, address(expectedMerkleFactory).code, "bytecodes mismatch");
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                      HELPERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev The expected bytecode has to be adjusted because {SablierLockup} inherits from {NoDelegateCall}, which
     /// saves the contract's own address in storage.
     function adjustBytecode(
         bytes memory bytecode,
