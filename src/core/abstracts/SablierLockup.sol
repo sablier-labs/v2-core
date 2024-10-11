@@ -347,7 +347,6 @@ abstract contract SablierLockup is
         }
     }
 
-
     /// @inheritdoc ISablierLockup
     function setNFTDescriptor(ILockupNFTDescriptor newNFTDescriptor) external override onlyAdmin {
         // Effect: set the NFT descriptor.

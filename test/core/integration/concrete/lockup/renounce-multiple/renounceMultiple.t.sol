@@ -7,7 +7,6 @@ import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Integration_Test } from "../../../Integration.t.sol";
 import { RenounceMultiple_Integration_Shared_Test } from "../../../shared/lockup/renounceMultiple.t.sol";
-import { console2 } from "forge-std/src/console2.sol";
 
 abstract contract RenounceMultiple_Integration_Concrete_Test is
     Integration_Test,
@@ -65,9 +64,7 @@ abstract contract RenounceMultiple_Integration_Concrete_Test is
         resetPrank({ msgSender: users.eve });
 
         // Run the test.
-        vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierLockup_Unauthorized.selector, testStreamIds[0], users.eve)
-        );
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_Unauthorized.selector, testStreamIds[0], users.eve));
         lockup.renounceMultiple(testStreamIds);
     }
 
@@ -104,9 +101,7 @@ abstract contract RenounceMultiple_Integration_Concrete_Test is
 
         // Run the test.
         uint256[] memory streamIds = Solarray.uint256s(eveStreamId, testStreamIds[0]);
-        vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierLockup_Unauthorized.selector, testStreamIds[0], users.eve)
-        );
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_Unauthorized.selector, testStreamIds[0], users.eve));
         lockup.renounceMultiple(streamIds);
     }
 
@@ -166,8 +161,6 @@ abstract contract RenounceMultiple_Integration_Concrete_Test is
         whenCallerAuthorizedAllStreams
         givenAllStreamsCancelable
     {
-        console2.log("===test_RenounceMultiple===");
-
         vm.expectEmit({ emitter: address(lockup) });
         emit RenounceLockupStream(testStreamIds[0]);
         vm.expectEmit({ emitter: address(lockup) });
