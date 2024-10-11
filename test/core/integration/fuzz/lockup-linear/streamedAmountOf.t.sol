@@ -39,7 +39,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is LockupLinear_Int
         external
         givenNotNull
         givenNotCanceledStream
-        givenCliffTimeNotInFuture
+        givenCliffTimeNotInFuture(defaults.WARP_26_PERCENT())
     {
         vm.assume(depositAmount != 0);
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
@@ -71,7 +71,7 @@ contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is LockupLinear_Int
         external
         givenNotNull
         givenNotCanceledStream
-        givenCliffTimeNotInFuture
+        givenCliffTimeNotInFuture(defaults.WARP_26_PERCENT())
     {
         vm.assume(depositAmount != 0);
         timeWarp0 = boundUint40(timeWarp0, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);

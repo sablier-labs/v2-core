@@ -86,7 +86,7 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         whenEqualArraysLength
         whenNonZeroArrayLength
         givenNoNullStreams
-        givenNoDEPLETEDStreams
+        givenNoDEPLETEDStreams(defaults.START_TIME())
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -105,7 +105,7 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         whenEqualArraysLength
         whenNonZeroArrayLength
         givenNoNullStreams
-        givenNoDEPLETEDStreams
+        givenNoDEPLETEDStreams(defaults.START_TIME())
         whenNoZeroAmounts
     {
         // Simulate the passage of time.
@@ -130,7 +130,7 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         whenEqualArraysLength
         whenNonZeroArrayLength
         givenNoNullStreams
-        givenNoDEPLETEDStreams
+        givenNoDEPLETEDStreams(defaults.START_TIME())
         whenNoZeroAmounts
     {
         // Simulate the passage of time.

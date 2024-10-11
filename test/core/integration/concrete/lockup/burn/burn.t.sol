@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
-
-import { Integration_Test } from "../../../Integration.t.sol";
+import { Integration_Test } from "./../../../Integration.t.sol";
 
 abstract contract Burn_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_DelegateCall() external {
@@ -98,7 +97,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenDepletedStream(lockup, defaultStreamId)
-        whenCallerRecipient
+        whenCallerRecipient(users.recipient)
     {
         // Burn the NFT so that it no longer exists.
         lockup.burn(defaultStreamId);
@@ -108,14 +107,14 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         lockup.burn(defaultStreamId);
     }
 
-    /// @dev The test contract can't have a set up function, and for this test, we will skip the `givenDepletedStream`
-    /// modifier and implement the logic inside.
+    /// @dev For this test, we will skip the `givenDepletedStream` modifier given the `notTransferableStreamId` is not
+    /// yet created.
     function test_GivenNonTransferableNFT()
         external
         whenNoDelegateCall
         givenNotNull
         /*  givenDepletedStream(lockup, notTransferableStreamId) */
-        whenCallerRecipient
+        whenCallerRecipient(users.recipient)
         givenNFTExists
     {
         uint256 notTransferableStreamId = createDefaultStreamNotTransferable();
@@ -129,7 +128,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenDepletedStream(lockup, defaultStreamId)
-        whenCallerRecipient
+        whenCallerRecipient(users.recipient)
         givenNFTExists
     {
         _test_Burn(defaultStreamId);
