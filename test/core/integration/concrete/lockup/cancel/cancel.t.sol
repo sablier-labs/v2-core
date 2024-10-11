@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
+
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { ISablierLockupRecipient } from "src/core/interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../../Integration.t.sol";
-import { Cancel_Integration_Shared_Test } from "./../../../shared/lockup/cancel.t.sol";
 
-abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_Integration_Shared_Test {
-    function setUp() public virtual override(Integration_Test, Cancel_Integration_Shared_Test) {
-        Cancel_Integration_Shared_Test.setUp();
-    }
+import { Integration_Test } from "../../../Integration.t.sol";
 
+abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_DelegateCall() external {
         bytes memory callData = abi.encodeCall(ISablierLockup.cancel, defaultStreamId);
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
@@ -82,7 +80,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender(users.sender)
     {
         uint256 streamId = createDefaultStreamNotCancelable();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamNotCancelable.selector, streamId));
@@ -94,7 +92,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender(users.sender)
         givenCancelableStream
     {
         // Warp to the past.
@@ -118,9 +116,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender(users.sender)
         givenCancelableStream
-        givenSTREAMINGStatus
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
     {
         // Create the stream with a recipient contract that implements {ISablierLockupRecipient}.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
@@ -150,9 +148,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender(users.sender)
         givenCancelableStream
-        givenSTREAMINGStatus
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
         givenRecipientAllowedToHook
     {
         // Allow the recipient to hook.
@@ -175,9 +173,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender(users.sender)
         givenCancelableStream
-        givenSTREAMINGStatus
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
     {
@@ -203,9 +201,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender(users.sender)
         givenCancelableStream
-        givenSTREAMINGStatus
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
         whenRecipientReturnsValidSelector
@@ -252,9 +250,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender(users.sender)
         givenCancelableStream
-        givenSTREAMINGStatus
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
         whenRecipientReturnsValidSelector
@@ -282,9 +280,11 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test, Cancel_I
 
         // It should emit {MetadataUpdate} and {CancelLockupStream} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit CancelLockupStream(streamId, users.sender, address(recipientGood), dai, senderAmount, recipientAmount);
+        emit ISablierLockup.CancelLockupStream(
+            streamId, users.sender, address(recipientGood), dai, senderAmount, recipientAmount
+        );
         vm.expectEmit({ emitter: address(lockup) });
-        emit MetadataUpdate({ _tokenId: streamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: streamId });
 
         // Cancel the stream.
         lockup.cancel(streamId);
