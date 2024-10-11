@@ -348,7 +348,7 @@ contract Renounce_LockupDynamic_Integration_Concrete_Test is
     }
 }
 
-contract RenounceMultiple_LockupLinear_Integration_Concrete_Test is
+contract RenounceMultiple_LockupDynamic_Integration_Concrete_Test is
     LockupDynamic_Integration_Concrete_Test,
     RenounceMultiple_Integration_Concrete_Test
 {
