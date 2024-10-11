@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
-
-import { Integration_Test } from "../../../Integration.t.sol";
+import { Integration_Test } from "./../../../Integration.t.sol";
 
 abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_DelegateCall() external {
@@ -52,7 +50,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
         givenNotNull
         givenTransferableStream
         givenNotBurnedNFT
-        whenCallerRecipient
+        whenCallerRecipient(users.recipient)
     {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -139,7 +137,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
         givenTransferableStream
         givenNotBurnedNFT
         givenNonZeroWithdrawableAmount
-        whenCallerRecipient
+        whenCallerRecipient(users.recipient)
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });

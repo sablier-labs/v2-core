@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { LockupDynamic_Integration_Shared_Test, Integration_Test } from "../LockupDynamic.t.sol";
 import { WithdrawableAmountOf_Integration_Concrete_Test } from
     "./../../lockup/withdrawable-amount-of/withdrawableAmountOf.t.sol";
+import { LockupDynamic_Integration_Shared_Test, Integration_Test } from "./../LockupDynamic.t.sol";
 
 contract WithdrawableAmountOf_LockupDynamic_Integration_Concrete_Test is
     LockupDynamic_Integration_Shared_Test,
@@ -13,14 +13,18 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Concrete_Test is
         LockupDynamic_Integration_Shared_Test.setUp();
     }
 
-    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {
+    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus(defaults.WARP_26_PERCENT()) {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         uint128 actualWithdrawableAmount = lockupDynamic.withdrawableAmountOf(defaultStreamId);
         uint128 expectedWithdrawableAmount = 0;
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    function test_GivenNoPreviousWithdrawals() external givenSTREAMINGStatus givenStartTimeInPast {
+    function test_GivenNoPreviousWithdrawals()
+        external
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenStartTimeInPast
+    {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() + 3750 seconds });
 
@@ -31,7 +35,11 @@ contract WithdrawableAmountOf_LockupDynamic_Integration_Concrete_Test is
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    function test_GivenPreviousWithdrawal() external givenSTREAMINGStatus givenStartTimeInPast {
+    function test_GivenPreviousWithdrawal()
+        external
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenStartTimeInPast
+    {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() + 3750 seconds });
 

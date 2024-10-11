@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { LockupTranched_Integration_Shared_Test, Integration_Test } from "../LockupTranched.t.sol";
-import { StreamedAmountOf_Integration_Concrete_Test } from "../../lockup/streamed-amount-of/streamedAmountOf.t.sol";
+import { StreamedAmountOf_Integration_Concrete_Test } from "./../../lockup/streamed-amount-of/streamedAmountOf.t.sol";
+import { LockupTranched_Integration_Shared_Test, Integration_Test } from "./../LockupTranched.t.sol";
 
 contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
     LockupTranched_Integration_Shared_Test,
@@ -12,14 +12,18 @@ contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
         LockupTranched_Integration_Shared_Test.setUp();
     }
 
-    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {
+    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus(defaults.WARP_26_PERCENT()) {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         uint128 actualStreamedAmount = lockupTranched.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 0;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenEndTimeNotInFuture() external givenSTREAMINGStatus givenStartTimeInPast {
+    function test_GivenEndTimeNotInFuture()
+        external
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenStartTimeInPast
+    {
         vm.warp({ newTimestamp: defaults.END_TIME() + 1 seconds });
 
         // It should return the deposited amount.
@@ -30,9 +34,9 @@ contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
 
     function test_GivenFirstTrancheTimestampInFuture()
         external
-        givenSTREAMINGStatus
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
         givenStartTimeInPast
-        givenEndTimeInFuture
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
     {
         vm.warp({ newTimestamp: defaults.START_TIME() + 1 seconds });
 
@@ -44,9 +48,9 @@ contract StreamedAmountOf_LockupTranched_Integration_Concrete_Test is
 
     function test_GivenFirstTrancheTimestampNotInFuture()
         external
-        givenSTREAMINGStatus
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
         givenStartTimeInPast
-        givenEndTimeInFuture
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
     {
         vm.warp({ newTimestamp: defaults.END_TIME() - 1 seconds });
 

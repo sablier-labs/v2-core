@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
-
 import { Solarray } from "solarray/src/Solarray.sol";
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
-
 import { Integration_Test } from "./../../Integration.t.sol";
 import { WithdrawMultiple_Integration_Shared_Test } from "./../../shared/lockup/withdrawMultiple.t.sol";
 
@@ -25,7 +23,7 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         whenNoDelegateCall
         whenArraysEqual
         givenNotNull
-        givenNoDEPLETEDStreams
+        givenNoDEPLETEDStreams(defaults.START_TIME())
         whenCallerAuthorizedAllStreams
         whenWithdrawalAddressNotZero
         whenNoZeroAmounts

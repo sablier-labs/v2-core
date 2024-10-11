@@ -37,7 +37,12 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
     }
 
-    function test_RevertWhen_WithdrawalAddressZero() external whenNoDelegateCall givenNotNull givenNotDEPLETEDStatus {
+    function test_RevertWhen_WithdrawalAddressZero()
+        external
+        whenNoDelegateCall
+        givenNotNull
+        givenNotDEPLETEDStatus(defaults.START_TIME())
+    {
         uint128 withdrawAmount = defaults.WITHDRAW_AMOUNT();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_WithdrawToZeroAddress.selector, defaultStreamId));
         lockup.withdraw({ streamId: defaultStreamId, to: address(0), amount: withdrawAmount });
@@ -47,7 +52,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
     {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_WithdrawAmountZero.selector, defaultStreamId));
@@ -58,7 +63,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
     {
@@ -108,7 +113,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
@@ -133,7 +138,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
@@ -171,7 +176,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
@@ -196,7 +201,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
@@ -218,12 +223,12 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
-        whenCallerSender
+        whenCallerSender(users.sender)
     {
         // Warp to the stream's end.
         vm.warp({ newTimestamp: defaults.END_TIME() });
@@ -250,13 +255,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
-        whenCallerSender
-        givenEndTimeInFuture
+        whenCallerSender(users.sender)
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
     {
         // Cancel the stream.
         lockup.cancel(defaultStreamId);
@@ -298,13 +303,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
-        whenCallerSender
-        givenEndTimeInFuture
+        whenCallerSender(users.sender)
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
         givenNotCanceledStream
     {
         // Create the stream with a recipient contract that implements {ISablierLockupRecipient}.
@@ -334,13 +339,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
-        whenCallerSender
-        givenEndTimeInFuture
+        whenCallerSender(users.sender)
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
         givenNotCanceledStream
         givenRecipientAllowedToHook
     {
@@ -364,13 +369,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
-        whenCallerSender
-        givenEndTimeInFuture
+        whenCallerSender(users.sender)
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
         givenNotCanceledStream
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
@@ -397,13 +402,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
-        whenCallerSender
-        givenEndTimeInFuture
+        whenCallerSender(users.sender)
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
         givenNotCanceledStream
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
@@ -447,13 +452,13 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
-        whenCallerSender
-        givenEndTimeInFuture
+        whenCallerSender(users.sender)
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
         givenNotCanceledStream
         givenRecipientAllowedToHook
         whenNonRevertingRecipient

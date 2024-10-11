@@ -2,13 +2,11 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
-
-import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { LockupNFTDescriptor } from "src/core/LockupNFTDescriptor.sol";
-
-import { Integration_Test } from "../../../Integration.t.sol";
+import { Integration_Test } from "./../../../Integration.t.sol";
 
 abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
@@ -20,7 +18,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.setNFTDescriptor(ILockupNFTDescriptor(users.eve));
     }
 
-    function test_WhenProvidedAddressMatchesCurrentNFTDescriptor() external whenCallerAdmin {
+    function test_WhenProvidedAddressMatchesCurrentNFTDescriptor() external whenCallerRecipient(users.admin) {
         // It should emit {SetNFTDescriptor} and {BatchMetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.SetNFTDescriptor(users.admin, nftDescriptor, nftDescriptor);
@@ -35,7 +33,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.tokenURI({ tokenId: defaultStreamId });
     }
 
-    function test_WhenProvidedAddressNotMatchCurrentNFTDescriptor() external whenCallerAdmin {
+    function test_WhenProvidedAddressNotMatchCurrentNFTDescriptor() external whenCallerRecipient(users.admin) {
         // Deploy another NFT descriptor.
         ILockupNFTDescriptor newNFTDescriptor = new LockupNFTDescriptor();
 

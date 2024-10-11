@@ -55,7 +55,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerSender
+        whenCallerSender(users.sender)
     {
         // Create the not cancelable stream.
         uint256 notCancelableStreamId = createDefaultStreamNotCancelable();
@@ -67,7 +67,13 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test {
         lockup.renounce(notCancelableStreamId);
     }
 
-    function test_GivenCancelableStream() external whenNoDelegateCall givenNotNull givenWarmStream whenCallerSender {
+    function test_GivenCancelableStream()
+        external
+        whenNoDelegateCall
+        givenNotNull
+        givenWarmStream
+        whenCallerSender(users.sender)
+    {
         // Create the stream with a contract as the stream's recipient.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
 

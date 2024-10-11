@@ -2,9 +2,8 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { LockupDynamic } from "src/core/types/DataTypes.sol";
-
-import { LockupDynamic_Integration_Shared_Test, Integration_Test } from "../LockupDynamic.t.sol";
-import { StreamedAmountOf_Integration_Concrete_Test } from "../../lockup/streamed-amount-of/streamedAmountOf.t.sol";
+import { StreamedAmountOf_Integration_Concrete_Test } from "./../../lockup/streamed-amount-of/streamedAmountOf.t.sol";
+import { LockupDynamic_Integration_Shared_Test, Integration_Test } from "./../LockupDynamic.t.sol";
 
 contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
     LockupDynamic_Integration_Shared_Test,
@@ -14,20 +13,29 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         LockupDynamic_Integration_Shared_Test.setUp();
     }
 
-    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {
+    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus(defaults.WARP_26_PERCENT()) {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         uint128 actualStreamedAmount = lockupDynamic.streamedAmountOf(defaultStreamId);
         assertEq(actualStreamedAmount, 0, "streamedAmount");
     }
 
-    function test_GivenEndTimeNotInFuture() external givenSTREAMINGStatus givenStartTimeInPast {
+    function test_GivenEndTimeNotInFuture()
+        external
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenStartTimeInPast
+    {
         vm.warp({ newTimestamp: defaults.END_TIME() + 1 });
         uint128 actualStreamedAmount = lockupDynamic.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = defaults.DEPOSIT_AMOUNT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenSingleSegment() external givenSTREAMINGStatus givenStartTimeInPast givenEndTimeInFuture {
+    function test_GivenSingleSegment()
+        external
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenStartTimeInPast
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
+    {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + 2000 seconds });
 
@@ -48,7 +56,12 @@ contract StreamedAmountOf_LockupDynamic_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenMultipleSegments() external givenSTREAMINGStatus givenStartTimeInPast givenEndTimeInFuture {
+    function test_GivenMultipleSegments()
+        external
+        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenStartTimeInPast
+        givenEndTimeInFuture(defaults.WARP_26_PERCENT())
+    {
         // Simulate the passage of time. 750 seconds is ~10% of the way in the second segment.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() + 750 seconds });
 
