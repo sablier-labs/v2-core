@@ -22,7 +22,7 @@ contract ResetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Sh
         // Reset the Sablier fee.
         merkleFactory.resetSablierFeeByUser({ campaignCreator: users.campaignOwner });
 
-        MerkleFactory.SablierFee memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
+        MerkleFactory.SablierFeeByUser memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
         // It should return false.
         assertFalse(sablierFee.enabled, "enabled");
         // It should return 0 for the Sablier fee.
@@ -33,7 +33,7 @@ contract ResetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Sh
         // Enable the Sablier fee.
         merkleFactory.setSablierFeeByUser({ campaignCreator: users.campaignOwner, fee: 1 ether });
         // Check that its enabled.
-        MerkleFactory.SablierFee memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
+        MerkleFactory.SablierFeeByUser memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
         assertTrue(sablierFee.enabled, "enabled");
         assertEq(sablierFee.fee, 1 ether, "fee");
 

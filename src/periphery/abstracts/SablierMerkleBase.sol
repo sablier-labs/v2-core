@@ -30,7 +30,7 @@ abstract contract SablierMerkleBase is
     uint40 public immutable override EXPIRATION;
 
     /// @inheritdoc ISablierMerkleBase
-    address public immutable FACTORY;
+    address public immutable override FACTORY;
 
     /// @inheritdoc ISablierMerkleBase
     bytes32 public immutable override MERKLE_ROOT;
@@ -39,10 +39,10 @@ abstract contract SablierMerkleBase is
     bytes32 internal immutable NAME;
 
     /// @inheritdoc ISablierMerkleBase
-    uint256 public immutable SABLIER_FEE;
+    uint256 public immutable override SABLIER_FEE;
 
     /// @inheritdoc ISablierMerkleBase
-    string public ipfsCID;
+    string public override ipfsCID;
 
     /// @dev Packed booleans that record the history of claims.
     BitMaps.BitMap internal _claimedBitMap;
@@ -54,14 +54,14 @@ abstract contract SablierMerkleBase is
                                     CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Constructs the contract by initializing the immutable state variables.
-    constructor(MerkleBase.ConstructorParams memory params, uint256 sablierFee) {
+    /// @notice Constructs the contract by initializing the immutable state variables.
+    /// @dev Emits a {TransferAdmin} event.
+    constructor(MerkleBase.ConstructorParams memory params, uint256 sablierFee) Adminable(params.initialAdmin) {
         // Check: the campaign name is not greater than 32 bytes
         if (bytes(params.name).length > 32) {
             revert Errors.SablierMerkleBase_CampaignNameTooLong({ nameLength: bytes(params.name).length, maxLength: 32 });
         }
 
-        admin = params.initialAdmin;
         ASSET = params.asset;
         EXPIRATION = params.expiration;
         FACTORY = msg.sender;
@@ -115,7 +115,7 @@ abstract contract SablierMerkleBase is
             revert Errors.SablierMerkleBase_CampaignExpired({ blockTimestamp: block.timestamp, expiration: EXPIRATION });
         }
 
-        // Check: `msg.value` is not less than the sablier fee.
+        // Check: `msg.value` is not less than the Sablier fee.
         if (msg.value < SABLIER_FEE) {
             revert Errors.SablierMerkleBase_InsufficientFeePayment(msg.value, SABLIER_FEE);
         }

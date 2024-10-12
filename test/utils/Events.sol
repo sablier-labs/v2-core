@@ -143,9 +143,9 @@ abstract contract Events {
 
     event SetDefaultSablierFee(address indexed admin, uint256 sablierFee);
 
-    event SetSablierFee(address indexed admin, address indexed campaignCreator, uint256 sablierFee);
+    event SetSablierFeeForUser(address indexed admin, address indexed campaignCreator, uint256 sablierFee);
 
     event WithdrawSablierFees(
-        address indexed admin, ISablierMerkleBase indexed merkleLockup, address to, uint256 sablierFees
+        address indexed admin, ISablierMerkleBase indexed merkleBase, address to, uint256 sablierFees
     );
 }

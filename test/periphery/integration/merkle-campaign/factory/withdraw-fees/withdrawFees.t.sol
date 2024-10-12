@@ -26,7 +26,16 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Shared_Test
         merkleFactory.withdrawFees(users.eve, merkleBase);
     }
 
-    function test_RevertWhen_ProvidedMerkleLockupNotValid() external whenCallerAdmin {
+    function test_RevertWhen_WithdrawalAddressZero() external whenCallerAdmin {
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierMerkleFactory_WithdrawToZeroAddress.selector));
+        merkleFactory.withdrawFees(payable(address(0)), merkleBase);
+    }
+
+    modifier whenWithdrawalAddressNotZero() {
+        _;
+    }
+
+    function test_RevertWhen_ProvidedMerkleLockupNotValid() external whenCallerAdmin whenWithdrawalAddressNotZero {
         vm.expectRevert();
         merkleFactory.withdrawFees(users.eve, ISablierMerkleBase(users.eve));
     }
@@ -42,7 +51,7 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Shared_Test
         vm.expectEmit({ emitter: address(merkleFactory) });
         emit WithdrawSablierFees({
             admin: users.admin,
-            merkleLockup: merkleBase,
+            merkleBase: merkleBase,
             to: users.eve,
             sablierFees: defaults.DEFAULT_SABLIER_FEE()
         });
@@ -86,7 +95,7 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Shared_Test
         vm.expectEmit({ emitter: address(merkleFactory) });
         emit WithdrawSablierFees({
             admin: users.admin,
-            merkleLockup: merkleBase,
+            merkleBase: merkleBase,
             to: receiveEth,
             sablierFees: defaults.DEFAULT_SABLIER_FEE()
         });

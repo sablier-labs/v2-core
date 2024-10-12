@@ -34,7 +34,7 @@ interface ISablierMerkleBase is IAdminable {
     /// @dev This is an immutable state variable.
     function MERKLE_ROOT() external returns (bytes32);
 
-    /// @notice Retrieves the minimum fee required to claim Airstream, paid in ETH.
+    /// @notice Retrieves the minimum fee required to claim an Airstream, paid in ETH.
     function SABLIER_FEE() external view returns (uint256);
 
     /// @notice Returns the timestamp when the first claim is made.
@@ -95,7 +95,7 @@ interface ISablierMerkleBase is IAdminable {
     /// receive ETH.
     ///
     /// Requirements:
-    /// - The caller must be the Factory contract.
+    /// - The caller must be the `FACTORY` contract.
     ///
     /// @param to The address to receive the Sablier fees.
     /// @return feeAmount The amount of ETH transferred to the provided address.

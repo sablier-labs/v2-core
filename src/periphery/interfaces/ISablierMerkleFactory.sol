@@ -64,11 +64,11 @@ interface ISablierMerkleFactory is IAdminable {
     event SetDefaultSablierFee(address indexed admin, uint256 defaultSablierFee);
 
     /// @notice Emitted when the admin sets Sablier fee for a specific user.
-    event SetSablierFee(address indexed admin, address indexed campaignCreator, uint256 sablierFee);
+    event SetSablierFeeForUser(address indexed admin, address indexed campaignCreator, uint256 sablierFee);
 
-    /// @notice Emitted when the sablier fees are claimed by the sablier admin.
+    /// @notice Emitted when the Sablier fees are claimed by the Sablier admin.
     event WithdrawSablierFees(
-        address indexed admin, ISablierMerkleBase indexed merkleLockup, address to, uint256 sablierFees
+        address indexed admin, ISablierMerkleBase indexed merkleBase, address to, uint256 sablierFees
     );
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -84,17 +84,13 @@ interface ISablierMerkleFactory is IAdminable {
         pure
         returns (bool result);
 
-    /// @notice Retrieves the default sablier fee required to claim an airstream.
-    /// @dev A minimum of this fee must be paid in ETH during `claim`.
+    /// @notice Retrieves the default Sablier fee required to claim an airstream.
+    /// @dev A minimum of this fee must be paid in ETH during {SablierMerkleBase.claim}.
     function defaultSablierFee() external view returns (uint256);
 
-    /// @notice Retrieves the custom sablier fee struct for a specified campaign creator.
-    /// @dev It return two fields:
-    ///   - `enabled` indicates if the custom fee is enabled. If it is not enabled, the default fee will be used for
-    /// campaigns.
-    ///   - `fee` is the custom fee set by the admin.
-    /// @param campaignCreator The user for whom the details are being queried.
-    function sablierFeeByUser(address campaignCreator) external view returns (MerkleFactory.SablierFee memory);
+    /// @notice Retrieves the custom Sablier fee struct for a specified campaign creator.
+    /// @param campaignCreator the address of the user for whom the details are being retrieved.
+    function sablierFeeByUser(address campaignCreator) external view returns (MerkleFactory.SablierFeeByUser memory);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
@@ -106,7 +102,7 @@ interface ISablierMerkleFactory is IAdminable {
     ///
     /// Notes:
     /// - The MerkleInstant contract is created with CREATE2.
-    /// - The immutable sablier fee will be set to the default value unless a custom fee is set.
+    /// - The immutable Sablier fee will be set to the default value unless a custom fee is set.
     ///
     /// @param baseParams Struct encapsulating the {SablierMerkleBase} parameters, which are documented in
     /// {DataTypes}.
@@ -127,7 +123,7 @@ interface ISablierMerkleFactory is IAdminable {
     ///
     /// Notes:
     /// - The MerkleLL contract is created with CREATE2.
-    /// - The immutable sablier fee will be set to the default value unless a custom fee is set.
+    /// - The immutable Sablier fee will be set to the default value unless a custom fee is set.
     ///
     /// @param baseParams Struct encapsulating the {SablierMerkleBase} parameters, which are documented in
     /// {DataTypes}.
@@ -156,14 +152,14 @@ interface ISablierMerkleFactory is IAdminable {
     ///
     /// Notes:
     /// - The MerkleLT contract is created with CREATE2.
-    /// - The immutable sablier fee will be set to the default value unless a custom fee is set.
+    /// - The immutable Sablier fee will be set to the default value unless a custom fee is set.
     ///
     /// @param baseParams Struct encapsulating the {SablierMerkleBase} parameters, which are documented in
     /// {DataTypes}.
     /// @param lockupTranched The address of the {SablierLockupTranched} contract.
     /// @param cancelable Indicates if the stream will be cancelable after claiming.
     /// @param transferable Indicates if the stream will be transferable after claiming.
-    /// @param streamStartTime The start time of the streams created through `claim`.
+    /// @param streamStartTime The start time of the streams created through {SablierMerkleBase.claim}.
     /// @param tranchesWithPercentages The tranches with their respective unlock percentages.
     /// @param aggregateAmount The total amount of ERC-20 assets to be distributed to all recipients.
     /// @param recipientCount The total number of recipients who are eligible to claim.
@@ -187,7 +183,7 @@ interface ISablierMerkleFactory is IAdminable {
     /// Notes:
     /// - The default fee will only be applied to the future campaigns.
     ///
-    /// Requiurements:
+    /// Requirements:
     /// - The caller must be the admin.
     ///
     /// @param campaignCreator The user for whom the fee is being reset for.
@@ -199,7 +195,7 @@ interface ISablierMerkleFactory is IAdminable {
     /// Notes:
     /// - The new fee will only be applied to the future campaigns.
     ///
-    /// Requiurements:
+    /// Requirements:
     /// - The caller must be the admin.
     ///
     /// @param campaignCreator The user for whom the fee is being set.
@@ -212,13 +208,13 @@ interface ISablierMerkleFactory is IAdminable {
     /// Notes:
     /// - The new default fee will only be applied to the future campaigns.
     ///
-    /// Requiurements:
+    /// Requirements:
     /// - The caller must be the admin.
     ///
     /// @param defaultFee The new detault fee to be set.
     function setDefaultSablierFee(uint256 defaultFee) external;
 
-    /// @notice Withdraws the Sablier fees accrued on `merkleLockup` to the provided address.
+    /// @notice Withdraws the Sablier fees accrued on `merkleBase` contract.
     /// @dev Emits a {WithdrawSablierFees} event.
     ///
     /// Notes:
@@ -227,7 +223,8 @@ interface ISablierMerkleFactory is IAdminable {
     ///
     /// Requirements:
     /// - The caller must be the admin.
+    /// - `to` must not be the zero address.
     ///
     /// @param to The address to receive the Sablier fees.
-    function withdrawFees(address payable to, ISablierMerkleBase merkleLockup) external;
+    function withdrawFees(address payable to, ISablierMerkleBase merkleBase) external;
 }

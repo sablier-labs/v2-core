@@ -17,12 +17,12 @@ contract SetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Shar
     function test_WhenNotEnabled() external whenCallerAdmin {
         // It should emit a {SetSablierFee} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit SetSablierFee({ admin: users.admin, campaignCreator: users.campaignOwner, sablierFee: 0 });
+        emit SetSablierFeeForUser({ admin: users.admin, campaignCreator: users.campaignOwner, sablierFee: 0 });
 
         // Set the Sablier fee.
         merkleFactory.setSablierFeeByUser({ campaignCreator: users.campaignOwner, fee: 0 });
 
-        MerkleFactory.SablierFee memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
+        MerkleFactory.SablierFeeByUser memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
         // It should enable the Sablier fee.
         assertTrue(sablierFee.enabled, "enabled");
         // It should set the Sablier fee.
@@ -33,13 +33,13 @@ contract SetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Shar
         // Enable the Sablier fee.
         merkleFactory.setSablierFeeByUser({ campaignCreator: users.campaignOwner, fee: 0.001 ether });
         // Check that its enabled.
-        MerkleFactory.SablierFee memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
+        MerkleFactory.SablierFeeByUser memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
         assertTrue(sablierFee.enabled, "enabled");
         assertEq(sablierFee.fee, 0.001 ether, "fee");
 
         // It should emit a {SetSablierFee} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit SetSablierFee({ admin: users.admin, campaignCreator: users.campaignOwner, sablierFee: 1 ether });
+        emit SetSablierFeeForUser({ admin: users.admin, campaignCreator: users.campaignOwner, sablierFee: 1 ether });
 
         // Now set it to another fee.
         merkleFactory.setSablierFeeByUser({ campaignCreator: users.campaignOwner, fee: 1 ether });

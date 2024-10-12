@@ -251,11 +251,11 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         vm.expectEmit({ emitter: address(merkleFactory) });
         emit WithdrawSablierFees({
             admin: users.admin,
-            merkleLockup: vars.merkleLT,
+            merkleBase: vars.merkleLT,
             to: users.admin,
             sablierFees: sablierFee
         });
-        merkleFactory.withdrawFees({ to: payable(users.admin), merkleLockup: vars.merkleLT });
+        merkleFactory.withdrawFees({ to: payable(users.admin), merkleBase: vars.merkleLT });
 
         assertEq(address(vars.merkleLT).balance, 0, "merkle lockup ether balance");
         assertEq(users.admin.balance, sablierFee, "admin ether balance");
