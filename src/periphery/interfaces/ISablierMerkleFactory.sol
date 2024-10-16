@@ -184,7 +184,7 @@ interface ISablierMerkleFactory is IAdminable {
     /// - The default fee will only be applied to the future campaigns.
     ///
     /// Requirements:
-    /// - The caller must be the admin.
+    /// - msg.sender must be the admin.
     ///
     /// @param campaignCreator The user for whom the fee is being reset for.
     function resetSablierFeeByUser(address campaignCreator) external;
@@ -196,7 +196,7 @@ interface ISablierMerkleFactory is IAdminable {
     /// - The new fee will only be applied to the future campaigns.
     ///
     /// Requirements:
-    /// - The caller must be the admin.
+    /// - msg.sender must be the admin.
     ///
     /// @param campaignCreator The user for whom the fee is being set.
     /// @param fee The new fee to be set.
@@ -209,7 +209,7 @@ interface ISablierMerkleFactory is IAdminable {
     /// - The new default fee will only be applied to the future campaigns.
     ///
     /// Requirements:
-    /// - The caller must be the admin.
+    /// - msg.sender must be the admin.
     ///
     /// @param defaultFee The new detault fee to be set.
     function setDefaultSablierFee(uint256 defaultFee) external;
@@ -222,7 +222,7 @@ interface ISablierMerkleFactory is IAdminable {
     /// ETH.
     ///
     /// Requirements:
-    /// - The caller must be the admin.
+    /// - msg.sender must be the admin.
     /// - `to` must not be the zero address.
     ///
     /// @param to The address to receive the Sablier fees.
