@@ -8,10 +8,27 @@ import { SablierMerkleLL } from "src/periphery/SablierMerkleLL.sol";
 import { SablierMerkleLT } from "src/periphery/SablierMerkleLT.sol";
 
 import { Base_Test } from "../Base.t.sol";
+import { ContractWithoutReceiveEth, ContractWithReceiveEth } from "../mocks/ReceiveEth.sol";
 
 contract Periphery_Test is Base_Test {
+    /*//////////////////////////////////////////////////////////////////////////
+                                   TEST CONTRACTS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    ContractWithoutReceiveEth internal contractWithoutReceiveEth;
+    ContractWithReceiveEth internal contractWithReceiveEth;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                  SET-UP FUNCTION
+    //////////////////////////////////////////////////////////////////////////*/
+
     function setUp() public virtual override {
         Base_Test.setUp();
+
+        contractWithoutReceiveEth = new ContractWithoutReceiveEth();
+        contractWithReceiveEth = new ContractWithReceiveEth();
+        vm.label({ account: address(contractWithoutReceiveEth), newLabel: "Contract Without Receive Eth" });
+        vm.label({ account: address(contractWithReceiveEth), newLabel: "Contract With Receive Eth" });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -20,10 +37,11 @@ contract Periphery_Test is Base_Test {
 
     function computeMerkleInstantAddress(
         address caller,
-        address admin,
+        address campaignOwner,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
@@ -34,13 +52,14 @@ contract Periphery_Test is Base_Test {
                 caller,
                 address(asset_),
                 expiration,
-                admin,
+                campaignOwner,
                 abi.encode(defaults.IPFS_CID()),
                 merkleRoot,
                 defaults.NAME_BYTES32()
             )
         );
-        bytes32 creationBytecodeHash = keccak256(getMerkleInstantBytecode(admin, asset_, merkleRoot, expiration));
+        bytes32 creationBytecodeHash =
+            keccak256(getMerkleInstantBytecode(campaignOwner, asset_, merkleRoot, expiration, sablierFee));
         return vm.computeCreate2Address({
             salt: salt,
             initCodeHash: creationBytecodeHash,
@@ -50,10 +69,11 @@ contract Periphery_Test is Base_Test {
 
     function computeMerkleLLAddress(
         address caller,
-        address admin,
+        address campaignOwner,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
@@ -64,7 +84,7 @@ contract Periphery_Test is Base_Test {
                 caller,
                 address(asset_),
                 expiration,
-                admin,
+                campaignOwner,
                 abi.encode(defaults.IPFS_CID()),
                 merkleRoot,
                 defaults.NAME_BYTES32(),
@@ -74,7 +94,8 @@ contract Periphery_Test is Base_Test {
                 abi.encode(defaults.schedule())
             )
         );
-        bytes32 creationBytecodeHash = keccak256(getMerkleLLBytecode(admin, asset_, merkleRoot, expiration));
+        bytes32 creationBytecodeHash =
+            keccak256(getMerkleLLBytecode(campaignOwner, asset_, merkleRoot, expiration, sablierFee));
         return vm.computeCreate2Address({
             salt: salt,
             initCodeHash: creationBytecodeHash,
@@ -84,10 +105,11 @@ contract Periphery_Test is Base_Test {
 
     function computeMerkleLTAddress(
         address caller,
-        address admin,
+        address campaignOwner,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
@@ -98,7 +120,7 @@ contract Periphery_Test is Base_Test {
                 caller,
                 address(asset_),
                 expiration,
-                admin,
+                campaignOwner,
                 abi.encode(defaults.IPFS_CID()),
                 merkleRoot,
                 defaults.NAME_BYTES32(),
@@ -109,7 +131,8 @@ contract Periphery_Test is Base_Test {
                 abi.encode(defaults.tranchesWithPercentages())
             )
         );
-        bytes32 creationBytecodeHash = keccak256(getMerkleLTBytecode(admin, asset_, merkleRoot, expiration));
+        bytes32 creationBytecodeHash =
+            keccak256(getMerkleLTBytecode(campaignOwner, asset_, merkleRoot, expiration, sablierFee));
         return vm.computeCreate2Address({
             salt: salt,
             initCodeHash: creationBytecodeHash,
@@ -118,16 +141,18 @@ contract Periphery_Test is Base_Test {
     }
 
     function getMerkleInstantBytecode(
-        address admin,
+        address campaignOwner,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
         returns (bytes memory)
     {
-        bytes memory constructorArgs = abi.encode(defaults.baseParams(admin, asset_, expiration, merkleRoot));
+        bytes memory constructorArgs =
+            abi.encode(defaults.baseParams(campaignOwner, asset_, expiration, merkleRoot), sablierFee);
         if (!isTestOptimizedProfile()) {
             return bytes.concat(type(SablierMerkleInstant).creationCode, constructorArgs);
         } else {
@@ -138,21 +163,23 @@ contract Periphery_Test is Base_Test {
     }
 
     function getMerkleLLBytecode(
-        address admin,
+        address campaignOwner,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
         returns (bytes memory)
     {
         bytes memory constructorArgs = abi.encode(
-            defaults.baseParams(admin, asset_, expiration, merkleRoot),
+            defaults.baseParams(campaignOwner, asset_, expiration, merkleRoot),
             lockupLinear,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
-            defaults.schedule()
+            defaults.schedule(),
+            sablierFee
         );
         if (!isTestOptimizedProfile()) {
             return bytes.concat(type(SablierMerkleLL).creationCode, constructorArgs);
@@ -162,22 +189,24 @@ contract Periphery_Test is Base_Test {
     }
 
     function getMerkleLTBytecode(
-        address admin,
+        address campaignOwner,
         IERC20 asset_,
         bytes32 merkleRoot,
-        uint40 expiration
+        uint40 expiration,
+        uint256 sablierFee
     )
         internal
         view
         returns (bytes memory)
     {
         bytes memory constructorArgs = abi.encode(
-            defaults.baseParams(admin, asset_, expiration, merkleRoot),
+            defaults.baseParams(campaignOwner, asset_, expiration, merkleRoot),
             lockupTranched,
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
             defaults.STREAM_START_TIME_ZERO(),
-            defaults.tranchesWithPercentages()
+            defaults.tranchesWithPercentages(),
+            sablierFee
         );
         if (!isTestOptimizedProfile()) {
             return bytes.concat(type(SablierMerkleLT).creationCode, constructorArgs);
