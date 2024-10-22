@@ -255,6 +255,7 @@ contract SablierLockupLinear is
             isDepleted: false,
             isStream: true,
             isTransferable: params.transferable,
+            family: Lockup.Family.LOCKUP_LINEAR,
             sender: params.sender,
             startTime: params.timestamps.start,
             wasCanceled: false

@@ -4,6 +4,8 @@ pragma solidity >=0.8.22;
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
+import { Lockup } from "../types/DataTypes.sol";
+
 /// @title Errors
 /// @notice Library containing all custom errors the protocol may revert with.
 library Errors {
@@ -42,6 +44,15 @@ library Errors {
 
     /// @notice Thrown when the hook does not return the correct selector.
     error SablierLockup_InvalidHookSelector(address recipient);
+
+    /// @notice Thrown when calling a function on an stream that does not belong to the family of Dynamic streams.
+    error SablierLockup_NotDynamicFamily(Lockup.Family streamFamily);
+
+    /// @notice Thrown when calling a function on an stream that does not belong to the family of Linear streams.
+    error SablierLockup_NotLinearFamily(Lockup.Family streamFamily);
+
+    /// @notice Thrown when calling a function on an stream that does not belong to the family of Tranched streams.
+    error SablierLockup_NotTranchedFamily(Lockup.Family streamFamily);
 
     /// @notice Thrown when trying to transfer Stream NFT when transferability is disabled.
     error SablierLockup_NotTransferable(uint256 tokenId);

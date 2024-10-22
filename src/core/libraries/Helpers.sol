@@ -148,6 +148,24 @@ library Helpers {
         _checkSegments(segments, depositAmount, startTime);
     }
 
+    /// @dev Its just temporary meant to replace the below function.
+    function checkCreateLockupLinear(
+        address sender,
+        uint128 depositAmount,
+        uint40 startTime,
+        uint40 cliffTime,
+        uint40 endTime
+    )
+        internal
+        pure
+    {
+        LockupLinear.Timestamps memory timestamps;
+        timestamps.start = startTime;
+        timestamps.cliff = cliffTime;
+        timestamps.end = endTime;
+        checkCreateLockupLinear(sender, depositAmount, timestamps);
+    }
+
     /// @dev Checks the parameters of the {SablierLockupLinear-_create} function.
     function checkCreateLockupLinear(
         address sender,

@@ -52,6 +52,59 @@ library Lockup {
         uint128 brokerFee;
     }
 
+    /// @notice Struct encapsulating the parameters of the {SablierLockupTranched.createWithDurations} function.
+    /// @param sender The address distributing the assets, with the ability to cancel the stream. It doesn't have to be
+    /// the same as `msg.sender`.
+    /// @param recipient The address receiving the assets, as well as the NFT owner.
+    /// @param totalAmount The total amount, including the deposit and any broker fee, denoted in units of the asset's
+    /// decimals.
+    /// @param asset The contract address of the ERC-20 asset to be distributed.
+    /// @param cancelable Indicates if the stream is cancelable.
+    /// @param transferable Indicates if the stream NFT is transferable.
+    /// @param broker Struct encapsulating (i) the address of the broker assisting in creating the stream, and (ii) the
+    /// percentage fee paid to the broker from `totalAmount`, denoted as a fixed-point number. Both can be set to zero.
+    struct CreateWithDurations {
+        address sender;
+        address recipient;
+        uint128 totalAmount;
+        IERC20 asset;
+        bool cancelable;
+        bool transferable;
+        Broker broker;
+    }
+
+    /// @notice Struct encapsulating the parameters of the {SablierLockupTranched.createWithTimestamps} function.
+    /// @param sender The address distributing the assets, with the ability to cancel the stream. It doesn't have to be
+    /// the same as `msg.sender`.
+    /// @param recipient The address receiving the assets, as well as the NFT owner.
+    /// @param totalAmount The total amount, including the deposit and any broker fee, denoted in units of the asset's
+    /// decimals.
+    /// @param asset The contract address of the ERC-20 asset to be distributed.
+    /// @param cancelable Indicates if the stream is cancelable.
+    /// @param transferable Indicates if the stream NFT is transferable.
+    /// @param startTime The Unix timestamp indicating the stream's start.
+    /// @param tranches Tranches used to compose the tranched distribution function.
+    /// @param broker Struct encapsulating (i) the address of the broker assisting in creating the stream, and (ii) the
+    /// percentage fee paid to the broker from `totalAmount`, denoted as a fixed-point number. Both can be set to zero.
+    struct CreateWithTimestamps {
+        address sender;
+        address recipient;
+        uint128 totalAmount;
+        IERC20 asset;
+        bool cancelable;
+        bool transferable;
+        uint40 startTime;
+        Broker broker;
+    }
+
+    /// @notice Enum representing the different families of lockup streams.
+    /// @dev The family determines the distribution function used to unlock the assets.
+    enum Family {
+        LOCKUP_LINEAR,
+        LOCKUP_DYNAMIC,
+        LOCKUP_TRANCHED
+    }
+
     /// @notice Enum representing the different statuses of a stream.
     /// @dev The status can have a "temperature":
     /// 1. Warm: Pending, Streaming. The passage of time alone can change the status.
@@ -96,8 +149,19 @@ library Lockup {
         bool isDepleted;
         bool isStream;
         bool isTransferable;
+        Family family;
         // slot 2 and 3
         Amounts amounts;
+    }
+
+    /// @notice Struct encapsulating the Lockup timestamps.
+    /// @param start The Unix timestamp for the stream's start.
+    /// @param cliff The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
+    /// @param end The Unix timestamp for the stream's end.
+    struct Timestamps {
+        uint40 start;
+        uint40 cliff;
+        uint40 end;
     }
 }
 
