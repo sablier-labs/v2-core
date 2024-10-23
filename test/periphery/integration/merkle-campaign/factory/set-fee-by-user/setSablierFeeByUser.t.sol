@@ -23,8 +23,10 @@ contract SetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Shar
         merkleFactory.setSablierFeeByUser({ campaignCreator: users.campaignOwner, fee: 0 });
 
         MerkleFactory.SablierFeeByUser memory sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
+
         // It should enable the Sablier fee.
         assertTrue(sablierFee.enabled, "enabled");
+
         // It should set the Sablier fee.
         assertEq(sablierFee.fee, 0, "fee");
     }
@@ -45,8 +47,10 @@ contract SetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Shar
         merkleFactory.setSablierFeeByUser({ campaignCreator: users.campaignOwner, fee: 1 ether });
 
         sablierFee = merkleFactory.sablierFeeByUser(users.campaignOwner);
+
         // It should enable the Sablier fee.
         assertTrue(sablierFee.enabled, "enabled");
+
         // It should set the Sablier fee.
         assertEq(sablierFee.fee, 1 ether, "fee");
     }

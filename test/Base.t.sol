@@ -224,22 +224,6 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                            CALL EXPECTS - MERKLE LOCKUP
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @dev Expects a call to {ISablierMerkleBase.claim} with msgValue as `msg.value`.
-    function expectCallToClaimWithMsgValue(address merkleLockup, uint256 msgValue) internal {
-        vm.expectCall(
-            merkleLockup,
-            msgValue,
-            abi.encodeCall(
-                ISablierMerkleBase.claim,
-                (defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), defaults.index1Proof())
-            )
-        );
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
                                 CALL EXPECTS - LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
@@ -331,5 +315,21 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
             count: count,
             data: abi.encodeCall(ISablierLockupTranched.createWithTimestamps, (params))
         });
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                            CALL EXPECTS - MERKLE LOCKUP
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev Expects a call to {ISablierMerkleBase.claim} with msgValue as `msg.value`.
+    function expectCallToClaimWithMsgValue(address merkleLockup, uint256 msgValue) internal {
+        vm.expectCall(
+            merkleLockup,
+            msgValue,
+            abi.encodeCall(
+                ISablierMerkleBase.claim,
+                (defaults.INDEX1(), users.recipient1, defaults.CLAIM_AMOUNT(), defaults.index1Proof())
+            )
+        );
     }
 }

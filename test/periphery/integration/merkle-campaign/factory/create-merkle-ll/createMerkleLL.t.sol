@@ -107,6 +107,7 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
 
         // It should create the campaign with custom fee.
         assertEq(actualLL.SABLIER_FEE(), customFee, "sablier fee");
+
         // It should set the current factory address.
         assertEq(actualLL.FACTORY(), address(merkleFactory), "factory");
     }
@@ -147,6 +148,7 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
 
         // It should create the campaign with custom fee.
         assertEq(actualLL.SABLIER_FEE(), defaults.DEFAULT_SABLIER_FEE(), "default sablier fee");
+
         // It should set the current factory address.
         assertEq(actualLL.FACTORY(), address(merkleFactory), "factory");
     }

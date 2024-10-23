@@ -2,9 +2,9 @@ Claim_Integration_Test
 ├── given campaign expired
 │  └── it should revert
 └── given campaign not expired
-   ├── given msg value less than sablier fee
+   ├── given msg value less than Sablier fee
    │  └── it should revert
-   └── given msg value not less than sablier fee
+   └── given msg value not less than Sablier fee
       ├── given recipient claimed
       │  └── it should revert
       └── given recipient not claimed
