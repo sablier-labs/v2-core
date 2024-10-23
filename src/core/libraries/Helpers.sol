@@ -1,21 +1,98 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.22;
 
+import { PRBMathCastingUint128 as CastingUint128 } from "@prb/math/src/casting/Uint128.sol";
+import { PRBMathCastingUint40 as CastingUint40 } from "@prb/math/src/casting/Uint40.sol";
+import { SD59x18 } from "@prb/math/src/SD59x18.sol";
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
-
-import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../types/DataTypes.sol";
+import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "./../types/DataTypes.sol";
 import { Errors } from "./Errors.sol";
 
 /// @title Helpers
 /// @notice Library with helper functions needed across the Lockup contracts.
 library Helpers {
+    using CastingUint128 for uint128;
+    using CastingUint40 for uint40;
+
     /*//////////////////////////////////////////////////////////////////////////
                              INTERNAL CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @dev Calculates the streamed amount for a Lockup dynamic stream.
+    ///
+    /// Notes:
+    ///
+    /// 1. Normalization to 18 decimals is not needed because there is no mix of amounts with different decimals.
+    /// 2. The stream's start time must be in the past so that the calculations below do not overflow.
+    /// 3. The stream's end time must be in the future so that the loop below does not panic with an "index out of
+    /// bounds" error.
+    function calculateStreamedAmountForSegments(
+        Lockup.Stream memory stream,
+        LockupDynamic.Segment[] memory segments
+    )
+        public
+        view
+        returns (uint128)
+    {
+        unchecked {
+            uint40 blockTimestamp = uint40(block.timestamp);
+
+            // Sum the amounts in all segments that precede the block timestamp.
+            uint128 previousSegmentAmounts;
+            uint40 currentSegmentTimestamp = segments[0].timestamp;
+            uint256 index = 0;
+            while (currentSegmentTimestamp < blockTimestamp) {
+                previousSegmentAmounts += segments[index].amount;
+                index += 1;
+                currentSegmentTimestamp = segments[index].timestamp;
+            }
+
+            // After exiting the loop, the current segment is at `index`.
+            SD59x18 currentSegmentAmount = segments[index].amount.intoSD59x18();
+            SD59x18 currentSegmentExponent = segments[index].exponent.intoSD59x18();
+            currentSegmentTimestamp = segments[index].timestamp;
+
+            uint40 previousTimestamp;
+            if (index == 0) {
+                // When the current segment's index is equal to 0, the current segment is the first, so use the start
+                // time as the previous timestamp.
+                previousTimestamp = stream.startTime;
+            } else {
+                // Otherwise, when the current segment's index is greater than zero, it means that the segment is not
+                // the first. In this case, use the previous segment's timestamp.
+                previousTimestamp = segments[index - 1].timestamp;
+            }
+
+            // Calculate how much time has passed since the segment started, and the total duration of the segment.
+            SD59x18 elapsedTime = (blockTimestamp - previousTimestamp).intoSD59x18();
+            SD59x18 segmentDuration = (currentSegmentTimestamp - previousTimestamp).intoSD59x18();
+
+            // Divide the elapsed time by the total duration of the segment.
+            SD59x18 elapsedTimePercentage = elapsedTime.div(segmentDuration);
+
+            // Calculate the streamed amount using the special formula.
+            SD59x18 multiplier = elapsedTimePercentage.pow(currentSegmentExponent);
+            SD59x18 segmentStreamedAmount = multiplier.mul(currentSegmentAmount);
+
+            // Although the segment streamed amount should never exceed the total segment amount, this condition is
+            // checked without asserting to avoid locking assets in case of a bug. If this situation occurs, the
+            // amount streamed in the segment is considered zero (except for past withdrawals), and the segment is
+            // effectively voided.
+            if (segmentStreamedAmount.gt(currentSegmentAmount)) {
+                return previousSegmentAmounts > stream.amounts.withdrawn
+                    ? previousSegmentAmounts
+                    : stream.amounts.withdrawn;
+            }
+
+            // Calculate the total streamed amount by adding the previous segment amounts and the amount streamed in
+            // the current segment. Casting to uint128 is safe due to the if statement above.
+            return previousSegmentAmounts + uint128(segmentStreamedAmount.intoUint256());
+        }
+    }
+
     /// @dev Calculate the timestamps and return the segments.
     function calculateSegmentTimestamps(LockupDynamic.SegmentWithDuration[] memory segments)
-        internal
+        public
         view
         returns (LockupDynamic.Segment[] memory segmentsWithTimestamps)
     {
@@ -48,7 +125,7 @@ library Helpers {
 
     /// @dev Calculate the timestamps and return the tranches.
     function calculateTrancheTimestamps(LockupTranched.TrancheWithDuration[] memory tranches)
-        internal
+        public
         view
         returns (LockupTranched.Tranche[] memory tranchesWithTimestamps)
     {
@@ -82,7 +159,7 @@ library Helpers {
         UD60x18 brokerFee,
         UD60x18 maxBrokerFee
     )
-        internal
+        public
         pure
         returns (Lockup.CreateAmounts memory amounts)
     {
@@ -115,7 +192,7 @@ library Helpers {
         uint256 maxSegmentCount,
         uint40 startTime
     )
-        internal
+        public
         pure
     {
         // Check: the sender is not the zero address.
@@ -156,7 +233,7 @@ library Helpers {
         uint40 cliffTime,
         uint40 endTime
     )
-        internal
+        public
         pure
     {
         LockupLinear.Timestamps memory timestamps;
@@ -172,7 +249,7 @@ library Helpers {
         uint128 depositAmount,
         LockupLinear.Timestamps memory timestamps
     )
-        internal
+        public
         pure
     {
         // Check: the sender is not the zero address.
@@ -217,7 +294,7 @@ library Helpers {
         uint256 maxTrancheCount,
         uint40 startTime
     )
-        internal
+        public
         pure
     {
         // Check: the sender is not the zero address.

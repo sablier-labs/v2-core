@@ -4,9 +4,6 @@ pragma solidity >=0.8.22;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import { PRBMathCastingUint128 as CastingUint128 } from "@prb/math/src/casting/Uint128.sol";
-import { PRBMathCastingUint40 as CastingUint40 } from "@prb/math/src/casting/Uint40.sol";
-import { SD59x18 } from "@prb/math/src/SD59x18.sol";
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
 import { SablierLockup } from "./abstracts/SablierLockup.sol";
@@ -30,8 +27,6 @@ import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "./types/Dat
 /// @title SablierLockupOne
 /// @notice See the documentation in {ISablierLockupOne}.
 contract SablierLockupOne is ISablierLockupOne, SablierLockup {
-    using CastingUint128 for uint128;
-    using CastingUint40 for uint40;
     using SafeERC20 for IERC20;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -42,13 +37,13 @@ contract SablierLockupOne is ISablierLockupOne, SablierLockup {
     uint256 public immutable override MAX_COUNT;
 
     /// @dev Cliff times mapped by stream IDs.
-    mapping(uint256 id => uint40 cliff) internal _cliffs;
+    mapping(uint256 => uint40) internal _cliffs;
 
     /// @dev Stream segments mapped by stream IDs. This is useful for lockup dynamic streams..
-    mapping(uint256 id => LockupDynamic.Segment[] segments) internal _segments;
+    mapping(uint256 => LockupDynamic.Segment[]) internal _segments;
 
     /// @dev Stream tranches mapped by stream IDs. This is useful for lockup tranched streams.
-    mapping(uint256 id => LockupTranched.Tranche[] tranches) internal _tranches;
+    mapping(uint256 => LockupTranched.Tranche[]) internal _tranches;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR
@@ -326,7 +321,7 @@ contract SablierLockupOne is ISablierLockupOne, SablierLockup {
         }
 
         // Otherwise, there is only one segment, and the calculation is simpler.
-        return _calculateStreamedAmountForSegments(streamId);
+        return Helpers.calculateStreamedAmountForSegments(_streams[streamId], _segments[streamId]);
     }
 
     /// @dev The distribution function is for Lockup Linear streams:
@@ -423,73 +418,6 @@ contract SablierLockupOne is ISablierLockupOne, SablierLockup {
         }
 
         return streamedAmount;
-    }
-
-    /// @dev Calculates the streamed amount for a Lockup dynamic stream.
-    ///
-    /// Notes:
-    ///
-    /// 1. Normalization to 18 decimals is not needed because there is no mix of amounts with different decimals.
-    /// 2. The stream's start time must be in the past so that the calculations below do not overflow.
-    /// 3. The stream's end time must be in the future so that the loop below does not panic with an "index out of
-    /// bounds" error.
-    function _calculateStreamedAmountForSegments(uint256 streamId) internal view returns (uint128) {
-        unchecked {
-            uint40 blockTimestamp = uint40(block.timestamp);
-            Lockup.Stream memory stream = _streams[streamId];
-            LockupDynamic.Segment[] memory segments = _segments[streamId];
-
-            // Sum the amounts in all segments that precede the block timestamp.
-            uint128 previousSegmentAmounts;
-            uint40 currentSegmentTimestamp = segments[0].timestamp;
-            uint256 index = 0;
-            while (currentSegmentTimestamp < blockTimestamp) {
-                previousSegmentAmounts += segments[index].amount;
-                index += 1;
-                currentSegmentTimestamp = segments[index].timestamp;
-            }
-
-            // After exiting the loop, the current segment is at `index`.
-            SD59x18 currentSegmentAmount = segments[index].amount.intoSD59x18();
-            SD59x18 currentSegmentExponent = segments[index].exponent.intoSD59x18();
-            currentSegmentTimestamp = segments[index].timestamp;
-
-            uint40 previousTimestamp;
-            if (index == 0) {
-                // When the current segment's index is equal to 0, the current segment is the first, so use the start
-                // time as the previous timestamp.
-                previousTimestamp = stream.startTime;
-            } else {
-                // Otherwise, when the current segment's index is greater than zero, it means that the segment is not
-                // the first. In this case, use the previous segment's timestamp.
-                previousTimestamp = segments[index - 1].timestamp;
-            }
-
-            // Calculate how much time has passed since the segment started, and the total duration of the segment.
-            SD59x18 elapsedTime = (blockTimestamp - previousTimestamp).intoSD59x18();
-            SD59x18 segmentDuration = (currentSegmentTimestamp - previousTimestamp).intoSD59x18();
-
-            // Divide the elapsed time by the total duration of the segment.
-            SD59x18 elapsedTimePercentage = elapsedTime.div(segmentDuration);
-
-            // Calculate the streamed amount using the special formula.
-            SD59x18 multiplier = elapsedTimePercentage.pow(currentSegmentExponent);
-            SD59x18 segmentStreamedAmount = multiplier.mul(currentSegmentAmount);
-
-            // Although the segment streamed amount should never exceed the total segment amount, this condition is
-            // checked without asserting to avoid locking assets in case of a bug. If this situation occurs, the
-            // amount streamed in the segment is considered zero (except for past withdrawals), and the segment is
-            // effectively voided.
-            if (segmentStreamedAmount.gt(currentSegmentAmount)) {
-                return previousSegmentAmounts > stream.amounts.withdrawn
-                    ? previousSegmentAmounts
-                    : stream.amounts.withdrawn;
-            }
-
-            // Calculate the total streamed amount by adding the previous segment amounts and the amount streamed in
-            // the current segment. Casting to uint128 is safe due to the if statement above.
-            return previousSegmentAmounts + uint128(segmentStreamedAmount.intoUint256());
-        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////
