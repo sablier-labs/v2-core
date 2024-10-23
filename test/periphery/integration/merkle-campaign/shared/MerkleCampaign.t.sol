@@ -40,11 +40,6 @@ abstract contract MerkleCampaign_Integration_Shared_Test is MerkleCampaign_Integ
         _;
     }
 
-    modifier whenCallerAdmin() {
-        resetPrank({ msgSender: users.admin });
-        _;
-    }
-
     modifier whenExpirationNotZero() {
         _;
     }

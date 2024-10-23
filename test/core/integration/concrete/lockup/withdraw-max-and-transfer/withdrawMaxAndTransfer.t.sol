@@ -2,20 +2,14 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Integration_Test } from "./../../../Integration.t.sol";
-import { WithdrawMaxAndTransfer_Integration_Shared_Test } from "./../../../shared/lockup/withdrawMaxAndTransfer.t.sol";
 
-abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
-    Integration_Test,
-    WithdrawMaxAndTransfer_Integration_Shared_Test
-{
-    function setUp() public virtual override(Integration_Test, WithdrawMaxAndTransfer_Integration_Shared_Test) {
-        WithdrawMaxAndTransfer_Integration_Shared_Test.setUp();
-    }
-
+abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_DelegateCall() external {
         bytes memory callData = abi.encodeCall(ISablierLockup.withdrawMaxAndTransfer, (defaultStreamId, users.alice));
         (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
@@ -30,11 +24,14 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
 
     function test_RevertGiven_NonTransferableStream() external whenNoDelegateCall givenNotNull {
         uint256 notTransferableStreamId = createDefaultStreamNotTransferable();
+        resetPrank({ msgSender: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_NotTransferable.selector, notTransferableStreamId));
         lockup.withdrawMaxAndTransfer({ streamId: notTransferableStreamId, newRecipient: users.recipient });
     }
 
     function test_RevertGiven_BurnedNFT() external whenNoDelegateCall givenNotNull givenTransferableStream {
+        resetPrank({ msgSender: users.recipient });
+
         // Deplete the stream.
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -53,6 +50,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         givenNotNull
         givenTransferableStream
         givenNotBurnedNFT
+        whenCallerRecipient(users.recipient)
     {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -62,7 +60,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
 
         // It should emit {Transfer} event on NFT.
         vm.expectEmit({ emitter: address(lockup) });
-        emit Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
+        emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
     }
@@ -91,6 +89,8 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         givenNotBurnedNFT
         givenNonZeroWithdrawableAmount
     {
+        resetPrank({ msgSender: users.recipient });
+
         // Approve the operator to handle the stream.
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });
 
@@ -108,14 +108,14 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
 
         // It should emit {Transfer} and {WithdrawFromLockupStream} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
             amount: expectedWithdrawnAmount,
             asset: dai
         });
         vm.expectEmit({ emitter: address(lockup) });
-        emit Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
+        emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
         // Make the max withdrawal and transfer the NFT.
         uint128 actualWithdrawnAmount =
@@ -137,6 +137,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
         givenTransferableStream
         givenNotBurnedNFT
         givenNonZeroWithdrawableAmount
+        whenCallerRecipient(users.recipient)
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -149,16 +150,16 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is
 
         // It should emit {Transfer}, {WithdrawFromLockupStream} and {MetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream({
+        emit ISablierLockup.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
             amount: expectedWithdrawnAmount,
             asset: dai
         });
         vm.expectEmit({ emitter: address(lockup) });
-        emit MetadataUpdate({ _tokenId: defaultStreamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: defaultStreamId });
         vm.expectEmit({ emitter: address(lockup) });
-        emit Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
+        emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
         // Make the max withdrawal and transfer the NFT.
         uint128 actualWithdrawnAmount =

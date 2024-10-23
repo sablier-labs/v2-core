@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
+
+import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../Integration.t.sol";
-import { Withdraw_Integration_Shared_Test } from "./../../shared/lockup/withdraw.t.sol";
 
-abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_Integration_Shared_Test {
-    function setUp() public virtual override(Integration_Test, Withdraw_Integration_Shared_Test) {
-        Withdraw_Integration_Shared_Test.setUp();
-    }
+import { Integration_Test } from "../../Integration.t.sol";
 
+abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - Multiple caller addresses.
@@ -50,12 +49,15 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus
+        givenNotDEPLETEDStatus(defaults.START_TIME())
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
     {
         vm.assume(to != address(0));
+
+        // Make the recipient the caller to approve the operator.
+        resetPrank({ msgSender: users.recipient });
 
         // Approve the operator to handle the stream.
         lockup.approve({ to: users.operator, tokenId: defaultStreamId });
@@ -96,7 +98,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
-        whenCallerRecipient
+        whenCallerRecipient(users.recipient)
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
         vm.assume(to != address(0));
@@ -118,9 +120,9 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream(defaultStreamId, to, dai, withdrawAmount);
+        emit ISablierLockup.WithdrawFromLockupStream(defaultStreamId, to, dai, withdrawAmount);
         vm.expectEmit({ emitter: address(lockup) });
-        emit MetadataUpdate({ _tokenId: defaultStreamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: defaultStreamId });
 
         // Make the withdrawal.
         lockup.withdraw({ streamId: defaultStreamId, to: to, amount: withdrawAmount });
@@ -160,6 +162,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
         external
         whenNoDelegateCall
         givenNotNull
+        whenCallerRecipient(users.recipient)
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
@@ -180,9 +183,9 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test, Withdraw_I
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit WithdrawFromLockupStream(defaultStreamId, to, dai, withdrawAmount);
+        emit ISablierLockup.WithdrawFromLockupStream(defaultStreamId, to, dai, withdrawAmount);
         vm.expectEmit({ emitter: address(lockup) });
-        emit MetadataUpdate({ _tokenId: defaultStreamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: defaultStreamId });
 
         // Make the withdrawal.
         lockup.withdraw(defaultStreamId, to, withdrawAmount);

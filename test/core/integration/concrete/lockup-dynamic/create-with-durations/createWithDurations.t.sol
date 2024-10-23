@@ -1,27 +1,18 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 
 import { ISablierLockupDynamic } from "src/core/interfaces/ISablierLockupDynamic.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
-import { CreateWithDurations_Integration_Shared_Test } from "../../../shared/lockup/createWithDurations.t.sol";
-import { LockupDynamic_Integration_Concrete_Test } from "../LockupDynamic.t.sol";
+import { LockupDynamic_Integration_Shared_Test } from "../LockupDynamic.t.sol";
 
-contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
-    LockupDynamic_Integration_Concrete_Test,
-    CreateWithDurations_Integration_Shared_Test
-{
-    function setUp()
-        public
-        virtual
-        override(LockupDynamic_Integration_Concrete_Test, CreateWithDurations_Integration_Shared_Test)
-    {
-        LockupDynamic_Integration_Concrete_Test.setUp();
-        CreateWithDurations_Integration_Shared_Test.setUp();
-        streamId = lockupDynamic.nextStreamId();
+contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Integration_Shared_Test {
+    function setUp() public virtual override(LockupDynamic_Integration_Shared_Test) {
+        LockupDynamic_Integration_Shared_Test.setUp();
     }
 
     function test_RevertWhen_DelegateCall() external {
@@ -136,6 +127,8 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
         segments[0].timestamp = timestamps.start + segmentsWithDurations[0].duration;
         segments[1].timestamp = segments[0].timestamp + segmentsWithDurations[1].duration;
 
+        uint256 streamId = lockupDynamic.nextStreamId();
+
         // It should perform the ERC-20 transfers.
         expectCallToTransferFrom({ from: funder, to: address(lockupDynamic), value: defaults.DEPOSIT_AMOUNT() });
 
@@ -144,9 +137,9 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is
 
         // It should emit {CreateLockupDynamicStream} and {MetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockupDynamic) });
-        emit MetadataUpdate({ _tokenId: streamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: streamId });
         vm.expectEmit({ emitter: address(lockupDynamic) });
-        emit CreateLockupDynamicStream({
+        emit ISablierLockupDynamic.CreateLockupDynamicStream({
             streamId: streamId,
             funder: funder,
             sender: users.sender,

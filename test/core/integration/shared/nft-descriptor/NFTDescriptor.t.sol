@@ -2,13 +2,13 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { NFTDescriptorMock } from "test/mocks/NFTDescriptorMock.sol";
-import { Integration_Test } from "./../../Integration.t.sol";
+import { Base_Test } from "test/Base.t.sol";
 
-abstract contract NFTDescriptor_Integration_Shared_Test is Integration_Test {
+abstract contract NFTDescriptor_Integration_Shared_Test is Base_Test {
     NFTDescriptorMock internal nftDescriptorMock;
 
     function setUp() public virtual override {
-        Integration_Test.setUp();
+        Base_Test.setUp();
         deployConditionally();
     }
 

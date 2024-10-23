@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { IAdminable } from "src/core/interfaces/IAdminable.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 
 import { Adminable_Unit_Shared_Test } from "../../../shared/Adminable.t.sol";
@@ -15,14 +16,10 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         adminableMock.transferAdmin(users.eve);
     }
 
-    modifier whenCallerAdmin() {
-        _;
-    }
-
-    function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
+    function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerRecipient(users.admin) {
         // It should emit a {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
-        emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.admin });
+        emit IAdminable.TransferAdmin({ oldAdmin: users.admin, newAdmin: users.admin });
 
         // Transfer the admin.
         adminableMock.transferAdmin(users.admin);
@@ -33,14 +30,14 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         assertEq(actualAdmin, expectedAdmin, "admin");
     }
 
-    modifier whenNewAdminNotSameAsCurrentAdmin() {
-        _;
-    }
-
-    function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
+    function test_WhenNewAdminZeroAddress()
+        external
+        whenCallerRecipient(users.admin)
+        whenNewAdminNotSameAsCurrentAdmin
+    {
         // It should emit a {TransferAdmin}.
         vm.expectEmit({ emitter: address(adminableMock) });
-        emit TransferAdmin({ oldAdmin: users.admin, newAdmin: address(0) });
+        emit IAdminable.TransferAdmin({ oldAdmin: users.admin, newAdmin: address(0) });
 
         // Transfer the admin.
         adminableMock.transferAdmin(address(0));
@@ -51,10 +48,14 @@ contract TransferAdmin_Unit_Concrete_Test is Adminable_Unit_Shared_Test {
         assertEq(actualAdmin, expectedAdmin, "admin");
     }
 
-    function test_WhenNewAdminNotZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
+    function test_WhenNewAdminNotZeroAddress()
+        external
+        whenCallerRecipient(users.admin)
+        whenNewAdminNotSameAsCurrentAdmin
+    {
         // It should emit a {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
-        emit TransferAdmin({ oldAdmin: users.admin, newAdmin: users.alice });
+        emit IAdminable.TransferAdmin({ oldAdmin: users.admin, newAdmin: users.alice });
 
         // Transfer the admin.
         adminableMock.transferAdmin(users.alice);
