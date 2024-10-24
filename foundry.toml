@@ -100,7 +100,7 @@
   scroll = { key = "${SCROLLSCAN_API_KEY}" }
   sepolia = { key = "${SEPOLIASCAN_KEY}" }
   taiko_mainnet = { key = "${TAIKO_MAINNET_API_KEY}" }
-  
+
 [fmt]
   bracket_spacing = true
   int_types = "long"
