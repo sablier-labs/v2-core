@@ -113,7 +113,8 @@ abstract contract MerkleInstant_Fork_Test is Fork_Test {
             merkleInstant: ISablierMerkleInstant(vars.expectedMerkleInstant),
             baseParams: vars.baseParams,
             aggregateAmount: vars.aggregateAmount,
-            recipientCount: vars.recipientCount
+            recipientCount: vars.recipientCount,
+            sablierFee: sablierFee
         });
 
         vars.merkleInstant = merkleFactory.createMerkleInstant({

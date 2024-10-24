@@ -121,7 +121,8 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             transferable: defaults.TRANSFERABLE(),
             schedule: defaults.schedule(),
             aggregateAmount: vars.aggregateAmount,
-            recipientCount: vars.recipientCount
+            recipientCount: vars.recipientCount,
+            sablierFee: sablierFee
         });
 
         vars.merkleLL = merkleFactory.createMerkleLL({

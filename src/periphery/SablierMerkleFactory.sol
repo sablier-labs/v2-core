@@ -152,7 +152,7 @@ contract SablierMerkleFactory is
         merkleInstant = new SablierMerkleInstant{ salt: salt }(baseParams, sablierFee);
 
         // Log the creation of the MerkleInstant contract, including some metadata that is not stored on-chain.
-        emit CreateMerkleInstant(merkleInstant, baseParams, aggregateAmount, recipientCount);
+        emit CreateMerkleInstant(merkleInstant, baseParams, aggregateAmount, recipientCount, sablierFee);
     }
 
     /// @inheritdoc ISablierMerkleFactory
@@ -195,7 +195,15 @@ contract SablierMerkleFactory is
 
         // Log the creation of the MerkleLL contract, including some metadata that is not stored on-chain.
         emit CreateMerkleLL(
-            merkleLL, baseParams, lockupLinear, cancelable, transferable, schedule, aggregateAmount, recipientCount
+            merkleLL,
+            baseParams,
+            lockupLinear,
+            cancelable,
+            transferable,
+            schedule,
+            aggregateAmount,
+            recipientCount,
+            sablierFee
         );
     }
 
@@ -224,9 +232,12 @@ contract SablierMerkleFactory is
             }
         }
 
+        // Compute the Sablier fee for the user.
+        uint256 sablierFee = _computeSablierFeeForUser(msg.sender);
+
         // Deploy the MerkleLT contract.
         merkleLT = _deployMerkleLT(
-            baseParams, lockupTranched, cancelable, transferable, streamStartTime, tranchesWithPercentages
+            baseParams, lockupTranched, cancelable, transferable, streamStartTime, tranchesWithPercentages, sablierFee
         );
 
         // Log the creation of the MerkleLT contract, including some metadata that is not stored on-chain.
@@ -240,7 +251,8 @@ contract SablierMerkleFactory is
             tranchesWithPercentages,
             totalDuration,
             aggregateAmount,
-            recipientCount
+            recipientCount,
+            sablierFee
         );
     }
 
@@ -261,7 +273,8 @@ contract SablierMerkleFactory is
         bool cancelable,
         bool transferable,
         uint40 streamStartTime,
-        MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages
+        MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages,
+        uint256 sablierFee
     )
         private
         returns (ISablierMerkleLT merkleLT)
@@ -283,9 +296,6 @@ contract SablierMerkleFactory is
                 abi.encode(tranchesWithPercentages)
             )
         );
-
-        // Compute the Sablier fee for the user.
-        uint256 sablierFee = _computeSablierFeeForUser(msg.sender);
 
         // Deploy the MerkleLT contract with CREATE2.
         merkleLT = new SablierMerkleLT{ salt: salt }(

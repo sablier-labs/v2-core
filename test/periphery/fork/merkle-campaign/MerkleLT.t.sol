@@ -124,7 +124,8 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             totalDuration: defaults.TOTAL_DURATION(),
             aggregateAmount: vars.aggregateAmount,
-            recipientCount: vars.recipientCount
+            recipientCount: vars.recipientCount,
+            sablierFee: sablierFee
         });
 
         vars.merkleLT = merkleFactory.createMerkleLT({

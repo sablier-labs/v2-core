@@ -104,7 +104,8 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             totalDuration: defaults.TOTAL_DURATION(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
-            recipientCount: defaults.RECIPIENT_COUNT()
+            recipientCount: defaults.RECIPIENT_COUNT(),
+            sablierFee: customFee
         });
 
         ISablierMerkleLT actualLT = createMerkleLT(campaignOwner, expiration);
@@ -145,7 +146,8 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
             tranchesWithPercentages: defaults.tranchesWithPercentages(),
             totalDuration: defaults.TOTAL_DURATION(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
-            recipientCount: defaults.RECIPIENT_COUNT()
+            recipientCount: defaults.RECIPIENT_COUNT(),
+            sablierFee: defaults.DEFAULT_SABLIER_FEE()
         });
 
         ISablierMerkleLT actualLT = createMerkleLT(campaignOwner, expiration);

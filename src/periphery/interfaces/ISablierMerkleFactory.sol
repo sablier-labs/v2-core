@@ -28,7 +28,8 @@ interface ISablierMerkleFactory is IAdminable {
         ISablierMerkleInstant indexed merkleInstant,
         MerkleBase.ConstructorParams baseParams,
         uint256 aggregateAmount,
-        uint256 recipientCount
+        uint256 recipientCount,
+        uint256 sablierFee
     );
 
     /// @notice Emitted when a {SablierMerkleLL} campaign is created.
@@ -40,7 +41,8 @@ interface ISablierMerkleFactory is IAdminable {
         bool transferable,
         MerkleLL.Schedule schedule,
         uint256 aggregateAmount,
-        uint256 recipientCount
+        uint256 recipientCount,
+        uint256 sablierFee
     );
 
     /// @notice Emitted when a {SablierMerkleLT} campaign is created.
@@ -54,7 +56,8 @@ interface ISablierMerkleFactory is IAdminable {
         MerkleLT.TrancheWithPercentage[] tranchesWithPercentages,
         uint256 totalDuration,
         uint256 aggregateAmount,
-        uint256 recipientCount
+        uint256 recipientCount,
+        uint256 sablierFee
     );
 
     /// @notice Emitted when the admin resets Sablier fee to default for a specific user.

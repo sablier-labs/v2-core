@@ -112,7 +112,8 @@ abstract contract Events {
         ISablierMerkleInstant indexed merkleInstant,
         MerkleBase.ConstructorParams baseParams,
         uint256 aggregateAmount,
-        uint256 recipientCount
+        uint256 recipientCount,
+        uint256 sablierFee
     );
 
     event CreateMerkleLL(
@@ -123,7 +124,8 @@ abstract contract Events {
         bool transferable,
         MerkleLL.Schedule schedule,
         uint256 aggregateAmount,
-        uint256 recipientCount
+        uint256 recipientCount,
+        uint256 sablierFee
     );
 
     event CreateMerkleLT(
@@ -136,7 +138,8 @@ abstract contract Events {
         MerkleLT.TrancheWithPercentage[] tranchesWithPercentages,
         uint256 totalDuration,
         uint256 aggregateAmount,
-        uint256 recipientCount
+        uint256 recipientCount,
+        uint256 sablierFee
     );
 
     event ResetSablierFee(address indexed admin, address indexed campaignCreator);

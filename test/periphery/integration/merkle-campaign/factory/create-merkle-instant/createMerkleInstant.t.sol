@@ -80,7 +80,8 @@ contract CreateMerkleInstant_Integration_Test is MerkleCampaign_Integration_Test
             merkleInstant: ISablierMerkleInstant(expectedMerkleInstant),
             baseParams: baseParams,
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
-            recipientCount: defaults.RECIPIENT_COUNT()
+            recipientCount: defaults.RECIPIENT_COUNT(),
+            sablierFee: customFee
         });
 
         ISablierMerkleInstant actualInstant = createMerkleInstant(campaignOwner, expiration);
@@ -119,7 +120,8 @@ contract CreateMerkleInstant_Integration_Test is MerkleCampaign_Integration_Test
             merkleInstant: ISablierMerkleInstant(expectedMerkleInstant),
             baseParams: baseParams,
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
-            recipientCount: defaults.RECIPIENT_COUNT()
+            recipientCount: defaults.RECIPIENT_COUNT(),
+            sablierFee: defaults.DEFAULT_SABLIER_FEE()
         });
 
         ISablierMerkleInstant actualInstant = createMerkleInstant(campaignOwner, expiration);
