@@ -38,7 +38,6 @@ contract SablierMerkleFactory is
                                      CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial contract admin.
     constructor(address initialAdmin) Adminable(initialAdmin) { }
 

@@ -48,7 +48,6 @@ abstract contract SablierLockup is
                                      CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialNFTDescriptor The address of the initial NFT descriptor.
     constructor(address initialAdmin, ILockupNFTDescriptor initialNFTDescriptor) Adminable(initialAdmin) {

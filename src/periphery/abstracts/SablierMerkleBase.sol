@@ -55,7 +55,6 @@ abstract contract SablierMerkleBase is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Constructs the contract by initializing the immutable state variables.
-    /// @dev Emits a {TransferAdmin} event.
     constructor(MerkleBase.ConstructorParams memory params, uint256 sablierFee) Adminable(params.initialAdmin) {
         // Check: the campaign name is not greater than 32 bytes
         if (bytes(params.name).length > 32) {
