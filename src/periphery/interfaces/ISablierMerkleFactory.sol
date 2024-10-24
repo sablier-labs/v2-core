@@ -206,7 +206,8 @@ interface ISablierMerkleFactory is IAdminable {
     /// @dev Emits a {SetDefaultSablierFee} event.
     ///
     /// Notes:
-    /// - The new default fee will only be applied to the future campaigns.
+    /// - The new default fee will only be applied to the future campaigns and will not affect the ones already
+    /// deployed.
     ///
     /// Requirements:
     /// - msg.sender must be the admin.

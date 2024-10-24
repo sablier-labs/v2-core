@@ -321,6 +321,22 @@ abstract contract Base_Test is Assertions, Calculations, Constants, DeployOptimi
                             CALL EXPECTS - MERKLE LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @dev Expects a call to {ISablierMerkleBase.claim} with data provided.
+    function expectCallToClaimWithData(
+        address merkleLockup,
+        uint256 sablierFee,
+        uint256 index,
+        address recipient,
+        uint128 amount,
+        bytes32[] memory merkleProof
+    )
+        internal
+    {
+        vm.expectCall(
+            merkleLockup, sablierFee, abi.encodeCall(ISablierMerkleBase.claim, (index, recipient, amount, merkleProof))
+        );
+    }
+
     /// @dev Expects a call to {ISablierMerkleBase.claim} with msgValue as `msg.value`.
     function expectCallToClaimWithMsgValue(address merkleLockup, uint256 msgValue) internal {
         vm.expectCall(

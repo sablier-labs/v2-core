@@ -4,7 +4,6 @@ pragma solidity >=0.8.22 <0.9.0;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { Arrays } from "@openzeppelin/contracts/utils/Arrays.sol";
 import { Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
-import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { ISablierMerkleLL } from "src/periphery/interfaces/ISablierMerkleLL.sol";
 import { MerkleBase } from "src/periphery/types/DataTypes.sol";
 import { MerkleBuilder } from "./../../../utils/MerkleBuilder.sol";
@@ -176,20 +175,14 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             vars.merkleProof = getProof(leaves.toBytes32(), vars.leafPos);
         }
 
-        // Expect call to `claim` with `sablierFee` as msg.value on the merkleLL contract.
-        vm.expectCall(
-            address(vars.merkleLL),
-            sablierFee,
-            abi.encodeCall(
-                ISablierMerkleBase.claim,
-                (
-                    vars.indexes[params.posBeforeSort],
-                    vars.recipients[params.posBeforeSort],
-                    vars.amounts[params.posBeforeSort],
-                    vars.merkleProof
-                )
-            )
-        );
+        expectCallToClaimWithData({
+            merkleLockup: address(vars.merkleLL),
+            sablierFee: sablierFee,
+            index: vars.indexes[params.posBeforeSort],
+            recipient: vars.recipients[params.posBeforeSort],
+            amount: vars.amounts[params.posBeforeSort],
+            merkleProof: vars.merkleProof
+        });
 
         vars.merkleLL.claim{ value: sablierFee }({
             index: vars.indexes[params.posBeforeSort],

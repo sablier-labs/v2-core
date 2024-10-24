@@ -245,11 +245,11 @@ contract SablierMerkleFactory is
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                           INTERNAL NON-CONSTANT FUNCTIONS
+                           PRIVATE NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Computes the Sablier fee for the user, use the default fee if not enabled.
-    function _computeSablierFeeForUser(address user) internal view returns (uint256) {
+    function _computeSablierFeeForUser(address user) private view returns (uint256) {
         return _sablierFeeByUsers[user].enabled ? _sablierFeeByUsers[user].fee : defaultSablierFee;
     }
 
@@ -263,7 +263,7 @@ contract SablierMerkleFactory is
         uint40 streamStartTime,
         MerkleLT.TrancheWithPercentage[] memory tranchesWithPercentages
     )
-        internal
+        private
         returns (ISablierMerkleLT merkleLT)
     {
         // Hash the parameters to generate a salt.
