@@ -6,9 +6,9 @@ import { Errors as CoreErrors } from "src/core/libraries/Errors.sol";
 import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { MerkleFactory } from "src/periphery/types/DataTypes.sol";
 
-import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
+import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
 
-contract SetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Shared_Test {
+contract SetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
         resetPrank({ msgSender: users.eve });
         vm.expectRevert(abi.encodeWithSelector(CoreErrors.CallerNotAdmin.selector, users.admin, users.eve));

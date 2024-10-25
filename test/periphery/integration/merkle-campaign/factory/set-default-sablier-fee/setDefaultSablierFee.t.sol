@@ -5,9 +5,9 @@ import { Errors as CoreErrors } from "src/core/libraries/Errors.sol";
 
 import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 
-import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
+import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
 
-contract SetDefaultSablierFee_Integration_Test is MerkleCampaign_Integration_Shared_Test {
+contract SetDefaultSablierFee_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
         uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
         resetPrank({ msgSender: users.eve });

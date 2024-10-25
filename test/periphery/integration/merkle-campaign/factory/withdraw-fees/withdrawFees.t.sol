@@ -7,11 +7,11 @@ import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.
 import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
 
-import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
+import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
 
-contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Shared_Test {
+contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
     function setUp() public virtual override {
-        MerkleCampaign_Integration_Shared_Test.setUp();
+        MerkleCampaign_Integration_Test.setUp();
 
         // Set the `merkleBase` to the merkleLL contract to use it in the tests.
         merkleBase = ISablierMerkleBase(merkleLL);

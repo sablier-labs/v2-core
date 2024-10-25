@@ -9,11 +9,11 @@ import { Errors } from "src/periphery/libraries/Errors.sol";
 import { MerkleLT } from "src/periphery/types/DataTypes.sol";
 
 import { Claim_Integration_Test } from "../../shared/claim/claim.t.sol";
-import { MerkleLT_Integration_Shared_Test } from "../MerkleLT.t.sol";
+import { MerkleLT_Integration_Shared_Test, MerkleCampaign_Integration_Test } from "../MerkleLT.t.sol";
 
 contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Integration_Shared_Test {
-    function setUp() public override(Claim_Integration_Test, MerkleLT_Integration_Shared_Test) {
-        super.setUp();
+    function setUp() public virtual override(MerkleLT_Integration_Shared_Test, MerkleCampaign_Integration_Test) {
+        MerkleLT_Integration_Shared_Test.setUp();
     }
 
     function test_RevertWhen_TotalPercentageLessThan100() external whenMerkleProofValid whenTotalPercentageNot100 {

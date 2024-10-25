@@ -3,13 +3,9 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Errors } from "src/periphery/libraries/Errors.sol";
 
-import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
+import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
 
-abstract contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Shared_Test {
-    function setUp() public virtual override {
-        MerkleCampaign_Integration_Shared_Test.setUp();
-    }
-
+abstract contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertWhen_CallerNotFactory() external {
         // Set the caller to anything other than the factory.
         resetPrank(users.admin);

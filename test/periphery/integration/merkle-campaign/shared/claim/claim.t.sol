@@ -3,13 +3,9 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Errors } from "src/periphery/libraries/Errors.sol";
 
-import { MerkleCampaign_Integration_Shared_Test } from "../MerkleCampaign.t.sol";
+import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
 
-abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Shared_Test {
-    function setUp() public virtual override {
-        MerkleCampaign_Integration_Shared_Test.setUp();
-    }
-
+abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertGiven_CampaignExpired() external {
         uint40 expiration = defaults.EXPIRATION();
         uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
