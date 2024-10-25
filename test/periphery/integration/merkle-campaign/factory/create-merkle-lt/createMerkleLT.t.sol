@@ -38,10 +38,6 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         );
     }
 
-    modifier whenNameNotTooLong() {
-        _;
-    }
-
     /// @dev This test works because a default MerkleLT contract is deployed in {Integration_Test.setUp}
     function test_RevertGiven_CampaignAlreadyExists() external whenNameNotTooLong {
         MerkleBase.ConstructorParams memory baseParams = defaults.baseParams();
@@ -64,10 +60,6 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
             aggregateAmount,
             recipientCount
         );
-    }
-
-    modifier givenCampaignNotExists() {
-        _;
     }
 
     function test_GivenCustomFeeSet(
@@ -95,7 +87,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
 
         // It should emit a {CreateMerkleLT} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit CreateMerkleLT({
+        emit ISablierMerkleFactory.CreateMerkleLT({
             merkleLT: ISablierMerkleLT(expectedLT),
             baseParams: baseParams,
             lockupTranched: lockupTranched,

@@ -3,6 +3,8 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Errors as CoreErrors } from "src/core/libraries/Errors.sol";
 
+import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
+
 import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
 
 contract SetDefaultSablierFee_Integration_Test is MerkleCampaign_Integration_Shared_Test {
@@ -18,7 +20,10 @@ contract SetDefaultSablierFee_Integration_Test is MerkleCampaign_Integration_Sha
 
         // It should emit a {SetDefaultSablierFee} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit SetDefaultSablierFee({ admin: users.admin, sablierFee: defaults.DEFAULT_SABLIER_FEE() });
+        emit ISablierMerkleFactory.SetDefaultSablierFee({
+            admin: users.admin,
+            defaultSablierFee: defaults.DEFAULT_SABLIER_FEE()
+        });
 
         merkleFactory.setDefaultSablierFee({ defaultFee: defaults.DEFAULT_SABLIER_FEE() });
 

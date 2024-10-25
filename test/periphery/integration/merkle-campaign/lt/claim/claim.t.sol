@@ -16,10 +16,6 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
         super.setUp();
     }
 
-    modifier whenTotalPercentageNot100() {
-        _;
-    }
-
     function test_RevertWhen_TotalPercentageLessThan100() external whenMerkleProofValid whenTotalPercentageNot100 {
         uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
 
@@ -91,10 +87,6 @@ contract Claim_MerkleLT_Integration_Test is Claim_Integration_Test, MerkleLT_Int
             amount: 10_000e18,
             merkleProof: merkleProof
         });
-    }
-
-    modifier whenTotalPercentage100() {
-        _;
     }
 
     function test_WhenStreamStartTimeZero() external whenMerkleProofValid whenTotalPercentage100 {

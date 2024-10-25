@@ -16,10 +16,6 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
         schedule = defaults.schedule();
     }
 
-    modifier whenScheduledStartTimeZero() {
-        _;
-    }
-
     function test_WhenScheduledCliffDurationZero() external whenMerkleProofValid whenScheduledStartTimeZero {
         schedule.cliffDuration = 0;
 

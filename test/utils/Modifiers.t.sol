@@ -10,11 +10,6 @@ abstract contract Modifiers is Utils {
                                        COMMON
     //////////////////////////////////////////////////////////////////////////*/
 
-    modifier whenCallerRecipient(address recipient) {
-        resetPrank({ msgSender: recipient });
-        _;
-    }
-
     modifier givenCliffTimeNotInFuture(uint256 timestamp) {
         vm.warp({ newTimestamp: timestamp });
         _;
@@ -80,6 +75,11 @@ abstract contract Modifiers is Utils {
         _;
     }
 
+    modifier whenCallerRecipient(address recipient) {
+        resetPrank({ msgSender: recipient });
+        _;
+    }
+
     modifier whenCallerSender(address sender) {
         resetPrank({ msgSender: sender });
         _;
@@ -92,10 +92,6 @@ abstract contract Modifiers is Utils {
     modifier whenNonRevertingRecipient() {
         _;
     }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                   ALLOW-TO-HOOK
-    //////////////////////////////////////////////////////////////////////////*/
 
     modifier whenProvidedAddressContract() {
         _;
@@ -120,6 +116,80 @@ abstract contract Modifiers is Utils {
     }
 
     modifier givenTransferableNFT() {
+        _;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                  CAMPAIGN-COMMON
+    //////////////////////////////////////////////////////////////////////////*/
+
+    modifier givenCampaignNotExpired() {
+        _;
+    }
+
+    modifier givenMsgValueNotLessThanSablierFee() {
+        _;
+    }
+
+    modifier givenRecipientNotClaimed() {
+        _;
+    }
+
+    modifier givenSevenDaysPassed() {
+        vm.warp({ newTimestamp: getBlockTimestamp() + 8 days });
+        _;
+    }
+
+    modifier whenAmountValid() {
+        _;
+    }
+
+    modifier whenCallerCampaignOwner(address campaignOwner) {
+        resetPrank({ msgSender: campaignOwner });
+        _;
+    }
+
+    modifier whenExpirationNotZero() {
+        _;
+    }
+
+    modifier whenIndexInMerkleTree() {
+        _;
+    }
+
+    modifier whenIndexValid() {
+        _;
+    }
+
+    modifier whenMerkleProofValid() {
+        _;
+    }
+
+    modifier whenPercentagesSumNot100Pct() {
+        _;
+    }
+
+    modifier whenPercentagesSumNotOverflow() {
+        _;
+    }
+
+    modifier whenProvidedMerkleLockupValid() {
+        _;
+    }
+
+    modifier whenRecipientValid() {
+        _;
+    }
+
+    modifier whenScheduledStartTimeZero() {
+        _;
+    }
+
+    modifier whenTotalPercentage100() {
+        _;
+    }
+
+    modifier whenTotalPercentageNot100() {
         _;
     }
 
@@ -244,6 +314,18 @@ abstract contract Modifiers is Utils {
     }
 
     modifier whenTrancheTimestampsAreOrdered() {
+        _;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                   CREATE-MERKLE
+    //////////////////////////////////////////////////////////////////////////*/
+
+    modifier givenCampaignNotExists() {
+        _;
+    }
+
+    modifier whenNameNotTooLong() {
         _;
     }
 

@@ -31,45 +31,12 @@ abstract contract MerkleCampaign_Integration_Shared_Test is MerkleCampaign_Integ
                                    MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    modifier givenCampaignNotExpired() {
-        _;
-    }
-
-    modifier givenSevenDaysPassed() {
-        vm.warp({ newTimestamp: getBlockTimestamp() + 8 days });
-        _;
-    }
-
-    modifier whenCallerAdmin() {
-        resetPrank({ msgSender: users.admin });
-        _;
-    }
-
-    modifier whenCallerCampaignOwner() {
-        resetPrank({ msgSender: users.campaignOwner });
-        _;
-    }
-
-    modifier whenExpirationNotZero() {
-        _;
-    }
-
     modifier whenFirstClaimMade() {
-        // Reset the prank to the recipient to make the first claim.
-        resetPrank({ msgSender: users.recipient });
         // Make the first claim to set `_firstClaimTime`.
         claim();
 
         // Reset the prank back to the campaign owner.
         resetPrank(users.campaignOwner);
-        _;
-    }
-
-    modifier whenIndexInMerkleTree() {
-        _;
-    }
-
-    modifier whenMerkleProofValid() {
         _;
     }
 }

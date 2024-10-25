@@ -250,7 +250,7 @@ abstract contract MerkleLT_Fork_Test is Fork_Test {
         resetPrank({ msgSender: users.admin });
 
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit WithdrawSablierFees({
+        emit ISablierMerkleFactory.WithdrawSablierFees({
             admin: users.admin,
             merkleBase: vars.merkleLT,
             to: users.admin,

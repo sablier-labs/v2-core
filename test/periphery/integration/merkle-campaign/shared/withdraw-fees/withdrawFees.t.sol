@@ -25,6 +25,7 @@ abstract contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Sh
     modifier whenCallerFactory() {
         // Claim to collect some fees.
         claim();
+
         resetPrank(address(merkleFactory));
         _;
     }
@@ -38,10 +39,6 @@ abstract contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Sh
         assertEq(address(merkleBase).balance, 0, "merkle lockup eth balance");
         // It should transfer fee collected in ETH to the provided address.
         assertEq(users.admin.balance, previousToBalance + defaults.DEFAULT_SABLIER_FEE(), "eth balance");
-    }
-
-    modifier whenProvidedAddressContract() {
-        _;
     }
 
     function test_RevertWhen_ProvidedAddressNotImplementReceiveEth()

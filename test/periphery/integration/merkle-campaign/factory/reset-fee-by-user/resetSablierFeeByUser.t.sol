@@ -3,6 +3,7 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { Errors as CoreErrors } from "src/core/libraries/Errors.sol";
 
+import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { MerkleFactory } from "src/periphery/types/DataTypes.sol";
 
 import { MerkleCampaign_Integration_Shared_Test } from "../../shared/MerkleCampaign.t.sol";
@@ -14,10 +15,10 @@ contract ResetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Sh
         merkleFactory.resetSablierFeeByUser({ campaignCreator: users.campaignOwner });
     }
 
-    function test_WhenNotEnabled() external whenCallerAdmin {
+    function test_WhenNotEnabled() external whenCallerAdmin(users.admin) {
         // It should emit a {ResetSablierFee} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit ResetSablierFee({ admin: users.admin, campaignCreator: users.campaignOwner });
+        emit ISablierMerkleFactory.ResetSablierFee({ admin: users.admin, campaignCreator: users.campaignOwner });
 
         // Reset the Sablier fee.
         merkleFactory.resetSablierFeeByUser({ campaignCreator: users.campaignOwner });
@@ -31,7 +32,7 @@ contract ResetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Sh
         assertEq(sablierFee.fee, 0, "fee");
     }
 
-    function test_WhenEnabled() external whenCallerAdmin {
+    function test_WhenEnabled() external whenCallerAdmin(users.admin) {
         // Enable the Sablier fee.
         merkleFactory.setSablierFeeByUser({ campaignCreator: users.campaignOwner, fee: 1 ether });
 
@@ -43,7 +44,7 @@ contract ResetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Sh
 
         // It should emit a {ResetSablierFee} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit ResetSablierFee({ admin: users.admin, campaignCreator: users.campaignOwner });
+        emit ISablierMerkleFactory.ResetSablierFee({ admin: users.admin, campaignCreator: users.campaignOwner });
 
         // Reset the Sablier fee.
         merkleFactory.resetSablierFeeByUser({ campaignCreator: users.campaignOwner });
