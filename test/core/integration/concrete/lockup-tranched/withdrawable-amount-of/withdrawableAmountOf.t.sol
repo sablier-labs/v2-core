@@ -13,18 +13,14 @@ contract WithdrawableAmountOf_LockupTranched_Integration_Concrete_Test is
         LockupTranched_Integration_Shared_Test.setUp();
     }
 
-    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus(defaults.WARP_26_PERCENT()) {
+    function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         uint128 actualWithdrawableAmount = lockupTranched.withdrawableAmountOf(defaultStreamId);
         uint128 expectedWithdrawableAmount = 0;
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    function test_GivenNoPreviousWithdrawals()
-        external
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
-        givenStartTimeInPast
-    {
+    function test_GivenNoPreviousWithdrawals() external givenSTREAMINGStatus givenStartTimeInPast {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
 
@@ -34,11 +30,7 @@ contract WithdrawableAmountOf_LockupTranched_Integration_Concrete_Test is
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 
-    function test_GivenPreviousWithdrawal()
-        external
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
-        givenStartTimeInPast
-    {
+    function test_GivenPreviousWithdrawal() external givenSTREAMINGStatus givenStartTimeInPast {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.START_TIME() + defaults.CLIFF_DURATION() });
 

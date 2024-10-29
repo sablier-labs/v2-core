@@ -18,7 +18,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.setNFTDescriptor(ILockupNFTDescriptor(users.eve));
     }
 
-    function test_WhenProvidedAddressMatchesCurrentNFTDescriptor() external whenCallerRecipient(users.admin) {
+    function test_WhenProvidedAddressMatchesCurrentNFTDescriptor() external whenCallerAdmin {
         // It should emit {SetNFTDescriptor} and {BatchMetadataUpdate} events.
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.SetNFTDescriptor(users.admin, nftDescriptor, nftDescriptor);
@@ -33,7 +33,7 @@ abstract contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test
         lockup.tokenURI({ tokenId: defaultStreamId });
     }
 
-    function test_WhenProvidedAddressNotMatchCurrentNFTDescriptor() external whenCallerRecipient(users.admin) {
+    function test_WhenProvidedAddressNotMatchCurrentNFTDescriptor() external whenCallerAdmin {
         // Deploy another NFT descriptor.
         ILockupNFTDescriptor newNFTDescriptor = new LockupNFTDescriptor();
 

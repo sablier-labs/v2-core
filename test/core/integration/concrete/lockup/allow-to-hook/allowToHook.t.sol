@@ -16,7 +16,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test {
         lockup.allowToHook(users.eve);
     }
 
-    function test_RevertWhen_ProvidedAddressNotContract() external whenCallerRecipient(users.admin) {
+    function test_RevertWhen_ProvidedAddressNotContract() external whenCallerAdmin {
         address eoa = vm.addr({ privateKey: 1 });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_AllowToHookZeroCodeSize.selector, eoa));
         lockup.allowToHook(eoa);
@@ -24,7 +24,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test {
 
     function test_RevertWhen_ProvidedAddressNotReturnInterfaceId()
         external
-        whenCallerRecipient(users.admin)
+        whenCallerAdmin
         whenProvidedAddressContract
     {
         // Incorrect interface ID.
@@ -40,11 +40,7 @@ abstract contract AllowToHook_Integration_Concrete_Test is Integration_Test {
         lockup.allowToHook(recipient);
     }
 
-    function test_WhenProvidedAddressReturnsInterfaceId()
-        external
-        whenCallerRecipient(users.admin)
-        whenProvidedAddressContract
-    {
+    function test_WhenProvidedAddressReturnsInterfaceId() external whenCallerAdmin whenProvidedAddressContract {
         // It should emit a {AllowToHook} event.
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.AllowToHook(users.admin, address(recipientGood));

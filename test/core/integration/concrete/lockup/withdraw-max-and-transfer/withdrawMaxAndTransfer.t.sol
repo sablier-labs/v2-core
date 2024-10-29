@@ -50,7 +50,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
         givenNotNull
         givenTransferableStream
         givenNotBurnedNFT
-        whenCallerRecipient(users.recipient)
+        whenCallerRecipient
     {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
@@ -89,11 +89,6 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
         givenNotBurnedNFT
         givenNonZeroWithdrawableAmount
     {
-        resetPrank({ msgSender: users.recipient });
-
-        // Approve the operator to handle the stream.
-        lockup.approve({ to: users.operator, tokenId: defaultStreamId });
-
         // Make the operator the caller in this test.
         resetPrank({ msgSender: users.operator });
 
@@ -137,8 +132,9 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
         givenTransferableStream
         givenNotBurnedNFT
         givenNonZeroWithdrawableAmount
-        whenCallerRecipient(users.recipient)
     {
+        resetPrank(users.recipient);
+
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 

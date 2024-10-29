@@ -5,14 +5,11 @@ import { Solarray } from "solarray/src/Solarray.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../../Integration.t.sol";
+
 import { WithdrawMultiple_Integration_Shared_Test } from "./../../../shared/lockup/withdrawMultiple.t.sol";
 
-abstract contract WithdrawMultiple_Integration_Concrete_Test is
-    Integration_Test,
-    WithdrawMultiple_Integration_Shared_Test
-{
-    function setUp() public virtual override(Integration_Test, WithdrawMultiple_Integration_Shared_Test) {
+abstract contract WithdrawMultiple_Integration_Concrete_Test is WithdrawMultiple_Integration_Shared_Test {
+    function setUp() public virtual override {
         WithdrawMultiple_Integration_Shared_Test.setUp();
     }
 
@@ -86,7 +83,7 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         whenEqualArraysLength
         whenNonZeroArrayLength
         givenNoNullStreams
-        givenNoDEPLETEDStreams(defaults.START_TIME())
+        givenNoDEPLETEDStreams
     {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -105,7 +102,7 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         whenEqualArraysLength
         whenNonZeroArrayLength
         givenNoNullStreams
-        givenNoDEPLETEDStreams(defaults.START_TIME())
+        givenNoDEPLETEDStreams
         whenNoZeroAmounts
     {
         // Simulate the passage of time.
@@ -130,7 +127,7 @@ abstract contract WithdrawMultiple_Integration_Concrete_Test is
         whenEqualArraysLength
         whenNonZeroArrayLength
         givenNoNullStreams
-        givenNoDEPLETEDStreams(defaults.START_TIME())
+        givenNoDEPLETEDStreams
         whenNoZeroAmounts
     {
         // Simulate the passage of time.

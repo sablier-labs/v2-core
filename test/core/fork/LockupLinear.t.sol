@@ -5,11 +5,9 @@ import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ud } from "@prb/math/src/UD60x18.sol";
 import { Solarray } from "solarray/src/Solarray.sol";
-
-import { ISablierLockupLinear } from "src/core/interfaces/ISablierLockupLinear.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
+import { ISablierLockupLinear } from "src/core/interfaces/ISablierLockupLinear.sol";
 import { Broker, Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
-
 import { Fork_Test } from "./Fork.t.sol";
 
 abstract contract LockupLinear_Fork_Test is Fork_Test {

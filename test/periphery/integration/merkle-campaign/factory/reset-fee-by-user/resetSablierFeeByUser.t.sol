@@ -15,7 +15,7 @@ contract ResetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Te
         merkleFactory.resetSablierFeeByUser({ campaignCreator: users.campaignOwner });
     }
 
-    function test_WhenNotEnabled() external whenCallerAdmin(users.admin) {
+    function test_WhenNotEnabled() external whenCallerAdmin {
         // It should emit a {ResetSablierFee} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
         emit ISablierMerkleFactory.ResetSablierFee({ admin: users.admin, campaignCreator: users.campaignOwner });
@@ -32,7 +32,7 @@ contract ResetSablierFeeByUser_Integration_Test is MerkleCampaign_Integration_Te
         assertEq(sablierFee.fee, 0, "fee");
     }
 
-    function test_WhenEnabled() external whenCallerAdmin(users.admin) {
+    function test_WhenEnabled() external whenCallerAdmin {
         // Enable the Sablier fee.
         merkleFactory.setSablierFeeByUser({ campaignCreator: users.campaignOwner, fee: 1 ether });
 

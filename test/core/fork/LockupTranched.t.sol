@@ -4,11 +4,9 @@ pragma solidity >=0.8.22 <0.9.0;
 import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { Solarray } from "solarray/src/Solarray.sol";
-
-import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
+import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
 import { Broker, Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
-
 import { Fork_Test } from "./Fork.t.sol";
 
 abstract contract LockupTranched_Fork_Test is Fork_Test {

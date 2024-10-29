@@ -28,7 +28,6 @@ abstract contract CancelMultiple_Integration_Shared_Test is Integration_Test {
         _;
         vm.warp({ newTimestamp: originalTime });
         createTestStreams();
-        resetPrank({ msgSender: users.sender });
         _;
     }
 }

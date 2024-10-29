@@ -49,7 +49,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test {
         givenWarmStream
         whenAuthorizedCaller
         givenCancelableStream
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenSTREAMINGStatus
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
         whenRecipientReturnsValidSelector

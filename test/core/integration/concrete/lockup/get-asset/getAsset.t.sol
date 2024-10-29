@@ -8,8 +8,6 @@ import { Integration_Test } from "../../../Integration.t.sol";
 
 abstract contract GetAsset_Integration_Concrete_Test is Integration_Test {
     function test_RevertGiven_Null() external {
-        Integration_Test.setUp();
-
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_Null.selector, nullStreamId));
         lockup.getAsset(nullStreamId);

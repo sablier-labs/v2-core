@@ -36,7 +36,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is LockupLinear
         external
         givenNotNull
         givenNotCanceledStream
-        givenCliffTimeNotInFuture(defaults.WARP_26_PERCENT())
+        givenCliffTimeNotInFuture
     {
         vm.assume(depositAmount != 0);
         timeJump = boundUint40(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() * 2);
@@ -78,7 +78,7 @@ contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is LockupLinear
         external
         givenNotNull
         givenNotCanceledStream
-        givenCliffTimeNotInFuture(defaults.WARP_26_PERCENT())
+        givenCliffTimeNotInFuture
         givenPreviousWithdrawal
     {
         depositAmount = boundUint128(depositAmount, 10_000, MAX_UINT128);

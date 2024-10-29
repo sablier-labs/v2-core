@@ -37,36 +37,28 @@ contract StreamedAmountOf_LockupLinear_Integration_Concrete_Test is
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCliffTimeInFuture() external givenSTREAMINGStatus(defaults.WARP_26_PERCENT()) {
+    function test_GivenCliffTimeInFuture() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() - 1 });
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 0;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenCliffTimeInPresent() external givenSTREAMINGStatus(defaults.WARP_26_PERCENT()) {
+    function test_GivenCliffTimeInPresent() external givenSTREAMINGStatus {
         vm.warp({ newTimestamp: defaults.CLIFF_TIME() });
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = defaults.CLIFF_AMOUNT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenEndTimeNotInFuture()
-        external
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
-        givenCliffTimeInPast
-    {
+    function test_GivenEndTimeNotInFuture() external givenSTREAMINGStatus givenCliffTimeInPast {
         vm.warp({ newTimestamp: defaults.END_TIME() + 1 });
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = defaults.DEPOSIT_AMOUNT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
-    function test_GivenEndTimeInFuture()
-        external
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
-        givenCliffTimeInPast
-    {
+    function test_GivenEndTimeInFuture() external givenSTREAMINGStatus givenCliffTimeInPast {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 2600e18;

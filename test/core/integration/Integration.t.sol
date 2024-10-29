@@ -30,7 +30,7 @@ abstract contract Integration_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev A test contract that is meant to be overridden by the implementing contract, which will be
-    /// either {SablierLockupLinear} or {SablierLockupDynamic}.
+    /// either {SablierLockupDynamic}, {SablierLockupLinear} or {SablierLockupTranched}.
     ISablierLockup internal lockup;
 
     RecipientInterfaceIDIncorrect internal recipientInterfaceIDIncorrect;
@@ -91,7 +91,7 @@ abstract contract Integration_Test is Base_Test {
     function createDefaultStreamWithEndTime(uint40 endTime) internal virtual returns (uint256 streamId);
 
     /// @dev Creates the default stream with the provided user as the recipient and the sender.
-    function createDefaultStreamWithIdenticalUsers(address user) internal virtual returns (uint256 streamId) {
+    function createDefaultStreamWithIdenticalUsers(address user) internal returns (uint256 streamId) {
         return createDefaultStreamWithUsers({ recipient: user, sender: user });
     }
 

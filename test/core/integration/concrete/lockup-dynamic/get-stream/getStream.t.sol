@@ -7,10 +7,6 @@ import { LockupDynamic } from "src/core/types/DataTypes.sol";
 import { LockupDynamic_Integration_Shared_Test } from "../LockupDynamic.t.sol";
 
 contract GetStream_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Integration_Shared_Test {
-    function setUp() public virtual override {
-        LockupDynamic_Integration_Shared_Test.setUp();
-    }
-
     function test_RevertGiven_Null() external {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_Null.selector, nullStreamId));

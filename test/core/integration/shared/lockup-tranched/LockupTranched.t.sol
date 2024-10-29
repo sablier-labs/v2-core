@@ -51,6 +51,11 @@ abstract contract LockupTranched_Integration_Shared_Test is Integration_Test {
         lockup = ISablierLockup(lockupTranched);
 
         defaultStreamId = createDefaultStream();
+
+        // Set the approval to the operator.
+        resetPrank({ msgSender: users.recipient });
+        lockup.setApprovalForAll(users.operator, true);
+        resetPrank({ msgSender: users.sender });
     }
 
     /// @dev Creates the default stream.

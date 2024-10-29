@@ -49,18 +49,12 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        givenNotDEPLETEDStatus(defaults.START_TIME())
+        givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
     {
         vm.assume(to != address(0));
-
-        // Make the recipient the caller to approve the operator.
-        resetPrank({ msgSender: users.recipient });
-
-        // Approve the operator to handle the stream.
-        lockup.approve({ to: users.operator, tokenId: defaultStreamId });
 
         // Make the operator the caller in this test.
         resetPrank({ msgSender: users.operator });
@@ -98,7 +92,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
-        whenCallerRecipient(users.recipient)
+        whenCallerRecipient
     {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
         vm.assume(to != address(0));
@@ -162,7 +156,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
         external
         whenNoDelegateCall
         givenNotNull
-        whenCallerRecipient(users.recipient)
+        whenCallerRecipient
         whenWithdrawalAddressNotZero
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw

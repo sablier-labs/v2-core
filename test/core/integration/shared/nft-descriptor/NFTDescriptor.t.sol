@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { NFTDescriptorMock } from "test/mocks/NFTDescriptorMock.sol";
 import { Base_Test } from "test/Base.t.sol";
+import { NFTDescriptorMock } from "test/mocks/NFTDescriptorMock.sol";
 
 abstract contract NFTDescriptor_Integration_Shared_Test is Base_Test {
     NFTDescriptorMock internal nftDescriptorMock;

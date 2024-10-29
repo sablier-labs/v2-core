@@ -48,7 +48,7 @@ abstract contract WithdrawMax_Integration_Fuzz_Test is Integration_Test {
         assertEq(actualNFTowner, expectedNFTOwner, "NFT owner");
     }
 
-    function testFuzz_WithdrawMax(uint256 timeJump) external givenEndTimeInFuture(defaults.WARP_26_PERCENT()) {
+    function testFuzz_WithdrawMax(uint256 timeJump) external givenEndTimeInFuture {
         timeJump = _bound(timeJump, defaults.CLIFF_DURATION(), defaults.TOTAL_DURATION() - 1 seconds);
 
         // Simulate the passage of time.

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC721Errors } from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
+import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
@@ -10,8 +10,7 @@ import { stdError } from "forge-std/src/StdError.sol";
 import { ISablierLockupTranched } from "src/core/interfaces/ISablierLockupTranched.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Broker, Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
-
-import { LockupTranched_Integration_Shared_Test } from "../LockupTranched.t.sol";
+import { LockupTranched_Integration_Shared_Test } from "./../LockupTranched.t.sol";
 
 contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is LockupTranched_Integration_Shared_Test {
     uint256 streamId;

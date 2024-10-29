@@ -28,25 +28,17 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
         merkleFactory.withdrawFees(users.eve, merkleBase);
     }
 
-    function test_RevertWhen_WithdrawalAddressZero() external whenCallerAdmin(users.admin) {
+    function test_RevertWhen_WithdrawalAddressZero() external whenCallerAdmin {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierMerkleFactory_WithdrawToZeroAddress.selector));
         merkleFactory.withdrawFees(payable(address(0)), merkleBase);
     }
 
-    function test_RevertWhen_ProvidedMerkleLockupNotValid()
-        external
-        whenCallerAdmin(users.admin)
-        whenWithdrawalAddressNotZero
-    {
+    function test_RevertWhen_ProvidedMerkleLockupNotValid() external whenCallerAdmin whenWithdrawalAddressNotZero {
         vm.expectRevert();
         merkleFactory.withdrawFees(users.eve, ISablierMerkleBase(users.eve));
     }
 
-    function test_WhenProvidedAddressNotContract()
-        external
-        whenCallerAdmin(users.admin)
-        whenProvidedMerkleLockupValid
-    {
+    function test_WhenProvidedAddressNotContract() external whenCallerAdmin whenProvidedMerkleLockupValid {
         uint256 previousToBalance = users.eve.balance;
 
         // It should emit {WithdrawSablierFees} event.
@@ -68,7 +60,7 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
 
     function test_RevertWhen_ProvidedAddressNotImplementReceiveEth()
         external
-        whenCallerAdmin(users.admin)
+        whenCallerAdmin
         whenProvidedMerkleLockupValid
         whenProvidedAddressContract
     {
@@ -83,7 +75,7 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
 
     function test_WhenProvidedAddressImplementReceiveEth()
         external
-        whenCallerAdmin(users.admin)
+        whenCallerAdmin
         whenProvidedMerkleLockupValid
         whenProvidedAddressContract
     {

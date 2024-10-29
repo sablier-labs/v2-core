@@ -18,7 +18,7 @@ abstract contract IsCancelable_Integration_Concrete_Test is Integration_Test {
         assertFalse(isCancelable, "isCancelable");
     }
 
-    function test_GivenCancelableStream() external view givenNotNull givenWarmStream {
+    function test_GivenCancelableStream() external givenNotNull givenWarmStream {
         bool isCancelable = lockup.isCancelable(defaultStreamId);
         assertTrue(isCancelable, "isCancelable");
     }

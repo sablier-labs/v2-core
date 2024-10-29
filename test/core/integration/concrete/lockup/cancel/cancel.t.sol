@@ -80,7 +80,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerSender(users.sender)
+        whenCallerSender
     {
         uint256 streamId = createDefaultStreamNotCancelable();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_StreamNotCancelable.selector, streamId));
@@ -92,7 +92,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerSender(users.sender)
+        whenCallerSender
         givenCancelableStream
     {
         // Warp to the past.
@@ -116,9 +116,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerSender(users.sender)
+        whenCallerSender
         givenCancelableStream
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenSTREAMINGStatus
     {
         // Create the stream with a recipient contract that implements {ISablierLockupRecipient}.
         uint256 streamId = createDefaultStreamWithRecipient(address(recipientGood));
@@ -148,9 +148,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerSender(users.sender)
+        whenCallerSender
         givenCancelableStream
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenSTREAMINGStatus
         givenRecipientAllowedToHook
     {
         // Allow the recipient to hook.
@@ -173,9 +173,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerSender(users.sender)
+        whenCallerSender
         givenCancelableStream
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenSTREAMINGStatus
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
     {
@@ -201,9 +201,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerSender(users.sender)
+        whenCallerSender
         givenCancelableStream
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenSTREAMINGStatus
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
         whenRecipientReturnsValidSelector
@@ -250,9 +250,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenCallerSender(users.sender)
+        whenCallerSender
         givenCancelableStream
-        givenSTREAMINGStatus(defaults.WARP_26_PERCENT())
+        givenSTREAMINGStatus
         givenRecipientAllowedToHook
         whenNonRevertingRecipient
         whenRecipientReturnsValidSelector

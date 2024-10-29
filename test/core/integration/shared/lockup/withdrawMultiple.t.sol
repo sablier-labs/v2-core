@@ -44,16 +44,13 @@ abstract contract WithdrawMultiple_Integration_Shared_Test is Integration_Test {
     modifier whenCallerAuthorizedAllStreams() {
         caller = users.sender;
         _;
+
         createTestStreams();
         caller = users.recipient;
-        resetPrank({ msgSender: users.recipient });
         _;
+
         createTestStreams();
         caller = users.operator;
-        resetPrank({ msgSender: users.recipient });
-        lockup.setApprovalForAll({ operator: users.operator, approved: true });
-        caller = users.operator;
-        resetPrank({ msgSender: users.operator });
         _;
     }
 }

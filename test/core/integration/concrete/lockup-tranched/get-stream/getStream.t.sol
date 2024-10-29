@@ -7,10 +7,6 @@ import { LockupTranched } from "src/core/types/DataTypes.sol";
 import { LockupTranched_Integration_Shared_Test } from "../LockupTranched.t.sol";
 
 contract GetStream_LockupTranched_Integration_Concrete_Test is LockupTranched_Integration_Shared_Test {
-    function setUp() public virtual override {
-        LockupTranched_Integration_Shared_Test.setUp();
-    }
-
     function test_RevertGiven_Null() external {
         uint256 nullStreamId = 1729;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_Null.selector, nullStreamId));

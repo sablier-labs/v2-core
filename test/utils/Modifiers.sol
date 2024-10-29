@@ -3,21 +3,35 @@ pragma solidity >=0.8.22;
 
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 
-import { Utils } from "./Utils.sol";
+import { Defaults } from "./Defaults.sol";
+import { Fuzzers } from "./Fuzzers.sol";
+import { Users } from "./Types.sol";
 
-abstract contract Modifiers is Utils {
+abstract contract Modifiers is Fuzzers {
+    /*//////////////////////////////////////////////////////////////////////////
+                                     VARIABLES
+    //////////////////////////////////////////////////////////////////////////*/
+
+    Defaults private defaults;
+    Users private users;
+
+    function setVariables(Defaults _defaults, Users memory _users) public {
+        defaults = _defaults;
+        users = _users;
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                                        COMMON
     //////////////////////////////////////////////////////////////////////////*/
 
-    modifier givenCliffTimeNotInFuture(uint256 timestamp) {
-        vm.warp({ newTimestamp: timestamp });
+    modifier givenCliffTimeNotInFuture() {
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
-    modifier givenEndTimeInFuture(uint256 timestamp) {
+    modifier givenEndTimeInFuture() {
         // Simulate the passage of time.
-        vm.warp({ newTimestamp: timestamp });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
@@ -47,9 +61,9 @@ abstract contract Modifiers is Utils {
 
     /// @dev In LockupLinear, the streaming starts after the cliff time, whereas in LockupDynamic, the streaming starts
     /// after the start time.
-    modifier givenSTREAMINGStatus(uint256 timestamp) {
+    modifier givenSTREAMINGStatus() {
         // Warp to the future, after the stream's start time but before the stream's end time.
-        vm.warp({ newTimestamp: timestamp });
+        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         _;
     }
 
@@ -69,19 +83,19 @@ abstract contract Modifiers is Utils {
         _;
     }
 
-    modifier whenCallerAdmin(address admin) {
+    modifier whenCallerAdmin() {
         // Make the Admin the caller in the rest of this test suite.
-        resetPrank({ msgSender: admin });
+        resetPrank({ msgSender: users.admin });
         _;
     }
 
-    modifier whenCallerRecipient(address recipient) {
-        resetPrank({ msgSender: recipient });
+    modifier whenCallerRecipient() {
+        resetPrank({ msgSender: users.recipient });
         _;
     }
 
-    modifier whenCallerSender(address sender) {
-        resetPrank({ msgSender: sender });
+    modifier whenCallerSender() {
+        resetPrank({ msgSender: users.sender });
         _;
     }
 
@@ -144,8 +158,8 @@ abstract contract Modifiers is Utils {
         _;
     }
 
-    modifier whenCallerCampaignOwner(address campaignOwner) {
-        resetPrank({ msgSender: campaignOwner });
+    modifier whenCallerCampaignOwner() {
+        resetPrank({ msgSender: users.campaignOwner });
         _;
     }
 
@@ -441,8 +455,8 @@ abstract contract Modifiers is Utils {
                                       WITHDRAW
     //////////////////////////////////////////////////////////////////////////*/
 
-    modifier givenNotDEPLETEDStatus(uint256 timestampt) {
-        vm.warp({ newTimestamp: timestampt });
+    modifier givenNotDEPLETEDStatus() {
+        vm.warp({ newTimestamp: defaults.START_TIME() });
         _;
     }
 
@@ -482,8 +496,8 @@ abstract contract Modifiers is Utils {
         _;
     }
 
-    modifier givenNoDEPLETEDStreams(uint256 timestampt) {
-        vm.warp({ newTimestamp: timestampt });
+    modifier givenNoDEPLETEDStreams() {
+        vm.warp({ newTimestamp: defaults.START_TIME() });
         _;
     }
 

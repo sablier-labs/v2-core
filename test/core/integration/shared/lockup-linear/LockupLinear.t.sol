@@ -28,6 +28,11 @@ abstract contract LockupLinear_Integration_Shared_Test is Integration_Test {
         lockup = ISablierLockup(lockupLinear);
 
         defaultStreamId = createDefaultStream();
+
+        // Set the approval to the operator.
+        resetPrank({ msgSender: users.recipient });
+        lockup.setApprovalForAll(users.operator, true);
+        resetPrank({ msgSender: users.sender });
     }
 
     /// @inheritdoc Integration_Test

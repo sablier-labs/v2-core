@@ -4,14 +4,11 @@ pragma solidity >=0.8.22 <0.9.0;
 import { Solarray } from "solarray/src/Solarray.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Lockup } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../Integration.t.sol";
+
 import { WithdrawMultiple_Integration_Shared_Test } from "./../../shared/lockup/withdrawMultiple.t.sol";
 
-abstract contract WithdrawMultiple_Integration_Fuzz_Test is
-    Integration_Test,
-    WithdrawMultiple_Integration_Shared_Test
-{
-    function setUp() public virtual override(Integration_Test, WithdrawMultiple_Integration_Shared_Test) {
+abstract contract WithdrawMultiple_Integration_Fuzz_Test is WithdrawMultiple_Integration_Shared_Test {
+    function setUp() public virtual override {
         WithdrawMultiple_Integration_Shared_Test.setUp();
     }
 
@@ -23,7 +20,7 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         whenNoDelegateCall
         whenArraysEqual
         givenNotNull
-        givenNoDEPLETEDStreams(defaults.START_TIME())
+        givenNoDEPLETEDStreams
         whenCallerAuthorizedAllStreams
         whenWithdrawalAddressNotZero
         whenNoZeroAmounts
@@ -32,7 +29,6 @@ abstract contract WithdrawMultiple_Integration_Fuzz_Test is
         timeJump = _bound(timeJump, defaults.TOTAL_DURATION(), defaults.TOTAL_DURATION() * 2 - 1 seconds);
 
         // Create a new stream with an end time double that of the default stream.
-        resetPrank({ msgSender: users.sender });
         uint40 ongoingEndTime = defaults.END_TIME() + defaults.TOTAL_DURATION();
         uint256 ongoingStreamId = createDefaultStreamWithEndTime(ongoingEndTime);
 

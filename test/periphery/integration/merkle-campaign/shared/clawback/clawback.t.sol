@@ -14,7 +14,7 @@ abstract contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
         merkleBase.clawback({ to: users.eve, amount: 1 });
     }
 
-    function test_WhenFirstClaimNotMade() external whenCallerCampaignOwner(users.campaignOwner) {
+    function test_WhenFirstClaimNotMade() external whenCallerCampaignOwner {
         test_Clawback(users.campaignOwner);
     }
 
@@ -27,14 +27,14 @@ abstract contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
         _;
     }
 
-    function test_GivenSevenDaysNotPassed() external whenCallerCampaignOwner(users.campaignOwner) whenFirstClaimMade {
+    function test_GivenSevenDaysNotPassed() external whenCallerCampaignOwner whenFirstClaimMade {
         vm.warp({ newTimestamp: getBlockTimestamp() + 6 days });
         test_Clawback(users.campaignOwner);
     }
 
     function test_RevertGiven_CampaignNotExpired()
         external
-        whenCallerCampaignOwner(users.campaignOwner)
+        whenCallerCampaignOwner
         whenFirstClaimMade
         givenSevenDaysPassed
     {
@@ -51,7 +51,7 @@ abstract contract Clawback_Integration_Test is MerkleCampaign_Integration_Test {
 
     function test_GivenCampaignExpired(address to)
         external
-        whenCallerCampaignOwner(users.campaignOwner)
+        whenCallerCampaignOwner
         whenFirstClaimMade
         givenSevenDaysPassed
     {

@@ -80,13 +80,8 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         givenDepletedStream(lockup, defaultStreamId)
         whenCallerNotRecipient
     {
-        resetPrank({ msgSender: users.recipient });
-
-        // Approve a third party to burn the NFT.
-        lockup.approve(users.alice, defaultStreamId);
-
         // Make the third party the caller in this test.
-        resetPrank({ msgSender: users.alice });
+        resetPrank({ msgSender: users.operator });
 
         // It should burn the NFT.
         _test_Burn(defaultStreamId);
@@ -97,7 +92,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenDepletedStream(lockup, defaultStreamId)
-        whenCallerRecipient(users.recipient)
+        whenCallerRecipient
     {
         // Burn the NFT so that it no longer exists.
         lockup.burn(defaultStreamId);
@@ -114,7 +109,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         /*  givenDepletedStream(lockup, notTransferableStreamId) */
-        whenCallerRecipient(users.recipient)
+        whenCallerRecipient
         givenNFTExists
     {
         uint256 notTransferableStreamId = createDefaultStreamNotTransferable();
@@ -128,7 +123,7 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenDepletedStream(lockup, defaultStreamId)
-        whenCallerRecipient(users.recipient)
+        whenCallerRecipient
         givenNFTExists
     {
         _test_Burn(defaultStreamId);
