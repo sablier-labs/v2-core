@@ -107,6 +107,15 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
         // Set the variables in Modifiers contract.
         setVariables(defaults, users);
 
+        // Approve `users.operator` to operate over lockups on behalf of the `users.recipient`.
+        resetPrank({ msgSender: users.recipient });
+        lockupDynamic.setApprovalForAll(users.operator, true);
+        lockupLinear.setApprovalForAll(users.operator, true);
+        lockupTranched.setApprovalForAll(users.operator, true);
+
+        // Set sender as the default caller for the tests.
+        resetPrank({ msgSender: users.sender });
+
         // Warp to July 1, 2024 at 00:00 UTC to provide a more realistic testing environment.
         vm.warp({ newTimestamp: JULY_1_2024 });
     }

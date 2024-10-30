@@ -53,10 +53,8 @@ abstract contract LockupDynamic_Integration_Shared_Test is Integration_Test {
         // Create the default stream.
         defaultStreamId = createDefaultStream();
 
-        // Set the approval to the operator.
-        resetPrank({ msgSender: users.recipient });
-        lockup.setApprovalForAll(users.operator, true);
-        resetPrank({ msgSender: users.sender });
+        // Create a non-transferable stream.
+        notTransferableStreamId = createDefaultStreamNotTransferable();
     }
 
     /// @inheritdoc Integration_Test

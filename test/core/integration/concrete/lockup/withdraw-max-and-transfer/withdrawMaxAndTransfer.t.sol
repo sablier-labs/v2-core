@@ -23,7 +23,6 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
     }
 
     function test_RevertGiven_NonTransferableStream() external whenNoDelegateCall givenNotNull {
-        uint256 notTransferableStreamId = createDefaultStreamNotTransferable();
         resetPrank({ msgSender: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_NotTransferable.selector, notTransferableStreamId));
         lockup.withdrawMaxAndTransfer({ streamId: notTransferableStreamId, newRecipient: users.recipient });

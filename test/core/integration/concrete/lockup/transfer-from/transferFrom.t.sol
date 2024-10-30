@@ -11,7 +11,6 @@ import { Integration_Test } from "../../../Integration.t.sol";
 abstract contract TransferFrom_Integration_Concrete_Test is Integration_Test {
     function test_RevertGiven_NonTransferableStream() external {
         resetPrank({ msgSender: users.recipient });
-        uint256 notTransferableStreamId = createDefaultStreamNotTransferable();
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_NotTransferable.selector, notTransferableStreamId));
         lockup.transferFrom({ from: users.recipient, to: users.alice, tokenId: notTransferableStreamId });
     }

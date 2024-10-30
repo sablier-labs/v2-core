@@ -12,8 +12,7 @@ abstract contract IsTransferable_Integration_Concrete_Test is Integration_Test {
         lockup.isTransferable(nullStreamId);
     }
 
-    function test_GivenNonTransferableStream() external givenNotNull {
-        uint256 notTransferableStreamId = createDefaultStreamNotTransferable();
+    function test_GivenNonTransferableStream() external view givenNotNull {
         bool isTransferable = lockup.isTransferable(notTransferableStreamId);
         assertFalse(isTransferable, "isTransferable");
     }

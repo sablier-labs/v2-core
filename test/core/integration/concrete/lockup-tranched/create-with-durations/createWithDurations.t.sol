@@ -10,7 +10,7 @@ import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 import { LockupTranched_Integration_Shared_Test } from "../LockupTranched.t.sol";
 
 contract CreateWithDurations_LockupTranched_Integration_Concrete_Test is LockupTranched_Integration_Shared_Test {
-    uint256 streamId;
+    uint256 internal streamId;
 
     function setUp() public virtual override(LockupTranched_Integration_Shared_Test) {
         LockupTranched_Integration_Shared_Test.setUp();

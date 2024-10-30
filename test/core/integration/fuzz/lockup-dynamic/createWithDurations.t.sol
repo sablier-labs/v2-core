@@ -7,7 +7,7 @@ import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 import { LockupDynamic_Integration_Shared_Test } from "./LockupDynamic.t.sol";
 
 contract CreateWithDurations_LockupDynamic_Integration_Fuzz_Test is LockupDynamic_Integration_Shared_Test {
-    uint256 streamId;
+    uint256 internal streamId;
 
     function setUp() public virtual override(LockupDynamic_Integration_Shared_Test) {
         LockupDynamic_Integration_Shared_Test.setUp();

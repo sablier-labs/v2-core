@@ -112,7 +112,6 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         whenCallerRecipient
         givenNFTExists
     {
-        uint256 notTransferableStreamId = createDefaultStreamNotTransferable();
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: notTransferableStreamId, to: users.recipient });
         _test_Burn(notTransferableStreamId);

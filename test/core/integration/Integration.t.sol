@@ -17,13 +17,13 @@ import {
 } from "../../mocks/Hooks.sol";
 
 /// @notice Common logic needed by all integration tests, both concrete and fuzz tests.
-
 abstract contract Integration_Test is Base_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                      VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
     uint256 internal defaultStreamId;
+    uint256 internal notTransferableStreamId;
 
     /*//////////////////////////////////////////////////////////////////////////
                                    TEST CONTRACTS
