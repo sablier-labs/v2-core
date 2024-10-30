@@ -48,7 +48,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenUnauthorizedCaller
+        whenCallerNotSender
     {
         // Make Eve the caller in this test.
         resetPrank({ msgSender: users.eve });
@@ -63,7 +63,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenUnauthorizedCaller
+        whenCallerNotSender
     {
         // Make the Recipient the caller in this test.
         resetPrank({ msgSender: users.recipient });

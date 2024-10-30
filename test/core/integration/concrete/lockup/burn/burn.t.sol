@@ -102,18 +102,14 @@ abstract contract Burn_Integration_Concrete_Test is Integration_Test {
         lockup.burn(defaultStreamId);
     }
 
-    /// @dev For this test, we will skip the `givenDepletedStream` modifier given the `notTransferableStreamId` is not
-    /// yet created.
     function test_GivenNonTransferableNFT()
         external
         whenNoDelegateCall
         givenNotNull
-        /*  givenDepletedStream(lockup, notTransferableStreamId) */
+        givenDepletedStream(lockup, notTransferableStreamId)
         whenCallerRecipient
         givenNFTExists
     {
-        vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: notTransferableStreamId, to: users.recipient });
         _test_Burn(notTransferableStreamId);
     }
 

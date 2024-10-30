@@ -19,7 +19,7 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is Integration_Te
         external
         whenNoDelegateCall
         givenNotNull
-        whenCallerCurrentRecipient
+        whenCallerRecipient
         givenNotBurnedNFT
         givenTransferableStream
     {
@@ -49,8 +49,6 @@ abstract contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is Integration_Te
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC721.Transfer({ from: users.recipient, to: newRecipient, tokenId: defaultStreamId });
-
-        resetPrank({ msgSender: users.recipient });
 
         // Make the max withdrawal and transfer the NFT.
         lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: newRecipient });

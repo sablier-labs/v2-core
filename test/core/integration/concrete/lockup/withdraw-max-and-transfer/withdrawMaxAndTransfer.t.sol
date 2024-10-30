@@ -22,15 +22,18 @@ abstract contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integratio
         lockup.withdrawMaxAndTransfer({ streamId: nullStreamId, newRecipient: users.recipient });
     }
 
-    function test_RevertGiven_NonTransferableStream() external whenNoDelegateCall givenNotNull {
-        resetPrank({ msgSender: users.recipient });
+    function test_RevertGiven_NonTransferableStream() external whenCallerRecipient whenNoDelegateCall givenNotNull {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_NotTransferable.selector, notTransferableStreamId));
         lockup.withdrawMaxAndTransfer({ streamId: notTransferableStreamId, newRecipient: users.recipient });
     }
 
-    function test_RevertGiven_BurnedNFT() external whenNoDelegateCall givenNotNull givenTransferableStream {
-        resetPrank({ msgSender: users.recipient });
-
+    function test_RevertGiven_BurnedNFT()
+        external
+        whenCallerRecipient
+        whenNoDelegateCall
+        givenNotNull
+        givenTransferableStream
+    {
         // Deplete the stream.
         vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });

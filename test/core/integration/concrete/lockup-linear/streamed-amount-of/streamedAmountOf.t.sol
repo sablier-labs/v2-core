@@ -59,7 +59,6 @@ contract StreamedAmountOf_LockupLinear_Integration_Concrete_Test is
     }
 
     function test_GivenEndTimeInFuture() external givenSTREAMINGStatus givenCliffTimeInPast {
-        vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         uint128 actualStreamedAmount = lockupLinear.streamedAmountOf(defaultStreamId);
         uint128 expectedStreamedAmount = 2600e18;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");

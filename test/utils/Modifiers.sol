@@ -59,8 +59,6 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
-    /// @dev In LockupLinear, the streaming starts after the cliff time, whereas in LockupDynamic, the streaming starts
-    /// after the start time.
     modifier givenSTREAMINGStatus() {
         // Warp to the future, after the stream's start time but before the stream's end time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -124,7 +122,7 @@ abstract contract Modifiers is Fuzzers {
     }
 
     modifier givenDepletedStream(ISablierLockup lockup, uint256 streamId) {
-        vm.warp({ newTimestamp: lockup.getEndTime(streamId) });
+        vm.warp({ newTimestamp: defaults.END_TIME() });
         lockup.withdrawMax({ streamId: streamId, to: lockup.getRecipient(streamId) });
         _;
     }
@@ -227,7 +225,7 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
-    modifier whenUnauthorizedCaller() {
+    modifier whenCallerNotSender() {
         _;
     }
 
@@ -534,10 +532,6 @@ abstract contract Modifiers is Fuzzers {
     }
 
     modifier givenTransferableStream() {
-        _;
-    }
-
-    modifier whenCallerCurrentRecipient() {
         _;
     }
 }
