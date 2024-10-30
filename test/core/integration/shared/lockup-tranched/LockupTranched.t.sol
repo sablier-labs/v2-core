@@ -57,7 +57,7 @@ abstract contract LockupTranched_Integration_Shared_Test is Integration_Test {
         notTransferableStreamId = createDefaultStreamNotTransferable();
     }
 
-    /// @dev Creates the default stream.
+    /// @inheritdoc Integration_Test
     function createDefaultStream() internal override returns (uint256 streamId) {
         streamId = lockupTranched.createWithTimestamps(_params.createWithTimestamps);
     }

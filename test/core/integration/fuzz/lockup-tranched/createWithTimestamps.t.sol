@@ -11,8 +11,11 @@ import { Broker, Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 import { LockupTranched_Integration_Shared_Test } from "./LockupTranched.t.sol";
 
 contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is LockupTranched_Integration_Shared_Test {
-    function setUp() public virtual override(LockupTranched_Integration_Shared_Test) {
+    uint256 internal streamId;
+
+    function setUp() public virtual override {
         LockupTranched_Integration_Shared_Test.setUp();
+        streamId = lockupTranched.nextStreamId();
     }
 
     function testFuzz_RevertWhen_TrancheCountTooHigh(uint256 trancheCount)
@@ -210,8 +213,6 @@ contract CreateWithTimestamps_LockupTranched_Integration_Fuzz_Test is LockupTran
 
         // Approve {SablierLockupTranched} to transfer the assets from the fuzzed funder.
         dai.approve({ spender: address(lockupTranched), value: MAX_UINT256 });
-
-        uint256 streamId = lockupTranched.nextStreamId();
 
         // Expect the assets to be transferred from the funder to {SablierLockupTranched}.
         expectCallToTransferFrom({ from: funder, to: address(lockupTranched), value: vars.createAmounts.deposit });

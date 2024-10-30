@@ -7,12 +7,6 @@ import { Broker, LockupTranched } from "src/core/types/DataTypes.sol";
 import { LockupTranched_Integration_Shared_Test } from "./LockupTranched.t.sol";
 
 contract WithdrawableAmountOf_LockupTranched_Integration_Fuzz_Test is LockupTranched_Integration_Shared_Test {
-    function setUp() public virtual override(LockupTranched_Integration_Shared_Test) {
-        LockupTranched_Integration_Shared_Test.setUp();
-
-        resetPrank({ msgSender: users.sender });
-    }
-
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past

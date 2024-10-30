@@ -7,8 +7,11 @@ import { Lockup, LockupTranched } from "src/core/types/DataTypes.sol";
 import { LockupTranched_Integration_Shared_Test } from "./LockupTranched.t.sol";
 
 contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is LockupTranched_Integration_Shared_Test {
-    function setUp() public virtual override(LockupTranched_Integration_Shared_Test) {
+    uint256 internal streamId;
+
+    function setUp() public virtual override {
         LockupTranched_Integration_Shared_Test.setUp();
+        streamId = lockupTranched.nextStreamId();
     }
 
     struct Vars {
@@ -46,8 +49,6 @@ contract CreateWithDurations_LockupTranched_Integration_Fuzz_Test is LockupTranc
 
         // Mint enough assets to the fuzzed funder.
         deal({ token: address(dai), to: vars.funder, give: vars.totalAmount });
-
-        uint256 streamId = lockupTranched.nextStreamId();
 
         // Expect the assets to be transferred from the funder to {SablierLockupTranched}.
         expectCallToTransferFrom({ from: vars.funder, to: address(lockupTranched), value: vars.createAmounts.deposit });

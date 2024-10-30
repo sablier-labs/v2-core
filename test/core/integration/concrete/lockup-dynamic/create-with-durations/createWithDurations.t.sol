@@ -11,6 +11,13 @@ import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 import { LockupDynamic_Integration_Shared_Test } from "../LockupDynamic.t.sol";
 
 contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is LockupDynamic_Integration_Shared_Test {
+    uint256 internal streamId;
+
+    function setUp() public virtual override {
+        LockupDynamic_Integration_Shared_Test.setUp();
+        streamId = lockupDynamic.nextStreamId();
+    }
+
     function test_RevertWhen_DelegateCall() external {
         bytes memory callData =
             abi.encodeCall(ISablierLockupDynamic.createWithDurations, defaults.createWithDurationsLD());
@@ -122,8 +129,6 @@ contract CreateWithDurations_LockupDynamic_Integration_Concrete_Test is LockupDy
         LockupDynamic.Segment[] memory segments = defaults.segments();
         segments[0].timestamp = timestamps.start + segmentsWithDurations[0].duration;
         segments[1].timestamp = segments[0].timestamp + segmentsWithDurations[1].duration;
-
-        uint256 streamId = lockupDynamic.nextStreamId();
 
         // It should perform the ERC-20 transfers.
         expectCallToTransferFrom({ from: funder, to: address(lockupDynamic), value: defaults.DEPOSIT_AMOUNT() });

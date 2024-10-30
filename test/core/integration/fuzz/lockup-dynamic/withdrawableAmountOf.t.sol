@@ -6,12 +6,6 @@ import { LockupDynamic } from "src/core/types/DataTypes.sol";
 import { LockupDynamic_Integration_Shared_Test } from "./LockupDynamic.t.sol";
 
 contract WithdrawableAmountOf_LockupDynamic_Integration_Fuzz_Test is LockupDynamic_Integration_Shared_Test {
-    function setUp() public virtual override(LockupDynamic_Integration_Shared_Test) {
-        LockupDynamic_Integration_Shared_Test.setUp();
-
-        resetPrank({ msgSender: users.sender });
-    }
-
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past

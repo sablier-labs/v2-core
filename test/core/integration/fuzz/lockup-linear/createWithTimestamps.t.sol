@@ -10,8 +10,11 @@ import { Broker, Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
 import { LockupLinear_Integration_Shared_Test } from "./LockupLinear.t.sol";
 
 contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is LockupLinear_Integration_Shared_Test {
-    function setUp() public virtual override(LockupLinear_Integration_Shared_Test) {
+    uint256 internal streamId;
+
+    function setUp() public virtual override {
         LockupLinear_Integration_Shared_Test.setUp();
+        streamId = lockupLinear.nextStreamId();
     }
 
     function testFuzz_RevertWhen_BrokerFeeTooHigh(Broker memory broker)
@@ -138,8 +141,6 @@ contract CreateWithTimestamps_LockupLinear_Integration_Fuzz_Test is LockupLinear
 
         // Approve {SablierLockupLinear} to transfer the assets from the fuzzed funder.
         dai.approve({ spender: address(lockupLinear), value: MAX_UINT256 });
-
-        uint256 streamId = lockupLinear.nextStreamId();
 
         // Expect the assets to be transferred from the funder to {SablierLockupLinear}.
         expectCallToTransferFrom({ from: funder, to: address(lockupLinear), value: vars.createAmounts.deposit });

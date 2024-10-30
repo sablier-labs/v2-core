@@ -8,8 +8,11 @@ import { Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
 import { LockupLinear_Integration_Shared_Test } from "./LockupLinear.t.sol";
 
 contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is LockupLinear_Integration_Shared_Test {
-    function setUp() public virtual override(LockupLinear_Integration_Shared_Test) {
+    uint256 internal streamId;
+
+    function setUp() public virtual override {
         LockupLinear_Integration_Shared_Test.setUp();
+        streamId = lockupLinear.nextStreamId();
     }
 
     function testFuzz_RevertWhen_TotalDurationCalculationOverflows(LockupLinear.Durations memory durations)
@@ -49,8 +52,6 @@ contract CreateWithDurations_LockupLinear_Integration_Fuzz_Test is LockupLinear_
 
         // Make the Sender the stream's funder (recall that the Sender is the default caller).
         address funder = users.sender;
-
-        uint256 streamId = lockupLinear.nextStreamId();
 
         // Expect the assets to be transferred from the funder to {SablierLockupLinear}.
         expectCallToTransferFrom({ from: funder, to: address(lockupLinear), value: defaults.DEPOSIT_AMOUNT() });

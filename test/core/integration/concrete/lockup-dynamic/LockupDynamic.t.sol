@@ -255,8 +255,13 @@ contract TransferFrom_LockupDynamic_Integration_Concrete_Test is
     LockupDynamic_Integration_Shared_Test,
     TransferFrom_Integration_Concrete_Test
 {
-    function setUp() public virtual override(LockupDynamic_Integration_Shared_Test, Integration_Test) {
+    function setUp()
+        public
+        virtual
+        override(LockupDynamic_Integration_Shared_Test, TransferFrom_Integration_Concrete_Test)
+    {
         LockupDynamic_Integration_Shared_Test.setUp();
+        TransferFrom_Integration_Concrete_Test.setUp();
     }
 }
 

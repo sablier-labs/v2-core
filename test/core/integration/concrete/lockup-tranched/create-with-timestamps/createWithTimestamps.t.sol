@@ -15,9 +15,8 @@ import { LockupTranched_Integration_Shared_Test } from "./../LockupTranched.t.so
 contract CreateWithTimestamps_LockupTranched_Integration_Concrete_Test is LockupTranched_Integration_Shared_Test {
     uint256 internal streamId;
 
-    function setUp() public virtual override(LockupTranched_Integration_Shared_Test) {
+    function setUp() public virtual override {
         LockupTranched_Integration_Shared_Test.setUp();
-
         streamId = lockupTranched.nextStreamId();
     }
 

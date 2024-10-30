@@ -6,10 +6,6 @@ import { LockupLinear } from "src/core/types/DataTypes.sol";
 import { LockupLinear_Integration_Shared_Test } from "./LockupLinear.t.sol";
 
 contract WithdrawableAmountOf_LockupLinear_Integration_Fuzz_Test is LockupLinear_Integration_Shared_Test {
-    function setUp() public virtual override(LockupLinear_Integration_Shared_Test) {
-        LockupLinear_Integration_Shared_Test.setUp();
-    }
-
     function testFuzz_WithdrawableAmountOf_CliffTimeInFuture(uint40 timeJump)
         external
         givenNotNull

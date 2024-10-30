@@ -17,7 +17,6 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Concrete_Test is LockupD
 
     function setUp() public virtual override {
         LockupDynamic_Integration_Shared_Test.setUp();
-
         streamId = lockupDynamic.nextStreamId();
     }
 

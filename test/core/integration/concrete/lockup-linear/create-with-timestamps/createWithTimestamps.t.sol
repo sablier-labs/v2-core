@@ -14,9 +14,8 @@ import { LockupLinear_Integration_Shared_Test } from "./../LockupLinear.t.sol";
 contract CreateWithTimestamps_LockupLinear_Integration_Concrete_Test is LockupLinear_Integration_Shared_Test {
     uint256 internal streamId;
 
-    function setUp() public virtual override(LockupLinear_Integration_Shared_Test) {
+    function setUp() public override {
         LockupLinear_Integration_Shared_Test.setUp();
-
         streamId = lockupLinear.nextStreamId();
     }
 

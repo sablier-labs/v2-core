@@ -10,8 +10,11 @@ import { Lockup, LockupLinear } from "src/core/types/DataTypes.sol";
 import { LockupLinear_Integration_Shared_Test } from "../LockupLinear.t.sol";
 
 contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is LockupLinear_Integration_Shared_Test {
-    function setUp() public virtual override(LockupLinear_Integration_Shared_Test) {
+    uint256 internal streamId;
+
+    function setUp() public virtual override {
         LockupLinear_Integration_Shared_Test.setUp();
+        streamId = lockupLinear.nextStreamId();
     }
 
     function test_RevertWhen_DelegateCall() external {
@@ -89,8 +92,6 @@ contract CreateWithDurations_LockupLinear_Integration_Concrete_Test is LockupLin
         });
 
         if (durations.cliff == 0) timestamps.cliff = 0;
-
-        uint256 streamId = lockupLinear.nextStreamId();
 
         // It should perform the ERC-20 transfers.
         expectCallToTransferFrom({ from: funder, to: address(lockupLinear), value: defaults.DEPOSIT_AMOUNT() });

@@ -11,8 +11,11 @@ import { Broker, Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 import { LockupDynamic_Integration_Shared_Test } from "./LockupDynamic.t.sol";
 
 contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is LockupDynamic_Integration_Shared_Test {
-    function setUp() public virtual override(LockupDynamic_Integration_Shared_Test) {
+    uint256 internal streamId;
+
+    function setUp() public virtual override {
         LockupDynamic_Integration_Shared_Test.setUp();
+        streamId = lockupDynamic.nextStreamId();
     }
 
     function testFuzz_RevertWhen_SegmentCountTooHigh(uint256 segmentCount)
@@ -209,8 +212,6 @@ contract CreateWithTimestamps_LockupDynamic_Integration_Fuzz_Test is LockupDynam
 
         // Approve {SablierLockupDynamic} to transfer the assets from the fuzzed funder.
         dai.approve({ spender: address(lockupDynamic), value: MAX_UINT256 });
-
-        uint256 streamId = lockupDynamic.nextStreamId();
 
         // Expect the assets to be transferred from the funder to {SablierLockupDynamic}.
         expectCallToTransferFrom({ from: funder, to: address(lockupDynamic), value: vars.createAmounts.deposit });

@@ -6,12 +6,6 @@ import { LockupLinear } from "src/core/types/DataTypes.sol";
 import { LockupLinear_Integration_Shared_Test } from "./LockupLinear.t.sol";
 
 contract StreamedAmountOf_LockupLinear_Integration_Fuzz_Test is LockupLinear_Integration_Shared_Test {
-    function setUp() public virtual override(LockupLinear_Integration_Shared_Test) {
-        LockupLinear_Integration_Shared_Test.setUp();
-
-        resetPrank({ msgSender: users.sender });
-    }
-
     function testFuzz_StreamedAmountOf_CliffTimeInFuture(uint40 timeJump)
         external
         givenNotNull
