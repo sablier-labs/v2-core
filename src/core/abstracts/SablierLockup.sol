@@ -7,14 +7,13 @@ import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
-
 import { ILockupNFTDescriptor } from "./../interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockup } from "./../interfaces/ISablierLockup.sol";
 import { ISablierLockupRecipient } from "./../interfaces/ISablierLockupRecipient.sol";
 import { Errors } from "./../libraries/Errors.sol";
 import { Lockup } from "./../types/DataTypes.sol";
 import { Adminable } from "./Adminable.sol";
-import { Batch } from "src/core/abstracts/Batch.sol";
+import { Batch } from "./Batch.sol";
 import { NoDelegateCall } from "./NoDelegateCall.sol";
 
 /// @title SablierLockup
