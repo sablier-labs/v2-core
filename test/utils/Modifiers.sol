@@ -77,10 +77,6 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
-    modifier whenAuthorizedCaller() {
-        _;
-    }
-
     modifier whenCallerAdmin() {
         // Make the Admin the caller in the rest of this test suite.
         resetPrank({ msgSender: users.admin });
@@ -123,7 +119,7 @@ abstract contract Modifiers is Fuzzers {
 
     modifier givenDepletedStream(ISablierLockup lockup, uint256 streamId) {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: streamId, to: lockup.getRecipient(streamId) });
+        lockup.withdrawMax({ streamId: streamId, to: users.recipient });
         _;
     }
 

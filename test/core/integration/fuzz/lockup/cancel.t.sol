@@ -14,7 +14,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
         givenCancelableStream
     {
         timeJump = _bound(timeJump, 1 seconds, 100 weeks);
@@ -47,7 +47,7 @@ abstract contract Cancel_Integration_Fuzz_Test is Integration_Test {
         whenNoDelegateCall
         givenNotNull
         givenWarmStream
-        whenAuthorizedCaller
+        whenCallerSender
         givenCancelableStream
         givenSTREAMINGStatus
         givenRecipientAllowedToHook
