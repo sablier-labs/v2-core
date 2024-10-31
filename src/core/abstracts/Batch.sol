@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
+import { IBatch } from "../interfaces/IBatch.sol";
 import { Errors } from "../libraries/Errors.sol";
 
 /// @title Batch
-/// @notice This contract implements logic to batch call any function.
+/// @notice See the documentation in {IBatch}.
 /// @dev Forked from: https://github.com/boringcrypto/BoringSolidity/blob/master/contracts/BoringBatchable.sol
-abstract contract Batch {
+abstract contract Batch is IBatch {
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Allows batched call to self, `this` contract.
-    /// @param calls An array of inputs for each call.
+    /// @inheritdoc IBatch
     function batch(bytes[] calldata calls) external {
         uint256 count = calls.length;
 

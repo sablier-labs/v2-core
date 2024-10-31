@@ -1,6 +1,6 @@
 Batch_Integration_Concrete_Test
 ├── when call function not exist
-│  └── it should revert
+│  └── it should do nothing
 └── when call function exists
    ├── when data invalid
    │  └── it should revert
