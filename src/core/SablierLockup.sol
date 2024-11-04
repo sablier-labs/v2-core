@@ -37,13 +37,13 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
     uint256 public immutable override MAX_COUNT;
 
     /// @dev Cliff timestamp mapped by stream IDs. This is used in Lockup Linear models.
-    mapping(uint256 => uint40) internal _cliffs;
+    mapping(uint256 streamId => uint40 cliff) internal _cliffs;
 
     /// @dev Stream segments mapped by stream IDs. This is used in Lockup Dynamic models.
-    mapping(uint256 => LockupDynamic.Segment[]) internal _segments;
+    mapping(uint256 streamId => LockupDynamic.Segment[] segments) internal _segments;
 
     /// @dev Stream tranches mapped by stream IDs. This is used in Lockup Tranched models.
-    mapping(uint256 => LockupTranched.Tranche[]) internal _tranches;
+    mapping(uint256 streamId => LockupTranched.Tranche[] tranches) internal _tranches;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTRUCTOR

@@ -5,7 +5,7 @@ import { PRBMathCastingUint128 as CastingUint128 } from "@prb/math/src/casting/U
 import { PRBMathCastingUint40 as CastingUint40 } from "@prb/math/src/casting/Uint40.sol";
 import { SD59x18 } from "@prb/math/src/SD59x18.sol";
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
-import { Lockup, LockupDynamic, LockupTranched } from "./../types/DataTypes.sol";
+import { LockupDynamic, LockupTranched } from "./../types/DataTypes.sol";
 
 /// @title VestingMath
 /// @notice Library with functions needed to calculate vested amount across lockup streams.
