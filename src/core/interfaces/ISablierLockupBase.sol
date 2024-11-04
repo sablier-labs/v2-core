@@ -92,7 +92,7 @@ interface ISablierLockupBase is
     /// @notice Retrieves the distribution models used to create the stream.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
-    function getLockupModel(uint256 streamId) external view returns (Lockup.Model model);
+    function getLockupModel(uint256 streamId) external view returns (Lockup.Model lockupModel);
 
     /// @notice Retrieves the stream's recipient.
     /// @dev Reverts if the NFT has been burned.

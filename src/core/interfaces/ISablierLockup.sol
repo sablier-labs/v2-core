@@ -103,21 +103,15 @@ interface ISablierLockup is ISablierLockupBase {
     /// @dev This is initialized at construction time and cannot be changed later.
     function MAX_COUNT() external view returns (uint256);
 
-    /// @notice Retrieves the stream's cliff time, which is a Unix timestamp. A value of zero means there is no cliff.
+    /// @notice Retrieves the stream's cliff timestamp, which is a Unix timestamp. A zero value means no cliff.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
-    function getCliffTime(uint256 streamId) external view returns (uint40 cliffTime);
+    function getCliff(uint256 streamId) external view returns (uint40 cliff);
 
     /// @notice Retrieves the segments used to compose the dynamic distribution function.
     /// @dev Reverts if `streamId` references a null stream or a non Lockup Dynamic stream.
     /// @param streamId The stream ID for the query.
     function getSegments(uint256 streamId) external view returns (LockupDynamic.Segment[] memory segments);
-
-    /// @notice Retrieves the lockup model used to create the stream. This is either `LOCKUP_LINEAR`, `LOCKUP_DYNAMIC`
-    /// or `LOCKUP_TRANCHED`.
-    /// @dev Reverts if `streamId` references a null stream.
-    /// @param streamId The stream ID for the query.
-    function getStreamType(uint256 streamId) external view returns (Lockup.Model streamModel);
 
     /// @notice Retrieves the stream's start time, cliff time and end time.
     /// @dev Reverts if `streamId` references a null stream.
@@ -239,18 +233,18 @@ interface ISablierLockup is ISablierLockupBase {
     /// - `params.totalAmount` must be greater than zero.
     /// - If set, `params.broker.fee` must not be greater than `MAX_BROKER_FEE`.
     /// - `params.timestamps.start` must be greater than zero and less than `params.timestamps.end`.
-    /// - If set, `cliffTime` must be greater than `params.timestamps.start` and less than
+    /// - If set, `cliff` must be greater than `params.timestamps.start` and less than
     /// `params.timestamps.end`.
     /// - `params.recipient` must not be the zero address.
     /// - `params.sender` must not be the zero address.
     /// - `msg.sender` must have allowed this contract to spend at least `params.totalAmount` assets.
     ///
     /// @param params Struct encapsulating the function parameters, which are documented in {DataTypes}.
-    /// @param cliffTime The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
+    /// @param cliff The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
     /// @return streamId The ID of the newly created stream.
     function createWithTimestampsLL(
         Lockup.CreateWithTimestamps calldata params,
-        uint40 cliffTime
+        uint40 cliff
     )
         external
         returns (uint256 streamId);
@@ -271,7 +265,7 @@ interface ISablierLockup is ISablierLockupBase {
     /// - `params.startTime` must be greater than zero and less than the first tranche's timestamp.
     /// - `tranches` must have at least one tranche, but not more than `MAX_COUNT`.
     /// - The tranche timestamps must be arranged in ascending order.
-    /// - `params.endTime` must be equal to the last segment's timestamp.
+    /// - `params.endTime` must be equal to the last tranche's timestamp.
     /// - The sum of the tranche amounts must equal the deposit amount.
     /// - `params.recipient` must not be the zero address.
     /// - `params.sender` must not be the zero address.
