@@ -19,10 +19,10 @@ import { NoDelegateCall } from "./NoDelegateCall.sol";
 /// @title SablierLockupBase
 /// @notice See the documentation in {SablierLockupBase}.
 abstract contract SablierLockupBase is
-    Batch, // 0 inherited components
+    Batch, // 1 inherited components
     NoDelegateCall, // 0 inherited components
     Adminable, // 1 inherited components
-    ISablierLockupBase, // 7 inherited components
+    ISablierLockupBase, // 6 inherited components
     ERC721 // 6 inherited components
 {
     using SafeERC20 for IERC20;
