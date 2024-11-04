@@ -41,6 +41,8 @@ cp out-optimized/ISablierLockup.sol/ISablierLockup.json $core_interfaces
 
 core_libraries=./artifacts/core/libraries
 cp out-optimized/Errors.sol/Errors.json $core_libraries
+cp out-optimized/Helpers.sol/Helpers.json $core_libraries
+cp out-optimized/VestingMath.sol/VestingMath.json $core_libraries
 
 ################################################
 ####               PERIPHERY                ####

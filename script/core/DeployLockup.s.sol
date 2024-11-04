@@ -7,7 +7,7 @@ import { SablierLockup } from "../../src/core/SablierLockup.sol";
 import { BaseScript } from "../Base.s.sol";
 
 /// @notice Deploys {SablierLockup} contract.
-contract DeployCore2 is BaseScript {
+contract DeployLockup is BaseScript {
     function run(
         address initialAdmin,
         ILockupNFTDescriptor nftDescriptor
