@@ -223,7 +223,7 @@ library VestingMath {
         // Make the block timestamp the stream's start time.
         uint40 startTime = uint40(block.timestamp);
 
-        // It is safe to use unchecked arithmetic because {SablierLockupTranched-_create} will nonetheless check the
+        // It is safe to use unchecked arithmetic because {SablierLockup-_createLT} will nonetheless check the
         // correctness of the calculated tranche timestamps.
         unchecked {
             // The first tranche is precomputed because it is needed in the for loop below.

@@ -284,7 +284,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc SablierLockupBase
-    function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
+    function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128 streamedAmount) {
         // If the start time is in the future, return zero.
         uint40 blockTimestamp = uint40(block.timestamp);
         if (_streams[streamId].startTime >= blockTimestamp) {
