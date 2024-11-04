@@ -51,7 +51,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
     /// @param initialAdmin The address of the initial contract admin.
     /// @param initialNFTDescriptor The address of the NFT descriptor contract.
-    /// @param maxCount The maximum number of segments and tranched allowed in a stream.
+    /// @param maxCount The maximum number of segments and tranched allowed in lockup dynamic and lockup tranched
+    /// streams, respectively.
     constructor(
         address initialAdmin,
         ILockupNFTDescriptor initialNFTDescriptor,
