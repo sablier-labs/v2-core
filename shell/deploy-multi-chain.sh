@@ -357,9 +357,7 @@ for chain in "${provided_chains[@]}"; do
 
         # Extract and save contract addresses
         batchLockup_address=$(echo "${output}" | awk '/batchLockup: contract/{print $NF}')
-        lockupDynamic_address=$(echo "${output}" | awk '/lockupDynamic: contract/{print $NF}')
-        lockupLinear_address=$(echo "${output}" | awk '/lockupLinear: contract/{print $NF}')
-        lockupTranched_address=$(echo "${output}" | awk '/lockupTranched: contract/{print $NF}')
+        lockup_address=$(echo "${output}" | awk '/lockup: contract/{print $NF}')
         merkleFactory_address=$(echo "${output}" | awk '/merkleFactory: contract/{print $NF}')
         nftDescriptor_address=$(echo "${output}" | awk '/nftDescriptor: contract/{print $NF}')
 
@@ -367,9 +365,7 @@ for chain in "${provided_chains[@]}"; do
         {
             echo "Core Contracts"
             echo "LockupNFTDescriptor = ${nftDescriptor_address}"
-            echo "SablierLockupDynamic = ${lockupDynamic_address}"
-            echo "SablierLockupLinear = ${lockupLinear_address}"
-            echo "SablierLockupTranched = ${lockupTranched_address}"
+            echo "SablierLockup = ${lockup_address}"
             echo "Periphery Contracts"
             echo "SablierBatchLockup = ${batchLockup_address}"
             echo "SablierMerkleFactory = ${merkleFactory_address}"
