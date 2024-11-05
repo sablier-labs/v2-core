@@ -399,14 +399,15 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             maxBrokerFee: MAX_BROKER_FEE
         });
 
+        // Effect: create the stream,  mint the NFT and transfer the deposit amount.
+        streamId = _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_DYNAMIC });
+
         // Effect: store the segments. Since Solidity lacks a syntax for copying arrays of structs directly from
         // memory to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
         uint256 segmentCount = segments.length;
         for (uint256 i = 0; i < segmentCount; ++i) {
             _segments[streamId].push(segments[i]);
         }
-
-        streamId = _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_DYNAMIC });
 
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupDynamicStream({
@@ -437,11 +438,13 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             maxBrokerFee: MAX_BROKER_FEE
         });
 
+        // Effect: create the stream,  mint the NFT and transfer the deposit amount.
+        streamId = _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_LINEAR });
+
+        // Effect: update cliff time if its non-zero.
         if (cliff > 0) {
             _cliffs[streamId] = cliff;
         }
-
-        streamId = _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_LINEAR });
 
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupLinearStream({
@@ -477,14 +480,15 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             maxBrokerFee: MAX_BROKER_FEE
         });
 
+        // Effect: create the stream,  mint the NFT and transfer the deposit amount.
+        streamId = _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_TRANCHED });
+
         // Effect: store the tranches. Since Solidity lacks a syntax for copying arrays of structs directly from
         // memory to storage, a manual approach is necessary. See https://github.com/ethereum/solidity/issues/12783.
         uint256 trancheCount = tranches.length;
         for (uint256 i = 0; i < trancheCount; ++i) {
             _tranches[streamId].push(tranches[i]);
         }
-
-        streamId = _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_TRANCHED });
 
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupTranchedStream({
