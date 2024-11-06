@@ -345,7 +345,9 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
     /// @dev Reverts if the symbol is unknown.
     function mapSymbol(IERC721Metadata sablier) internal view returns (string memory) {
         string memory symbol = sablier.symbol();
-        if (symbol.equal("SAB-LOCKUP-LIN") || symbol.equal("SAB-V2-LOCKUP-LIN")) {
+        if (symbol.equal("SAB-LOCKUP")) {
+            return "Sablier Lockup";
+        } else if (symbol.equal("SAB-LOCKUP-LIN") || symbol.equal("SAB-V2-LOCKUP-LIN")) {
             return "Sablier Lockup Linear";
         } else if (symbol.equal("SAB-LOCKUP-DYN") || symbol.equal("SAB-V2-LOCKUP-DYN")) {
             return "Sablier Lockup Dynamic";

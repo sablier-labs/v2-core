@@ -15,6 +15,7 @@ library Helpers {
     function checkCreateLockupDynamic(
         address sender,
         uint40 startTime,
+        uint40 endTime,
         uint128 totalAmount,
         LockupDynamic.Segment[] memory segments,
         uint256 maxCount,
@@ -32,13 +33,14 @@ library Helpers {
         _checkCreateStream(sender, createAmounts.deposit, startTime);
 
         // Check: validate the user-provided segments.
-        _checkSegments(segments, createAmounts.deposit, startTime, maxCount);
+        _checkSegments(segments, createAmounts.deposit, startTime, endTime, maxCount);
     }
 
     /// @dev Checks the parameters of the {SablierLockup-_createLT} function.
     function checkCreateLockupTranched(
         address sender,
         uint40 startTime,
+        uint40 endTime,
         uint128 totalAmount,
         LockupTranched.Tranche[] memory tranches,
         uint256 maxCount,
@@ -56,7 +58,7 @@ library Helpers {
         _checkCreateStream(sender, createAmounts.deposit, startTime);
 
         // Check: validate the user-provided segments.
-        _checkTranches(tranches, createAmounts.deposit, startTime, maxCount);
+        _checkTranches(tranches, createAmounts.deposit, startTime, endTime, maxCount);
     }
 
     /// @dev Checks the parameters of the {SablierLockup-_createLL} function.
@@ -164,10 +166,12 @@ library Helpers {
     /// 2. The timestamps are ordered chronologically.
     /// 3. There are no duplicate timestamps.
     /// 4. The deposit amount is equal to the sum of all segment amounts.
+    /// 5. The end time equals the last segment's timestamp.
     function _checkSegments(
         LockupDynamic.Segment[] memory segments,
         uint128 depositAmount,
         uint40 startTime,
+        uint40 endTime,
         uint256 maxSegmentCount
     )
         private
@@ -187,6 +191,13 @@ library Helpers {
         // Check: the start time is strictly less than the first segment timestamp.
         if (startTime >= segments[0].timestamp) {
             revert Errors.SablierLockup_StartTimeNotLessThanFirstSegmentTimestamp(startTime, segments[0].timestamp);
+        }
+
+        // Check: the end time equals the last segment's timestamp.
+        if (endTime != segments[segments.length - 1].timestamp) {
+            revert Errors.SablierLockup_EndTimeNotEqualToLastSegmentTimestamp(
+                endTime, segments[segments.length - 1].timestamp
+            );
         }
 
         // Pre-declare the variables needed in the for loop.
@@ -227,10 +238,12 @@ library Helpers {
     /// 2. The timestamps are ordered chronologically.
     /// 3. There are no duplicate timestamps.
     /// 4. The deposit amount is equal to the sum of all tranche amounts.
+    /// 5. The end time equals the last tranche's timestamp.
     function _checkTranches(
         LockupTranched.Tranche[] memory tranches,
         uint128 depositAmount,
         uint40 startTime,
+        uint40 endTime,
         uint256 maxTrancheCount
     )
         private
@@ -250,6 +263,13 @@ library Helpers {
         // Check: the start time is strictly less than the first tranche timestamp.
         if (startTime >= tranches[0].timestamp) {
             revert Errors.SablierLockup_StartTimeNotLessThanFirstTrancheTimestamp(startTime, tranches[0].timestamp);
+        }
+
+        // Check: the end time equals the last tranche's timestamp.
+        if (endTime != tranches[tranches.length - 1].timestamp) {
+            revert Errors.SablierLockup_EndTimeNotEqualToLastTrancheTimestamp(
+                endTime, tranches[tranches.length - 1].timestamp
+            );
         }
 
         // Pre-declare the variables needed in the for loop.

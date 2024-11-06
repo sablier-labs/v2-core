@@ -70,7 +70,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierLockup
-    function getCliff(uint256 streamId) external view override notNull(streamId) returns (uint40 cliff) {
+    function getCliffTime(uint256 streamId) external view override notNull(streamId) returns (uint40 cliff) {
         cliff = _cliffs[streamId];
     }
 
@@ -234,13 +234,6 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         noDelegateCall
         returns (uint256 streamId)
     {
-        // Check: `params.endTime` equals the last segment's timestamp.
-        if (params.endTime != segments[segments.length - 1].timestamp) {
-            revert Errors.SablierLockup_EndTimeNotEqualToLastSegmentTimestamp(
-                params.endTime, segments[segments.length - 1].timestamp
-            );
-        }
-
         // Checks, Effects and Interactions: create the stream.
         streamId = _createLD(params, segments);
     }
@@ -269,13 +262,6 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         noDelegateCall
         returns (uint256 streamId)
     {
-        // Check: `params.endTime` equals the last tranche's timestamp.
-        if (params.endTime != tranches[tranches.length - 1].timestamp) {
-            revert Errors.SablierLockup_EndTimeNotEqualToLastTrancheTimestamp(
-                params.endTime, tranches[tranches.length - 1].timestamp
-            );
-        }
-
         // Checks, Effects and Interactions: create the stream.
         streamId = _createLT(params, tranches);
     }
@@ -392,6 +378,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         Lockup.CreateAmounts memory createAmounts = Helpers.checkCreateLockupDynamic({
             sender: params.sender,
             startTime: params.startTime,
+            endTime: params.endTime,
             totalAmount: params.totalAmount,
             segments: segments,
             maxCount: MAX_COUNT,
@@ -473,6 +460,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         Lockup.CreateAmounts memory createAmounts = Helpers.checkCreateLockupTranched({
             sender: params.sender,
             startTime: params.startTime,
+            endTime: params.endTime,
             totalAmount: params.totalAmount,
             tranches: tranches,
             maxCount: MAX_COUNT,

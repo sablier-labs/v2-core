@@ -106,7 +106,7 @@ interface ISablierLockup is ISablierLockupBase {
     /// @notice Retrieves the stream's cliff timestamp, which is a Unix timestamp. A zero value means no cliff.
     /// @dev Reverts if `streamId` references a null stream.
     /// @param streamId The stream ID for the query.
-    function getCliff(uint256 streamId) external view returns (uint40 cliff);
+    function getCliffTime(uint256 streamId) external view returns (uint40 cliff);
 
     /// @notice Retrieves the segments used to compose the dynamic distribution function.
     /// @dev Reverts if `streamId` references a null stream or a non Lockup Dynamic stream.
