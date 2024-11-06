@@ -34,8 +34,8 @@ library VestingMath {
     /// bounds" error.
     function calculateLockupDynamicStreamedAmount(
         LockupDynamic.Segment[] memory segments,
-        uint128 withdrawnAmount,
-        uint40 startTime
+        uint40 startTime,
+        uint128 withdrawnAmount
     )
         public
         view
@@ -109,19 +109,27 @@ library VestingMath {
     /// - $c$ is the cliff amount.
     function calculateLockupLinearStreamedAmount(
         uint128 depositedAmount,
-        uint128 withdrawnAmount,
         uint40 startTime,
-        uint40 endTime
+        uint40 cliffTime,
+        uint40 endTime,
+        uint128 withdrawnAmount
     )
         public
         view
         returns (uint128)
     {
+        uint256 blockTimestamp = block.timestamp;
+
+        // If the cliff time is in the future, return zero.
+        if (cliffTime > blockTimestamp) {
+            return 0;
+        }
+
         // In all other cases, calculate the amount streamed so far. Normalization to 18 decimals is not needed
         // because there is no mix of amounts with different decimals.
         unchecked {
             // Calculate how much time has passed since the stream started, and the stream's total duration.
-            UD60x18 elapsedTime = ud(block.timestamp - startTime);
+            UD60x18 elapsedTime = ud(blockTimestamp - startTime);
             UD60x18 totalDuration = ud(endTime - startTime);
 
             // Divide the elapsed time by the stream's total duration.
@@ -160,14 +168,22 @@ library VestingMath {
         view
         returns (uint128)
     {
+        uint256 blockTimestamp = block.timestamp;
+
+        // If the first tranche's timestamp is in the future, return zero.
+        if (tranches[0].timestamp > blockTimestamp) {
+            return 0;
+        }
+
         // Sum the amounts in all tranches that have already been vested.
         // Using unchecked arithmetic is safe because the sum of the tranche amounts is equal to the total amount
         // at this point.
         uint128 streamedAmount = tranches[0].amount;
-        for (uint256 i = 1; i < tranches.length; ++i) {
+        uint256 tranchesCount = tranches.length;
+        for (uint256 i = 1; i < tranchesCount; ++i) {
             // The loop breaks at the first tranche with a timestamp in the future. A tranche is considered vested if
             // its timestamp is less than or equal to the block timestamp.
-            if (tranches[i].timestamp > block.timestamp) {
+            if (tranches[i].timestamp > blockTimestamp) {
                 break;
             }
             unchecked {
@@ -179,12 +195,12 @@ library VestingMath {
     }
 
     /// @dev Calculate the timestamps and return the segments.
-    function calculateSegmentTimestamps(LockupDynamic.SegmentWithDuration[] memory segments)
+    function calculateSegmentTimestamps(LockupDynamic.SegmentWithDuration[] memory segmentsWithDuration)
         public
         view
         returns (LockupDynamic.Segment[] memory segmentsWithTimestamps)
     {
-        uint256 segmentCount = segments.length;
+        uint256 segmentCount = segmentsWithDuration.length;
         segmentsWithTimestamps = new LockupDynamic.Segment[](segmentCount);
 
         // Make the block timestamp the stream's start time.
@@ -195,29 +211,29 @@ library VestingMath {
         unchecked {
             // The first segment is precomputed because it is needed in the for loop below.
             segmentsWithTimestamps[0] = LockupDynamic.Segment({
-                amount: segments[0].amount,
-                exponent: segments[0].exponent,
-                timestamp: startTime + segments[0].duration
+                amount: segmentsWithDuration[0].amount,
+                exponent: segmentsWithDuration[0].exponent,
+                timestamp: startTime + segmentsWithDuration[0].duration
             });
 
             // Copy the segment amounts and exponents, and calculate the segment timestamps.
             for (uint256 i = 1; i < segmentCount; ++i) {
                 segmentsWithTimestamps[i] = LockupDynamic.Segment({
-                    amount: segments[i].amount,
-                    exponent: segments[i].exponent,
-                    timestamp: segmentsWithTimestamps[i - 1].timestamp + segments[i].duration
+                    amount: segmentsWithDuration[i].amount,
+                    exponent: segmentsWithDuration[i].exponent,
+                    timestamp: segmentsWithTimestamps[i - 1].timestamp + segmentsWithDuration[i].duration
                 });
             }
         }
     }
 
     /// @dev Calculate the timestamps and return the tranches.
-    function calculateTrancheTimestamps(LockupTranched.TrancheWithDuration[] memory tranches)
+    function calculateTrancheTimestamps(LockupTranched.TrancheWithDuration[] memory tranchesWithDuration)
         public
         view
         returns (LockupTranched.Tranche[] memory tranchesWithTimestamps)
     {
-        uint256 trancheCount = tranches.length;
+        uint256 trancheCount = tranchesWithDuration.length;
         tranchesWithTimestamps = new LockupTranched.Tranche[](trancheCount);
 
         // Make the block timestamp the stream's start time.
@@ -227,14 +243,16 @@ library VestingMath {
         // correctness of the calculated tranche timestamps.
         unchecked {
             // The first tranche is precomputed because it is needed in the for loop below.
-            tranchesWithTimestamps[0] =
-                LockupTranched.Tranche({ amount: tranches[0].amount, timestamp: startTime + tranches[0].duration });
+            tranchesWithTimestamps[0] = LockupTranched.Tranche({
+                amount: tranchesWithDuration[0].amount,
+                timestamp: startTime + tranchesWithDuration[0].duration
+            });
 
             // Copy the tranche amounts and calculate the tranche timestamps.
             for (uint256 i = 1; i < trancheCount; ++i) {
                 tranchesWithTimestamps[i] = LockupTranched.Tranche({
-                    amount: tranches[i].amount,
-                    timestamp: tranchesWithTimestamps[i - 1].timestamp + tranches[i].duration
+                    amount: tranchesWithDuration[i].amount,
+                    timestamp: tranchesWithTimestamps[i - 1].timestamp + tranchesWithDuration[i].duration
                 });
             }
         }

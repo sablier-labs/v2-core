@@ -75,11 +75,13 @@ contract SablierMerkleLL is
             timestamps.start = schedule.startTime;
         }
 
+        uint40 cliffTime;
+
         // It is safe to use unchecked arithmetic because the `createWithTimestamps` function in the Lockup contract
         // will nonetheless make the relevant checks.
         unchecked {
             if (schedule.cliffDuration > 0) {
-                timestamps.cliff = timestamps.start + schedule.cliffDuration;
+                cliffTime = timestamps.start + schedule.cliffDuration;
             }
             timestamps.end = timestamps.start + schedule.totalDuration;
         }
@@ -93,11 +95,10 @@ contract SablierMerkleLL is
                 asset: ASSET,
                 cancelable: CANCELABLE,
                 transferable: TRANSFERABLE,
-                startTime: timestamps.start,
-                endTime: timestamps.end,
+                timestamps: timestamps,
                 broker: Broker({ account: address(0), fee: ud(0) })
             }),
-            timestamps.cliff
+            cliffTime
         );
 
         // Log the claim.

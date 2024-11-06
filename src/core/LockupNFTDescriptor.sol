@@ -7,12 +7,12 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { ILockupNFTDescriptor } from "./interfaces/ILockupNFTDescriptor.sol";
+import { ISablierLockup } from "./interfaces/ISablierLockup.sol";
 import { ISablierLockupBase } from "./interfaces/ISablierLockupBase.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { NFTSVG } from "./libraries/NFTSVG.sol";
 import { SVGElements } from "./libraries/SVGElements.sol";
 import { Lockup } from "./types/DataTypes.sol";
-
 /*
 
 ██╗      ██████╗  ██████╗██╗  ██╗██╗   ██╗██████╗     ███╗   ██╗███████╗████████╗
@@ -49,7 +49,7 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
         uint128 depositedAmount;
         bool isTransferable;
         string json;
-        ISablierLockupBase lockup;
+        ISablierLockup lockup;
         string lockupModel;
         string lockupStringified;
         bytes returnData;
@@ -64,7 +64,7 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
         TokenURIVars memory vars;
 
         // Load the contracts.
-        vars.lockup = ISablierLockupBase(address(lockup));
+        vars.lockup = ISablierLockup(address(lockup));
         vars.lockupModel = mapSymbol(lockup);
         vars.lockupStringified = address(lockup).toHexString();
         vars.asset = address(vars.lockup.getAsset(streamId));
@@ -99,7 +99,7 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
 
         // Performs a low-level call to handle older deployments that miss the `isTransferable` function.
         (vars.success, vars.returnData) =
-            address(vars.lockup).staticcall(abi.encodeCall(ISablierLockupBase.isTransferable, (streamId)));
+            address(vars.lockup).staticcall(abi.encodeCall(vars.lockup.isTransferable, (streamId)));
 
         // When the call has failed, the stream NFT is assumed to be transferable.
         vars.isTransferable = vars.success ? abi.decode(vars.returnData, (bool)) : true;

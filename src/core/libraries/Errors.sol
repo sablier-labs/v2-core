@@ -109,14 +109,8 @@ library Errors {
     /// @notice Thrown when trying to create a tranched stream with end time not equal to the last tranche's timestamp.
     error SablierLockup_EndTimeNotEqualToLastTrancheTimestamp(uint40 endTime, uint40 lastTrancheTimestamp);
 
-    /// @notice Thrown when calling a function on a stream without Dynamic distribution.
-    error SablierLockup_NotDynamicDistribution(Lockup.Model lockupModel);
-
-    /// @notice Thrown when calling a function on a stream without Linear distribution.
-    error SablierLockup_NotLinearDistribution(Lockup.Model lockupModel);
-
-    /// @notice Thrown when calling a function on a stream without Tranched distribution.
-    error SablierLockup_NotTranchedDistribution(Lockup.Model lockupModel);
+    /// @notice Thrown when a function is called on a stream that does not use the expected Lockup model.
+    error SablierLockup_NotExpectedModel(Lockup.Model actualLockupModel, Lockup.Model expectedLockupModel);
 
     /// @notice Thrown when trying to create a dynamic stream with more segments than the maximum allowed.
     error SablierLockup_SegmentCountTooHigh(uint256 count);

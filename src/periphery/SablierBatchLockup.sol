@@ -63,7 +63,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
                     transferable: batch[i].transferable,
                     broker: batch[i].broker
                 }),
-                batch[i].segments
+                batch[i].segmentsWithDuration
             );
         }
     }
@@ -116,8 +116,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
                     asset: asset,
                     cancelable: batch[i].cancelable,
                     transferable: batch[i].transferable,
-                    startTime: batch[i].startTime,
-                    endTime: endTime,
+                    timestamps: Lockup.Timestamps({ start: batch[i].startTime, end: endTime }),
                     broker: batch[i].broker
                 }),
                 batch[i].segments
@@ -218,11 +217,10 @@ contract SablierBatchLockup is ISablierBatchLockup {
                     asset: asset,
                     cancelable: batch[i].cancelable,
                     transferable: batch[i].transferable,
-                    startTime: batch[i].timestamps.start,
-                    endTime: batch[i].timestamps.end,
+                    timestamps: batch[i].timestamps,
                     broker: batch[i].broker
                 }),
-                batch[i].timestamps.cliff
+                batch[i].cliffTime
             );
         }
     }
@@ -274,7 +272,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
                     transferable: batch[i].transferable,
                     broker: batch[i].broker
                 }),
-                batch[i].tranches
+                batch[i].tranchesWithDuration
             );
         }
     }
@@ -327,8 +325,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
                     asset: asset,
                     cancelable: batch[i].cancelable,
                     transferable: batch[i].transferable,
-                    startTime: batch[i].startTime,
-                    endTime: endTime,
+                    timestamps: Lockup.Timestamps({ start: batch[i].startTime, end: endTime }),
                     broker: batch[i].broker
                 }),
                 batch[i].tranches

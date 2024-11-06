@@ -9,7 +9,6 @@ import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 //
 // - Lockup
 // - LockupDynamic
-// - LockupLinear
 // - LockupTranched
 //
 // You will notice that some structs contain "slot" annotations - they are used to indicate the
@@ -24,7 +23,7 @@ struct Broker {
     UD60x18 fee;
 }
 
-/// @notice Namespace for the structs common to all Lockup models.
+/// @notice Namespace for the structs used in all Lockup models.
 library Lockup {
     /// @notice Struct encapsulating the deposit, withdrawn, and refunded amounts, all denoted in units of the asset's
     /// decimals.
@@ -80,9 +79,7 @@ library Lockup {
     /// @param asset The contract address of the ERC-20 asset to be distributed.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
-    /// @param startTime The Unix timestamp indicating the stream's start.
-    /// @param endTime The Unix timestamp indicating the stream's end.
-    /// @param tranches Tranches used to compose the tranched distribution function.
+    /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, both as Unix timestamps.
     /// @param broker Struct encapsulating (i) the address of the broker assisting in creating the stream, and (ii) the
     /// percentage fee paid to the broker from `totalAmount`, denoted as a fixed-point number. Both can be set to zero.
     struct CreateWithTimestamps {
@@ -92,8 +89,7 @@ library Lockup {
         IERC20 asset;
         bool cancelable;
         bool transferable;
-        uint40 startTime;
-        uint40 endTime;
+        Timestamps timestamps;
         Broker broker;
     }
 
@@ -157,11 +153,9 @@ library Lockup {
 
     /// @notice Struct encapsulating the Lockup timestamps.
     /// @param start The Unix timestamp for the stream's start.
-    /// @param cliff The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
     /// @param end The Unix timestamp for the stream's end.
     struct Timestamps {
         uint40 start;
-        uint40 cliff;
         uint40 end;
     }
 }

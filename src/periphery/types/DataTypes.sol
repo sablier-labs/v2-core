@@ -14,7 +14,7 @@ library BatchLockup {
         uint128 totalAmount;
         bool cancelable;
         bool transferable;
-        LockupDynamic.SegmentWithDuration[] segments;
+        LockupDynamic.SegmentWithDuration[] segmentsWithDuration;
         Broker broker;
     }
 
@@ -36,7 +36,7 @@ library BatchLockup {
         uint128 totalAmount;
         bool cancelable;
         bool transferable;
-        LockupTranched.TrancheWithDuration[] tranches;
+        LockupTranched.TrancheWithDuration[] tranchesWithDuration;
         Broker broker;
     }
 
@@ -60,6 +60,7 @@ library BatchLockup {
         bool cancelable;
         bool transferable;
         Lockup.Timestamps timestamps;
+        uint40 cliffTime;
         Broker broker;
     }
 

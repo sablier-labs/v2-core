@@ -32,9 +32,6 @@ abstract contract SablierLockupBase is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierLockupBase
-    UD60x18 public constant override MAX_BROKER_FEE = UD60x18.wrap(0.1e18);
-
-    /// @inheritdoc ISablierLockupBase
     uint256 public override nextStreamId;
 
     /// @inheritdoc ISablierLockupBase
@@ -205,7 +202,7 @@ abstract contract SablierLockupBase is
 
     /// @inheritdoc ISablierLockupBase
     function streamedAmountOf(uint256 streamId)
-        public
+        external
         view
         override
         notNull(streamId)

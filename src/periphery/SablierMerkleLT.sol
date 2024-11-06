@@ -119,8 +119,7 @@ contract SablierMerkleLT is
                 asset: ASSET,
                 cancelable: CANCELABLE,
                 transferable: TRANSFERABLE,
-                startTime: startTime,
-                endTime: endTime,
+                timestamps: Lockup.Timestamps({ start: startTime, end: endTime }),
                 broker: Broker({ account: address(0), fee: ZERO })
             }),
             tranches
