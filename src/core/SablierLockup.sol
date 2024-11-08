@@ -316,15 +316,13 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
     /// @dev Common logic for creating a stream.
     function _create(
+        uint256 streamId,
         Lockup.CreateWithTimestamps memory params,
         Lockup.CreateAmounts memory createAmounts,
         Lockup.Model lockupModel
     )
         internal
     {
-        // Load the stream ID in a variable.
-        uint256 streamId = nextStreamId;
-
         // Effect: create the stream.
         _streams[streamId] = Lockup.Stream({
             sender: params.sender,
@@ -387,7 +385,12 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_DYNAMIC });
+        _create({
+            streamId: streamId,
+            params: params,
+            createAmounts: createAmounts,
+            lockupModel: Lockup.Model.LOCKUP_DYNAMIC
+        });
 
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupDynamicStream({
@@ -432,7 +435,12 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_LINEAR });
+        _create({
+            streamId: streamId,
+            params: params,
+            createAmounts: createAmounts,
+            lockupModel: Lockup.Model.LOCKUP_LINEAR
+        });
 
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupLinearStream({
@@ -480,7 +488,12 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        _create({ params: params, createAmounts: createAmounts, lockupModel: Lockup.Model.LOCKUP_TRANCHED });
+        _create({
+            streamId: streamId,
+            params: params,
+            createAmounts: createAmounts,
+            lockupModel: Lockup.Model.LOCKUP_TRANCHED
+        });
 
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupTranchedStream({
