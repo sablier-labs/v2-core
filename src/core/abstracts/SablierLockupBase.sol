@@ -7,6 +7,7 @@ import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import { UD60x18 } from "@prb/math/src/UD60x18.sol";
+
 import { ILockupNFTDescriptor } from "./../interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockupBase } from "./../interfaces/ISablierLockupBase.sol";
 import { ISablierLockupRecipient } from "./../interfaces/ISablierLockupRecipient.sol";
@@ -30,6 +31,10 @@ abstract contract SablierLockupBase is
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev The maximum broker fee that can be charged by the broker, denoted as a fixed-point number where
+    /// 1e18 is 100%.
+    UD60x18 public constant override MAX_BROKER_FEE = UD60x18.wrap(0.1e18);
 
     /// @inheritdoc ISablierLockupBase
     uint256 public override nextStreamId;

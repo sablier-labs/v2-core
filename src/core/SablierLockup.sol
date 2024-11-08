@@ -123,7 +123,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         returns (uint256 streamId)
     {
         // Generate the canonical segments.
-        LockupDynamic.Segment[] memory segments = VestingMath.calculateSegmentTimestamps(segmentsWithDuration);
+        LockupDynamic.Segment[] memory segments = Helpers.calculateSegmentTimestamps(segmentsWithDuration);
 
         // Declare the timestamps for the stream.
         Lockup.Timestamps memory timestamps =
@@ -197,7 +197,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         returns (uint256 streamId)
     {
         // Generate the canonical tranches.
-        LockupTranched.Tranche[] memory tranches = VestingMath.calculateTrancheTimestamps(tranchesWithDuration);
+        LockupTranched.Tranche[] memory tranches = Helpers.calculateTrancheTimestamps(tranchesWithDuration);
 
         // Declare the timestamps for the stream.
         Lockup.Timestamps memory timestamps =
@@ -372,7 +372,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             totalAmount: params.totalAmount,
             segments: segments,
             maxCount: MAX_COUNT,
-            brokerFee: params.broker.fee
+            brokerFee: params.broker.fee,
+            maxBrokerFee: MAX_BROKER_FEE
         });
 
         // Load the stream ID in a variable.
@@ -418,7 +419,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             timestamps: params.timestamps,
             cliffTime: cliffTime,
             totalAmount: params.totalAmount,
-            brokerFee: params.broker.fee
+            brokerFee: params.broker.fee,
+            maxBrokerFee: MAX_BROKER_FEE
         });
 
         // Load the stream ID in a variable.
@@ -463,7 +465,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             totalAmount: params.totalAmount,
             tranches: tranches,
             maxCount: MAX_COUNT,
-            brokerFee: params.broker.fee
+            brokerFee: params.broker.fee,
+            maxBrokerFee: MAX_BROKER_FEE
         });
 
         // Load the stream ID in a variable.
