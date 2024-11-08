@@ -8,7 +8,6 @@ import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { ILockupNFTDescriptor } from "./interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockup } from "./interfaces/ISablierLockup.sol";
-import { ISablierLockupBase } from "./interfaces/ISablierLockupBase.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { NFTSVG } from "./libraries/NFTSVG.sol";
 import { SVGElements } from "./libraries/SVGElements.sol";
