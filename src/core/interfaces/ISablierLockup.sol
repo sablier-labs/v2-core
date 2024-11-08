@@ -102,8 +102,7 @@ interface ISablierLockup is ISablierLockupBase {
     /// @dev This is initialized at construction time and cannot be changed later.
     function MAX_COUNT() external view returns (uint256);
 
-    /// @notice Retrieves the stream's cliff time, which is a Unix timestamp.  A value of zero means there
-    /// is no cliff.
+    /// @notice Retrieves the stream's cliff time, which is a Unix timestamp.  A value of zero means there is no cliff.
     /// @dev Reverts if `streamId` references a null stream or a non Lockup Linear stream.
     /// @param streamId The stream ID for the query.
     function getCliffTime(uint256 streamId) external view returns (uint40 cliffTime);

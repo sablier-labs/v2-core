@@ -267,13 +267,6 @@ library Helpers {
             );
         }
 
-        // Check: the end time equals the last segment's timestamp.
-        if (timestamps.end != segments[segments.length - 1].timestamp) {
-            revert Errors.SablierLockup_EndTimeNotEqualToLastSegmentTimestamp(
-                timestamps.end, segments[segments.length - 1].timestamp
-            );
-        }
-
         // Pre-declare the variables needed in the for loop.
         uint128 segmentAmountsSum;
         uint40 currentSegmentTimestamp;

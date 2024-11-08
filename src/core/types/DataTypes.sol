@@ -9,6 +9,7 @@ import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 //
 // - Lockup
 // - LockupDynamic
+// - LockupLinear
 // - LockupTranched
 //
 // You will notice that some structs contain "slot" annotations - they are used to indicate the

@@ -32,8 +32,7 @@ abstract contract SablierLockupBase is
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev The maximum broker fee that can be charged by the broker, denoted as a fixed-point number where
-    /// 1e18 is 100%.
+    /// @inheritdoc ISablierLockupBase
     UD60x18 public constant override MAX_BROKER_FEE = UD60x18.wrap(0.1e18);
 
     /// @inheritdoc ISablierLockupBase
