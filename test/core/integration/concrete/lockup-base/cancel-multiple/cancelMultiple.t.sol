@@ -9,18 +9,30 @@ import { Lockup } from "src/core/types/DataTypes.sol";
 
 import { Integration_Test } from "../../../Integration.t.sol";
 
-abstract contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
-    // The original time when the tests started.
-    uint40 internal originalTime;
+contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
+    // An array of stream IDs to be canceled.
+    uint256[] internal cancelMultipleStreamIds;
 
     function setUp() public virtual override {
-        originalTime = getBlockTimestamp();
+        Integration_Test.setUp();
+
+        cancelMultipleStreamIds = warpAndCreateStreams(defaults.START_TIME());
+    }
+
+    /// @dev The following two functions are used in `CancelMultiple` tests.
+    function warpAndCreateStreams(uint40 warpTime) internal returns (uint256[2] memory streamIds) {
+        vm.warp({ newTimestamp: warpTime });
+
+        // Create the first stream.
+        streamIds[0] = createDefaultStream();
+
+        // Create the second stream with an end time double that of the default stream so that the refund amounts are
+        // different.
+        streamIds[1] = createDefaultStreamWithEndTimeLD(defaults.END_TIME() + defaults.TOTAL_DURATION());
     }
 
     function test_RevertWhen_DelegateCall() external {
-        bytes memory callData = abi.encodeCall(ISablierLockupBase.cancelMultiple, (cancelMultipleStreamIds));
-        (bool success, bytes memory returnData) = address(lockup).delegatecall(callData);
-        expectRevertDueToDelegateCall(success, returnData);
+        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.cancelMultiple, cancelMultipleStreamIds) });
     }
 
     function test_WhenZeroArrayLength() external whenNoDelegateCall {
@@ -30,8 +42,9 @@ abstract contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
     }
 
     function test_RevertGiven_AtleastOneNullStream() external whenNoDelegateCall whenNonZeroArrayLength {
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_Null.selector, nullStreamId));
-        lockup.cancelMultiple({ streamIds: Solarray.uint256s(cancelMultipleStreamIds[0], nullStreamId) });
+        expectRevert_Null({
+            callData: abi.encodeCall(lockup.cancelMultiple, Solarray.uint256s(cancelMultipleStreamIds[0], nullStreamId))
+        });
     }
 
     function test_RevertGiven_AtleastOneColdStream()
@@ -40,7 +53,9 @@ abstract contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         whenNonZeroArrayLength
         givenNoNullStreams
     {
-        vm.warp({ newTimestamp: defaults.CLIFF_TIME() + 1 seconds });
+        uint40 earlyEndTime = defaults.END_TIME() - 10;
+        uint256 earlyEndtimeStreamId = createDefaultStreamWithEndTimeLD(earlyEndTime);
+        vm.warp({ newTimestamp: earlyEndTime + 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, earlyEndtimeStreamId));
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(cancelMultipleStreamIds[0], earlyEndtimeStreamId) });
     }

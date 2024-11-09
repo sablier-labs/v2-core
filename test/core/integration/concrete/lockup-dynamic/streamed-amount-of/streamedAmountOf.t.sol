@@ -2,16 +2,13 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { LockupDynamic } from "src/core/types/DataTypes.sol";
+import { Integration_Test } from "./../../../Integration.t.sol";
 import { StreamedAmountOf_Integration_Concrete_Test } from
     "./../../lockup-base/streamed-amount-of/streamedAmountOf.t.sol";
-import { Lockup_Dynamic_Integration_Shared_Test, Integration_Test } from "./../LockupDynamic.t.sol";
 
-contract StreamedAmountOf_Lockup_Dynamic_Integration_Concrete_Test is
-    Lockup_Dynamic_Integration_Shared_Test,
-    StreamedAmountOf_Integration_Concrete_Test
-{
-    function setUp() public virtual override(Lockup_Dynamic_Integration_Shared_Test, Integration_Test) {
-        Lockup_Dynamic_Integration_Shared_Test.setUp();
+contract StreamedAmountOf_Lockup_Dynamic_Integration_Concrete_Test is StreamedAmountOf_Integration_Concrete_Test {
+    function setUp() public virtual override {
+        Integration_Test.setUp();
     }
 
     function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {
@@ -40,7 +37,7 @@ contract StreamedAmountOf_Lockup_Dynamic_Integration_Concrete_Test is
         });
 
         // Create the stream.
-        uint256 streamId = createDefaultStreamWithSegmentsLD(segments);
+        uint256 streamId = lockup.createWithTimestampsLD(_defaultParams.createWithTimestamps, segments);
 
         // It should return the correct streamed amount.
         uint128 actualStreamedAmount = lockup.streamedAmountOf(streamId);

@@ -337,6 +337,14 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
+    modifier whenDepositAmountEqualsTrancheAmountsSum() {
+        _;
+    }
+
+    modifier whenDepositAmountEqualsSegmentAmountsSum() {
+        _;
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                                    CREATE-MERKLE
     //////////////////////////////////////////////////////////////////////////*/

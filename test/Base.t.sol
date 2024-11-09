@@ -18,6 +18,7 @@ import { SablierMerkleFactory } from "src/periphery/SablierMerkleFactory.sol";
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
 import { ERC20Mock } from "./mocks/erc20/ERC20Mock.sol";
 import { RecipientGood } from "./mocks/Hooks.sol";
+import { NFTDescriptorMock } from "./mocks/NFTDescriptorMock.sol";
 import { Noop } from "./mocks/Noop.sol";
 import { Assertions } from "./utils/Assertions.sol";
 import { Calculations } from "./utils/Calculations.sol";
@@ -47,6 +48,7 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
     ISablierMerkleLL internal merkleLL;
     ISablierMerkleLT internal merkleLT;
     ILockupNFTDescriptor internal nftDescriptor;
+    NFTDescriptorMock internal nftDescriptorMock;
     Noop internal noop;
     RecipientGood internal recipientGood;
     ERC20MissingReturn internal usdt;
@@ -58,8 +60,8 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
     function setUp() public virtual {
         // Deploy the base test contracts.
         dai = new ERC20Mock("Dai Stablecoin", "DAI");
-        recipientGood = new RecipientGood();
         noop = new Noop();
+        recipientGood = new RecipientGood();
         usdt = new ERC20MissingReturn("Tether USD", "USDT", 6);
 
         // Label the base test contracts.
@@ -153,11 +155,14 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
         if (!isBenchmarkProfile() && !isTestOptimizedProfile()) {
             batchLockup = new SablierBatchLockup();
             nftDescriptor = new LockupNFTDescriptor();
+            nftDescriptorMock = new NFTDescriptorMock();
             lockup = new SablierLockup(users.admin, nftDescriptor, defaults.MAX_COUNT());
             merkleFactory = new SablierMerkleFactory(users.admin);
         } else {
             (nftDescriptor, lockup, batchLockup, merkleFactory) =
                 deployOptimizedProtocol(users.admin, defaults.MAX_COUNT());
+            nftDescriptorMock =
+                NFTDescriptorMock(deployCode("out-optimized/NFTDescriptorMock.sol/NFTDescriptorMock.json"));
         }
         vm.label({ account: address(batchLockup), newLabel: "BatchLockup" });
         vm.label({ account: address(lockup), newLabel: "Lockup" });
