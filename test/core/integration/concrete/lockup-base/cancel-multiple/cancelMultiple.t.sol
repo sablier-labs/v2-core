@@ -11,39 +11,31 @@ import { Integration_Test } from "../../../Integration.t.sol";
 
 contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
     // An array of stream IDs to be canceled.
-    uint256[] internal cancelMultipleStreamIds;
+    uint256[] internal streamIds;
 
     function setUp() public virtual override {
         Integration_Test.setUp();
 
-        cancelMultipleStreamIds = warpAndCreateStreams(defaults.START_TIME());
-    }
-
-    /// @dev The following two functions are used in `CancelMultiple` tests.
-    function warpAndCreateStreams(uint40 warpTime) internal returns (uint256[2] memory streamIds) {
-        vm.warp({ newTimestamp: warpTime });
-
-        // Create the first stream.
-        streamIds[0] = createDefaultStream();
+        streamIds.push(createDefaultStream());
 
         // Create the second stream with an end time double that of the default stream so that the refund amounts are
         // different.
-        streamIds[1] = createDefaultStreamWithEndTimeLD(defaults.END_TIME() + defaults.TOTAL_DURATION());
+        streamIds.push(createDefaultStreamWithEndTimeLD(defaults.END_TIME() + defaults.TOTAL_DURATION()));
     }
 
     function test_RevertWhen_DelegateCall() external {
-        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.cancelMultiple, cancelMultipleStreamIds) });
+        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.cancelMultiple, streamIds) });
     }
 
     function test_WhenZeroArrayLength() external whenNoDelegateCall {
         // It should do nothing.
-        uint256[] memory streamIds = new uint256[](0);
-        lockup.cancelMultiple(streamIds);
+        uint256[] memory nullStreamIds = new uint256[](0);
+        lockup.cancelMultiple(nullStreamIds);
     }
 
     function test_RevertGiven_AtleastOneNullStream() external whenNoDelegateCall whenNonZeroArrayLength {
         expectRevert_Null({
-            callData: abi.encodeCall(lockup.cancelMultiple, Solarray.uint256s(cancelMultipleStreamIds[0], nullStreamId))
+            callData: abi.encodeCall(lockup.cancelMultiple, Solarray.uint256s(streamIds[0], nullStreamId))
         });
     }
 
@@ -57,7 +49,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         uint256 earlyEndtimeStreamId = createDefaultStreamWithEndTimeLD(earlyEndTime);
         vm.warp({ newTimestamp: earlyEndTime + 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, earlyEndtimeStreamId));
-        lockup.cancelMultiple({ streamIds: Solarray.uint256s(cancelMultipleStreamIds[0], earlyEndtimeStreamId) });
+        lockup.cancelMultiple({ streamIds: Solarray.uint256s(streamIds[0], earlyEndtimeStreamId) });
     }
 
     function test_RevertWhen_CallerUnauthorizedForAny()
@@ -72,11 +64,9 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.SablierLockupBase_Unauthorized.selector, cancelMultipleStreamIds[0], users.recipient
-            )
+            abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, streamIds[0], users.recipient)
         );
-        lockup.cancelMultiple(cancelMultipleStreamIds);
+        lockup.cancelMultiple(streamIds);
     }
 
     function test_RevertGiven_AtleastOneNonCancelableStream()
@@ -90,7 +80,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, notCancelableStreamId)
         );
-        lockup.cancelMultiple({ streamIds: Solarray.uint256s(cancelMultipleStreamIds[0], notCancelableStreamId) });
+        lockup.cancelMultiple({ streamIds: Solarray.uint256s(streamIds[0], notCancelableStreamId) });
     }
 
     function test_GivenNoNonCancelableStreams()
@@ -105,15 +95,15 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // It should refund the sender.
-        uint128 senderAmount0 = lockup.refundableAmountOf(cancelMultipleStreamIds[0]);
+        uint128 senderAmount0 = lockup.refundableAmountOf(streamIds[0]);
         expectCallToTransfer({ to: users.sender, value: senderAmount0 });
-        uint128 senderAmount1 = lockup.refundableAmountOf(cancelMultipleStreamIds[1]);
+        uint128 senderAmount1 = lockup.refundableAmountOf(streamIds[1]);
         expectCallToTransfer({ to: users.sender, value: senderAmount1 });
 
         // It should emit {CancelLockupStream} events for all streams.
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.CancelLockupStream({
-            streamId: cancelMultipleStreamIds[0],
+            streamId: streamIds[0],
             sender: users.sender,
             recipient: users.recipient,
             asset: dai,
@@ -122,7 +112,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         });
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.CancelLockupStream({
-            streamId: cancelMultipleStreamIds[1],
+            streamId: streamIds[1],
             sender: users.sender,
             recipient: users.recipient,
             asset: dai,
@@ -131,24 +121,24 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         });
 
         // Cancel the streams.
-        lockup.cancelMultiple(cancelMultipleStreamIds);
+        lockup.cancelMultiple(streamIds);
 
         // It should mark the streams as canceled.
         Lockup.Status expectedStatus = Lockup.Status.CANCELED;
-        assertEq(lockup.statusOf(cancelMultipleStreamIds[0]), expectedStatus, "status0");
-        assertEq(lockup.statusOf(cancelMultipleStreamIds[1]), expectedStatus, "status1");
+        assertEq(lockup.statusOf(streamIds[0]), expectedStatus, "status0");
+        assertEq(lockup.statusOf(streamIds[1]), expectedStatus, "status1");
 
         // It should make the streams as non cancelable.
-        assertFalse(lockup.isCancelable(cancelMultipleStreamIds[0]), "isCancelable0");
-        assertFalse(lockup.isCancelable(cancelMultipleStreamIds[1]), "isCancelable1");
+        assertFalse(lockup.isCancelable(streamIds[0]), "isCancelable0");
+        assertFalse(lockup.isCancelable(streamIds[1]), "isCancelable1");
 
         // It should update the refunded amounts.
-        assertEq(lockup.getRefundedAmount(cancelMultipleStreamIds[0]), senderAmount0, "refundedAmount0");
-        assertEq(lockup.getRefundedAmount(cancelMultipleStreamIds[1]), senderAmount1, "refundedAmount1");
+        assertEq(lockup.getRefundedAmount(streamIds[0]), senderAmount0, "refundedAmount0");
+        assertEq(lockup.getRefundedAmount(streamIds[1]), senderAmount1, "refundedAmount1");
 
         // It should not burn the NFT for all streams.
         address expectedNFTOwner = users.recipient;
-        assertEq(lockup.getRecipient(cancelMultipleStreamIds[0]), expectedNFTOwner, "NFT owner0");
-        assertEq(lockup.getRecipient(cancelMultipleStreamIds[1]), expectedNFTOwner, "NFT owner1");
+        assertEq(lockup.getRecipient(streamIds[0]), expectedNFTOwner, "NFT owner0");
+        assertEq(lockup.getRecipient(streamIds[1]), expectedNFTOwner, "NFT owner1");
     }
 }
