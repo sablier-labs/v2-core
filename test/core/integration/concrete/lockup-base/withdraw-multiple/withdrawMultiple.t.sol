@@ -40,7 +40,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         // 2. A stream with an early end time
         // 3. A stream meant to be canceled before the withdrawal is made
         streamIds[0] = createDefaultStream();
-        streamIds[1] = createDefaultStreamWithEndTimeLD(defaults.WARP_26_PERCENT());
+        streamIds[1] = createDefaultStreamWithEndTime(defaults.WARP_26_PERCENT());
         streamIds[2] = createDefaultStream();
     }
 

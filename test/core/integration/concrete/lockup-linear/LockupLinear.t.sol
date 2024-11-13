@@ -4,7 +4,6 @@ pragma solidity >=0.8.22 <0.9.0;
 import { Lockup } from "src/core/types/DataTypes.sol";
 
 import { Integration_Test } from "./../../Integration.t.sol";
-
 import { Cancel_Integration_Concrete_Test } from "./../lockup-base/cancel/cancel.t.sol";
 import { RefundableAmountOf_Integration_Concrete_Test } from
     "./../lockup-base/refundable-amount-of/refundableAmountOf.t.sol";
@@ -15,12 +14,12 @@ import { Withdraw_Integration_Concrete_Test } from "./../lockup-base/withdraw/wi
                                 SHARED TESTS
 //////////////////////////////////////////////////////////////////////////*/
 
-contract Lockup_Linear_Integration_Concrete_Test is Integration_Test {
+abstract contract Lockup_Linear_Integration_Concrete_Test is Integration_Test {
     function setUp() public virtual override {
         Integration_Test.setUp();
 
         lockupModel = Lockup.Model.LOCKUP_LINEAR;
-        createDefaultStreamIds();
+        initializeDefaultStreamIds();
     }
 }
 

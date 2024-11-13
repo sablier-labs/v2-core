@@ -9,15 +9,17 @@ import { RefundableAmountOf_Integration_Concrete_Test } from
     "./../lockup-base/refundable-amount-of/refundableAmountOf.t.sol";
 import { Renounce_Integration_Concrete_Test } from "./../lockup-base/renounce/renounce.t.sol";
 import { Withdraw_Integration_Concrete_Test } from "./../lockup-base/withdraw/withdraw.t.sol";
+
 /*//////////////////////////////////////////////////////////////////////////
                                 SHARED TESTS
 //////////////////////////////////////////////////////////////////////////*/
 
-contract Lockup_Tranched_Integration_Concrete_Test is Integration_Test {
+abstract contract Lockup_Tranched_Integration_Concrete_Test is Integration_Test {
     function setUp() public virtual override {
         Integration_Test.setUp();
+
         lockupModel = Lockup.Model.LOCKUP_TRANCHED;
-        createDefaultStreamIds();
+        initializeDefaultStreamIds();
     }
 }
 

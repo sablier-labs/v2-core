@@ -12,12 +12,12 @@ import { Withdraw_Integration_Fuzz_Test } from "./../lockup-base/withdraw.t.sol"
                                 SHARED TESTS
 //////////////////////////////////////////////////////////////////////////*/
 
-contract Lockup_Linear_Integration_Fuzz_Test is Integration_Test {
+abstract contract Lockup_Linear_Integration_Fuzz_Test is Integration_Test {
     function setUp() public virtual override {
         Integration_Test.setUp();
 
         lockupModel = Lockup.Model.LOCKUP_LINEAR;
-        createDefaultStreamIds();
+        initializeDefaultStreamIds();
     }
 }
 

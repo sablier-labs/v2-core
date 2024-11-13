@@ -48,7 +48,14 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         givenWarmStream
         whenCallerNotSender
     {
-        expectRevert_CallerRecipient({ callData: abi.encodeCall(lockup.cancel, defaultStreamId) });
+        // Make the Recipient the caller in this test.
+        resetPrank({ msgSender: users.recipient });
+
+        // Run the test.
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, defaultStreamId, users.recipient)
+        );
+        lockup.cancel(defaultStreamId);
     }
 
     function test_RevertGiven_NonCancelableStream()

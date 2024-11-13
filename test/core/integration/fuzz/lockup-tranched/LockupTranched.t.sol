@@ -11,12 +11,12 @@ import { RefundableAmountOf_Integration_Fuzz_Test } from "./../lockup-base/refun
                                 SHARED TESTS
 //////////////////////////////////////////////////////////////////////////*/
 
-contract Lockup_Tranched_Integration_Fuzz_Test is Integration_Test {
+abstract contract Lockup_Tranched_Integration_Fuzz_Test is Integration_Test {
     function setUp() public virtual override {
         Integration_Test.setUp();
 
         lockupModel = Lockup.Model.LOCKUP_TRANCHED;
-        createDefaultStreamIds();
+        initializeDefaultStreamIds();
     }
 }
 

@@ -14,7 +14,6 @@ import {
 } from "../../mocks/Hooks.sol";
 
 /// @notice Common logic needed by all integration tests, both concrete and fuzz tests.
-
 abstract contract Integration_Test is Base_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                      VARIABLES
@@ -22,8 +21,7 @@ abstract contract Integration_Test is Base_Test {
 
     Lockup.Model internal lockupModel;
 
-    // Various stream IDs to be used across the tests.
-
+    // Common stream IDs to be used across the tests.
     // Default stream ID.
     uint256 internal defaultStreamId;
     // A stream ID with a different sender and recipient.
@@ -106,24 +104,13 @@ abstract contract Integration_Test is Base_Test {
         // Set the default Lockup model as Dynamic, we will override the default stream IDs where necessary.
         lockupModel = Lockup.Model.LOCKUP_DYNAMIC;
 
-        // Initialize streams IDs.
-        createDefaultStreamIds();
+        // Initialize default streams IDs.
+        initializeDefaultStreamIds();
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                                     CREATE-DEFAULT
     //////////////////////////////////////////////////////////////////////////*/
-
-    function createDefaultStreamIds() internal {
-        defaultStreamId = createDefaultStream();
-        differentRecipientStreamId = createDefaultStreamWithRecipient(address(recipientGood));
-        notCancelableStreamId = createDefaultStreamNonCancelable();
-        notTransferableStreamId = createDefaultStreamNonTransferable();
-        recipientGoodStreamId = createDefaultStreamWithRecipient(address(recipientGood));
-        recipientInvalidSelectorStreamId = createDefaultStreamWithRecipient(address(recipientInvalidSelector));
-        recipientReentrantStreamId = createDefaultStreamWithRecipient(address(recipientReentrant));
-        recipientRevertStreamId = createDefaultStreamWithRecipient(address(recipientReverting));
-    }
 
     function createDefaultStream(Lockup.CreateWithTimestamps memory params) internal returns (uint256 streamId) {
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
@@ -163,12 +150,20 @@ abstract contract Integration_Test is Base_Test {
         }
     }
 
-    function createDefaultStreamWithEndTimeLD(uint40 endTime) internal returns (uint256 streamId) {
+    function createDefaultStreamWithEndTime(uint40 endTime) internal returns (uint256 streamId) {
         Lockup.CreateWithTimestamps memory params = _defaultParams.createWithTimestamps;
-        LockupDynamic.Segment[] memory segments = _defaultParams.segments;
         params.timestamps.end = endTime;
-        segments[1].timestamp = endTime;
-        streamId = lockup.createWithTimestampsLD(params, segments);
+        if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
+            LockupDynamic.Segment[] memory segments = _defaultParams.segments;
+            segments[1].timestamp = endTime;
+            streamId = lockup.createWithTimestampsLD(params, segments);
+        } else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
+            streamId = lockup.createWithTimestampsLL(params, defaults.CLIFF_TIME());
+        } else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
+            LockupTranched.Tranche[] memory tranches = _defaultParams.tranches;
+            tranches[1].timestamp = endTime;
+            streamId = lockup.createWithTimestampsLT(params, tranches);
+        }
     }
 
     function createDefaultStreamWithRecipient(address recipient) internal returns (uint256 streamId) {
@@ -180,6 +175,17 @@ abstract contract Integration_Test is Base_Test {
         params.recipient = recipient;
         params.sender = sender;
         streamId = createDefaultStream(params);
+    }
+
+    function initializeDefaultStreamIds() internal {
+        defaultStreamId = createDefaultStream();
+        differentRecipientStreamId = createDefaultStreamWithRecipient(address(recipientGood));
+        notCancelableStreamId = createDefaultStreamNonCancelable();
+        notTransferableStreamId = createDefaultStreamNonTransferable();
+        recipientGoodStreamId = createDefaultStreamWithRecipient(address(recipientGood));
+        recipientInvalidSelectorStreamId = createDefaultStreamWithRecipient(address(recipientInvalidSelector));
+        recipientReentrantStreamId = createDefaultStreamWithRecipient(address(recipientReentrant));
+        recipientRevertStreamId = createDefaultStreamWithRecipient(address(recipientReverting));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -194,17 +200,6 @@ abstract contract Integration_Test is Base_Test {
             returnData,
             abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, defaultStreamId, users.eve),
             "malicious call return data"
-        );
-    }
-
-    function expectRevert_CallerRecipient(bytes memory callData) internal {
-        resetPrank({ msgSender: users.recipient });
-        (bool success, bytes memory returnData) = address(lockup).call(callData);
-        assertFalse(success, "recipient call success");
-        assertEq(
-            returnData,
-            abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, defaultStreamId, users.recipient),
-            "recipient call return data"
         );
     }
 

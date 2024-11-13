@@ -20,7 +20,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
 
         // Create the second stream with an end time double that of the default stream so that the refund amounts are
         // different.
-        streamIds.push(createDefaultStreamWithEndTimeLD(defaults.END_TIME() + defaults.TOTAL_DURATION()));
+        streamIds.push(createDefaultStreamWithEndTime(defaults.END_TIME() + defaults.TOTAL_DURATION()));
     }
 
     function test_RevertWhen_DelegateCall() external {
@@ -46,7 +46,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         givenNoNullStreams
     {
         uint40 earlyEndTime = defaults.END_TIME() - 10;
-        uint256 earlyEndtimeStreamId = createDefaultStreamWithEndTimeLD(earlyEndTime);
+        uint256 earlyEndtimeStreamId = createDefaultStreamWithEndTime(earlyEndTime);
         vm.warp({ newTimestamp: earlyEndTime + 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, earlyEndtimeStreamId));
         lockup.cancelMultiple({ streamIds: Solarray.uint256s(streamIds[0], earlyEndtimeStreamId) });

@@ -8,13 +8,9 @@ import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
-import { Integration_Test } from "./../../../Integration.t.sol";
+import { Lockup_Dynamic_Integration_Concrete_Test } from "../LockupDynamic.t.sol";
 
-contract CreateWithDurationsLD_Integration_Concrete_Test is Integration_Test {
-    function setUp() public virtual override {
-        Integration_Test.setUp();
-    }
-
+contract CreateWithDurationsLD_Integration_Concrete_Test is Lockup_Dynamic_Integration_Concrete_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                        HELPERS
     //////////////////////////////////////////////////////////////////////////*/
