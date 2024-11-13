@@ -4,9 +4,9 @@ pragma solidity >=0.8.22 <0.9.0;
 import { ZERO } from "@prb/math/src/UD60x18.sol";
 import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
-import { Integration_Test } from "./../../Integration.t.sol";
+import { Lockup_Dynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
 
-contract StreamedAmountOf_Lockup_Dynamic_Integration_Fuzz_Test is Integration_Test {
+contract StreamedAmountOf_Lockup_Dynamic_Integration_Fuzz_Test is Lockup_Dynamic_Integration_Fuzz_Test {
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - End time in the past

@@ -6,11 +6,20 @@ import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { ISablierLockupBase } from "src/core/interfaces/ISablierLockupBase.sol";
 import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
+import { Integration_Test } from "../../Integration.t.sol";
 import { Withdraw_Integration_Fuzz_Test } from "./../lockup-base/withdraw.t.sol";
+import { Lockup_Dynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
 
 /// @dev This contract complements the tests in {Withdraw_Integration_Fuzz_Test} by testing the withdraw function
 /// against streams created with fuzzed segments.
-contract Withdraw_Lockup_Dynamic_Integration_Fuzz_Test is Withdraw_Integration_Fuzz_Test {
+contract Withdraw_Lockup_Dynamic_Integration_Fuzz_Test is
+    Lockup_Dynamic_Integration_Fuzz_Test,
+    Withdraw_Integration_Fuzz_Test
+{
+    function setUp() public virtual override(Lockup_Dynamic_Integration_Fuzz_Test, Integration_Test) {
+        Lockup_Dynamic_Integration_Fuzz_Test.setUp();
+    }
+
     struct Params {
         LockupDynamic.Segment[] segments;
         uint256 timeJump;

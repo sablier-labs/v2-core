@@ -6,11 +6,15 @@ import { ISablierLockupRecipient } from "src/core/interfaces/ISablierLockupRecip
 import { Integration_Test } from "../../../Integration.t.sol";
 
 contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
+    // A stream ID with a different sender and recipient.
+    uint256 internal differentSenderRecipientStreamId;
+
     uint128 internal withdrawAmount;
 
     function setUp() public virtual override {
         Integration_Test.setUp();
 
+        differentSenderRecipientStreamId = createDefaultStreamWithRecipient(address(recipientGood));
         withdrawAmount = defaults.WITHDRAW_AMOUNT();
 
         // Allow the good recipient to hook.
@@ -52,19 +56,23 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
             callee: address(recipientGood),
             data: abi.encodeCall(
                 ISablierLockupRecipient.onSablierLockupWithdraw,
-                (differentRecipientStreamId, unknownCaller, address(recipientGood), withdrawAmount)
+                (differentSenderRecipientStreamId, unknownCaller, address(recipientGood), withdrawAmount)
             ),
             count: 1
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: differentRecipientStreamId, to: address(recipientGood), amount: withdrawAmount });
+        lockup.withdraw({
+            streamId: differentSenderRecipientStreamId,
+            to: address(recipientGood),
+            amount: withdrawAmount
+        });
     }
 
     function test_WhenCallerApprovedThirdParty() external givenRecipientNotSameAsSender {
         // Approve the operator to handle the stream.
         resetPrank({ msgSender: address(recipientGood) });
-        lockup.approve({ to: users.operator, tokenId: differentRecipientStreamId });
+        lockup.approve({ to: users.operator, tokenId: differentSenderRecipientStreamId });
 
         // Make the operator the caller in this test.
         resetPrank({ msgSender: users.operator });
@@ -77,13 +85,17 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
             callee: address(recipientGood),
             data: abi.encodeCall(
                 ISablierLockupRecipient.onSablierLockupWithdraw,
-                (differentRecipientStreamId, users.operator, address(recipientGood), withdrawAmount)
+                (differentSenderRecipientStreamId, users.operator, address(recipientGood), withdrawAmount)
             ),
             count: 1
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: differentRecipientStreamId, to: address(recipientGood), amount: withdrawAmount });
+        lockup.withdraw({
+            streamId: differentSenderRecipientStreamId,
+            to: address(recipientGood),
+            amount: withdrawAmount
+        });
     }
 
     function test_WhenCallerSender() external givenRecipientNotSameAsSender {
@@ -98,13 +110,17 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
             callee: address(recipientGood),
             data: abi.encodeCall(
                 ISablierLockupRecipient.onSablierLockupWithdraw,
-                (differentRecipientStreamId, users.sender, address(recipientGood), withdrawAmount)
+                (differentSenderRecipientStreamId, users.sender, address(recipientGood), withdrawAmount)
             ),
             count: 1
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: differentRecipientStreamId, to: address(recipientGood), amount: withdrawAmount });
+        lockup.withdraw({
+            streamId: differentSenderRecipientStreamId,
+            to: address(recipientGood),
+            amount: withdrawAmount
+        });
     }
 
     function test_WhenCallerRecipient() external givenRecipientNotSameAsSender {
@@ -119,12 +135,16 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
             callee: address(recipientGood),
             data: abi.encodeCall(
                 ISablierLockupRecipient.onSablierLockupWithdraw,
-                (differentRecipientStreamId, address(recipientGood), address(recipientGood), withdrawAmount)
+                (differentSenderRecipientStreamId, address(recipientGood), address(recipientGood), withdrawAmount)
             ),
             count: 0
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: differentRecipientStreamId, to: address(recipientGood), amount: withdrawAmount });
+        lockup.withdraw({
+            streamId: differentSenderRecipientStreamId,
+            to: address(recipientGood),
+            amount: withdrawAmount
+        });
     }
 }

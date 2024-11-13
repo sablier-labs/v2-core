@@ -3,9 +3,9 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../Integration.t.sol";
+import { Lockup_Dynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
 
-contract CreateWithDurationsLD_Integration_Fuzz_Test is Integration_Test {
+contract CreateWithDurationsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integration_Fuzz_Test {
     struct Vars {
         uint256 actualNextStreamId;
         address actualNFTOwner;

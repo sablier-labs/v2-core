@@ -10,10 +10,6 @@ import { RefundableAmountOf_Integration_Concrete_Test } from
 import { Renounce_Integration_Concrete_Test } from "./../lockup-base/renounce/renounce.t.sol";
 import { Withdraw_Integration_Concrete_Test } from "./../lockup-base/withdraw/withdraw.t.sol";
 
-/*//////////////////////////////////////////////////////////////////////////
-                                SHARED TESTS
-//////////////////////////////////////////////////////////////////////////*/
-
 abstract contract Lockup_Dynamic_Integration_Concrete_Test is Integration_Test {
     function setUp() public virtual override {
         Integration_Test.setUp();
@@ -22,6 +18,10 @@ abstract contract Lockup_Dynamic_Integration_Concrete_Test is Integration_Test {
         initializeDefaultStreamIds();
     }
 }
+
+/*//////////////////////////////////////////////////////////////////////////
+                                SHARED TESTS
+//////////////////////////////////////////////////////////////////////////*/
 
 contract Cancel_Lockup_Dynamic_Integration_Concrete_Test is
     Lockup_Dynamic_Integration_Concrete_Test,

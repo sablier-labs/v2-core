@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { Integration_Test } from "./../../../Integration.t.sol";
 import { WithdrawableAmountOf_Integration_Concrete_Test } from
     "./../../lockup-base/withdrawable-amount-of/withdrawableAmountOf.t.sol";
+import { Lockup_Dynamic_Integration_Concrete_Test, Integration_Test } from "../LockupDynamic.t.sol";
 
 contract WithdrawableAmountOf_Lockup_Dynamic_Integration_Concrete_Test is
+    Lockup_Dynamic_Integration_Concrete_Test,
     WithdrawableAmountOf_Integration_Concrete_Test
 {
-    function setUp() public virtual override {
-        Integration_Test.setUp();
+    function setUp() public virtual override(Lockup_Dynamic_Integration_Concrete_Test, Integration_Test) {
+        Lockup_Dynamic_Integration_Concrete_Test.setUp();
     }
 
     function test_GivenStartTimeInPresent() external givenSTREAMINGStatus {

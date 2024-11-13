@@ -8,10 +8,6 @@ import { Cancel_Integration_Fuzz_Test } from "./../lockup-base/cancel.t.sol";
 import { RefundableAmountOf_Integration_Fuzz_Test } from "./../lockup-base/refundableAmountOf.t.sol";
 import { Withdraw_Integration_Fuzz_Test } from "./../lockup-base/withdraw.t.sol";
 
-/*//////////////////////////////////////////////////////////////////////////
-                                SHARED TESTS
-//////////////////////////////////////////////////////////////////////////*/
-
 abstract contract Lockup_Linear_Integration_Fuzz_Test is Integration_Test {
     function setUp() public virtual override {
         Integration_Test.setUp();
@@ -20,6 +16,10 @@ abstract contract Lockup_Linear_Integration_Fuzz_Test is Integration_Test {
         initializeDefaultStreamIds();
     }
 }
+
+/*//////////////////////////////////////////////////////////////////////////
+                                SHARED TESTS
+//////////////////////////////////////////////////////////////////////////*/
 
 contract Cancel_Lockup_Linear_Integration_Fuzz_Test is
     Lockup_Linear_Integration_Fuzz_Test,

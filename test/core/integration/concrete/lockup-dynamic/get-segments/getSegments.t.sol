@@ -4,9 +4,9 @@ pragma solidity >=0.8.22 <0.9.0;
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
 
-import { Integration_Test } from "./../../../Integration.t.sol";
+import { Lockup_Dynamic_Integration_Concrete_Test } from "../LockupDynamic.t.sol";
 
-contract GetSegments_Integration_Concrete_Test is Integration_Test {
+contract GetSegments_Integration_Concrete_Test is Lockup_Dynamic_Integration_Concrete_Test {
     function test_RevertGiven_Null() external {
         expectRevert_Null({ callData: abi.encodeCall(lockup.getSegments, nullStreamId) });
     }

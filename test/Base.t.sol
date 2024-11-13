@@ -81,6 +81,9 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
         // Deploy the protocol.
         deployProtocolConditionally();
 
+        // Deploy the NFT descriptor mock.
+        nftDescriptorMock = new NFTDescriptorMock();
+
         // Set the Sablier fee on the Merkle factory.
         merkleFactory.setDefaultSablierFee(defaults.DEFAULT_SABLIER_FEE());
 
@@ -155,14 +158,11 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
         if (!isBenchmarkProfile() && !isTestOptimizedProfile()) {
             batchLockup = new SablierBatchLockup();
             nftDescriptor = new LockupNFTDescriptor();
-            nftDescriptorMock = new NFTDescriptorMock();
             lockup = new SablierLockup(users.admin, nftDescriptor, defaults.MAX_COUNT());
             merkleFactory = new SablierMerkleFactory(users.admin);
         } else {
             (nftDescriptor, lockup, batchLockup, merkleFactory) =
                 deployOptimizedProtocol(users.admin, defaults.MAX_COUNT());
-            nftDescriptorMock =
-                NFTDescriptorMock(deployCode("out-optimized/NFTDescriptorMock.sol/NFTDescriptorMock.json"));
         }
         vm.label({ account: address(batchLockup), newLabel: "BatchLockup" });
         vm.label({ account: address(lockup), newLabel: "Lockup" });

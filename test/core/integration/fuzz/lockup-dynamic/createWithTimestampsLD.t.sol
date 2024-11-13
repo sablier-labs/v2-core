@@ -6,9 +6,9 @@ import { stdError } from "forge-std/src/StdError.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
 import { Errors } from "src/core/libraries/Errors.sol";
 import { Broker, Lockup, LockupDynamic } from "src/core/types/DataTypes.sol";
-import { Integration_Test } from "./../../Integration.t.sol";
+import { Lockup_Dynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
 
-contract CreateWithTimestampsLD_Integration_Fuzz_Test is Integration_Test {
+contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integration_Fuzz_Test {
     function testFuzz_RevertWhen_SegmentCountTooHigh(uint256 segmentCount)
         external
         whenNoDelegateCall

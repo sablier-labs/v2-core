@@ -24,8 +24,6 @@ abstract contract Integration_Test is Base_Test {
     // Common stream IDs to be used across the tests.
     // Default stream ID.
     uint256 internal defaultStreamId;
-    // A stream ID with a different sender and recipient.
-    uint256 internal differentRecipientStreamId;
     // A non-cancelable stream ID.
     uint256 internal notCancelableStreamId;
     // A non-transferable stream ID.
@@ -179,7 +177,6 @@ abstract contract Integration_Test is Base_Test {
 
     function initializeDefaultStreamIds() internal {
         defaultStreamId = createDefaultStream();
-        differentRecipientStreamId = createDefaultStreamWithRecipient(address(recipientGood));
         notCancelableStreamId = createDefaultStreamNonCancelable();
         notTransferableStreamId = createDefaultStreamNonTransferable();
         recipientGoodStreamId = createDefaultStreamWithRecipient(address(recipientGood));
