@@ -4,6 +4,7 @@ pragma solidity >=0.8.22 <0.9.0;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import { ISablierLockup } from "../../src/core/interfaces/ISablierLockup.sol";
+import { LockupLinear } from "../../src/core/types/DataTypes.sol";
 import { ISablierMerkleFactory } from "../../src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleLL } from "../../src/periphery/interfaces/ISablierMerkleLL.sol";
 import { MerkleBase, MerkleLL } from "../../src/periphery/types/DataTypes.sol";
@@ -37,6 +38,7 @@ contract CreateMerkleLL is BaseScript {
                 cliffDuration: 30 days,
                 totalDuration: 90 days
             }),
+            unlockAmounts: LockupLinear.UnlockAmounts({ start: 0, cliff: 0 }),
             aggregateAmount: 10_000e18,
             recipientCount: 100
         });

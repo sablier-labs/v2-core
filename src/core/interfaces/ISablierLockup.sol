@@ -52,6 +52,8 @@ interface ISablierLockup is ISablierLockupBase {
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
     /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, all as Unix timestamps.
     /// @param cliffTime The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
+    /// @param unlockAmounts Struct encapsulating (i) the amount to unlock at the start time and (ii) the amount to
+    /// unlock at the cliff time.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
     event CreateLockupLinearStream(
         uint256 streamId,
@@ -64,6 +66,7 @@ interface ISablierLockup is ISablierLockupBase {
         bool transferable,
         Lockup.Timestamps timestamps,
         uint40 cliffTime,
+        LockupLinear.UnlockAmounts unlockAmounts,
         address broker
     );
 
@@ -110,12 +113,23 @@ interface ISablierLockup is ISablierLockupBase {
     /// @notice Retrieves the segments used to compose the dynamic distribution function.
     /// @dev Reverts if `streamId` references a null stream or a non Lockup Dynamic stream.
     /// @param streamId The stream ID for the query.
+    /// @return segments See the documentation in {DataTypes}.
     function getSegments(uint256 streamId) external view returns (LockupDynamic.Segment[] memory segments);
 
     /// @notice Retrieves the tranches used to compose the tranched distribution function.
     /// @dev Reverts if `streamId` references a null stream or a non Lockup Tranched stream.
     /// @param streamId The stream ID for the query.
+    /// @return tranches See the documentation in {DataTypes}.
     function getTranches(uint256 streamId) external view returns (LockupTranched.Tranche[] memory tranches);
+
+    /// @notice Retrieves the unlock amounts used to compose the linear distribution function.
+    /// @dev Reverts if `streamId` references a null stream or a non Lockup Linear stream.
+    /// @param streamId The stream ID for the query.
+    /// @return unlockAmounts See the documentation in {DataTypes}.
+    function getUnlockAmounts(uint256 streamId)
+        external
+        view
+        returns (LockupLinear.UnlockAmounts memory unlockAmounts);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS
@@ -152,9 +166,12 @@ interface ISablierLockup is ISablierLockupBase {
     ///
     /// @param params Struct encapsulating the function parameters, which are documented in {DataTypes}.
     /// @param durations Struct encapsulating (i) cliff period duration and (ii) total stream duration, both in seconds.
+    /// @param unlockAmounts Struct encapsulating (i) the amount to unlock at the start time and (ii) the amount to
+    /// unlock at the cliff time.
     /// @return streamId The ID of the newly created stream.
     function createWithDurationsLL(
         Lockup.CreateWithDurations calldata params,
+        LockupLinear.UnlockAmounts calldata unlockAmounts,
         LockupLinear.Durations calldata durations
     )
         external
@@ -230,13 +247,19 @@ interface ISablierLockup is ISablierLockupBase {
     /// `params.timestamps.end`.
     /// - `params.recipient` must not be the zero address.
     /// - `params.sender` must not be the zero address.
+    /// - The sum of `params.unlockAmounts.start` and `params.unlockAmounts.cliff` must be less than or equal to
+    /// deposit amount.
+    /// - If `params.timestamps.cliff` not set, the `params.unlockAmounts.cliff` must be zero.
     /// - `msg.sender` must have allowed this contract to spend at least `params.totalAmount` assets.
     ///
     /// @param params Struct encapsulating the function parameters, which are documented in {DataTypes}.
     /// @param cliffTime The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
+    /// @param unlockAmounts Struct encapsulating (i) the amount to unlock at the start time and (ii) the amount to
+    /// unlock at the cliff time.
     /// @return streamId The ID of the newly created stream.
     function createWithTimestampsLL(
         Lockup.CreateWithTimestamps calldata params,
+        LockupLinear.UnlockAmounts calldata unlockAmounts,
         uint40 cliffTime
     )
         external

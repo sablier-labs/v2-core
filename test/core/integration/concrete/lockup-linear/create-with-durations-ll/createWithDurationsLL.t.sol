@@ -13,7 +13,8 @@ contract CreateWithDurationsLL_Integration_Concrete_Test is Lockup_Linear_Integr
     function test_RevertWhen_DelegateCall() external {
         expectRevert_DelegateCall({
             callData: abi.encodeCall(
-                lockup.createWithDurationsLL, (_defaultParams.createWithDurations, _defaultParams.durations)
+                lockup.createWithDurationsLL,
+                (_defaultParams.createWithDurations, _defaultParams.unlockAmounts, _defaultParams.durations)
             )
         });
     }
@@ -36,13 +37,13 @@ contract CreateWithDurationsLL_Integration_Concrete_Test is Lockup_Linear_Integr
     }
 
     function test_WhenCliffTimeCalculationNotOverflow() external whenNoDelegateCall whenCliffDurationNotZero {
-        LockupLinear.Durations memory durations = defaults.durations();
-        _test_CreateWithDurations(durations);
+        _test_CreateWithDurations(_defaultParams.durations);
     }
 
     function test_RevertWhen_EndTimeCalculationOverflows() external whenNoDelegateCall whenCliffDurationZero {
         uint40 startTime = getBlockTimestamp();
         _defaultParams.durations = LockupLinear.Durations({ cliff: 0, total: MAX_UINT40 - startTime + 1 seconds });
+        _defaultParams.unlockAmounts.cliff = 0;
 
         // Calculate the end time. Needs to be "unchecked" to allow an overflow.
         uint40 endTime;
@@ -59,9 +60,8 @@ contract CreateWithDurationsLL_Integration_Concrete_Test is Lockup_Linear_Integr
     }
 
     function test_WhenEndTimeCalculationNotOverflow() external whenNoDelegateCall whenCliffDurationZero {
-        LockupLinear.Durations memory durations = defaults.durations();
-        durations.cliff = 0;
-        _test_CreateWithDurations(durations);
+        _defaultParams.durations.cliff = 0;
+        _test_CreateWithDurations(_defaultParams.durations);
     }
 
     function _test_CreateWithDurations(LockupLinear.Durations memory durations) private {
@@ -77,6 +77,8 @@ contract CreateWithDurationsLL_Integration_Concrete_Test is Lockup_Linear_Integr
         uint40 cliffTime;
         if (durations.cliff > 0) {
             cliffTime = blockTimestamp + durations.cliff;
+        } else {
+            _defaultParams.unlockAmounts.cliff = 0;
         }
 
         // It should perform the ERC-20 transfers.
@@ -100,6 +102,7 @@ contract CreateWithDurationsLL_Integration_Concrete_Test is Lockup_Linear_Integr
             transferable: true,
             timestamps: timestamps,
             cliffTime: cliffTime,
+            unlockAmounts: _defaultParams.unlockAmounts,
             broker: users.broker
         });
 
@@ -119,6 +122,8 @@ contract CreateWithDurationsLL_Integration_Concrete_Test is Lockup_Linear_Integr
         assertEq(lockup.getStartTime(streamId), timestamps.start, "startTime");
         assertFalse(lockup.wasCanceled(streamId), "wasCanceled");
         assertEq(lockup.getCliffTime(streamId), cliffTime, "cliffTime");
+        assertEq(lockup.getUnlockAmounts(streamId).start, _defaultParams.unlockAmounts.start, "unlockAmounts.start");
+        assertEq(lockup.getUnlockAmounts(streamId).cliff, _defaultParams.unlockAmounts.cliff, "unlockAmounts.cliff");
         assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_LINEAR);
 
         // Assert that the stream's status is "STREAMING".

@@ -140,6 +140,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         whenStartTimeLessThanFirstTimestamp
     {
         // Swap the tranche timestamps.
+        // LockupTranched.Tranche[] memory tranches = defaults.tranches();
         (_defaultParams.tranches[0].timestamp, _defaultParams.tranches[1].timestamp) =
             (_defaultParams.tranches[1].timestamp, _defaultParams.tranches[0].timestamp);
 
@@ -153,6 +154,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
                 _defaultParams.tranches[1].timestamp
             )
         );
+        _defaultParams.createWithTimestamps.timestamps.end = _defaultParams.tranches[1].timestamp;
         createDefaultStream();
     }
 

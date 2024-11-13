@@ -102,7 +102,13 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
         uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
 
         vars.expectedLL = computeMerkleLLAddress(
-            params.campaignOwner, params.campaignOwner, FORK_ASSET, vars.merkleRoot, params.expiration, sablierFee
+            params.campaignOwner,
+            params.campaignOwner,
+            FORK_ASSET,
+            vars.merkleRoot,
+            params.expiration,
+            sablierFee,
+            defaults.unlockAmountsZero()
         );
 
         vars.baseParams = defaults.baseParams({
@@ -120,6 +126,7 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: defaults.schedule(),
+            unlockAmounts: defaults.unlockAmountsZero(),
             aggregateAmount: vars.aggregateAmount,
             recipientCount: vars.recipientCount,
             sablierFee: sablierFee
@@ -131,6 +138,7 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: defaults.schedule(),
+            unlockAmounts: defaults.unlockAmountsZero(),
             aggregateAmount: vars.aggregateAmount,
             recipientCount: vars.recipientCount
         });
@@ -211,6 +219,8 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
         assertEq(lockup.getSender(vars.expectedStreamId), params.campaignOwner, "sender");
         assertEq(lockup.getStartTime(vars.expectedStreamId), getBlockTimestamp(), "start time");
         assertEq(lockup.wasCanceled(vars.expectedStreamId), false, "was canceled");
+        assertEq(lockup.getUnlockAmounts(vars.expectedStreamId).start, 0, "unlock amounts start");
+        assertEq(lockup.getUnlockAmounts(vars.expectedStreamId).cliff, 0, "unlock amounts cliff");
 
         assertTrue(vars.merkleLL.hasClaimed(vars.indexes[params.posBeforeSort]));
 

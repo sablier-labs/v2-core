@@ -26,6 +26,7 @@ library BatchLockup {
         bool cancelable;
         bool transferable;
         LockupLinear.Durations durations;
+        LockupLinear.UnlockAmounts unlockAmounts;
         Broker broker;
     }
 
@@ -61,6 +62,7 @@ library BatchLockup {
         bool transferable;
         Lockup.Timestamps timestamps;
         uint40 cliffTime;
+        LockupLinear.UnlockAmounts unlockAmounts;
         Broker broker;
     }
 

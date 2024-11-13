@@ -27,22 +27,24 @@ contract Defaults is Constants, Merkle {
     uint64 public constant BATCH_SIZE = 10;
     UD60x18 public constant BROKER_FEE = UD60x18.wrap(0.003e18); // 0.3%
     uint128 public constant BROKER_FEE_AMOUNT = 30.090270812437311935e18; // 0.3% of total amount
-    uint128 public constant CLIFF_AMOUNT = 2500e18;
+    uint128 public constant CLIFF_AMOUNT = 2500e18 + 2534;
     uint40 public immutable CLIFF_TIME;
     uint40 public constant CLIFF_DURATION = 2500 seconds;
     uint128 public constant DEPOSIT_AMOUNT = 10_000e18;
     uint40 public immutable END_TIME;
     uint256 public constant MAX_COUNT = 10_000;
     uint40 public immutable MAX_SEGMENT_DURATION;
-    uint128 public constant REFUND_AMOUNT = DEPOSIT_AMOUNT - CLIFF_AMOUNT;
+    uint256 public constant MAX_TRANCHE_COUNT = 10_000;
+    uint128 public constant REFUND_AMOUNT = DEPOSIT_AMOUNT - WITHDRAW_AMOUNT;
     uint256 public constant SEGMENT_COUNT = 2;
     uint40 public immutable START_TIME;
     uint128 public constant TOTAL_AMOUNT = 10_030.090270812437311935e18; // deposit + broker fee
     uint40 public constant TOTAL_DURATION = 10_000 seconds;
-    uint256 public constant TRANCHE_COUNT = 3;
+    uint256 public constant TRANCHE_COUNT = 2;
     uint128 public constant TOTAL_TRANSFER_AMOUNT = DEPOSIT_AMOUNT * uint128(BATCH_SIZE);
     uint128 public constant WITHDRAW_AMOUNT = 2600e18;
-    uint40 public immutable WARP_26_PERCENT; // 26% of the way through the stream
+    uint40 public immutable WARP_26_PERCENT;
+    uint40 public immutable WARP_26_PERCENT_DURATION = 2600 seconds; // 26% of the way through the stream
 
     /*//////////////////////////////////////////////////////////////////////////
                                   MERKLE-LOCKUP
@@ -86,7 +88,7 @@ contract Defaults is Constants, Merkle {
         END_TIME = START_TIME + TOTAL_DURATION;
         EXPIRATION = JULY_1_2024 + 12 weeks;
         MAX_SEGMENT_DURATION = TOTAL_DURATION / uint40(MAX_COUNT);
-        WARP_26_PERCENT = START_TIME + CLIFF_DURATION + 100 seconds;
+        WARP_26_PERCENT = START_TIME + WARP_26_PERCENT_DURATION;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -143,10 +145,14 @@ contract Defaults is Constants, Merkle {
     function segments() public view returns (LockupDynamic.Segment[] memory segments_) {
         segments_ = new LockupDynamic.Segment[](2);
         segments_[0] = (
-            LockupDynamic.Segment({ amount: 2500e18, exponent: ud2x18(3.14e18), timestamp: START_TIME + CLIFF_DURATION })
+            LockupDynamic.Segment({
+                amount: 2600e18,
+                exponent: ud2x18(3.14e18),
+                timestamp: START_TIME + WARP_26_PERCENT_DURATION
+            })
         );
         segments_[1] = (
-            LockupDynamic.Segment({ amount: 7500e18, exponent: ud2x18(0.5e18), timestamp: START_TIME + TOTAL_DURATION })
+            LockupDynamic.Segment({ amount: 7400e18, exponent: ud2x18(0.5e18), timestamp: START_TIME + TOTAL_DURATION })
         );
     }
 
@@ -161,23 +167,22 @@ contract Defaults is Constants, Merkle {
             LockupDynamic.SegmentWithDuration({
                 amount: segments_[0].amount,
                 exponent: segments_[0].exponent,
-                duration: 2500 seconds
+                duration: 2600 seconds
             })
         );
         segmentsWithDurations_[1] = (
             LockupDynamic.SegmentWithDuration({
                 amount: segments_[1].amount,
                 exponent: segments_[1].exponent,
-                duration: 7500 seconds
+                duration: 7400 seconds
             })
         );
     }
 
     function tranches() public view returns (LockupTranched.Tranche[] memory tranches_) {
-        tranches_ = new LockupTranched.Tranche[](3);
-        tranches_[0] = LockupTranched.Tranche({ amount: 2500e18, timestamp: START_TIME + CLIFF_DURATION });
-        tranches_[1] = LockupTranched.Tranche({ amount: 100e18, timestamp: WARP_26_PERCENT });
-        tranches_[2] = LockupTranched.Tranche({ amount: 7400e18, timestamp: START_TIME + TOTAL_DURATION });
+        tranches_ = new LockupTranched.Tranche[](2);
+        tranches_[0] = LockupTranched.Tranche({ amount: 2600e18, timestamp: WARP_26_PERCENT });
+        tranches_[1] = LockupTranched.Tranche({ amount: 7400e18, timestamp: START_TIME + TOTAL_DURATION });
     }
 
     function tranchesWithDurations()
@@ -185,10 +190,17 @@ contract Defaults is Constants, Merkle {
         pure
         returns (LockupTranched.TrancheWithDuration[] memory tranchesWithDurations_)
     {
-        tranchesWithDurations_ = new LockupTranched.TrancheWithDuration[](3);
-        tranchesWithDurations_[0] = LockupTranched.TrancheWithDuration({ amount: 2500e18, duration: 2500 seconds });
-        tranchesWithDurations_[1] = LockupTranched.TrancheWithDuration({ amount: 100e18, duration: 100 seconds });
-        tranchesWithDurations_[2] = LockupTranched.TrancheWithDuration({ amount: 7400e18, duration: 7400 seconds });
+        tranchesWithDurations_ = new LockupTranched.TrancheWithDuration[](2);
+        tranchesWithDurations_[0] = LockupTranched.TrancheWithDuration({ amount: 2600e18, duration: 2600 seconds });
+        tranchesWithDurations_[1] = LockupTranched.TrancheWithDuration({ amount: 7400e18, duration: 7400 seconds });
+    }
+
+    function unlockAmounts() public pure returns (LockupLinear.UnlockAmounts memory) {
+        return LockupLinear.UnlockAmounts({ start: 0, cliff: CLIFF_AMOUNT });
+    }
+
+    function unlockAmountsZero() public pure returns (LockupLinear.UnlockAmounts memory) {
+        return LockupLinear.UnlockAmounts({ start: 0, cliff: 0 });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -247,7 +259,7 @@ contract Defaults is Constants, Merkle {
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithDurationsLL} parameters.
     function batchCreateWithDurationsLL() public view returns (BatchLockup.CreateWithDurationsLL[] memory batch) {
-        batch = BatchLockupBuilder.fillBatch(createWithDurationsBrokerNull(), durations(), BATCH_SIZE);
+        batch = BatchLockupBuilder.fillBatch(createWithDurationsBrokerNull(), unlockAmounts(), durations(), BATCH_SIZE);
     }
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithDurationsLT} parameters.
@@ -280,7 +292,7 @@ contract Defaults is Constants, Merkle {
         view
         returns (BatchLockup.CreateWithTimestampsLL[] memory batch)
     {
-        batch = BatchLockupBuilder.fillBatch(createWithTimestampsBrokerNull(), CLIFF_TIME, batchSize);
+        batch = BatchLockupBuilder.fillBatch(createWithTimestampsBrokerNull(), unlockAmounts(), CLIFF_TIME, batchSize);
     }
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithTimestampsLT} parameters.
@@ -370,10 +382,10 @@ contract Defaults is Constants, Merkle {
     {
         tranches_ = new LockupTranched.Tranche[](2);
         if (streamStartTime == 0) {
-            tranches_[0].timestamp = uint40(block.timestamp) + CLIFF_DURATION;
+            tranches_[0].timestamp = uint40(block.timestamp) + WARP_26_PERCENT_DURATION;
             tranches_[1].timestamp = uint40(block.timestamp) + TOTAL_DURATION;
         } else {
-            tranches_[0].timestamp = streamStartTime + CLIFF_DURATION;
+            tranches_[0].timestamp = streamStartTime + WARP_26_PERCENT_DURATION;
             tranches_[1].timestamp = streamStartTime + TOTAL_DURATION;
         }
 
@@ -397,8 +409,8 @@ contract Defaults is Constants, Merkle {
     {
         tranchesWithPercentages_ = new MerkleLT.TrancheWithPercentage[](2);
         tranchesWithPercentages_[0] =
-            MerkleLT.TrancheWithPercentage({ unlockPercentage: ud2x18(0.25e18), duration: 2500 seconds });
+            MerkleLT.TrancheWithPercentage({ unlockPercentage: ud2x18(0.26e18), duration: 2600 seconds });
         tranchesWithPercentages_[1] =
-            MerkleLT.TrancheWithPercentage({ unlockPercentage: ud2x18(0.75e18), duration: 7500 seconds });
+            MerkleLT.TrancheWithPercentage({ unlockPercentage: ud2x18(0.74e18), duration: 7400 seconds });
     }
 }

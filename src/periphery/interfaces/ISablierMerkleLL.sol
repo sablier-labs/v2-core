@@ -34,4 +34,8 @@ interface ISablierMerkleLL is ISablierMerkleBase {
     /// `Lockup.CreateWithTimestampsLL`.
     /// @dev A start time value of zero will be considered as `block.timestamp`.
     function schedule() external view returns (uint40 startTime, uint40 cliffDuration, uint40 endDuration);
+
+    /// @notice The unlock aomunts used to calculate the streamed amount in
+    /// {VestingMath.calculateLockupLinearStreamedAmount}.
+    function unlockAmounts() external view returns (uint128 startUnlockAmount, uint128 cliffUnlockAmount);
 }

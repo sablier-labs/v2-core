@@ -3,6 +3,7 @@ pragma solidity >=0.8.22;
 
 import { IAdminable } from "../../core/interfaces/IAdminable.sol";
 import { ISablierLockup } from "../../core/interfaces/ISablierLockup.sol";
+import { LockupLinear } from "../../core/types/DataTypes.sol";
 
 import { ISablierMerkleBase } from "../interfaces/ISablierMerkleBase.sol";
 import { MerkleBase, MerkleFactory, MerkleLL, MerkleLT } from "../types/DataTypes.sol";
@@ -39,6 +40,7 @@ interface ISablierMerkleFactory is IAdminable {
         bool cancelable,
         bool transferable,
         MerkleLL.Schedule schedule,
+        LockupLinear.UnlockAmounts unlockAmounts,
         uint256 aggregateAmount,
         uint256 recipientCount,
         uint256 sablierFee
@@ -142,6 +144,7 @@ interface ISablierMerkleFactory is IAdminable {
         bool cancelable,
         bool transferable,
         MerkleLL.Schedule memory schedule,
+        LockupLinear.UnlockAmounts memory unlockAmounts,
         uint256 aggregateAmount,
         uint256 recipientCount
     )

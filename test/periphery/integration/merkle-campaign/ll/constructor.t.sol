@@ -47,6 +47,7 @@ contract Constructor_MerkleLL_Integration_Test is MerkleCampaign_Integration_Tes
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
             defaults.schedule(),
+            defaults.unlockAmounts(),
             defaults.DEFAULT_SABLIER_FEE()
         );
 

@@ -195,6 +195,16 @@ library LockupLinear {
         uint40 cliff;
         uint40 total;
     }
+
+    /// @notice Struct encapsulating the unlock amounts for the stream.
+    /// @dev The sum of `start` and `cliff` must be less than or equal to deposit amount. Both amounts can be zero.
+    /// @param start The amount to be unlocked at the start time.
+    /// @param cliff The amount to be unlocked at the cliff time.
+    struct UnlockAmounts {
+        // slot 0
+        uint128 start;
+        uint128 cliff;
+    }
 }
 
 /// @notice Namespace for the structs used only in Lockup Tranched model.

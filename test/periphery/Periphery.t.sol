@@ -58,6 +58,7 @@ contract Periphery_Test is Base_Test {
     function expectMultipleCallsToCreateWithDurationsLL(
         uint64 count,
         Lockup.CreateWithDurations memory params,
+        LockupLinear.UnlockAmounts memory unlockAmounts,
         LockupLinear.Durations memory durations
     )
         internal
@@ -65,7 +66,7 @@ contract Periphery_Test is Base_Test {
         vm.expectCall({
             callee: address(lockup),
             count: count,
-            data: abi.encodeCall(ISablierLockup.createWithDurationsLL, (params, durations))
+            data: abi.encodeCall(ISablierLockup.createWithDurationsLL, (params, unlockAmounts, durations))
         });
     }
 
@@ -104,14 +105,15 @@ contract Periphery_Test is Base_Test {
     function expectMultipleCallsToCreateWithTimestampsLL(
         uint64 count,
         Lockup.CreateWithTimestamps memory params,
-        uint40 cliff
+        LockupLinear.UnlockAmounts memory unlockAmounts,
+        uint40 cliffTime
     )
         internal
     {
         vm.expectCall({
             callee: address(lockup),
             count: count,
-            data: abi.encodeCall(ISablierLockup.createWithTimestampsLL, (params, cliff))
+            data: abi.encodeCall(ISablierLockup.createWithTimestampsLL, (params, unlockAmounts, cliffTime))
         });
     }
 
@@ -205,7 +207,8 @@ contract Periphery_Test is Base_Test {
         IERC20 asset_,
         bytes32 merkleRoot,
         uint40 expiration,
-        uint256 sablierFee
+        uint256 sablierFee,
+        LockupLinear.UnlockAmounts memory unlockAmounts
     )
         internal
         view
@@ -223,11 +226,12 @@ contract Periphery_Test is Base_Test {
                 lockup,
                 defaults.CANCELABLE(),
                 defaults.TRANSFERABLE(),
-                abi.encode(defaults.schedule())
+                abi.encode(defaults.schedule()),
+                abi.encode(unlockAmounts)
             )
         );
         bytes32 creationBytecodeHash =
-            keccak256(getMerkleLLBytecode(campaignOwner, asset_, merkleRoot, expiration, sablierFee));
+            keccak256(getMerkleLLBytecode(campaignOwner, asset_, merkleRoot, expiration, sablierFee, unlockAmounts));
         return vm.computeCreate2Address({
             salt: salt,
             initCodeHash: creationBytecodeHash,
@@ -299,7 +303,8 @@ contract Periphery_Test is Base_Test {
         IERC20 asset_,
         bytes32 merkleRoot,
         uint40 expiration,
-        uint256 sablierFee
+        uint256 sablierFee,
+        LockupLinear.UnlockAmounts memory unlockAmounts
     )
         internal
         view
@@ -311,6 +316,7 @@ contract Periphery_Test is Base_Test {
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
             defaults.schedule(),
+            unlockAmounts,
             sablierFee
         );
         if (!isTestOptimizedProfile()) {
