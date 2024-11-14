@@ -168,17 +168,19 @@ abstract contract Lockup_Linear_Fork_Test is Fork_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupLinearStream({
             streamId: vars.streamId,
-            funder: FORK_ASSET_HOLDER,
-            sender: params.sender,
-            recipient: params.recipient,
-            amounts: vars.createAmounts,
-            asset: FORK_ASSET,
-            cancelable: true,
-            transferable: true,
-            timestamps: params.timestamps,
+            commonParams: Lockup.Common({
+                funder: FORK_ASSET_HOLDER,
+                sender: params.sender,
+                recipient: params.recipient,
+                amounts: vars.createAmounts,
+                asset: FORK_ASSET,
+                cancelable: true,
+                transferable: true,
+                timestamps: params.timestamps,
+                broker: params.broker.account
+            }),
             cliffTime: params.cliffTime,
-            unlockAmounts: params.unlockAmounts,
-            broker: params.broker.account
+            unlockAmounts: params.unlockAmounts
         });
 
         // Create the stream.

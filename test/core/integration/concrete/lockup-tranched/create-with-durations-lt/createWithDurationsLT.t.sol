@@ -150,16 +150,18 @@ contract CreateWithDurationsLT_Integration_Concrete_Test is Lockup_Tranched_Inte
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupTranchedStream({
             streamId: expectedStreamId,
-            funder: funder,
-            sender: users.sender,
-            recipient: users.recipient,
-            amounts: defaults.lockupCreateAmounts(),
-            asset: dai,
-            cancelable: true,
-            transferable: true,
-            tranches: tranches,
-            timestamps: timestamps,
-            broker: users.broker
+            commonParams: Lockup.Common({
+                funder: funder,
+                sender: users.sender,
+                recipient: users.recipient,
+                amounts: defaults.lockupCreateAmounts(),
+                asset: dai,
+                cancelable: true,
+                transferable: true,
+                timestamps: timestamps,
+                broker: users.broker
+            }),
+            tranches: tranches
         });
 
         // Create the stream.

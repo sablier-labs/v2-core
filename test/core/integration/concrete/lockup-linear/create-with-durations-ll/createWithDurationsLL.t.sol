@@ -93,17 +93,19 @@ contract CreateWithDurationsLL_Integration_Concrete_Test is Lockup_Linear_Integr
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupLinearStream({
             streamId: expectedStreamId,
-            funder: funder,
-            sender: users.sender,
-            recipient: users.recipient,
-            amounts: defaults.lockupCreateAmounts(),
-            asset: dai,
-            cancelable: true,
-            transferable: true,
-            timestamps: timestamps,
+            commonParams: Lockup.Common({
+                funder: funder,
+                sender: users.sender,
+                recipient: users.recipient,
+                amounts: defaults.lockupCreateAmounts(),
+                asset: dai,
+                cancelable: true,
+                transferable: true,
+                timestamps: timestamps,
+                broker: users.broker
+            }),
             cliffTime: cliffTime,
-            unlockAmounts: _defaultParams.unlockAmounts,
-            broker: users.broker
+            unlockAmounts: _defaultParams.unlockAmounts
         });
 
         // Create the stream.

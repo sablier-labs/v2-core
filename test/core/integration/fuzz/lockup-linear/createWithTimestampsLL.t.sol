@@ -162,17 +162,19 @@ contract CreateWithTimestampsLL_Integration_Fuzz_Test is Lockup_Linear_Integrati
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupLinearStream({
             streamId: vars.expectedStreamId,
-            funder: funder,
-            sender: params.sender,
-            recipient: params.recipient,
-            amounts: vars.createAmounts,
-            asset: dai,
-            cancelable: params.cancelable,
-            transferable: params.transferable,
-            timestamps: Lockup.Timestamps({ start: params.timestamps.start, end: params.timestamps.end }),
+            commonParams: Lockup.Common({
+                funder: funder,
+                sender: params.sender,
+                recipient: params.recipient,
+                amounts: vars.createAmounts,
+                asset: dai,
+                cancelable: params.cancelable,
+                transferable: params.transferable,
+                timestamps: Lockup.Timestamps({ start: params.timestamps.start, end: params.timestamps.end }),
+                broker: params.broker.account
+            }),
             cliffTime: cliffTime,
-            unlockAmounts: unlockAmounts,
-            broker: params.broker.account
+            unlockAmounts: unlockAmounts
         });
 
         params.asset = dai;

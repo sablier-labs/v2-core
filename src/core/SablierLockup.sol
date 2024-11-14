@@ -191,20 +191,18 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
         // Checks, Effects and Interactions: create the stream.
         streamId = _createLL(
-            CreateLLParams(
-                Lockup.CreateWithTimestamps({
-                    sender: params.sender,
-                    recipient: params.recipient,
-                    totalAmount: params.totalAmount,
-                    asset: params.asset,
-                    cancelable: params.cancelable,
-                    transferable: params.transferable,
-                    timestamps: timestamps,
-                    broker: params.broker
-                }),
-                unlockAmounts,
-                cliffTime
-            )
+            Lockup.CreateWithTimestamps({
+                sender: params.sender,
+                recipient: params.recipient,
+                totalAmount: params.totalAmount,
+                asset: params.asset,
+                cancelable: params.cancelable,
+                transferable: params.transferable,
+                timestamps: timestamps,
+                broker: params.broker
+            }),
+            unlockAmounts,
+            cliffTime
         );
     }
 
@@ -267,7 +265,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         returns (uint256 streamId)
     {
         // Checks, Effects and Interactions: create the stream.
-        streamId = _createLL(CreateLLParams(params, unlockAmounts, cliffTime));
+        streamId = _createLL(params, unlockAmounts, cliffTime);
     }
 
     /// @inheritdoc ISablierLockup
@@ -347,6 +345,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         Lockup.Model lockupModel
     )
         internal
+        returns (Lockup.Common memory)
     {
         // Effect: create the stream.
         _streams[streamId] = Lockup.Stream({
@@ -378,6 +377,18 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         if (createAmounts.brokerFee > 0) {
             params.asset.safeTransferFrom({ from: msg.sender, to: params.broker.account, value: createAmounts.brokerFee });
         }
+
+        return Lockup.Common({
+            funder: msg.sender,
+            sender: params.sender,
+            recipient: params.recipient,
+            amounts: createAmounts,
+            asset: params.asset,
+            cancelable: params.cancelable,
+            transferable: params.transferable,
+            timestamps: params.timestamps,
+            broker: params.broker.account
+        });
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
@@ -410,7 +421,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        _create({
+        Lockup.Common memory commonParams = _create({
             streamId: streamId,
             params: params,
             createAmounts: createAmounts,
@@ -420,35 +431,28 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupDynamicStream({
             streamId: streamId,
-            funder: msg.sender,
-            sender: params.sender,
-            recipient: params.recipient,
-            amounts: createAmounts,
-            asset: params.asset,
-            cancelable: params.cancelable,
-            transferable: params.transferable,
-            timestamps: params.timestamps,
-            segments: segments,
-            broker: params.broker.account
+            commonParams: commonParams,
+            segments: segments
         });
     }
 
-    struct CreateLLParams {
-        Lockup.CreateWithTimestamps createWithTimestamps;
-        LockupLinear.UnlockAmounts unlockAmounts;
-        uint40 cliffTime;
-    }
-
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _createLL(CreateLLParams memory params) internal returns (uint256 streamId) {
+    function _createLL(
+        Lockup.CreateWithTimestamps memory params,
+        LockupLinear.UnlockAmounts memory unlockAmounts,
+        uint40 cliffTime
+    )
+        internal
+        returns (uint256 streamId)
+    {
         // Check: validate the user-provided parameters and cliff time.
         Lockup.CreateAmounts memory createAmounts = Helpers.checkCreateLockupLinear({
-            sender: params.createWithTimestamps.sender,
-            timestamps: params.createWithTimestamps.timestamps,
-            cliffTime: params.cliffTime,
-            totalAmount: params.createWithTimestamps.totalAmount,
-            unlockAmounts: params.unlockAmounts,
-            brokerFee: params.createWithTimestamps.broker.fee,
+            sender: params.sender,
+            timestamps: params.timestamps,
+            cliffTime: cliffTime,
+            totalAmount: params.totalAmount,
+            unlockAmounts: unlockAmounts,
+            brokerFee: params.broker.fee,
             maxBrokerFee: MAX_BROKER_FEE
         });
 
@@ -456,24 +460,24 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         streamId = nextStreamId;
 
         // Effect: set the start unlock amount if its non-zero.
-        if (params.unlockAmounts.start > 0) {
-            _unlockAmounts[streamId].start = params.unlockAmounts.start;
+        if (unlockAmounts.start > 0) {
+            _unlockAmounts[streamId].start = unlockAmounts.start;
         }
 
         // Effect: update cliff time if its non-zero.
-        if (params.cliffTime > 0) {
-            _cliffs[streamId] = params.cliffTime;
+        if (cliffTime > 0) {
+            _cliffs[streamId] = cliffTime;
 
             // Effect: set the cliff unlock amount if its non-zero.
-            if (params.unlockAmounts.cliff > 0) {
-                _unlockAmounts[streamId].cliff = params.unlockAmounts.cliff;
+            if (unlockAmounts.cliff > 0) {
+                _unlockAmounts[streamId].cliff = unlockAmounts.cliff;
             }
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        _create({
+        Lockup.Common memory commonParams = _create({
             streamId: streamId,
-            params: params.createWithTimestamps,
+            params: params,
             createAmounts: createAmounts,
             lockupModel: Lockup.Model.LOCKUP_LINEAR
         });
@@ -481,17 +485,9 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupLinearStream({
             streamId: streamId,
-            funder: msg.sender,
-            sender: params.createWithTimestamps.sender,
-            recipient: params.createWithTimestamps.recipient,
-            amounts: createAmounts,
-            asset: params.createWithTimestamps.asset,
-            cancelable: params.createWithTimestamps.cancelable,
-            transferable: params.createWithTimestamps.transferable,
-            timestamps: params.createWithTimestamps.timestamps,
-            cliffTime: params.cliffTime,
-            unlockAmounts: params.unlockAmounts,
-            broker: params.createWithTimestamps.broker.account
+            commonParams: commonParams,
+            cliffTime: cliffTime,
+            unlockAmounts: unlockAmounts
         });
     }
 
@@ -525,7 +521,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        _create({
+        Lockup.Common memory commonParams = _create({
             streamId: streamId,
             params: params,
             createAmounts: createAmounts,
@@ -535,16 +531,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         // Log the newly created stream.
         emit ISablierLockup.CreateLockupTranchedStream({
             streamId: streamId,
-            funder: msg.sender,
-            sender: params.sender,
-            recipient: params.recipient,
-            amounts: createAmounts,
-            asset: params.asset,
-            cancelable: params.cancelable,
-            transferable: params.transferable,
-            timestamps: params.timestamps,
-            tranches: tranches,
-            broker: params.broker.account
+            commonParams: commonParams,
+            tranches: tranches
         });
     }
 }

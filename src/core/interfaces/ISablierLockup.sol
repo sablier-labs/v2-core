@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
 import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../types/DataTypes.sol";
 import { ISablierLockupBase } from "./ISablierLockupBase.sol";
 
@@ -15,86 +13,28 @@ interface ISablierLockup is ISablierLockupBase {
 
     /// @notice Emitted when a stream is created using Lockup dynamic model.
     /// @param streamId The ID of the newly created stream.
-    /// @param funder The address which has funded the stream.
-    /// @param sender The address distributing the assets, which is able to cancel the stream.
-    /// @param recipient The address receiving the assets, as well as the NFT owner.
-    /// @param amounts Struct encapsulating (i) the deposit amount, and (ii) the broker fee amount, both denoted
-    /// in units of the asset's decimals.
-    /// @param asset The contract address of the ERC-20 asset to be distributed.
-    /// @param cancelable Boolean indicating whether the stream is cancelable or not.
-    /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
-    /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, all as Unix timestamps.
-    /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
+    /// @param commonParams Common parameters emitted in Create events across all lockup models.
     /// @param segments The segments the protocol uses to compose the dynamic distribution function.
     event CreateLockupDynamicStream(
-        uint256 streamId,
-        address funder,
-        address indexed sender,
-        address indexed recipient,
-        Lockup.CreateAmounts amounts,
-        IERC20 indexed asset,
-        bool cancelable,
-        bool transferable,
-        Lockup.Timestamps timestamps,
-        LockupDynamic.Segment[] segments,
-        address broker
+        uint256 indexed streamId, Lockup.Common commonParams, LockupDynamic.Segment[] segments
     );
 
     /// @notice Emitted when a stream is created using Lockup linear model.
     /// @param streamId The ID of the newly created stream.
-    /// @param funder The address which funded the stream.
-    /// @param sender The address distributing the assets, which is able to to cancel the stream.
-    /// @param recipient The address receiving the assets, as well as the NFT owner.
-    /// @param amounts Struct encapsulating (i) the deposit amount, and (ii) the broker fee amount, both denoted
-    /// in units of the asset's decimals.
-    /// @param asset The contract address of the ERC-20 asset to be distributed.
-    /// @param cancelable Boolean indicating whether the stream is cancelable or not.
-    /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
-    /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, all as Unix timestamps.
+    /// @param commonParams Common parameters emitted in Create events across all lockup models.
     /// @param cliffTime The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
     /// @param unlockAmounts Struct encapsulating (i) the amount to unlock at the start time and (ii) the amount to
     /// unlock at the cliff time.
-    /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
     event CreateLockupLinearStream(
-        uint256 streamId,
-        address funder,
-        address indexed sender,
-        address indexed recipient,
-        Lockup.CreateAmounts amounts,
-        IERC20 indexed asset,
-        bool cancelable,
-        bool transferable,
-        Lockup.Timestamps timestamps,
-        uint40 cliffTime,
-        LockupLinear.UnlockAmounts unlockAmounts,
-        address broker
+        uint256 indexed streamId, Lockup.Common commonParams, uint40 cliffTime, LockupLinear.UnlockAmounts unlockAmounts
     );
 
     /// @notice Emitted when a stream is created using Lockup tranched model.
     /// @param streamId The ID of the newly created stream.
-    /// @param funder The address which has funded the stream.
-    /// @param sender The address distributing the assets, which is able to cancel the stream.
-    /// @param recipient The address receiving the assets, as well as the NFT owner.
-    /// @param amounts Struct encapsulating (i) the deposit amount, and (ii) the broker fee amount, both denoted
-    /// in units of the asset's decimals.
-    /// @param asset The contract address of the ERC-20 asset to be distributed.
-    /// @param cancelable Boolean indicating whether the stream is cancelable or not.
-    /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
-    /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, both as Unix timestamps.
-    /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
+    /// @param commonParams Common parameters emitted in Create events across all lockup models.
     /// @param tranches The tranches the protocol uses to compose the tranched distribution function.
     event CreateLockupTranchedStream(
-        uint256 streamId,
-        address funder,
-        address indexed sender,
-        address indexed recipient,
-        Lockup.CreateAmounts amounts,
-        IERC20 indexed asset,
-        bool cancelable,
-        bool transferable,
-        Lockup.Timestamps timestamps,
-        LockupTranched.Tranche[] tranches,
-        address broker
+        uint256 indexed streamId, Lockup.Common commonParams, LockupTranched.Tranche[] tranches
     );
 
     /*//////////////////////////////////////////////////////////////////////////

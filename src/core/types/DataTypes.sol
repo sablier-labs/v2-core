@@ -41,6 +41,29 @@ library Lockup {
         uint128 refunded;
     }
 
+    /// @notice Struct encapsulating the common parameters emitted in the `Create` event.
+    /// @param funder The address which has funded the stream.
+    /// @param sender The address distributing the assets, which is able to cancel the stream.
+    /// @param recipient The address receiving the assets, as well as the NFT owner.
+    /// @param amounts Struct encapsulating (i) the deposit amount, and (ii) the broker fee amount, both denoted
+    /// in units of the asset's decimals.
+    /// @param asset The contract address of the ERC-20 asset to be distributed.
+    /// @param cancelable Boolean indicating whether the stream is cancelable or not.
+    /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
+    /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, all as Unix timestamps.
+    /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
+    struct Common {
+        address funder;
+        address sender;
+        address recipient;
+        Lockup.CreateAmounts amounts;
+        IERC20 asset;
+        bool cancelable;
+        bool transferable;
+        Lockup.Timestamps timestamps;
+        address broker;
+    }
+
     /// @notice Struct encapsulating (i) the deposit amount and (ii) the broker fee amount, both denoted in units of the
     /// asset's decimals.
     /// @param deposit The amount to deposit in the stream.
