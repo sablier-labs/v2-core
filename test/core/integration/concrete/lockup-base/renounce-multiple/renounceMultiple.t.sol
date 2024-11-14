@@ -22,18 +22,18 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
     }
 
     function test_RevertWhen_DelegateCall() external {
-        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.renounceMultiple, streamIds) });
+        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.renounceMultiple{ value: 0 }, streamIds) });
     }
 
     function test_WhenZeroArrayLength() external whenNoDelegateCall {
         // It should do nothing.
         uint256[] memory nullStreamIds = new uint256[](0);
-        lockup.renounceMultiple(nullStreamIds);
+        lockup.renounceMultiple{ value: 0 }(nullStreamIds);
     }
 
     function test_RevertGiven_AtleastOneNullStream() external whenNoDelegateCall whenNonZeroArrayLength {
         expectRevert_Null({
-            callData: abi.encodeCall(lockup.renounceMultiple, Solarray.uint256s(streamIds[0], nullStreamId))
+            callData: abi.encodeCall(lockup.renounceMultiple{ value: 0 }, Solarray.uint256s(streamIds[0], nullStreamId))
         });
     }
 
@@ -48,7 +48,7 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         vm.warp({ newTimestamp: earlyEndTime + 1 seconds });
 
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, earlyEndtimeStreamId));
-        lockup.renounceMultiple({ streamIds: Solarray.uint256s(streamIds[0], earlyEndtimeStreamId) });
+        lockup.renounceMultiple{ value: 0 }({ streamIds: Solarray.uint256s(streamIds[0], earlyEndtimeStreamId) });
     }
 
     function test_RevertWhen_CallerUnauthorizedForAny()
@@ -65,7 +65,7 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, streamIds[0], users.recipient)
         );
-        lockup.renounceMultiple(streamIds);
+        lockup.renounceMultiple{ value: 0 }(streamIds);
     }
 
     function test_RevertGiven_AtleastOneNonCancelableStream()
@@ -79,7 +79,7 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, notCancelableStreamId)
         );
-        lockup.renounceMultiple({ streamIds: Solarray.uint256s(streamIds[0], notCancelableStreamId) });
+        lockup.renounceMultiple{ value: 0 }({ streamIds: Solarray.uint256s(streamIds[0], notCancelableStreamId) });
     }
 
     function test_GivenAllStreamsCancelable()
@@ -101,7 +101,7 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         emit IERC4906.MetadataUpdate({ _tokenId: streamIds[1] });
 
         // Renounce the streams.
-        lockup.renounceMultiple(streamIds);
+        lockup.renounceMultiple{ value: 0 }(streamIds);
 
         // It should make streams non cancelable.
         assertFalse(lockup.isCancelable(streamIds[0]), "isCancelable0");

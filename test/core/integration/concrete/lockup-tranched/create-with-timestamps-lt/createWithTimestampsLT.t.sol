@@ -30,7 +30,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
     {
         LockupTranched.Tranche[] memory tranches;
         vm.expectRevert(Errors.SablierHelpers_TrancheCountZero.selector);
-        lockup.createWithTimestampsLT(_defaultParams.createWithTimestamps, tranches);
+        createWithTimestampsLT(_defaultParams.createWithTimestamps, tranches);
     }
 
     function test_RevertWhen_TrancheCountExceedsMaxValue()
@@ -47,7 +47,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         uint256 trancheCount = defaults.MAX_COUNT() + 1;
         LockupTranched.Tranche[] memory tranches = new LockupTranched.Tranche[](trancheCount);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierHelpers_TrancheCountTooHigh.selector, trancheCount));
-        lockup.createWithTimestampsLT(_defaultParams.createWithTimestamps, tranches);
+        createWithTimestampsLT(_defaultParams.createWithTimestamps, tranches);
     }
 
     function test_RevertWhen_TrancheAmountsSumOverflows()
@@ -95,7 +95,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         );
 
         // Create the stream.
-        lockup.createWithTimestampsLT(_defaultParams.createWithTimestamps, tranches);
+        createWithTimestampsLT(_defaultParams.createWithTimestamps, tranches);
     }
 
     function test_RevertWhen_StartTimeEqualsFirstTimestamp()

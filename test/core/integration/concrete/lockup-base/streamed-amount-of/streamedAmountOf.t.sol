@@ -10,7 +10,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is Integration_Test
 
     function test_GivenCanceledStreamAndCANCELEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
 
         // It should return the correct streamed amount.
         uint128 actualStreamedAmount = lockup.streamedAmountOf(defaultStreamId);
@@ -21,10 +21,10 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is Integration_Test
     /// @dev This test warps a second time to ensure that {streamedAmountOf} ignores the current time.
     function test_GivenCanceledStreamAndDEPLETEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
 
         // Withdraw max to deplete the stream.
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() + 10 seconds });
 
         // It should return the correct streamed amount.
@@ -63,7 +63,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is Integration_Test
     function test_GivenDEPLETEDStatus() external givenNotNull givenNotCanceledStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         // Withdraw max to deplete the stream.
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // It should return the deposited amount.
         uint128 actualStreamedAmount = lockup.streamedAmountOf(defaultStreamId);

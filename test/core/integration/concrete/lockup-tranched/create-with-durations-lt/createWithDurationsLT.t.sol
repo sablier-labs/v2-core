@@ -23,7 +23,7 @@ contract CreateWithDurationsLT_Integration_Concrete_Test is Lockup_Tranched_Inte
         internal
         returns (uint256 streamId)
     {
-        streamId = lockup.createWithDurationsLT(_defaultParams.createWithDurations, tranchesWithDurations);
+        streamId = createWithDurationsLT(_defaultParams.createWithDurations, tranchesWithDurations);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

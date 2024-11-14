@@ -40,13 +40,14 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
         });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: identicalSenderRecipientStreamId, to: users.sender, amount: withdrawAmount });
+        withdraw({ streamId: identicalSenderRecipientStreamId, to: users.sender, amount: withdrawAmount });
     }
 
     function test_WhenCallerUnknown() external givenRecipientNotSameAsSender {
         // Make the unknown address the caller in this test.
         address unknownCaller = address(0xCAFE);
         resetPrank({ msgSender: unknownCaller });
+        vm.deal({ account: unknownCaller, newBalance: 1 ether });
 
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
@@ -62,11 +63,7 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
         });
 
         // Make the withdrawal.
-        lockup.withdraw({
-            streamId: differentSenderRecipientStreamId,
-            to: address(recipientGood),
-            amount: withdrawAmount
-        });
+        withdraw({ streamId: differentSenderRecipientStreamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
     function test_WhenCallerApprovedThirdParty() external givenRecipientNotSameAsSender {
@@ -91,11 +88,7 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
         });
 
         // Make the withdrawal.
-        lockup.withdraw({
-            streamId: differentSenderRecipientStreamId,
-            to: address(recipientGood),
-            amount: withdrawAmount
-        });
+        withdraw({ streamId: differentSenderRecipientStreamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
     function test_WhenCallerSender() external givenRecipientNotSameAsSender {
@@ -116,11 +109,7 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
         });
 
         // Make the withdrawal.
-        lockup.withdraw({
-            streamId: differentSenderRecipientStreamId,
-            to: address(recipientGood),
-            amount: withdrawAmount
-        });
+        withdraw({ streamId: differentSenderRecipientStreamId, to: address(recipientGood), amount: withdrawAmount });
     }
 
     function test_WhenCallerRecipient() external givenRecipientNotSameAsSender {
@@ -141,10 +130,6 @@ contract WithdrawHooks_Integration_Concrete_Test is Integration_Test {
         });
 
         // Make the withdrawal.
-        lockup.withdraw({
-            streamId: differentSenderRecipientStreamId,
-            to: address(recipientGood),
-            amount: withdrawAmount
-        });
+        withdraw({ streamId: differentSenderRecipientStreamId, to: address(recipientGood), amount: withdrawAmount });
     }
 }

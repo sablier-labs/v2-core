@@ -62,8 +62,16 @@ interface ISablierLockupBase is
     /// @param streamId The ID of the stream.
     /// @param to The address that has received the withdrawn assets.
     /// @param asset The contract address of the ERC-20 asset that has been withdrawn.
-    /// @param amount The amount of assets withdrawn, denoted in units of the asset's decimals.
-    event WithdrawFromLockupStream(uint256 indexed streamId, address indexed to, IERC20 indexed asset, uint128 amount);
+    /// @param withdrawnAmount The amount of assets withdrawn, denoted in units of the asset's decimals.
+    event WithdrawFromLockupStream(
+        uint256 indexed streamId, address indexed to, IERC20 indexed asset, uint128 withdrawnAmount
+    );
+
+    /// @notice Emitted when Sablier fees are withdrawn.
+    /// @param admin The address of the current contract admin.
+    /// @param feeAmount The amount of ETH transferred to the provided address.
+    /// @param to The address that has received the Sablier fees.
+    event WithdrawSablierFees(address indexed admin, uint256 indexed feeAmount, address indexed to);
 
     /*//////////////////////////////////////////////////////////////////////////
                                  CONSTANT FUNCTIONS
@@ -227,7 +235,7 @@ interface ISablierLockupBase is
     /// - `msg.sender` must be either the NFT owner or an approved third party.
     ///
     /// @param streamId The ID of the stream NFT to burn.
-    function burn(uint256 streamId) external;
+    function burn(uint256 streamId) external payable;
 
     /// @notice Cancels the stream and refunds any remaining assets to the sender.
     ///
@@ -244,7 +252,7 @@ interface ISablierLockupBase is
     /// - `msg.sender` must be the stream's sender.
     ///
     /// @param streamId The ID of the stream to cancel.
-    function cancel(uint256 streamId) external;
+    function cancel(uint256 streamId) external payable;
 
     /// @notice Cancels multiple streams and refunds any remaining assets to the sender.
     ///
@@ -257,7 +265,7 @@ interface ISablierLockupBase is
     /// - All requirements from {cancel} must be met for each stream.
     ///
     /// @param streamIds The IDs of the streams to cancel.
-    function cancelMultiple(uint256[] calldata streamIds) external;
+    function cancelMultiple(uint256[] calldata streamIds) external payable;
 
     /// @notice Removes the right of the stream's sender to cancel the stream.
     ///
@@ -273,7 +281,7 @@ interface ISablierLockupBase is
     /// - The stream must be cancelable.
     ///
     /// @param streamId The ID of the stream to renounce.
-    function renounce(uint256 streamId) external;
+    function renounce(uint256 streamId) external payable;
 
     /// @notice Renounces multiple streams.
     ///
@@ -286,7 +294,7 @@ interface ISablierLockupBase is
     /// - All requirements from {renounce} must be met for each stream.
     ///
     /// @param streamIds An array of stream IDs to renounce.
-    function renounceMultiple(uint256[] calldata streamIds) external;
+    function renounceMultiple(uint256[] calldata streamIds) external payable;
 
     /// @notice Sets a new NFT descriptor contract, which produces the URI describing the Sablier stream NFTs.
     ///
@@ -314,11 +322,26 @@ interface ISablierLockupBase is
     /// - `to` must not be the zero address.
     /// - `amount` must be greater than zero and must not exceed the withdrawable amount.
     /// - `to` must be the recipient if `msg.sender` is not the stream's recipient or an approved third party.
+    /// - The `msg.value` must not be less than the Sablier fee.
     ///
     /// @param streamId The ID of the stream to withdraw from.
     /// @param to The address receiving the withdrawn assets.
     /// @param amount The amount to withdraw, denoted in units of the asset's decimals.
-    function withdraw(uint256 streamId, address to, uint128 amount) external;
+    function withdraw(uint256 streamId, address to, uint128 amount) external payable;
+
+    /// @notice Withdraws the Sablier fees accrued to the provided address.
+    ///
+    /// @dev Emits a {WithdrawSablierFees} event.
+    ///
+    /// Notes:
+    /// - This function transfers ETH to the provided address. If the receiver is a contract, it must be
+    /// able to receive ETH.
+    ///
+    /// Requirements:
+    /// - `msg.sender` must be the contract admin.
+    ///
+    /// @param to The address to receive the Sablier fees.
+    function withdrawFees(address payable to) external;
 
     /// @notice Withdraws the maximum withdrawable amount from the stream to the provided address `to`.
     ///
@@ -333,7 +356,7 @@ interface ISablierLockupBase is
     /// @param streamId The ID of the stream to withdraw from.
     /// @param to The address receiving the withdrawn assets.
     /// @return withdrawnAmount The amount withdrawn, denoted in units of the asset's decimals.
-    function withdrawMax(uint256 streamId, address to) external returns (uint128 withdrawnAmount);
+    function withdrawMax(uint256 streamId, address to) external payable returns (uint128 withdrawnAmount);
 
     /// @notice Withdraws the maximum withdrawable amount from the stream to the current recipient, and transfers the
     /// NFT to `newRecipient`.
@@ -357,6 +380,7 @@ interface ISablierLockupBase is
         address newRecipient
     )
         external
+        payable
         returns (uint128 withdrawnAmount);
 
     /// @notice Withdraws assets from streams to the recipient of each stream.
@@ -374,5 +398,5 @@ interface ISablierLockupBase is
     ///
     /// @param streamIds The IDs of the streams to withdraw from.
     /// @param amounts The amounts to withdraw, denoted in units of the asset's decimals.
-    function withdrawMultiple(uint256[] calldata streamIds, uint128[] calldata amounts) external;
+    function withdrawMultiple(uint256[] calldata streamIds, uint128[] calldata amounts) external payable;
 }

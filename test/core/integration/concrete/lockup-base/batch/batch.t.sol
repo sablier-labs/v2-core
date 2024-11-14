@@ -35,7 +35,7 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
         bytes[] memory calls = new bytes[](1);
         calls[0] = abi.encodeCall(lockup.cancel, (defaultStreamId));
 
-        lockup.batch(calls);
+        lockup.batch{ value: 0 }(calls);
         assertTrue(lockup.wasCanceled(defaultStreamId));
     }
 }

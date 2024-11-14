@@ -19,12 +19,12 @@ contract WithdrawMax_Integration_Concrete_Test is Integration_Test {
         emit ISablierLockupBase.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
-            amount: defaults.DEPOSIT_AMOUNT(),
-            asset: dai
+            asset: dai,
+            withdrawnAmount: defaults.DEPOSIT_AMOUNT()
         });
 
         // Make the max withdrawal.
-        uint128 actualReturnedValue = lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        uint128 actualReturnedValue = withdrawMaxWithBalTest({ streamId: defaultStreamId, to: users.recipient });
 
         // It should return the withdrawn amount.
         uint128 expectedReturnedValue = defaults.DEPOSIT_AMOUNT();
@@ -65,12 +65,12 @@ contract WithdrawMax_Integration_Concrete_Test is Integration_Test {
         emit ISablierLockupBase.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
-            amount: expectedWithdrawnAmount,
-            asset: dai
+            asset: dai,
+            withdrawnAmount: expectedWithdrawnAmount
         });
 
         // Make the max withdrawal.
-        uint128 actualWithdrawnAmount = lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        uint128 actualWithdrawnAmount = withdrawMaxWithBalTest({ streamId: defaultStreamId, to: users.recipient });
 
         // It should return the withdrawable amount.
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");

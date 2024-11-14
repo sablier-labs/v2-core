@@ -74,6 +74,8 @@ abstract contract Integration_Test is Base_Test {
         recipientInterfaceIDMissing = new RecipientInterfaceIDMissing();
         recipientInvalidSelector = new RecipientInvalidSelector();
         recipientReentrant = new RecipientReentrant();
+        // We need to fund with ETH the reentrant contract as the withdraw function is payable.
+        vm.deal({ account: address(recipientReentrant), newBalance: 100 ether });
         recipientReverting = new RecipientReverting();
         vm.label({ account: address(recipientInterfaceIDIncorrect), newLabel: "Recipient Interface ID Incorrect" });
         vm.label({ account: address(recipientInterfaceIDMissing), newLabel: "Recipient Interface ID Missing" });
@@ -114,11 +116,11 @@ abstract contract Integration_Test is Base_Test {
 
     function createDefaultStream(Lockup.CreateWithTimestamps memory params) internal returns (uint256 streamId) {
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
-            streamId = lockup.createWithTimestampsLD(params, _defaultParams.segments);
+            streamId = createWithTimestampsLD(params, _defaultParams.segments);
         } else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
-            streamId = lockup.createWithTimestampsLL(params, _defaultParams.unlockAmounts, _defaultParams.cliffTime);
+            streamId = createWithTimestampsLL(params, _defaultParams.unlockAmounts, _defaultParams.cliffTime);
         } else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
-            streamId = lockup.createWithTimestampsLT(params, _defaultParams.tranches);
+            streamId = createWithTimestampsLT(params, _defaultParams.tranches);
         }
     }
 
@@ -140,15 +142,13 @@ abstract contract Integration_Test is Base_Test {
 
     function createDefaultStreamWithDurations() internal returns (uint256 streamId) {
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
-            streamId =
-                lockup.createWithDurationsLD(_defaultParams.createWithDurations, _defaultParams.segmentsWithDurations);
+            streamId = createWithDurationsLD(_defaultParams.createWithDurations, _defaultParams.segmentsWithDurations);
         } else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
-            streamId = lockup.createWithDurationsLL(
+            streamId = createWithDurationsLL(
                 _defaultParams.createWithDurations, _defaultParams.unlockAmounts, _defaultParams.durations
             );
         } else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
-            streamId =
-                lockup.createWithDurationsLT(_defaultParams.createWithDurations, _defaultParams.tranchesWithDurations);
+            streamId = createWithDurationsLT(_defaultParams.createWithDurations, _defaultParams.tranchesWithDurations);
         }
     }
 
@@ -158,13 +158,13 @@ abstract contract Integration_Test is Base_Test {
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
             LockupDynamic.Segment[] memory segments = _defaultParams.segments;
             segments[1].timestamp = endTime;
-            streamId = lockup.createWithTimestampsLD(params, segments);
+            streamId = createWithTimestampsLD(params, segments);
         } else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
-            streamId = lockup.createWithTimestampsLL(params, _defaultParams.unlockAmounts, defaults.CLIFF_TIME());
+            streamId = createWithTimestampsLL(params, _defaultParams.unlockAmounts, defaults.CLIFF_TIME());
         } else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
             LockupTranched.Tranche[] memory tranches = _defaultParams.tranches;
             tranches[1].timestamp = endTime;
-            streamId = lockup.createWithTimestampsLT(params, tranches);
+            streamId = createWithTimestampsLT(params, tranches);
         }
     }
 
@@ -204,6 +204,17 @@ abstract contract Integration_Test is Base_Test {
         );
     }
 
+    function expectRevert_CallerNotAdmin(bytes memory callData) internal {
+        resetPrank({ msgSender: users.eve });
+        (bool success, bytes memory returnData) = address(lockup).call(callData);
+        assertFalse(success, "caller not admin call success");
+        assertEq(
+            returnData,
+            abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve),
+            "caller not admin call return data"
+        );
+    }
+
     function expectRevert_CANCELEDStatus(bytes memory callData) internal {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         lockup.cancel(defaultStreamId);
@@ -225,7 +236,7 @@ abstract contract Integration_Test is Base_Test {
 
     function expectRevert_DEPLETEDStatus(bytes memory callData) internal {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        lockup.withdrawMax{ value: SABLIER_FEE }({ streamId: defaultStreamId, to: users.recipient });
 
         (bool success, bytes memory returnData) = address(lockup).call(callData);
         assertFalse(success, "depleted status call success");
@@ -256,5 +267,134 @@ abstract contract Integration_Test is Base_Test {
             abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, defaultStreamId),
             "settled status call return data"
         );
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                  MIRROR-FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function burn(uint256 streamId) internal {
+        lockup.burn{ value: 0 }(streamId);
+    }
+
+    function cancel(uint256 streamId) internal {
+        lockup.cancel{ value: 0 }(streamId);
+    }
+
+    function cancelMultiple(uint256[] memory streamIds) internal {
+        lockup.cancelMultiple{ value: 0 }(streamIds);
+    }
+
+    function createWithDurationsLD(
+        Lockup.CreateWithDurations memory params,
+        LockupDynamic.SegmentWithDuration[] memory segmentsWithDuration
+    )
+        internal
+        returns (uint256 streamId)
+    {
+        streamId = lockup.createWithDurationsLD{ value: 0 }(params, segmentsWithDuration);
+    }
+
+    function createWithDurationsLL(
+        Lockup.CreateWithDurations memory params,
+        LockupLinear.UnlockAmounts memory unlockAmounts,
+        LockupLinear.Durations memory durations
+    )
+        internal
+        returns (uint256 streamId)
+    {
+        streamId = lockup.createWithDurationsLL{ value: 0 }(params, unlockAmounts, durations);
+    }
+
+    function createWithDurationsLT(
+        Lockup.CreateWithDurations memory params,
+        LockupTranched.TrancheWithDuration[] memory tranchesWithDuration
+    )
+        internal
+        returns (uint256 streamId)
+    {
+        streamId = lockup.createWithDurationsLT{ value: 0 }(params, tranchesWithDuration);
+    }
+
+    function createWithTimestampsLD(
+        Lockup.CreateWithTimestamps memory params,
+        LockupDynamic.Segment[] memory segments
+    )
+        internal
+        returns (uint256 streamId)
+    {
+        streamId = lockup.createWithTimestampsLD{ value: 0 }(params, segments);
+    }
+
+    function createWithTimestampsLL(
+        Lockup.CreateWithTimestamps memory params,
+        LockupLinear.UnlockAmounts memory unlockAmounts,
+        uint40 cliffTime
+    )
+        internal
+        returns (uint256 streamId)
+    {
+        streamId = lockup.createWithTimestampsLL{ value: 0 }(params, unlockAmounts, cliffTime);
+    }
+
+    function createWithTimestampsLT(
+        Lockup.CreateWithTimestamps memory params,
+        LockupTranched.Tranche[] memory tranches
+    )
+        internal
+        returns (uint256 streamId)
+    {
+        streamId = lockup.createWithTimestampsLT{ value: 0 }(params, tranches);
+    }
+
+    function renounce(uint256 streamId) internal {
+        lockup.renounce{ value: 0 }(streamId);
+    }
+
+    modifier balanceTest() {
+        uint256 balanceBefore = address(lockup).balance;
+        _;
+        assertEq(address(lockup).balance, balanceBefore + SABLIER_FEE, "balance after function call");
+    }
+
+    function withdraw(uint256 streamId, address to, uint128 amount) internal {
+        lockup.withdraw{ value: SABLIER_FEE }(streamId, to, amount);
+    }
+
+    function withdrawWithBalTest(uint256 streamId, address to, uint128 amount) internal balanceTest {
+        withdraw(streamId, to, amount);
+    }
+
+    function withdrawMax(uint256 streamId, address to) internal returns (uint128) {
+        return lockup.withdrawMax{ value: SABLIER_FEE }(streamId, to);
+    }
+
+    function withdrawMaxWithBalTest(uint256 streamId, address to) internal balanceTest returns (uint128) {
+        uint128 withdrawn = withdrawMax(streamId, to);
+        return withdrawn;
+    }
+
+    function withdrawMaxAndTransfer(uint256 streamId, address newRecipient) internal returns (uint128) {
+        return lockup.withdrawMaxAndTransfer{ value: SABLIER_FEE }(streamId, newRecipient);
+    }
+
+    function withdrawMaxAndTransferWithBalTest(
+        uint256 streamId,
+        address newRecipient
+    )
+        internal
+        balanceTest
+        returns (uint128)
+    {
+        uint128 withdrawn = withdrawMaxAndTransfer(streamId, newRecipient);
+        return withdrawn;
+    }
+
+    function withdrawMultiple(uint256[] memory streamIds, uint128[] memory amounts) internal {
+        lockup.withdrawMultiple{ value: SABLIER_FEE }(streamIds, amounts);
+    }
+
+    function withdrawMultipleWithBalTest(uint256[] memory streamIds, uint128[] memory amounts) internal balanceTest {
+        withdrawMultiple(streamIds, amounts);
     }
 }

@@ -19,28 +19,28 @@ contract Burn_Integration_Concrete_Test is Integration_Test {
     function test_RevertGiven_PENDINGStatus() external whenNoDelegateCall givenNotNull givenNotDepletedStream {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotDepleted.selector, defaultStreamId));
-        lockup.burn(defaultStreamId);
+        burn(defaultStreamId);
     }
 
     function test_RevertGiven_STREAMINGStatus() external whenNoDelegateCall givenNotNull givenNotDepletedStream {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotDepleted.selector, defaultStreamId));
-        lockup.burn(defaultStreamId);
+        burn(defaultStreamId);
     }
 
     function test_RevertGiven_SETTLEDStatus() external whenNoDelegateCall givenNotNull givenNotDepletedStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotDepleted.selector, defaultStreamId));
-        lockup.burn(defaultStreamId);
+        burn(defaultStreamId);
     }
 
     function test_RevertGiven_CANCELEDStatus() external whenNoDelegateCall givenNotNull givenNotDepletedStream {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         resetPrank({ msgSender: users.sender });
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
         resetPrank({ msgSender: users.recipient });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotDepleted.selector, defaultStreamId));
-        lockup.burn(defaultStreamId);
+        burn(defaultStreamId);
     }
 
     function test_RevertWhen_CallerMaliciousThirdParty()
@@ -64,7 +64,7 @@ contract Burn_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, defaultStreamId, users.sender)
         );
-        lockup.burn(defaultStreamId);
+        burn(defaultStreamId);
     }
 
     function test_WhenCallerApprovedThirdParty()
@@ -89,11 +89,11 @@ contract Burn_Integration_Concrete_Test is Integration_Test {
         whenCallerRecipient
     {
         // Burn the NFT so that it no longer exists.
-        lockup.burn(defaultStreamId);
+        burn(defaultStreamId);
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721NonexistentToken.selector, defaultStreamId));
-        lockup.burn(defaultStreamId);
+        burn(defaultStreamId);
     }
 
     function test_GivenNonTransferableNFT()
@@ -124,7 +124,7 @@ contract Burn_Integration_Concrete_Test is Integration_Test {
         emit IERC4906.MetadataUpdate({ _tokenId: streamId });
 
         // Burn the NFT.
-        lockup.burn(streamId);
+        burn(streamId);
 
         // It should burn the NFT.
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721NonexistentToken.selector, streamId));

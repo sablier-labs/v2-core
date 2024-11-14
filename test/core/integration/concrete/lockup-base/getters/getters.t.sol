@@ -66,10 +66,10 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
         resetPrank({ msgSender: users.recipient });
 
         // Deplete the stream.
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // Burn the NFT.
-        lockup.burn(defaultStreamId);
+        burn(defaultStreamId);
 
         // Expect the relevant error when retrieving the recipient.
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721NonexistentToken.selector, defaultStreamId));
@@ -93,7 +93,7 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
     function test_GetRefundedAmountGivenCanceledStreamAndCANCELEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         // Cancel the stream.
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
 
         // It should return the correct refunded amount.
         uint128 actualRefundedAmount = lockup.getRefundedAmount(defaultStreamId);
@@ -104,10 +104,10 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
     function test_GetRefundedAmountGivenCanceledStreamAndDEPLETEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         // Cancel the stream.
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
 
         // Withdraw the maximum amount to deplete the stream.
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // It should return the correct refunded amount.
         uint128 actualRefundedAmount = lockup.getRefundedAmount(defaultStreamId);
@@ -131,7 +131,7 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
 
     function test_GetRefundedAmountGivenDEPLETEDStatus() external givenNotNull givenNotCanceledStream {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         uint128 actualRefundedAmount = lockup.getRefundedAmount(defaultStreamId);
         uint128 expectedRefundedAmount = 0;
         assertEq(actualRefundedAmount, expectedRefundedAmount, "refundedAmount");
@@ -198,7 +198,7 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
         uint128 withdrawAmount = lockup.streamedAmountOf(defaultStreamId);
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
+        withdraw({ streamId: defaultStreamId, to: users.recipient, amount: withdrawAmount });
 
         // It should return the correct withdrawn amount.
         uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);
@@ -269,13 +269,13 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
 
     function test_IsColdGivenCANCELEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
         assertTrue(lockup.isCold(defaultStreamId), "isCold");
     }
 
     function test_IsColdGivenDEPLETEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         assertTrue(lockup.isCold(defaultStreamId), "isCold");
     }
 
@@ -293,7 +293,7 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
 
     function test_IsDepletedGivenDepletedStream() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         assertTrue(lockup.isDepleted(defaultStreamId), "isDepleted");
     }
 
@@ -350,13 +350,13 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
 
     function test_IsWarmGivenCANCELEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
         assertFalse(lockup.isWarm(defaultStreamId), "isWarm");
     }
 
     function test_IsWarmGivenDEPLETEDStatus() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
         assertFalse(lockup.isWarm(defaultStreamId), "isWarm");
     }
 
@@ -373,7 +373,7 @@ contract Getters_Integration_Concrete_Test is Integration_Test {
     }
 
     function test_WasCanceledGivenNotCanceledStream() external givenNotNull {
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
         assertTrue(lockup.wasCanceled(defaultStreamId), "wasCanceled");
     }
 }

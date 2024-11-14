@@ -55,7 +55,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, defaultStreamId, users.recipient)
         );
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
     }
 
     function test_RevertGiven_NonCancelableStream()
@@ -68,7 +68,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, notCancelableStreamId)
         );
-        lockup.cancel(notCancelableStreamId);
+        cancel(notCancelableStreamId);
     }
 
     function test_GivenPENDINGStatus()
@@ -83,7 +83,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
 
         // Cancel the stream.
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
 
         // It should mark the stream as depleted.
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
@@ -117,7 +117,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         });
 
         // Cancel the stream.
-        lockup.cancel(recipientGoodStreamId);
+        cancel(recipientGoodStreamId);
 
         // It should mark the stream as canceled.
         Lockup.Status actualStatus = lockup.statusOf(recipientGoodStreamId);
@@ -144,7 +144,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert("You shall not pass");
 
         // Cancel the stream.
-        lockup.cancel(recipientRevertStreamId);
+        cancel(recipientRevertStreamId);
     }
 
     function test_RevertWhen_RecipientReturnsInvalidSelector()
@@ -171,7 +171,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         );
 
         // Cancel the stream.
-        lockup.cancel(recipientInvalidSelectorStreamId);
+        cancel(recipientInvalidSelectorStreamId);
     }
 
     function test_WhenReentrancy()
@@ -211,7 +211,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         );
 
         // Cancel the stream.
-        lockup.cancel(recipientReentrantStreamId);
+        cancel(recipientReentrantStreamId);
 
         // It should mark the stream as depleted. The reentrant recipient withdrew all the funds.
         Lockup.Status actualStatus = lockup.statusOf(recipientReentrantStreamId);
@@ -263,7 +263,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         emit IERC4906.MetadataUpdate({ _tokenId: recipientGoodStreamId });
 
         // Cancel the stream.
-        lockup.cancel(recipientGoodStreamId);
+        cancel(recipientGoodStreamId);
 
         // It should mark the stream as canceled.
         Lockup.Status actualStatus = lockup.statusOf(recipientGoodStreamId);

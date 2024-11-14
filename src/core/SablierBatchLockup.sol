@@ -51,7 +51,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
         streamIds = new uint256[](batchSize);
         for (i = 0; i < batchSize; ++i) {
             // Create the stream.
-            streamIds[i] = lockup.createWithDurationsLD(
+            streamIds[i] = lockup.createWithDurationsLD{ value: 0 }(
                 Lockup.CreateWithDurations({
                     sender: batch[i].sender,
                     recipient: batch[i].recipient,
@@ -106,7 +106,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
             }
 
             // Create the stream.
-            streamIds[i] = lockup.createWithTimestampsLD(
+            streamIds[i] = lockup.createWithTimestampsLD{ value: 0 }(
                 Lockup.CreateWithTimestamps({
                     sender: batch[i].sender,
                     recipient: batch[i].recipient,
@@ -159,7 +159,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
         streamIds = new uint256[](batchSize);
         for (i = 0; i < batchSize; ++i) {
             // Create the stream.
-            streamIds[i] = lockup.createWithDurationsLL(
+            streamIds[i] = lockup.createWithDurationsLL{ value: 0 }(
                 Lockup.CreateWithDurations({
                     sender: batch[i].sender,
                     recipient: batch[i].recipient,
@@ -208,7 +208,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
         streamIds = new uint256[](batchSize);
         for (i = 0; i < batchSize; ++i) {
             // Create the stream.
-            streamIds[i] = lockup.createWithTimestampsLL(
+            streamIds[i] = lockup.createWithTimestampsLL{ value: 0 }(
                 Lockup.CreateWithTimestamps({
                     sender: batch[i].sender,
                     recipient: batch[i].recipient,
@@ -262,7 +262,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
         streamIds = new uint256[](batchSize);
         for (i = 0; i < batchSize; ++i) {
             // Create the stream.
-            streamIds[i] = lockup.createWithDurationsLT(
+            streamIds[i] = lockup.createWithDurationsLT{ value: 0 }(
                 Lockup.CreateWithDurations({
                     sender: batch[i].sender,
                     recipient: batch[i].recipient,
@@ -317,7 +317,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
             }
 
             // Create the stream.
-            streamIds[i] = lockup.createWithTimestampsLT(
+            streamIds[i] = lockup.createWithTimestampsLT{ value: 0 }(
                 Lockup.CreateWithTimestamps({
                     sender: batch[i].sender,
                     recipient: batch[i].recipient,

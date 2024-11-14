@@ -20,7 +20,7 @@ contract CreateWithDurationsLD_Integration_Concrete_Test is Lockup_Dynamic_Integ
         internal
         returns (uint256 streamId)
     {
-        streamId = lockup.createWithDurationsLD(_defaultParams.createWithDurations, segmentsWithDurations);
+        streamId = createWithDurationsLD(_defaultParams.createWithDurations, segmentsWithDurations);
     }
 
     /*//////////////////////////////////////////////////////////////////////////

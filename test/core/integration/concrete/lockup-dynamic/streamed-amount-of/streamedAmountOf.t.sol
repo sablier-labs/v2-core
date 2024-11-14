@@ -27,7 +27,7 @@ contract StreamedAmountOf_Lockup_Dynamic_Integration_Concrete_Test is
         });
 
         // Create the stream.
-        uint256 streamId = lockup.createWithTimestampsLD(_defaultParams.createWithTimestamps, segments);
+        uint256 streamId = createWithTimestampsLD(_defaultParams.createWithTimestamps, segments);
 
         // It should return the correct streamed amount.
         uint128 actualStreamedAmount = lockup.streamedAmountOf(streamId);

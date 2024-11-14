@@ -136,6 +136,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         LockupDynamic.SegmentWithDuration[] calldata segmentsWithDuration
     )
         external
+        payable
         override
         noDelegateCall
         returns (uint256 streamId)
@@ -170,6 +171,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         LockupLinear.Durations calldata durations
     )
         external
+        payable
         override
         noDelegateCall
         returns (uint256 streamId)
@@ -212,6 +214,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         LockupTranched.TrancheWithDuration[] calldata tranchesWithDuration
     )
         external
+        payable
         override
         noDelegateCall
         returns (uint256 streamId)
@@ -245,6 +248,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         LockupDynamic.Segment[] calldata segments
     )
         external
+        payable
         override
         noDelegateCall
         returns (uint256 streamId)
@@ -260,6 +264,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         uint40 cliffTime
     )
         external
+        payable
         override
         noDelegateCall
         returns (uint256 streamId)
@@ -274,6 +279,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         LockupTranched.Tranche[] calldata tranches
     )
         external
+        payable
         override
         noDelegateCall
         returns (uint256 streamId)

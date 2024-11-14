@@ -56,7 +56,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, notCancelableStreamId)
         );
-        lockup.renounce(notCancelableStreamId);
+        renounce(notCancelableStreamId);
     }
 
     function test_GivenCancelableStream()
@@ -73,7 +73,7 @@ abstract contract Renounce_Integration_Concrete_Test is Integration_Test {
         emit IERC4906.MetadataUpdate({ _tokenId: streamId });
 
         // Renounce the stream.
-        lockup.renounce(streamId);
+        renounce(streamId);
 
         // It should make stream non cancelable.
         assertFalse(lockup.isCancelable(streamId), "isCancelable");

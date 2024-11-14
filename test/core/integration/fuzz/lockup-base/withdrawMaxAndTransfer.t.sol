@@ -42,7 +42,7 @@ contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is Integration_Test {
                 streamId: defaultStreamId,
                 to: users.recipient,
                 asset: dai,
-                amount: withdrawAmount
+                withdrawnAmount: withdrawAmount
             });
         }
 
@@ -51,7 +51,7 @@ contract WithdrawMaxAndTransfer_Integration_Fuzz_Test is Integration_Test {
         emit IERC721.Transfer({ from: users.recipient, to: newRecipient, tokenId: defaultStreamId });
 
         // Make the max withdrawal and transfer the NFT.
-        lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: newRecipient });
+        withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: newRecipient });
 
         // Assert that the withdrawn amount has been updated.
         uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);

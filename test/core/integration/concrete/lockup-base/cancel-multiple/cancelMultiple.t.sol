@@ -30,7 +30,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
     function test_WhenZeroArrayLength() external whenNoDelegateCall {
         // It should do nothing.
         uint256[] memory nullStreamIds = new uint256[](0);
-        lockup.cancelMultiple(nullStreamIds);
+        cancelMultiple(nullStreamIds);
     }
 
     function test_RevertGiven_AtleastOneNullStream() external whenNoDelegateCall whenNonZeroArrayLength {
@@ -49,7 +49,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         uint256 earlyEndtimeStreamId = createDefaultStreamWithEndTime(earlyEndTime);
         vm.warp({ newTimestamp: earlyEndTime + 1 seconds });
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, earlyEndtimeStreamId));
-        lockup.cancelMultiple({ streamIds: Solarray.uint256s(streamIds[0], earlyEndtimeStreamId) });
+        cancelMultiple({ streamIds: Solarray.uint256s(streamIds[0], earlyEndtimeStreamId) });
     }
 
     function test_RevertWhen_CallerUnauthorizedForAny()
@@ -66,7 +66,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, streamIds[0], users.recipient)
         );
-        lockup.cancelMultiple(streamIds);
+        cancelMultiple(streamIds);
     }
 
     function test_RevertGiven_AtleastOneNonCancelableStream()
@@ -80,7 +80,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, notCancelableStreamId)
         );
-        lockup.cancelMultiple({ streamIds: Solarray.uint256s(streamIds[0], notCancelableStreamId) });
+        cancelMultiple({ streamIds: Solarray.uint256s(streamIds[0], notCancelableStreamId) });
     }
 
     function test_GivenAllStreamsCancelable()
@@ -121,7 +121,7 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         });
 
         // Cancel the streams.
-        lockup.cancelMultiple(streamIds);
+        cancelMultiple(streamIds);
 
         // It should mark the streams as canceled.
         Lockup.Status expectedStatus = Lockup.Status.CANCELED;

@@ -25,7 +25,7 @@ contract CreateWithTimestampsLD_Integration_Concrete_Test is CreateWithTimestamp
     //////////////////////////////////////////////////////////////////////////*/
 
     function createDefaultStreamWithSegments(LockupDynamic.Segment[] memory segments) internal returns (uint256) {
-        return lockup.createWithTimestampsLD(_defaultParams.createWithTimestamps, segments);
+        return createWithTimestampsLD(_defaultParams.createWithTimestamps, segments);
     }
 
     function test_RevertWhen_SegmentCountZero()

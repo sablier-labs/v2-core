@@ -34,7 +34,7 @@ abstract contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Te
         // It should set the ETH balance to 0.
         assertEq(address(merkleBase).balance, 0, "merkle lockup eth balance");
         // It should transfer fee collected in ETH to the provided address.
-        assertEq(users.admin.balance, previousToBalance + defaults.DEFAULT_SABLIER_FEE(), "eth balance");
+        assertEq(users.admin.balance, previousToBalance + SABLIER_FEE, "eth balance");
     }
 
     function test_RevertWhen_ProvidedAddressNotImplementReceiveEth()
@@ -59,6 +59,6 @@ abstract contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Te
         // It should set the ETH balance to 0.
         assertEq(address(merkleBase).balance, 0, "merkle lockup eth balance");
         // It should transfer fee collected in ETH to the provided address.
-        assertEq(receiveEth.balance, defaults.DEFAULT_SABLIER_FEE(), "eth balance");
+        assertEq(receiveEth.balance, SABLIER_FEE, "eth balance");
     }
 }

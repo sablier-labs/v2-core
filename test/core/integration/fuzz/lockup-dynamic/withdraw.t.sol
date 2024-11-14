@@ -102,9 +102,10 @@ contract Withdraw_Lockup_Dynamic_Integration_Fuzz_Test is
         emit ISablierLockupBase.WithdrawFromLockupStream({
             streamId: vars.streamId,
             to: params.to,
-            amount: vars.withdrawAmount,
-            asset: dai
+            asset: dai,
+            withdrawnAmount: vars.withdrawAmount
         });
+
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC4906.MetadataUpdate({ _tokenId: vars.streamId });
 
@@ -112,7 +113,7 @@ contract Withdraw_Lockup_Dynamic_Integration_Fuzz_Test is
         resetPrank({ msgSender: users.recipient });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: vars.streamId, to: params.to, amount: vars.withdrawAmount });
+        withdrawWithBalTest({ streamId: vars.streamId, to: params.to, amount: vars.withdrawAmount });
 
         // Check if the stream is depleted or settled. It is possible for the stream to be just settled
         // and not depleted because the withdraw amount is fuzzed.

@@ -8,12 +8,7 @@ import { Integration_Test } from "../../../Integration.t.sol";
 
 contract AllowToHook_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
-        // Make Eve the caller in this test.
-        resetPrank({ msgSender: users.eve });
-
-        // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
-        lockup.allowToHook(users.eve);
+        expectRevert_CallerNotAdmin({ callData: abi.encodeCall(lockup.allowToHook, users.eve) });
     }
 
     function test_RevertWhen_ProvidedAddressNotContract() external whenCallerAdmin {

@@ -47,7 +47,7 @@ contract Constructor_MerkleLL_Integration_Test is MerkleCampaign_Integration_Tes
             defaults.CANCELABLE(),
             defaults.TRANSFERABLE(),
             defaults.schedule(),
-            defaults.DEFAULT_SABLIER_FEE()
+            SABLIER_FEE
         );
 
         Vars memory vars;
@@ -111,7 +111,7 @@ contract Constructor_MerkleLL_Integration_Test is MerkleCampaign_Integration_Tes
         assertEq(vars.actualTransferable, vars.expectedTransferable, "transferable");
 
         vars.actualSablierFee = constructedLL.SABLIER_FEE();
-        vars.expectedSablierFee = defaults.DEFAULT_SABLIER_FEE();
+        vars.expectedSablierFee = SABLIER_FEE;
         assertEq(vars.actualSablierFee, vars.expectedSablierFee, "sablierFee");
     }
 }

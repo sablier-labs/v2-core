@@ -6,6 +6,8 @@ import { IERC165, ERC165 } from "@openzeppelin/contracts/utils/introspection/ERC
 import { ISablierLockupBase } from "src/core/interfaces/ISablierLockupBase.sol";
 import { ISablierLockupRecipient } from "src/core/interfaces/ISablierLockupRecipient.sol";
 
+import { Constants } from "../utils/Constants.sol";
+
 contract RecipientGood is ISablierLockupRecipient, ERC165 {
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
         return interfaceId == type(ISablierLockupRecipient).interfaceId;
@@ -118,7 +120,7 @@ contract RecipientInvalidSelector is ISablierLockupRecipient, ERC165 {
     }
 }
 
-contract RecipientReentrant is ISablierLockupRecipient, ERC165 {
+contract RecipientReentrant is ISablierLockupRecipient, ERC165, Constants {
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
         return interfaceId == type(ISablierLockupRecipient).interfaceId;
     }
@@ -138,7 +140,7 @@ contract RecipientReentrant is ISablierLockupRecipient, ERC165 {
         senderAmount;
         recipientAmount;
 
-        ISablierLockupBase(msg.sender).withdraw(streamId, address(this), recipientAmount);
+        ISablierLockupBase(msg.sender).withdraw{ value: SABLIER_FEE }(streamId, address(this), recipientAmount);
 
         return ISablierLockupRecipient.onSablierLockupCancel.selector;
     }
@@ -158,7 +160,7 @@ contract RecipientReentrant is ISablierLockupRecipient, ERC165 {
         to;
         amount;
 
-        ISablierLockupBase(msg.sender).withdraw(streamId, address(this), amount);
+        ISablierLockupBase(msg.sender).withdraw{ value: SABLIER_FEE }(streamId, address(this), amount);
 
         return ISablierLockupRecipient.onSablierLockupWithdraw.selector;
     }

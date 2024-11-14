@@ -7,7 +7,6 @@ import { LibString } from "solady/src/utils/LibString.sol";
 import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
 import { ISablierBatchLockup } from "src/core/interfaces/ISablierBatchLockup.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
-import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 
 import { Base_Test } from "./../Base.t.sol";
 

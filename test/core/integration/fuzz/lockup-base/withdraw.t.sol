@@ -12,7 +12,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
     /// - Multiple caller addresses.
-    function testFuzz_Withdraw_UnknownCaller(address caller)
+    function testFuzz_Withdraw_UnknownCaller(address payable caller)
         external
         whenNoDelegateCall
         givenNotNull
@@ -21,6 +21,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
         whenWithdrawAmountNotOverdraw
     {
         vm.assume(caller != users.sender && caller != users.recipient);
+        vm.deal({ account: caller, newBalance: 1 ether });
 
         // Make the fuzzed address the caller in this test.
         resetPrank({ msgSender: caller });
@@ -29,7 +30,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.STREAMED_AMOUNT_26_PERCENT() });
+        withdrawWithBalTest({ streamId: defaultStreamId, to: users.recipient, amount: defaults.WITHDRAW_AMOUNT() });
 
         // Assert that the stream's status is still "STREAMING".
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
@@ -63,7 +64,7 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: defaultStreamId, to: to, amount: defaults.STREAMED_AMOUNT_26_PERCENT() });
+        withdrawWithBalTest({ streamId: defaultStreamId, to: to, amount: defaults.WITHDRAW_AMOUNT() });
 
         // Assert that the stream's status is still "STREAMING".
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
@@ -114,12 +115,17 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.WithdrawFromLockupStream(defaultStreamId, to, dai, withdrawAmount);
+        emit ISablierLockupBase.WithdrawFromLockupStream({
+            streamId: defaultStreamId,
+            to: to,
+            asset: dai,
+            withdrawnAmount: withdrawAmount
+        });
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC4906.MetadataUpdate({ _tokenId: defaultStreamId });
 
         // Make the withdrawal.
-        lockup.withdraw({ streamId: defaultStreamId, to: to, amount: withdrawAmount });
+        withdrawWithBalTest({ streamId: defaultStreamId, to: to, amount: withdrawAmount });
 
         // Check if the stream has been depleted.
         uint128 refundedAmount = lockup.getRefundedAmount(defaultStreamId);
@@ -177,12 +183,17 @@ abstract contract Withdraw_Integration_Fuzz_Test is Integration_Test {
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.WithdrawFromLockupStream(defaultStreamId, to, dai, withdrawAmount);
+        emit ISablierLockupBase.WithdrawFromLockupStream({
+            streamId: defaultStreamId,
+            to: to,
+            asset: dai,
+            withdrawnAmount: withdrawAmount
+        });
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC4906.MetadataUpdate({ _tokenId: defaultStreamId });
 
         // Make the withdrawal.
-        lockup.withdraw(defaultStreamId, to, withdrawAmount);
+        withdrawWithBalTest(defaultStreamId, to, withdrawAmount);
 
         // Check if the stream is depleted or settled. It is possible for the stream to be just settled
         // and not depleted because the withdraw amount is fuzzed.

@@ -24,7 +24,7 @@ contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_NotTransferable.selector, notTransferableStreamId)
         );
-        lockup.withdrawMaxAndTransfer({ streamId: notTransferableStreamId, newRecipient: users.recipient });
+        withdrawMaxAndTransfer({ streamId: notTransferableStreamId, newRecipient: users.recipient });
     }
 
     function test_RevertGiven_BurnedNFT()
@@ -36,14 +36,14 @@ contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
     {
         // Deplete the stream.
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // Burn the NFT.
-        lockup.burn({ streamId: defaultStreamId });
+        burn({ streamId: defaultStreamId });
 
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721NonexistentToken.selector, defaultStreamId));
-        lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
+        withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
     }
 
     function test_GivenZeroWithdrawableAmount()
@@ -55,7 +55,7 @@ contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
         whenCallerRecipient
     {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // It should not expect a transfer call on asset.
         vm.expectCall({ callee: address(dai), data: abi.encodeCall(IERC20.transfer, (users.recipient, 0)), count: 0 });
@@ -64,7 +64,7 @@ contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
-        lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
+        withdrawMaxAndTransferWithBalTest({ streamId: defaultStreamId, newRecipient: users.alice });
     }
 
     function test_RevertWhen_CallerNotCurrentRecipient()
@@ -82,7 +82,7 @@ contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, defaultStreamId, users.eve)
         );
-        lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.eve });
+        withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.eve });
     }
 
     function test_WhenCallerApprovedThirdParty()
@@ -110,15 +110,16 @@ contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
         emit ISablierLockupBase.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
-            amount: expectedWithdrawnAmount,
-            asset: dai
+            asset: dai,
+            withdrawnAmount: expectedWithdrawnAmount
         });
+
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC721.Transfer({ from: users.recipient, to: users.alice, tokenId: defaultStreamId });
 
         // Make the max withdrawal and transfer the NFT.
         uint128 actualWithdrawnAmount =
-            lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
+            withdrawMaxAndTransferWithBalTest({ streamId: defaultStreamId, newRecipient: users.alice });
 
         // Assert that the withdrawn amount has been updated.
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");
@@ -153,9 +154,10 @@ contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
         emit ISablierLockupBase.WithdrawFromLockupStream({
             streamId: defaultStreamId,
             to: users.recipient,
-            amount: expectedWithdrawnAmount,
-            asset: dai
+            asset: dai,
+            withdrawnAmount: expectedWithdrawnAmount
         });
+
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC4906.MetadataUpdate({ _tokenId: defaultStreamId });
         vm.expectEmit({ emitter: address(lockup) });
@@ -163,7 +165,7 @@ contract WithdrawMaxAndTransfer_Integration_Concrete_Test is Integration_Test {
 
         // Make the max withdrawal and transfer the NFT.
         uint128 actualWithdrawnAmount =
-            lockup.withdrawMaxAndTransfer({ streamId: defaultStreamId, newRecipient: users.alice });
+            withdrawMaxAndTransferWithBalTest({ streamId: defaultStreamId, newRecipient: users.alice });
 
         // it should update the withdrawn amount.abi
         assertEq(actualWithdrawnAmount, expectedWithdrawnAmount, "withdrawnAmount");

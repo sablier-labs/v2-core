@@ -3,34 +3,20 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import { LockupLinear } from "src/core/types/DataTypes.sol";
 import { ISablierMerkleBase } from "src/periphery/interfaces/ISablierMerkleBase.sol";
 import { SablierMerkleInstant } from "src/periphery/SablierMerkleInstant.sol";
 import { SablierMerkleLL } from "src/periphery/SablierMerkleLL.sol";
 import { SablierMerkleLT } from "src/periphery/SablierMerkleLT.sol";
 
 import { Base_Test } from "../Base.t.sol";
-import { ContractWithoutReceiveEth, ContractWithReceiveEth } from "../mocks/ReceiveEth.sol";
 
 contract Periphery_Test is Base_Test {
-    /*//////////////////////////////////////////////////////////////////////////
-                                   TEST CONTRACTS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    ContractWithoutReceiveEth internal contractWithoutReceiveEth;
-    ContractWithReceiveEth internal contractWithReceiveEth;
-
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
 
     function setUp() public virtual override {
         Base_Test.setUp();
-
-        contractWithoutReceiveEth = new ContractWithoutReceiveEth();
-        contractWithReceiveEth = new ContractWithReceiveEth();
-        vm.label({ account: address(contractWithoutReceiveEth), newLabel: "Contract Without Receive Eth" });
-        vm.label({ account: address(contractWithReceiveEth), newLabel: "Contract With Receive Eth" });
     }
 
     /*//////////////////////////////////////////////////////////////////////////

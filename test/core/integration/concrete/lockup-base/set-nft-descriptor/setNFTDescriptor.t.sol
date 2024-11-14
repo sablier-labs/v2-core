@@ -2,20 +2,18 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
+
 import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockupBase } from "src/core/interfaces/ISablierLockupBase.sol";
-import { Errors } from "src/core/libraries/Errors.sol";
 import { LockupNFTDescriptor } from "src/core/LockupNFTDescriptor.sol";
+
 import { Integration_Test } from "./../../../Integration.t.sol";
 
 contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
-        // Make Eve the caller in this test.
-        resetPrank({ msgSender: users.eve });
-
-        // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
-        lockup.setNFTDescriptor(ILockupNFTDescriptor(users.eve));
+        expectRevert_CallerNotAdmin({
+            callData: abi.encodeCall(lockup.setNFTDescriptor, ILockupNFTDescriptor(users.eve))
+        });
     }
 
     function test_WhenProvidedAddressMatchesCurrentNFTDescriptor() external whenCallerAdmin {

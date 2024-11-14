@@ -9,7 +9,7 @@ import { MerkleCampaign_Integration_Test } from "../../MerkleCampaign.t.sol";
 
 contract SetDefaultSablierFee_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertWhen_CallerNotAdmin() external {
-        uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
+        uint256 sablierFee = SABLIER_FEE;
         resetPrank({ msgSender: users.eve });
         vm.expectRevert(abi.encodeWithSelector(CoreErrors.CallerNotAdmin.selector, users.admin, users.eve));
         merkleFactory.setDefaultSablierFee({ defaultFee: sablierFee });
@@ -20,14 +20,11 @@ contract SetDefaultSablierFee_Integration_Test is MerkleCampaign_Integration_Tes
 
         // It should emit a {SetDefaultSablierFee} event.
         vm.expectEmit({ emitter: address(merkleFactory) });
-        emit ISablierMerkleFactory.SetDefaultSablierFee({
-            admin: users.admin,
-            defaultSablierFee: defaults.DEFAULT_SABLIER_FEE()
-        });
+        emit ISablierMerkleFactory.SetDefaultSablierFee({ admin: users.admin, defaultSablierFee: SABLIER_FEE });
 
-        merkleFactory.setDefaultSablierFee({ defaultFee: defaults.DEFAULT_SABLIER_FEE() });
+        merkleFactory.setDefaultSablierFee({ defaultFee: SABLIER_FEE });
 
         // It should set the default Sablier fee.
-        assertEq(merkleFactory.defaultSablierFee(), defaults.DEFAULT_SABLIER_FEE(), "sablier fee");
+        assertEq(merkleFactory.defaultSablierFee(), SABLIER_FEE, "sablier fee");
     }
 }

@@ -58,7 +58,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
                 Errors.SablierLockupBase_WithdrawArrayCountsNotEqual.selector, streamIds.length, amounts.length
             )
         );
-        lockup.withdrawMultiple(streamIds, amounts);
+        withdrawMultiple(streamIds, amounts);
     }
 
     function test_WhenZeroArrayLength() external whenNoDelegateCall whenEqualArraysLength {
@@ -66,7 +66,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         uint128[] memory amounts = new uint128[](0);
 
         // It should do nothing.
-        lockup.withdrawMultiple(streamIds, amounts);
+        withdrawMultipleWithBalTest(streamIds, amounts);
     }
 
     function test_RevertGiven_AtleastOneNullStream()
@@ -85,7 +85,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_Null.selector, nullStreamId));
 
         // Withdraw from multiple streams.
-        lockup.withdrawMultiple({ streamIds: streamIds, amounts: withdrawAmounts });
+        withdrawMultiple({ streamIds: streamIds, amounts: withdrawAmounts });
     }
 
     function test_RevertGiven_AtleastOneDEPLETEDStream()
@@ -99,7 +99,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         vm.warp({ newTimestamp: defaults.END_TIME() });
 
         // Deplete the first test stream.
-        lockup.withdrawMax({ streamId: withdrawMultipleStreamIds[0], to: users.recipient });
+        withdrawMax({ streamId: withdrawMultipleStreamIds[0], to: users.recipient });
 
         // It should revert.
         vm.expectRevert(
@@ -107,7 +107,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         );
 
         // Withdraw from multiple streams.
-        lockup.withdrawMultiple({ streamIds: withdrawMultipleStreamIds, amounts: withdrawAmounts });
+        withdrawMultiple({ streamIds: withdrawMultipleStreamIds, amounts: withdrawAmounts });
     }
 
     function test_RevertWhen_AtleastOneZeroAmount()
@@ -128,7 +128,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierLockupBase_WithdrawAmountZero.selector, withdrawMultipleStreamIds[1])
         );
-        lockup.withdrawMultiple({ streamIds: withdrawMultipleStreamIds, amounts: amounts });
+        withdrawMultiple({ streamIds: withdrawMultipleStreamIds, amounts: amounts });
     }
 
     function test_RevertWhen_AtleastOneAmountOverdraws()
@@ -156,7 +156,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
                 withdrawableAmount
             )
         );
-        lockup.withdrawMultiple({ streamIds: withdrawMultipleStreamIds, amounts: amounts });
+        withdrawMultiple({ streamIds: withdrawMultipleStreamIds, amounts: amounts });
     }
 
     /// @dev This modifier runs the test in three different modes:
@@ -191,7 +191,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
 
         // Cancel the 3rd stream.
         resetPrank({ msgSender: users.sender });
-        lockup.cancel(withdrawMultipleStreamIds[2]);
+        cancel(withdrawMultipleStreamIds[2]);
 
         // Run the test with the caller provided in {whenCallerAuthorizedForAllStreams}.
         resetPrank({ msgSender: caller });
@@ -207,25 +207,25 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
             streamId: withdrawMultipleStreamIds[0],
             to: users.recipient,
             asset: dai,
-            amount: withdrawAmounts[0]
+            withdrawnAmount: withdrawAmounts[0]
         });
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.WithdrawFromLockupStream({
             streamId: withdrawMultipleStreamIds[1],
             to: users.recipient,
             asset: dai,
-            amount: withdrawAmounts[1]
+            withdrawnAmount: withdrawAmounts[1]
         });
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.WithdrawFromLockupStream({
             streamId: withdrawMultipleStreamIds[2],
             to: users.recipient,
             asset: dai,
-            amount: withdrawAmounts[2]
+            withdrawnAmount: withdrawAmounts[2]
         });
 
         // Make the withdrawals.
-        lockup.withdrawMultiple({ streamIds: withdrawMultipleStreamIds, amounts: withdrawAmounts });
+        withdrawMultipleWithBalTest({ streamIds: withdrawMultipleStreamIds, amounts: withdrawAmounts });
 
         // It should update the statuses.
         assertEq(lockup.statusOf(withdrawMultipleStreamIds[0]), Lockup.Status.STREAMING, "status0");

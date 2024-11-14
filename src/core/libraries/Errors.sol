@@ -23,20 +23,7 @@ library Errors {
     error DelegateCall();
 
     /*//////////////////////////////////////////////////////////////////////////
-                                SABLIER-BATCH-LOCKUP
-    //////////////////////////////////////////////////////////////////////////*/
-
-    error SablierBatchLockup_BatchSizeZero();
-
-    /*//////////////////////////////////////////////////////////////////////////
-                               LOCKUP-NFT-DESCRIPTOR
-    //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Thrown when trying to generate the token URI for an unknown ERC-721 NFT contract.
-    error LockupNFTDescriptor_UnknownNFT(IERC721Metadata nft, string symbol);
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                    HELPERS
+                                      HELPERS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when the broker fee exceeds the maximum allowed fee.
@@ -110,6 +97,19 @@ library Errors {
     );
 
     /*//////////////////////////////////////////////////////////////////////////
+                               LOCKUP-NFT-DESCRIPTOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when trying to generate the token URI for an unknown ERC-721 NFT contract.
+    error LockupNFTDescriptor_UnknownNFT(IERC721Metadata nft, string symbol);
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                SABLIER-BATCH-LOCKUP
+    //////////////////////////////////////////////////////////////////////////*/
+
+    error SablierBatchLockup_BatchSizeZero();
+
+    /*//////////////////////////////////////////////////////////////////////////
                                 SABLIER-LOCKUP-BASE
     //////////////////////////////////////////////////////////////////////////*/
 
@@ -118,6 +118,9 @@ library Errors {
 
     /// @notice Thrown when trying to allow to hook an address with no code.
     error SablierLockupBase_AllowToHookZeroCodeSize(address recipient);
+
+    /// @notice Thrown if the Sablier fees withdraw failed.
+    error SablierLockupBase_FeeWithdrawFailed(address to, uint256 feeAmount);
 
     /// @notice Thrown when the hook does not return the correct selector.
     error SablierLockupBase_InvalidHookSelector(address recipient);
@@ -152,6 +155,9 @@ library Errors {
     /// @notice Thrown when trying to withdraw to an address other than the recipient's.
     error SablierLockupBase_WithdrawalAddressNotRecipient(uint256 streamId, address caller, address to);
 
+    /// @notice Thrown when trying to withdraw fees to zero address.
+    error SablierLockupBase_WithdrawFeesToZero();
+
     /// @notice Thrown when trying to withdraw zero assets from a stream.
     error SablierLockupBase_WithdrawAmountZero(uint256 streamId);
 
@@ -161,6 +167,9 @@ library Errors {
 
     /// @notice Thrown when trying to withdraw to the zero address.
     error SablierLockupBase_WithdrawToZeroAddress(uint256 streamId);
+
+    /// @notice Thrown when trying to withdraw with an insufficient fee payment.
+    error SablierLockupBase_WithdrawInsufficientFeePayment(uint256 feePaid, uint256 sablierFee);
 
     /*//////////////////////////////////////////////////////////////////////////
                                     SABLIER-LOCKUP

@@ -72,6 +72,7 @@ abstract contract Lockup_Tranched_Fork_Test is Fork_Test {
         uint256 initialBrokerBalance;
         uint128 totalAmount;
         // Withdraw vars
+        uint256 initialETHLockupBalance;
         uint128 actualWithdrawnAmount;
         uint128 expectedWithdrawnAmount;
         uint128 withdrawableAmount;
@@ -259,6 +260,7 @@ abstract contract Lockup_Tranched_Fork_Test is Fork_Test {
             // Load the pre-withdraw asset balances.
             vars.initialLockupBalance = vars.actualLockupBalance;
             vars.initialRecipientBalance = FORK_ASSET.balanceOf(params.recipient);
+            vars.initialETHLockupBalance = address(lockup).balance;
 
             // Expect the relevant events to be emitted.
             vm.expectEmit({ emitter: address(lockup) });
@@ -266,14 +268,19 @@ abstract contract Lockup_Tranched_Fork_Test is Fork_Test {
                 streamId: vars.streamId,
                 to: params.recipient,
                 asset: FORK_ASSET,
-                amount: params.withdrawAmount
+                withdrawnAmount: params.withdrawAmount
             });
             vm.expectEmit({ emitter: address(lockup) });
             emit IERC4906.MetadataUpdate({ _tokenId: vars.streamId });
 
             // Make the withdrawal.
             resetPrank({ msgSender: params.recipient });
-            lockup.withdraw({ streamId: vars.streamId, to: params.recipient, amount: params.withdrawAmount });
+            vm.deal({ account: params.recipient, newBalance: SABLIER_FEE });
+            lockup.withdraw{ value: SABLIER_FEE }({
+                streamId: vars.streamId,
+                to: params.recipient,
+                amount: params.withdrawAmount
+            });
 
             // Assert that the stream's status is correct.
             vars.actualStatus = lockup.statusOf(vars.streamId);
@@ -285,6 +292,11 @@ abstract contract Lockup_Tranched_Fork_Test is Fork_Test {
                 vars.expectedStatus = Lockup.Status.STREAMING;
             }
             assertEq(vars.actualStatus, vars.expectedStatus, "post-withdraw stream status");
+
+            // Assert that the contract's balance has been updated.
+            assertEq(
+                address(lockup).balance, vars.initialETHLockupBalance + SABLIER_FEE, "post-withdraw contract balance"
+            );
 
             // Assert that the withdrawn amount has been updated.
             vars.actualWithdrawnAmount = lockup.getWithdrawnAmount(vars.streamId);

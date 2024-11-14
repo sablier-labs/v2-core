@@ -47,7 +47,7 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
             admin: users.admin,
             merkleBase: merkleBase,
             to: users.eve,
-            sablierFees: defaults.DEFAULT_SABLIER_FEE()
+            sablierFees: SABLIER_FEE
         });
 
         merkleFactory.withdrawFees(users.eve, merkleBase);
@@ -55,7 +55,7 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
         // It should set the ETH balance to 0.
         assertEq(address(merkleBase).balance, 0, "merkle lockup eth balance");
         // It should transfer fee collected in ETH to the provided address.
-        assertEq(users.eve.balance, previousToBalance + defaults.DEFAULT_SABLIER_FEE(), "eth balance");
+        assertEq(users.eve.balance, previousToBalance + SABLIER_FEE, "eth balance");
     }
 
     function test_RevertWhen_ProvidedAddressNotImplementReceiveEth()
@@ -87,7 +87,7 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
             admin: users.admin,
             merkleBase: merkleBase,
             to: receiveEth,
-            sablierFees: defaults.DEFAULT_SABLIER_FEE()
+            sablierFees: SABLIER_FEE
         });
 
         merkleFactory.withdrawFees(receiveEth, merkleBase);
@@ -95,6 +95,6 @@ contract WithdrawFees_Integration_Test is MerkleCampaign_Integration_Test {
         // It should set the ETH balance to 0.
         assertEq(address(merkleBase).balance, 0, "merkle lockup eth balance");
         // It should transfer fee collected in ETH to the provided address.
-        assertEq(receiveEth.balance, defaults.DEFAULT_SABLIER_FEE(), "eth balance");
+        assertEq(receiveEth.balance, SABLIER_FEE, "eth balance");
     }
 }

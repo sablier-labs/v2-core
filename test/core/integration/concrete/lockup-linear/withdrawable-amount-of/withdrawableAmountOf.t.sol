@@ -27,7 +27,7 @@ contract WithdrawableAmountOf_Lockup_Linear_Integration_Concrete_Test is
     }
 
     function test_GivenPreviousWithdrawal() external givenSTREAMINGStatus givenCliffTimeNotInFuture {
-        lockup.withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.STREAMED_AMOUNT_26_PERCENT() });
+        withdraw({ streamId: defaultStreamId, to: users.recipient, amount: defaults.WITHDRAW_AMOUNT() });
 
         uint128 actualWithdrawableAmount = lockup.withdrawableAmountOf(defaultStreamId);
         uint128 expectedWithdrawableAmount = 0;

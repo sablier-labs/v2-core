@@ -6,7 +6,7 @@ WithdrawMultiple_Integration_Concrete_Test
    │  └── it should revert
    └── when equal arrays length
       ├── when zero array length
-      │  └── it should do nothing
+      │  └── it should charge the fee
       └── when non zero array length
          ├── given atleast one null stream
          │  └── it should revert

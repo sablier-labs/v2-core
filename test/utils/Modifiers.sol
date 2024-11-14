@@ -39,6 +39,10 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
+    modifier givenMsgValueNotLessThanSablierFee() {
+        _;
+    }
+
     modifier givenNFTExists() {
         _;
     }
@@ -139,7 +143,7 @@ abstract contract Modifiers is Fuzzers {
 
     modifier givenDepletedStream(ISablierLockup lockup, uint256 streamId) {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: streamId, to: users.recipient });
+        lockup.withdrawMax{ value: SABLIER_FEE }({ streamId: streamId, to: users.recipient });
         _;
     }
 
@@ -152,10 +156,6 @@ abstract contract Modifiers is Fuzzers {
     //////////////////////////////////////////////////////////////////////////*/
 
     modifier givenCampaignNotExpired() {
-        _;
-    }
-
-    modifier givenMsgValueNotLessThanSablierFee() {
         _;
     }
 
@@ -511,6 +511,14 @@ abstract contract Modifiers is Fuzzers {
     }
 
     modifier whenWithdrawAmountNotOverdraw() {
+        _;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                   WITHDRAW-FEES
+    //////////////////////////////////////////////////////////////////////////*/
+
+    modifier whenProvidedAddressImplementReceiveEth() {
         _;
     }
 

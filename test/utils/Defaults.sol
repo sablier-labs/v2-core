@@ -62,7 +62,6 @@ contract Defaults is Constants, Merkle {
     uint256 public constant AGGREGATE_AMOUNT = CLAIM_AMOUNT * RECIPIENT_COUNT;
     bool public constant CANCELABLE = false;
     uint128 public constant CLAIM_AMOUNT = 10_000e18;
-    uint256 public constant DEFAULT_SABLIER_FEE = 0.005e18;
     uint40 public immutable EXPIRATION;
     uint40 public constant FIRST_CLAIM_TIME = JULY_1_2024;
     uint256 public constant INDEX1 = 1;

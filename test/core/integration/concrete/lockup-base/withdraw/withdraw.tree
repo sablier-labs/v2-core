@@ -62,4 +62,5 @@ Withdraw_Integration_Concrete_Test
                                           ├── it should make the withdrawal
                                           ├── it should update the withdrawn amount
                                           ├── it should make Sablier run the recipient hook
+                                          ├── it should transfer the ETH to the lockup contract
                                           └── it should emit {WithdrawFromLockupStream} and {MetadataUpdate} events

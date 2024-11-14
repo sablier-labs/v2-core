@@ -22,11 +22,11 @@ contract WithdrawMax_Integration_Fuzz_Test is Integration_Test {
             streamId: defaultStreamId,
             to: users.recipient,
             asset: dai,
-            amount: defaults.DEPOSIT_AMOUNT()
+            withdrawnAmount: defaults.DEPOSIT_AMOUNT()
         });
 
         // Make the max withdrawal.
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // Assert that the withdrawn amount has been updated.
         uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);
@@ -66,11 +66,11 @@ contract WithdrawMax_Integration_Fuzz_Test is Integration_Test {
             streamId: defaultStreamId,
             to: users.recipient,
             asset: dai,
-            amount: withdrawAmount
+            withdrawnAmount: withdrawAmount
         });
 
         // Make the max withdrawal.
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // Assert that the withdrawn amount has been updated.
         uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(defaultStreamId);

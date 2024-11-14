@@ -12,7 +12,7 @@ contract StatusOf_Integration_Concrete_Test is Integration_Test {
 
     function test_GivenAssetsFullyWithdrawn() external givenNotNull {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
         // It should return DEPLETED.
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
@@ -22,7 +22,7 @@ contract StatusOf_Integration_Concrete_Test is Integration_Test {
 
     function test_GivenCanceledStream() external givenNotNull givenAssetsNotFullyWithdrawn {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-        lockup.cancel(defaultStreamId);
+        cancel(defaultStreamId);
 
         // It should return CANCELED.
         Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);

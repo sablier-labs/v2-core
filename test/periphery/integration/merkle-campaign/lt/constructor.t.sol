@@ -52,7 +52,7 @@ contract Constructor_MerkleLT_Integration_Test is MerkleCampaign_Integration_Tes
             defaults.TRANSFERABLE(),
             defaults.STREAM_START_TIME_ZERO(),
             defaults.tranchesWithPercentages(),
-            defaults.DEFAULT_SABLIER_FEE()
+            SABLIER_FEE
         );
 
         Vars memory vars;
@@ -98,7 +98,7 @@ contract Constructor_MerkleLT_Integration_Test is MerkleCampaign_Integration_Tes
         assertEq(bytes32(abi.encodePacked(vars.actualName)), vars.expectedName, "name");
 
         vars.actualSablierFee = constructedLT.SABLIER_FEE();
-        vars.expectedSablierFee = defaults.DEFAULT_SABLIER_FEE();
+        vars.expectedSablierFee = SABLIER_FEE;
         assertEq(vars.actualSablierFee, vars.expectedSablierFee, "sablierFee");
 
         vars.actualStreamStartTime = constructedLT.STREAM_START_TIME();

@@ -53,14 +53,14 @@ contract LockupHandler is BaseHandler {
     }
 
     modifier useFuzzedStreamRecipient() {
-        uint256 lastStreamId = lockupStore.lastStreamId();
         currentRecipient = lockupStore.recipients(currentStreamId);
         resetPrank(currentRecipient);
+        // Fund the recipient with the SABLIER_FEE.
+        vm.deal({ account: currentRecipient, newBalance: SABLIER_FEE });
         _;
     }
 
     modifier useFuzzedStreamSender() {
-        uint256 lastStreamId = lockupStore.lastStreamId();
         currentSender = lockupStore.senders(currentStreamId);
         resetPrank(currentSender);
         _;
@@ -167,7 +167,7 @@ contract LockupHandler is BaseHandler {
         }
 
         // Withdraw from the stream.
-        lockup.withdraw({ streamId: currentStreamId, to: to, amount: withdrawAmount });
+        lockup.withdraw{ value: SABLIER_FEE }({ streamId: currentStreamId, to: to, amount: withdrawAmount });
     }
 
     function withdrawMax(
@@ -199,7 +199,7 @@ contract LockupHandler is BaseHandler {
         }
 
         // Make the max withdrawal.
-        lockup.withdrawMax({ streamId: currentStreamId, to: to });
+        lockup.withdrawMax{ value: SABLIER_FEE }({ streamId: currentStreamId, to: to });
     }
 
     function withdrawMaxAndTransfer(
@@ -230,7 +230,7 @@ contract LockupHandler is BaseHandler {
         vm.assume(lockup.withdrawableAmountOf(currentStreamId) != 0);
 
         // Make the max withdrawal and transfer the NFT.
-        lockup.withdrawMaxAndTransfer({ streamId: currentStreamId, newRecipient: newRecipient });
+        lockup.withdrawMaxAndTransfer{ value: SABLIER_FEE }({ streamId: currentStreamId, newRecipient: newRecipient });
 
         // Update the recipient associated with this stream ID.
         lockupStore.updateRecipient(currentStreamId, newRecipient);

@@ -140,7 +140,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
             totalDuration: defaults.TOTAL_DURATION(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
             recipientCount: defaults.RECIPIENT_COUNT(),
-            sablierFee: defaults.DEFAULT_SABLIER_FEE()
+            sablierFee: SABLIER_FEE
         });
 
         ISablierMerkleLT actualLT = createMerkleLT(campaignOwner, expiration);
@@ -148,7 +148,7 @@ contract CreateMerkleLT_Integration_Test is MerkleCampaign_Integration_Test {
         assertEq(address(actualLT), expectedLT, "MerkleLT contract does not match computed address");
 
         // It should create the campaign with custom fee.
-        assertEq(actualLT.SABLIER_FEE(), defaults.DEFAULT_SABLIER_FEE(), "default sablier fee");
+        assertEq(actualLT.SABLIER_FEE(), SABLIER_FEE, "default sablier fee");
         // It should set the current factory address.
         assertEq(actualLT.FACTORY(), address(merkleFactory), "factory");
     }

@@ -10,4 +10,5 @@ abstract contract Constants {
     uint256 internal constant MAX_UINT256 = type(uint256).max;
     uint40 internal constant MAX_UINT40 = type(uint40).max;
     uint40 internal constant MAX_UNIX_TIMESTAMP = 2_147_483_647; // 2^31 - 1
+    uint256 internal constant SABLIER_FEE = 0.005e18;
 }
