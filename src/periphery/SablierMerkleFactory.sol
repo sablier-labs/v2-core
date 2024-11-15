@@ -5,7 +5,6 @@ import { uUNIT } from "@prb/math/src/UD2x18.sol";
 
 import { Adminable } from "../core/abstracts/Adminable.sol";
 import { ISablierLockup } from "../core/interfaces/ISablierLockup.sol";
-import { LockupLinear } from "../core/types/DataTypes.sol";
 
 import { ISablierMerkleBase } from "./interfaces/ISablierMerkleBase.sol";
 import { ISablierMerkleFactory } from "./interfaces/ISablierMerkleFactory.sol";
@@ -161,7 +160,6 @@ contract SablierMerkleFactory is
         bool cancelable,
         bool transferable,
         MerkleLL.Schedule memory schedule,
-        LockupLinear.UnlockAmounts memory unlockAmounts,
         uint256 aggregateAmount,
         uint256 recipientCount
     )
@@ -182,8 +180,7 @@ contract SablierMerkleFactory is
                 lockup,
                 cancelable,
                 transferable,
-                abi.encode(schedule),
-                abi.encode(unlockAmounts)
+                abi.encode(schedule)
             )
         );
 
@@ -191,9 +188,7 @@ contract SablierMerkleFactory is
         uint256 sablierFee = _computeSablierFeeForUser(msg.sender);
 
         // Deploy the MerkleLL contract with CREATE2.
-        merkleLL = new SablierMerkleLL{ salt: salt }(
-            baseParams, lockup, cancelable, transferable, schedule, unlockAmounts, sablierFee
-        );
+        merkleLL = new SablierMerkleLL{ salt: salt }(baseParams, lockup, cancelable, transferable, schedule, sablierFee);
 
         // Log the creation of the MerkleLL contract, including some metadata that is not stored on-chain.
         emit CreateMerkleLL(
@@ -203,7 +198,6 @@ contract SablierMerkleFactory is
             cancelable,
             transferable,
             schedule,
-            unlockAmounts,
             aggregateAmount,
             recipientCount,
             sablierFee

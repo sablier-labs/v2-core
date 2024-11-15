@@ -162,7 +162,7 @@ abstract contract Lockup_Linear_Fork_Test is Fork_Test {
 
         vars.streamId = lockup.nextStreamId();
 
-        // // Expect the relevant events to be emitted.
+        // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC4906.MetadataUpdate({ _tokenId: vars.streamId });
         vm.expectEmit({ emitter: address(lockup) });

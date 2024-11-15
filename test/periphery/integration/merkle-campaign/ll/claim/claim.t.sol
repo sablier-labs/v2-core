@@ -18,6 +18,7 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
 
     function test_WhenScheduledCliffDurationZero() external whenMerkleProofValid whenScheduledStartTimeZero {
         schedule.cliffDuration = 0;
+        schedule.cliffAmount = 0;
 
         merkleLL = merkleFactory.createMerkleLL({
             baseParams: defaults.baseParams(),
@@ -25,7 +26,6 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: schedule,
-            unlockAmounts: defaults.unlockAmountsZero(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
             recipientCount: defaults.RECIPIENT_COUNT()
         });
@@ -50,7 +50,6 @@ contract Claim_MerkleLL_Integration_Test is Claim_Integration_Test, MerkleLL_Int
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: schedule,
-            unlockAmounts: defaults.unlockAmounts(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
             recipientCount: defaults.RECIPIENT_COUNT()
         });

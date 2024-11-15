@@ -6,7 +6,7 @@ import { Arrays } from "@openzeppelin/contracts/utils/Arrays.sol";
 
 import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleBase, ISablierMerkleLL } from "src/periphery/interfaces/ISablierMerkleLL.sol";
-import { MerkleBase } from "src/periphery/types/DataTypes.sol";
+import { MerkleBase, MerkleLL } from "src/periphery/types/DataTypes.sol";
 
 import { MerkleBuilder } from "./../../../utils/MerkleBuilder.sol";
 import { Fork_Test } from "./../Fork.t.sol";
@@ -74,7 +74,11 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             vars.indexes[i] = params.leafData[i].index;
 
             // Bound each leaf amount so that `aggregateAmount` does not overflow.
-            vars.amounts[i] = boundUint128(params.leafData[i].amount, 1, uint128(MAX_UINT128 / vars.recipientCount - 1));
+            vars.amounts[i] = boundUint128(
+                params.leafData[i].amount,
+                defaults.START_AMOUNT() + defaults.CLIFF_AMOUNT(),
+                uint128(MAX_UINT128 / vars.recipientCount - 1)
+            );
             vars.aggregateAmount += vars.amounts[i];
 
             // Avoid zero recipient addresses.
@@ -102,13 +106,7 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
         uint256 sablierFee = defaults.DEFAULT_SABLIER_FEE();
 
         vars.expectedLL = computeMerkleLLAddress(
-            params.campaignOwner,
-            params.campaignOwner,
-            FORK_ASSET,
-            vars.merkleRoot,
-            params.expiration,
-            sablierFee,
-            defaults.unlockAmountsZero()
+            params.campaignOwner, params.campaignOwner, FORK_ASSET, vars.merkleRoot, params.expiration, sablierFee
         );
 
         vars.baseParams = defaults.baseParams({
@@ -126,7 +124,6 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: defaults.schedule(),
-            unlockAmounts: defaults.unlockAmountsZero(),
             aggregateAmount: vars.aggregateAmount,
             recipientCount: vars.recipientCount,
             sablierFee: sablierFee
@@ -138,7 +135,6 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: defaults.schedule(),
-            unlockAmounts: defaults.unlockAmountsZero(),
             aggregateAmount: vars.aggregateAmount,
             recipientCount: vars.recipientCount
         });
@@ -219,8 +215,8 @@ abstract contract MerkleLL_Fork_Test is Fork_Test {
         assertEq(lockup.getSender(vars.expectedStreamId), params.campaignOwner, "sender");
         assertEq(lockup.getStartTime(vars.expectedStreamId), getBlockTimestamp(), "start time");
         assertEq(lockup.wasCanceled(vars.expectedStreamId), false, "was canceled");
-        assertEq(lockup.getUnlockAmounts(vars.expectedStreamId).start, 0, "unlock amounts start");
-        assertEq(lockup.getUnlockAmounts(vars.expectedStreamId).cliff, 0, "unlock amounts cliff");
+        assertEq(lockup.getUnlockAmounts(vars.expectedStreamId).start, defaults.START_AMOUNT(), "unlock amounts start");
+        assertEq(lockup.getUnlockAmounts(vars.expectedStreamId).cliff, defaults.CLIFF_AMOUNT(), "unlock amounts cliff");
 
         assertTrue(vars.merkleLL.hasClaimed(vars.indexes[params.posBeforeSort]));
 
