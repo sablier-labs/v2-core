@@ -60,14 +60,7 @@ abstract contract DeploymentLogger is BaseScript {
     }
 
     /// @dev Function to append the deployed addresses to the deployment file.
-    function appendToFileDeployedAddresses(
-        address lockup,
-        address nftDescriptor,
-        address batchLockup,
-        address merkleFactory
-    )
-        internal
-    {
+    function appendToFileDeployedAddresses(address lockup, address nftDescriptor, address batchLockup) internal {
         string memory coreTitle = " ### Core\n";
         _appendToFile(coreTitle);
 
@@ -99,12 +92,12 @@ abstract contract DeploymentLogger is BaseScript {
         _appendToFile(peripheryTitle);
         _appendToFile(firstTwoLines);
 
-        string memory merkleFactoryLine = _getContractLine({
-            contractName: "MerkleFactory",
-            contractAddress: merkleFactory.toHexString(),
+        string memory batchLockupLine = _getContractLine({
+            contractName: "SablierBatchLockup",
+            contractAddress: batchLockup.toHexString(),
             coreOrPeriphery: "periphery"
         });
-        _appendToFile(merkleFactoryLine);
+        _appendToFile(batchLockupLine);
 
         _appendToFile("\n");
     }

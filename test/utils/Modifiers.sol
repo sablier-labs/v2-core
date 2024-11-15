@@ -148,80 +148,6 @@ abstract contract Modifiers is Fuzzers {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                  CAMPAIGN-COMMON
-    //////////////////////////////////////////////////////////////////////////*/
-
-    modifier givenCampaignNotExpired() {
-        _;
-    }
-
-    modifier givenMsgValueNotLessThanSablierFee() {
-        _;
-    }
-
-    modifier givenRecipientNotClaimed() {
-        _;
-    }
-
-    modifier givenSevenDaysPassed() {
-        vm.warp({ newTimestamp: getBlockTimestamp() + 8 days });
-        _;
-    }
-
-    modifier whenAmountValid() {
-        _;
-    }
-
-    modifier whenCallerCampaignOwner() {
-        resetPrank({ msgSender: users.campaignOwner });
-        _;
-    }
-
-    modifier whenExpirationNotZero() {
-        _;
-    }
-
-    modifier whenIndexInMerkleTree() {
-        _;
-    }
-
-    modifier whenIndexValid() {
-        _;
-    }
-
-    modifier whenMerkleProofValid() {
-        _;
-    }
-
-    modifier whenPercentagesSumNot100Pct() {
-        _;
-    }
-
-    modifier whenPercentagesSumNotOverflow() {
-        _;
-    }
-
-    modifier whenProvidedMerkleLockupValid() {
-        _;
-    }
-
-    modifier whenRecipientValid() {
-        _;
-    }
-
-    modifier whenScheduledStartTimeZero() {
-        _;
-    }
-
-    modifier whenTotalPercentage100() {
-        _;
-    }
-
-    modifier whenTotalPercentageNot100() {
-        _;
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
                                        CANCEL
     //////////////////////////////////////////////////////////////////////////*/
 
@@ -354,18 +280,6 @@ abstract contract Modifiers is Fuzzers {
     }
 
     modifier whenUnlockAmountsSumNotExceedDepositAmount() {
-        _;
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                   CREATE-MERKLE
-    //////////////////////////////////////////////////////////////////////////*/
-
-    modifier givenCampaignNotExists() {
-        _;
-    }
-
-    modifier whenNameNotTooLong() {
         _;
     }
 

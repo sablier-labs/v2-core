@@ -7,8 +7,6 @@ import { LibString } from "solady/src/utils/LibString.sol";
 import { ILockupNFTDescriptor } from "src/core/interfaces/ILockupNFTDescriptor.sol";
 import { ISablierBatchLockup } from "src/core/interfaces/ISablierBatchLockup.sol";
 import { ISablierLockup } from "src/core/interfaces/ISablierLockup.sol";
-import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
-
 import { Base_Test } from "./../Base.t.sol";
 
 contract Precompiles_Test is Base_Test {
@@ -67,10 +65,10 @@ contract Precompiles_Test is Base_Test {
                                      PERIPHERY
     //////////////////////////////////////////////////////////////////////////*/
 
-    function test_DeployMerkleFactory() external onlyTestOptimizedProfile {
-        address actualFactory = address(precompiles.deployMerkleFactory(users.admin));
-        address expectedFactory = address(deployOptimizedMerkleFactory(users.admin));
-        assertEq(actualFactory.code, expectedFactory.code, "bytecodes mismatch");
+    function test_DeployBatchLockup() external onlyTestOptimizedProfile {
+        address actualBatchLockup = address(precompiles.deployBatchLockup());
+        address expectedBatchLockup = address(deployOptimizedBatchLockup());
+        assertEq(actualBatchLockup.code, expectedBatchLockup.code, "bytecodes mismatch");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
