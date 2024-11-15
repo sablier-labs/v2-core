@@ -93,7 +93,7 @@ contract CreateWithDurationsLL_Integration_Concrete_Test is Lockup_Linear_Integr
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupLinearStream({
             streamId: expectedStreamId,
-            commonParams: Lockup.Common({
+            commonParams: Lockup.CreateEventCommon({
                 funder: funder,
                 sender: users.sender,
                 recipient: users.recipient,

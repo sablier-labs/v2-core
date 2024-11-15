@@ -6,7 +6,7 @@ import { Arrays } from "@openzeppelin/contracts/utils/Arrays.sol";
 
 import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleBase, ISablierMerkleLL } from "src/periphery/interfaces/ISablierMerkleLL.sol";
-import { MerkleBase, MerkleLL } from "src/periphery/types/DataTypes.sol";
+import { MerkleBase } from "src/periphery/types/DataTypes.sol";
 
 import { MerkleBuilder } from "./../../../utils/MerkleBuilder.sol";
 import { Fork_Test } from "./../Fork.t.sol";

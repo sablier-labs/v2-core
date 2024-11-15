@@ -158,7 +158,7 @@ contract CreateWithDurationsLD_Integration_Concrete_Test is Lockup_Dynamic_Integ
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupDynamicStream({
             streamId: expectedStreamId,
-            commonParams: Lockup.Common({
+            commonParams: Lockup.CreateEventCommon({
                 funder: funder,
                 sender: users.sender,
                 recipient: users.recipient,

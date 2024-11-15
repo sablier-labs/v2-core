@@ -16,7 +16,7 @@ interface ISablierLockup is ISablierLockupBase {
     /// @param commonParams Common parameters emitted in Create events across all lockup models.
     /// @param segments The segments the protocol uses to compose the dynamic distribution function.
     event CreateLockupDynamicStream(
-        uint256 indexed streamId, Lockup.Common commonParams, LockupDynamic.Segment[] segments
+        uint256 indexed streamId, Lockup.CreateEventCommon commonParams, LockupDynamic.Segment[] segments
     );
 
     /// @notice Emitted when a stream is created using Lockup linear model.
@@ -26,7 +26,10 @@ interface ISablierLockup is ISablierLockupBase {
     /// @param unlockAmounts Struct encapsulating (i) the amount to unlock at the start time and (ii) the amount to
     /// unlock at the cliff time.
     event CreateLockupLinearStream(
-        uint256 indexed streamId, Lockup.Common commonParams, uint40 cliffTime, LockupLinear.UnlockAmounts unlockAmounts
+        uint256 indexed streamId,
+        Lockup.CreateEventCommon commonParams,
+        uint40 cliffTime,
+        LockupLinear.UnlockAmounts unlockAmounts
     );
 
     /// @notice Emitted when a stream is created using Lockup tranched model.
@@ -34,7 +37,7 @@ interface ISablierLockup is ISablierLockupBase {
     /// @param commonParams Common parameters emitted in Create events across all lockup models.
     /// @param tranches The tranches the protocol uses to compose the tranched distribution function.
     event CreateLockupTranchedStream(
-        uint256 indexed streamId, Lockup.Common commonParams, LockupTranched.Tranche[] tranches
+        uint256 indexed streamId, Lockup.CreateEventCommon commonParams, LockupTranched.Tranche[] tranches
     );
 
     /*//////////////////////////////////////////////////////////////////////////

@@ -41,6 +41,15 @@ library Lockup {
         uint128 refunded;
     }
 
+    /// @notice Struct encapsulating (i) the deposit amount and (ii) the broker fee amount, both denoted in units of the
+    /// asset's decimals.
+    /// @param deposit The amount to deposit in the stream.
+    /// @param brokerFee The broker fee amount.
+    struct CreateAmounts {
+        uint128 deposit;
+        uint128 brokerFee;
+    }
+
     /// @notice Struct encapsulating the common parameters emitted in the `Create` event.
     /// @param funder The address which has funded the stream.
     /// @param sender The address distributing the assets, which is able to cancel the stream.
@@ -52,7 +61,7 @@ library Lockup {
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
     /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, all as Unix timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
-    struct Common {
+    struct CreateEventCommon {
         address funder;
         address sender;
         address recipient;
@@ -62,15 +71,6 @@ library Lockup {
         bool transferable;
         Lockup.Timestamps timestamps;
         address broker;
-    }
-
-    /// @notice Struct encapsulating (i) the deposit amount and (ii) the broker fee amount, both denoted in units of the
-    /// asset's decimals.
-    /// @param deposit The amount to deposit in the stream.
-    /// @param brokerFee The broker fee amount.
-    struct CreateAmounts {
-        uint128 deposit;
-        uint128 brokerFee;
     }
 
     /// @notice Struct encapsulating the parameters of the `createWithDurations` functions.

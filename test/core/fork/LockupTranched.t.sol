@@ -147,7 +147,7 @@ abstract contract Lockup_Tranched_Fork_Test is Fork_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupTranchedStream({
             streamId: vars.streamId,
-            commonParams: Lockup.Common({
+            commonParams: Lockup.CreateEventCommon({
                 funder: FORK_ASSET_HOLDER,
                 sender: params.sender,
                 recipient: params.recipient,

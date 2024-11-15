@@ -345,7 +345,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         Lockup.Model lockupModel
     )
         internal
-        returns (Lockup.Common memory)
+        returns (Lockup.CreateEventCommon memory)
     {
         // Effect: create the stream.
         _streams[streamId] = Lockup.Stream({
@@ -378,7 +378,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             params.asset.safeTransferFrom({ from: msg.sender, to: params.broker.account, value: createAmounts.brokerFee });
         }
 
-        return Lockup.Common({
+        return Lockup.CreateEventCommon({
             funder: msg.sender,
             sender: params.sender,
             recipient: params.recipient,
@@ -421,7 +421,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        Lockup.Common memory commonParams = _create({
+        Lockup.CreateEventCommon memory commonParams = _create({
             streamId: streamId,
             params: params,
             createAmounts: createAmounts,
@@ -475,7 +475,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        Lockup.Common memory commonParams = _create({
+        Lockup.CreateEventCommon memory commonParams = _create({
             streamId: streamId,
             params: params,
             createAmounts: createAmounts,
@@ -521,7 +521,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
 
         // Effect: create the stream,  mint the NFT and transfer the deposit amount.
-        Lockup.Common memory commonParams = _create({
+        Lockup.CreateEventCommon memory commonParams = _create({
             streamId: streamId,
             params: params,
             createAmounts: createAmounts,

@@ -258,7 +258,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupTranchedStream({
             streamId: expectedStreamId,
-            commonParams: Lockup.Common({
+            commonParams: Lockup.CreateEventCommon({
                 funder: funder,
                 sender: users.sender,
                 recipient: users.recipient,
