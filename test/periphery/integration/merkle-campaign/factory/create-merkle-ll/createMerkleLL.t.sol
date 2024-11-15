@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { LockupLinear } from "src/core/types/DataTypes.sol";
 import { ISablierMerkleFactory } from "src/periphery/interfaces/ISablierMerkleFactory.sol";
 import { ISablierMerkleLL } from "src/periphery/interfaces/ISablierMerkleLL.sol";
 import { Errors } from "src/periphery/libraries/Errors.sol";
@@ -15,7 +14,6 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
         bool cancelable = defaults.CANCELABLE();
         bool transferable = defaults.TRANSFERABLE();
         MerkleLL.Schedule memory schedule = defaults.schedule();
-        LockupLinear.UnlockAmounts memory unlockAmounts = defaults.unlockAmounts();
         uint256 aggregateAmount = defaults.AGGREGATE_AMOUNT();
         uint256 recipientCount = defaults.RECIPIENT_COUNT();
 
@@ -33,7 +31,6 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
             cancelable: cancelable,
             transferable: transferable,
             schedule: schedule,
-            unlockAmounts: unlockAmounts,
             aggregateAmount: aggregateAmount,
             recipientCount: recipientCount
         });
@@ -45,7 +42,6 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
         bool cancelable = defaults.CANCELABLE();
         bool transferable = defaults.TRANSFERABLE();
         MerkleLL.Schedule memory schedule = defaults.schedule();
-        LockupLinear.UnlockAmounts memory unlockAmounts = defaults.unlockAmounts();
         uint256 aggregateAmount = defaults.AGGREGATE_AMOUNT();
         uint256 recipientCount = defaults.RECIPIENT_COUNT();
 
@@ -57,7 +53,6 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
             cancelable: cancelable,
             transferable: transferable,
             schedule: schedule,
-            unlockAmounts: unlockAmounts,
             aggregateAmount: aggregateAmount,
             recipientCount: recipientCount
         });
@@ -95,7 +90,6 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: defaults.schedule(),
-            unlockAmounts: defaults.unlockAmounts(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
             recipientCount: defaults.RECIPIENT_COUNT(),
             sablierFee: customFee
@@ -138,7 +132,6 @@ contract CreateMerkleLL_Integration_Test is MerkleCampaign_Integration_Test {
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: defaults.schedule(),
-            unlockAmounts: defaults.unlockAmounts(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
             recipientCount: defaults.RECIPIENT_COUNT(),
             sablierFee: defaults.DEFAULT_SABLIER_FEE()

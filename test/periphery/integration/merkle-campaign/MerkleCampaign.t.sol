@@ -179,7 +179,6 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
             asset_: dai,
             merkleRoot: merkleRoot,
             expiration: expiration,
-            unlockAmounts: defaults.unlockAmounts(),
             sablierFee: sablierFee
         });
     }
@@ -203,7 +202,6 @@ abstract contract MerkleCampaign_Integration_Test is Periphery_Test {
             cancelable: defaults.CANCELABLE(),
             transferable: defaults.TRANSFERABLE(),
             schedule: defaults.schedule(),
-            unlockAmounts: defaults.unlockAmounts(),
             aggregateAmount: defaults.AGGREGATE_AMOUNT(),
             recipientCount: defaults.RECIPIENT_COUNT()
         });

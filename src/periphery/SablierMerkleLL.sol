@@ -36,9 +36,6 @@ contract SablierMerkleLL is
     /// @inheritdoc ISablierMerkleLL
     MerkleLL.Schedule public override schedule;
 
-    /// @inheritdoc ISablierMerkleLL
-    LockupLinear.UnlockAmounts public override unlockAmounts;
-
     /*//////////////////////////////////////////////////////////////////////////
                                     CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
@@ -51,7 +48,6 @@ contract SablierMerkleLL is
         bool cancelable,
         bool transferable,
         MerkleLL.Schedule memory schedule_,
-        LockupLinear.UnlockAmounts memory unlockAmounts_,
         uint256 sablierFee
     )
         SablierMerkleBase(baseParams, sablierFee)
@@ -60,7 +56,6 @@ contract SablierMerkleLL is
         LOCKUP = lockup;
         TRANSFERABLE = transferable;
         schedule = schedule_;
-        unlockAmounts = unlockAmounts_;
 
         // Max approve the Lockup contract to spend funds from the MerkleLL contract.
         ASSET.forceApprove(address(LOCKUP), type(uint256).max);
@@ -103,7 +98,7 @@ contract SablierMerkleLL is
                 timestamps: timestamps,
                 broker: Broker({ account: address(0), fee: ud(0) })
             }),
-            unlockAmounts,
+            LockupLinear.UnlockAmounts({ start: schedule.startAmount, cliff: schedule.cliffAmount }),
             cliffTime
         );
 

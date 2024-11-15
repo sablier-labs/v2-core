@@ -38,6 +38,7 @@ contract Defaults is Constants, Merkle {
     uint128 public constant REFUND_AMOUNT = DEPOSIT_AMOUNT - WITHDRAW_AMOUNT;
     uint256 public constant SEGMENT_COUNT = 2;
     uint40 public immutable START_TIME;
+    uint128 public constant START_AMOUNT = 0;
     uint128 public constant TOTAL_AMOUNT = 10_030.090270812437311935e18; // deposit + broker fee
     uint40 public constant TOTAL_DURATION = 10_000 seconds;
     uint256 public constant TRANCHE_COUNT = 2;
@@ -196,7 +197,7 @@ contract Defaults is Constants, Merkle {
     }
 
     function unlockAmounts() public pure returns (LockupLinear.UnlockAmounts memory) {
-        return LockupLinear.UnlockAmounts({ start: 0, cliff: CLIFF_AMOUNT });
+        return LockupLinear.UnlockAmounts({ start: START_AMOUNT, cliff: CLIFF_AMOUNT });
     }
 
     function unlockAmountsZero() public pure returns (LockupLinear.UnlockAmounts memory) {
@@ -367,7 +368,9 @@ contract Defaults is Constants, Merkle {
 
     function schedule() public pure returns (MerkleLL.Schedule memory schedule_) {
         schedule_.startTime = STREAM_START_TIME_ZERO;
+        schedule_.startAmount = START_AMOUNT;
         schedule_.cliffDuration = CLIFF_DURATION;
+        schedule_.cliffAmount = CLIFF_AMOUNT;
         schedule_.totalDuration = TOTAL_DURATION;
     }
 
