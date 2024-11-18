@@ -19,7 +19,7 @@ contract StreamedAmountOf_Lockup_Linear_Integration_Concrete_Test is
         uint256 streamId = createDefaultStream();
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         uint128 actualStreamedAmount = lockup.streamedAmountOf(streamId);
-        uint128 expectedStreamedAmount = defaults.WITHDRAW_AMOUNT();
+        uint128 expectedStreamedAmount = defaults.STREAMED_AMOUNT_26_PERCENT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
@@ -51,7 +51,7 @@ contract StreamedAmountOf_Lockup_Linear_Integration_Concrete_Test is
         uint256 streamId = createDefaultStream();
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         uint128 actualStreamedAmount = lockup.streamedAmountOf(streamId);
-        uint128 expectedStreamedAmount = defaults.WITHDRAW_AMOUNT() + 1;
+        uint128 expectedStreamedAmount = defaults.STREAMED_AMOUNT_26_PERCENT() + 1;
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
@@ -87,7 +87,7 @@ contract StreamedAmountOf_Lockup_Linear_Integration_Concrete_Test is
     {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
         uint128 actualStreamedAmount = lockup.streamedAmountOf(defaultStreamId);
-        uint128 expectedStreamedAmount = defaults.WITHDRAW_AMOUNT();
+        uint128 expectedStreamedAmount = defaults.STREAMED_AMOUNT_26_PERCENT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 }

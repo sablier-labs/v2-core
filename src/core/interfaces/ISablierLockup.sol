@@ -13,7 +13,7 @@ interface ISablierLockup is ISablierLockupBase {
 
     /// @notice Emitted when a stream is created using Lockup dynamic model.
     /// @param streamId The ID of the newly created stream.
-    /// @param commonParams Common parameters emitted in Create events across all lockup models.
+    /// @param commonParams Common parameters emitted in Create events across all Lockup models.
     /// @param segments The segments the protocol uses to compose the dynamic distribution function.
     event CreateLockupDynamicStream(
         uint256 indexed streamId, Lockup.CreateEventCommon commonParams, LockupDynamic.Segment[] segments
@@ -21,7 +21,7 @@ interface ISablierLockup is ISablierLockupBase {
 
     /// @notice Emitted when a stream is created using Lockup linear model.
     /// @param streamId The ID of the newly created stream.
-    /// @param commonParams Common parameters emitted in Create events across all lockup models.
+    /// @param commonParams Common parameters emitted in Create events across all Lockup models.
     /// @param cliffTime The Unix timestamp for the cliff period's end. A value of zero means there is no cliff.
     /// @param unlockAmounts Struct encapsulating (i) the amount to unlock at the start time and (ii) the amount to
     /// unlock at the cliff time.
@@ -34,7 +34,7 @@ interface ISablierLockup is ISablierLockupBase {
 
     /// @notice Emitted when a stream is created using Lockup tranched model.
     /// @param streamId The ID of the newly created stream.
-    /// @param commonParams Common parameters emitted in Create events across all lockup models.
+    /// @param commonParams Common parameters emitted in Create events across all Lockup models.
     /// @param tranches The tranches the protocol uses to compose the tranched distribution function.
     event CreateLockupTranchedStream(
         uint256 indexed streamId, Lockup.CreateEventCommon commonParams, LockupTranched.Tranche[] tranches

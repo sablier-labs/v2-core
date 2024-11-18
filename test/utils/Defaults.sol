@@ -39,11 +39,12 @@ contract Defaults is Constants, Merkle {
     uint256 public constant SEGMENT_COUNT = 2;
     uint40 public immutable START_TIME;
     uint128 public constant START_AMOUNT = 0;
+    uint128 public constant STREAMED_AMOUNT_26_PERCENT = 2600e18;
     uint128 public constant TOTAL_AMOUNT = 10_030.090270812437311935e18; // deposit + broker fee
     uint40 public constant TOTAL_DURATION = 10_000 seconds;
     uint256 public constant TRANCHE_COUNT = 2;
     uint128 public constant TOTAL_TRANSFER_AMOUNT = DEPOSIT_AMOUNT * uint128(BATCH_SIZE);
-    uint128 public constant WITHDRAW_AMOUNT = 2600e18;
+    uint128 public constant WITHDRAW_AMOUNT = STREAMED_AMOUNT_26_PERCENT;
     uint40 public immutable WARP_26_PERCENT;
     uint40 public immutable WARP_26_PERCENT_DURATION = 2600 seconds; // 26% of the way through the stream
 

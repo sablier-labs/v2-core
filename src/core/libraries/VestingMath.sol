@@ -5,7 +5,8 @@ import { PRBMathCastingUint128 as CastingUint128 } from "@prb/math/src/casting/U
 import { PRBMathCastingUint40 as CastingUint40 } from "@prb/math/src/casting/Uint40.sol";
 import { SD59x18 } from "@prb/math/src/SD59x18.sol";
 import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
-import { LockupDynamic, LockupLinear, LockupTranched } from "./../types/DataTypes.sol";
+
+import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "./../types/DataTypes.sol";
 
 /// @title VestingMath
 /// @notice Library with functions needed to calculate vested amount across lockup streams.
@@ -110,9 +111,8 @@ library VestingMath {
     /// - $c$ is the cliff unlock amount.
     function calculateLockupLinearStreamedAmount(
         uint128 depositedAmount,
-        uint40 startTime,
+        Lockup.Timestamps memory timestamps,
         uint40 cliffTime,
-        uint40 endTime,
         LockupLinear.UnlockAmounts memory unlockAmounts,
         uint128 withdrawnAmount
     )
@@ -142,11 +142,11 @@ library VestingMath {
 
             // Calculate the streamable range.
             if (cliffTime == 0) {
-                elapsedTime = ud(blockTimestamp - startTime);
-                streamableRange = ud(endTime - startTime);
+                elapsedTime = ud(blockTimestamp - timestamps.start);
+                streamableRange = ud(timestamps.end - timestamps.start);
             } else {
                 elapsedTime = ud(blockTimestamp - cliffTime);
-                streamableRange = ud(endTime - cliffTime);
+                streamableRange = ud(timestamps.end - cliffTime);
             }
 
             UD60x18 elapsedTimePercentage = elapsedTime.div(streamableRange);

@@ -33,7 +33,7 @@ contract GetUnlockAmounts_Integration_Concrete_Test is Lockup_Linear_Integration
     function test_GivenStartUnlockAmountZero() external view givenNotNull givenLinearModel givenOnlyOneAmountZero {
         LockupLinear.UnlockAmounts memory unlockAmounts = lockup.getUnlockAmounts(defaultStreamId);
         assertEq(unlockAmounts.start, 0, "unlockAmounts.start");
-        assertEq(unlockAmounts.cliff, _defaultParams.unlockAmounts.cliff, "unlockAmounts.cliff");
+        assertEq(unlockAmounts.cliff, defaults.CLIFF_AMOUNT(), "unlockAmounts.cliff");
     }
 
     function test_GivenStartUnlockAmountNotZero() external givenNotNull givenLinearModel givenOnlyOneAmountZero {
@@ -50,6 +50,6 @@ contract GetUnlockAmounts_Integration_Concrete_Test is Lockup_Linear_Integration
         uint256 streamId = createDefaultStream();
         LockupLinear.UnlockAmounts memory unlockAmounts = lockup.getUnlockAmounts(streamId);
         assertEq(unlockAmounts.start, 1, "unlockAmounts.start");
-        assertEq(unlockAmounts.cliff, _defaultParams.unlockAmounts.cliff, "unlockAmounts.cliff");
+        assertEq(unlockAmounts.cliff, defaults.CLIFF_AMOUNT(), "unlockAmounts.cliff");
     }
 }

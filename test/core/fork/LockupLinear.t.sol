@@ -216,8 +216,6 @@ abstract contract Lockup_Linear_Fork_Test is Fork_Test {
         }
         vars.isCancelable = vars.isSettled ? false : true;
 
-        lockup.statusOf(vars.streamId);
-
         // Assert that the stream has been created.
         assertEq(lockup.getDepositedAmount(vars.streamId), vars.createAmounts.deposit, "depositedAmount");
         assertEq(lockup.getAsset(vars.streamId), FORK_ASSET, "asset");

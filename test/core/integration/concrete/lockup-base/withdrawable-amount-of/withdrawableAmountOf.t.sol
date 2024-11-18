@@ -14,7 +14,7 @@ abstract contract WithdrawableAmountOf_Integration_Concrete_Test is Integration_
 
         // It should return the correct withdrawable amount.
         uint128 actualWithdrawableAmount = lockup.withdrawableAmountOf(defaultStreamId);
-        uint256 expectedWithdrawableAmount = defaults.WITHDRAW_AMOUNT();
+        uint256 expectedWithdrawableAmount = defaults.STREAMED_AMOUNT_26_PERCENT();
         assertEq(actualWithdrawableAmount, expectedWithdrawableAmount, "withdrawableAmount");
     }
 

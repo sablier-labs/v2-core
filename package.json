@@ -55,7 +55,7 @@
     "web3"
   ],
   "peerDependencies": {
-    "@prb/math": "4.0.x"
+    "@prb/math": "4.x.x"
   },
   "publishConfig": {
     "access": "public"

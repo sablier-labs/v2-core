@@ -318,9 +318,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
             streamedAmount = VestingMath.calculateLockupLinearStreamedAmount({
                 depositedAmount: depositedAmount,
-                startTime: timestamps.start,
+                timestamps: timestamps,
                 cliffTime: _cliffs[streamId],
-                endTime: timestamps.end,
                 unlockAmounts: _unlockAmounts[streamId],
                 withdrawnAmount: _streams[streamId].amounts.withdrawn
             });

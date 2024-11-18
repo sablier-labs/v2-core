@@ -14,7 +14,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is Integration_Test
 
         // It should return the correct streamed amount.
         uint128 actualStreamedAmount = lockup.streamedAmountOf(defaultStreamId);
-        uint256 expectedStreamedAmount = defaults.WITHDRAW_AMOUNT();
+        uint256 expectedStreamedAmount = defaults.STREAMED_AMOUNT_26_PERCENT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
@@ -29,7 +29,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is Integration_Test
 
         // It should return the correct streamed amount.
         uint128 actualStreamedAmount = lockup.streamedAmountOf(defaultStreamId);
-        uint128 expectedStreamedAmount = defaults.WITHDRAW_AMOUNT();
+        uint128 expectedStreamedAmount = defaults.STREAMED_AMOUNT_26_PERCENT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
@@ -47,7 +47,7 @@ abstract contract StreamedAmountOf_Integration_Concrete_Test is Integration_Test
 
         // It should return the correct streamed amount.
         uint128 actualStreamedAmount = lockup.streamedAmountOf(defaultStreamId);
-        uint128 expectedStreamedAmount = defaults.WITHDRAW_AMOUNT();
+        uint128 expectedStreamedAmount = defaults.STREAMED_AMOUNT_26_PERCENT();
         assertEq(actualStreamedAmount, expectedStreamedAmount, "streamedAmount");
     }
 
