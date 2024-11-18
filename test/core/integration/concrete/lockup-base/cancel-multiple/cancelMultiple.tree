@@ -13,10 +13,10 @@ CancelMultiple_Integration_Concrete_Test
          └── given no cold streams
             ├── when caller unauthorized for any
             │  └── it should revert
-            └── when caller authorized for all
+            └── when caller authorized for all streams
                ├── given atleast one non cancelable stream
                │  └── it should revert
-               └── given no non cancelable streams
+               └── given all streams cancelable
                   ├── it should mark the streams as canceled
                   ├── it should make the streams as non cancelable
                   ├── it should refund the sender

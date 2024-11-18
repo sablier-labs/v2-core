@@ -275,19 +275,16 @@ interface ISablierLockupBase is
     /// @param streamId The ID of the stream to renounce.
     function renounce(uint256 streamId) external;
 
-    /// @notice Removes the right of the stream's sender to cancel multiple streams.
-    /// 
-    /// @dev Emits a {MultipleStreamsRenounced} event for all streams.
-    /// 
+    /// @notice Renounces multiple streams.
+    ///
+    /// @dev Emits multiple {RenounceLockupStream} and {MetadataUpdate} events.
+    ///
     /// Notes:
-    /// - This operation is irreversible for each stream.
-    /// 
+    /// - Refer to the notes in {renounce}.
+    ///
     /// Requirements:
-    /// - Must not be delegate called.
-    /// - Each `streamId` must reference a warm stream.
-    /// - `msg.sender` must be the sender of each stream.
-    /// - All streams must be cancelable.
-    /// 
+    /// - All requirements from {renounce} must be met for each stream.
+    ///
     /// @param streamIds An array of stream IDs to renounce.
     function renounceMultiple(uint256[] calldata streamIds) external;
 

@@ -13,9 +13,9 @@ RenounceMultiple_Integration_Concrete_Test
          └── given no cold streams
             ├── when caller unauthorized for any
             │  └── it should revert
-            └── when caller authorized for all
+            └── when caller authorized for all streams
                ├── given atleast one non cancelable stream
                │  └── it should revert
-               └── given cancelable streams
+               └── given all streams cancelable
                   ├── it should emit {MetadataUpdate} and {RenounceLockupStream} events
                   └── it should make streams non cancelable
