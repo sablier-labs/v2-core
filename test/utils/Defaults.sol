@@ -140,6 +140,51 @@ contract Defaults is Constants, Merkle {
         return Lockup.CreateAmounts({ deposit: DEPOSIT_AMOUNT, brokerFee: BROKER_FEE_AMOUNT });
     }
 
+    function lockupCreateEvent(IERC20 asset_) public view returns (Lockup.CreateEventCommon memory) {
+        return lockupCreateEvent(asset_, lockupCreateAmounts(), lockupTimestamps());
+    }
+
+    function lockupCreateEvent(Lockup.Timestamps memory timestamps)
+        public
+        view
+        returns (Lockup.CreateEventCommon memory)
+    {
+        return lockupCreateEvent(asset, lockupCreateAmounts(), timestamps);
+    }
+
+    function lockupCreateEvent(
+        Lockup.CreateAmounts memory createAmounts,
+        Lockup.Timestamps memory timestamps
+    )
+        public
+        view
+        returns (Lockup.CreateEventCommon memory)
+    {
+        return lockupCreateEvent(asset, createAmounts, timestamps);
+    }
+
+    function lockupCreateEvent(
+        IERC20 asset_,
+        Lockup.CreateAmounts memory createAmounts,
+        Lockup.Timestamps memory timestamps
+    )
+        public
+        view
+        returns (Lockup.CreateEventCommon memory)
+    {
+        return Lockup.CreateEventCommon({
+            funder: users.sender,
+            sender: users.sender,
+            recipient: users.recipient,
+            amounts: createAmounts,
+            asset: asset_,
+            cancelable: true,
+            transferable: true,
+            timestamps: timestamps,
+            broker: users.broker
+        });
+    }
+
     function lockupTimestamps() public view returns (Lockup.Timestamps memory) {
         return Lockup.Timestamps({ start: START_TIME, end: END_TIME });
     }

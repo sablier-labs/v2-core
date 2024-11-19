@@ -337,6 +337,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Common logic for creating a stream.
+    /// @return The common parameters emitted in the craete event between all Lockup models.
     function _create(
         uint256 streamId,
         Lockup.CreateWithTimestamps memory params,
