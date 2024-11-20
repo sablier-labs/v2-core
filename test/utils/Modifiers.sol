@@ -39,7 +39,7 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
-    modifier givenMsgValueNotLessThanSablierFee() {
+    modifier givenMsgValueNotLessThanFee() {
         _;
     }
 

@@ -73,9 +73,11 @@ abstract contract Integration_Test is Base_Test {
         recipientInterfaceIDIncorrect = new RecipientInterfaceIDIncorrect();
         recipientInterfaceIDMissing = new RecipientInterfaceIDMissing();
         recipientInvalidSelector = new RecipientInvalidSelector();
+
         recipientReentrant = new RecipientReentrant();
-        // We need to fund with ETH the reentrant contract as the withdraw function is payable.
+        // Fund the reentrant contract some ETH since the withdraw function is payable.
         vm.deal({ account: address(recipientReentrant), newBalance: 100 ether });
+
         recipientReverting = new RecipientReverting();
         vm.label({ account: address(recipientInterfaceIDIncorrect), newLabel: "Recipient Interface ID Incorrect" });
         vm.label({ account: address(recipientInterfaceIDMissing), newLabel: "Recipient Interface ID Missing" });

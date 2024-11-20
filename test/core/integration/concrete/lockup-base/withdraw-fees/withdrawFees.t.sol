@@ -47,9 +47,9 @@ contract WithdrawFees_Integration_Concrete_Test is Integration_Test {
         assertEq(address(lockup).balance, 0, "lockup eth balance");
         uint256 prevBalance = users.admin.balance;
 
-        // It should emit {WithdrawSablierFees} event.
+        // It should emit {WithdrawFees} event.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.WithdrawSablierFees({ admin: users.admin, feeAmount: 0, to: users.admin });
+        emit ISablierLockupBase.WithdrawFees({ admin: users.admin, feeAmount: 0, to: users.admin });
 
         lockup.withdrawFees(users.admin);
         assertEq(address(lockup).balance, 0, "lockup eth balance");
@@ -73,9 +73,9 @@ contract WithdrawFees_Integration_Concrete_Test is Integration_Test {
         // Make a withdrawal from a stream to collect some fees.
         withdrawMax({ streamId: defaultStreamId, to: users.recipient });
 
-        // It should emit {WithdrawSablierFees} event.
+        // It should emit {WithdrawFees} event.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.WithdrawSablierFees({ admin: users.admin, feeAmount: SABLIER_FEE, to: to });
+        emit ISablierLockupBase.WithdrawFees({ admin: users.admin, feeAmount: SABLIER_FEE, to: to });
 
         lockup.withdrawFees(to);
 

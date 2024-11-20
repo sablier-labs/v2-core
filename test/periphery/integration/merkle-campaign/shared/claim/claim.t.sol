@@ -31,7 +31,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Test {
         merkleBase.claim{ value: 0 }(index1, users.recipient1, amount, merkleProof);
     }
 
-    function test_RevertGiven_RecipientClaimed() external givenCampaignNotExpired givenMsgValueNotLessThanSablierFee {
+    function test_RevertGiven_RecipientClaimed() external givenCampaignNotExpired givenMsgValueNotLessThanFee {
         claim();
         uint256 index1 = defaults.INDEX1();
         uint128 amount = defaults.CLAIM_AMOUNT();
@@ -41,12 +41,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Test {
         merkleBase.claim{ value: sablierFee }(index1, users.recipient1, amount, merkleProof);
     }
 
-    function test_RevertWhen_IndexNotValid()
-        external
-        givenCampaignNotExpired
-        givenMsgValueNotLessThanSablierFee
-        givenRecipientNotClaimed
-    {
+    function test_RevertWhen_IndexNotValid() external givenCampaignNotExpired givenRecipientNotClaimed {
         uint256 invalidIndex = 1337;
         uint128 amount = defaults.CLAIM_AMOUNT();
         uint256 sablierFee = SABLIER_FEE;
@@ -58,7 +53,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertWhen_RecipientNotValid()
         external
         givenCampaignNotExpired
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         givenRecipientNotClaimed
         whenIndexValid
     {
@@ -74,7 +69,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertWhen_AmountNotValid()
         external
         givenCampaignNotExpired
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         givenRecipientNotClaimed
         whenIndexValid
         whenRecipientValid
@@ -90,7 +85,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Test {
     function test_RevertWhen_MerkleProofNotValid()
         external
         givenCampaignNotExpired
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         givenRecipientNotClaimed
         whenIndexValid
         whenRecipientValid
@@ -109,7 +104,7 @@ abstract contract Claim_Integration_Test is MerkleCampaign_Integration_Test {
     function test_WhenMerkleProofValid()
         external
         givenCampaignNotExpired
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         givenRecipientNotClaimed
         whenIndexValid
         whenRecipientValid

@@ -72,9 +72,9 @@ abstract contract Lockup_Dynamic_Fork_Test is Fork_Test {
         uint256 initialBrokerBalance;
         uint128 totalAmount;
         // Withdraw vars
-        uint256 initialETHLockupBalance;
         uint128 actualWithdrawnAmount;
         uint128 expectedWithdrawnAmount;
+        uint256 initialETHLockupBalance;
         uint128 withdrawableAmount;
         // Cancel vars
         uint256 actualSenderBalance;

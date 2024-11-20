@@ -119,7 +119,7 @@ library Errors {
     /// @notice Thrown when trying to allow to hook an address with no code.
     error SablierLockupBase_AllowToHookZeroCodeSize(address recipient);
 
-    /// @notice Thrown if the Sablier fees withdraw failed.
+    /// @notice Thrown if the fees withdraw failed.
     error SablierLockupBase_FeeWithdrawFailed(address to, uint256 feeAmount);
 
     /// @notice Thrown when the hook does not return the correct selector.
@@ -167,9 +167,6 @@ library Errors {
 
     /// @notice Thrown when trying to withdraw to the zero address.
     error SablierLockupBase_WithdrawToZeroAddress(uint256 streamId);
-
-    /// @notice Thrown when trying to withdraw with an insufficient fee payment.
-    error SablierLockupBase_WithdrawInsufficientFeePayment(uint256 feePaid, uint256 sablierFee);
 
     /*//////////////////////////////////////////////////////////////////////////
                                     SABLIER-LOCKUP

@@ -455,7 +455,7 @@ abstract contract SablierLockupBase is
         }
 
         // Log the fee withdrawal.
-        emit ISablierLockupBase.WithdrawSablierFees({ admin: admin, to: to, feeAmount: feeAmount });
+        emit ISablierLockupBase.WithdrawFees({ admin: admin, to: to, feeAmount: feeAmount });
     }
 
     /// @inheritdoc ISablierLockupBase

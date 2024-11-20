@@ -45,7 +45,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
     {
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_WithdrawAmountZero.selector, defaultStreamId));
         withdraw({ streamId: defaultStreamId, to: users.recipient, amount: 0 });
@@ -57,7 +57,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
     {
         uint128 withdrawableAmount = 0;
@@ -105,7 +105,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressNotRecipient(false)
@@ -131,7 +131,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressNotRecipient(true)
@@ -170,7 +170,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
@@ -199,7 +199,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
@@ -224,7 +224,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
@@ -257,7 +257,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
@@ -306,7 +306,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
@@ -340,7 +340,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
@@ -368,7 +368,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
@@ -405,7 +405,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient
@@ -453,7 +453,7 @@ abstract contract Withdraw_Integration_Concrete_Test is Integration_Test {
         givenNotNull
         givenNotDEPLETEDStatus
         whenWithdrawalAddressNotZero
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         whenNonZeroWithdrawAmount
         whenWithdrawAmountNotOverdraw
         whenWithdrawalAddressRecipient

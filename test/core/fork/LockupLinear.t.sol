@@ -77,9 +77,9 @@ abstract contract Lockup_Linear_Fork_Test is Fork_Test {
         uint256 expectedNextStreamId;
         uint256 initialBrokerBalance;
         // Withdraw vars
-        uint256 initialETHLockupBalance;
         uint128 actualWithdrawnAmount;
         uint128 expectedWithdrawnAmount;
+        uint256 initialETHLockupBalance;
         uint128 withdrawableAmount;
         // Cancel vars
         uint256 actualSenderBalance;

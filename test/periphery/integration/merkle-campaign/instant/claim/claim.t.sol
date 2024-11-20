@@ -14,7 +14,7 @@ contract Claim_MerkleInstant_Integration_Test is Claim_Integration_Test, MerkleI
     function test_Claim()
         external
         givenCampaignNotExpired
-        givenMsgValueNotLessThanSablierFee
+        givenMsgValueNotLessThanFee
         givenRecipientNotClaimed
         whenIndexValid
         whenRecipientValid
