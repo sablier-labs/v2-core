@@ -17,7 +17,7 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         Integration_Test.setUp();
 
         // Create test streams.
-        streamIds.push(createDefaultStream());
+        streamIds.push(defaultStreamId);
         streamIds.push(createDefaultStream());
     }
 

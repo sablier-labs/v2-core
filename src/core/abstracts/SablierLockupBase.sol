@@ -351,9 +351,8 @@ abstract contract SablierLockupBase is
         // Iterate over the provided array of stream IDs and renounce each stream.
         uint256 count = streamIds.length;
         for (uint256 i = 0; i < count; ++i) {
-            uint256 streamId = streamIds[i];
             // Call the existing renounce function for each stream ID.
-            renounce(streamId);
+            renounce(streamIds[i]);
         }
     }
 
