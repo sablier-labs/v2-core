@@ -5,8 +5,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
 import { UD60x18, ZERO } from "@prb/math/src/UD60x18.sol";
 
-import { Broker, Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/core/types/DataTypes.sol";
-import { BatchLockup } from "../../src/periphery/types/DataTypes.sol";
+import { BatchLockup, Broker, Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/types/DataTypes.sol";
 
 import { ArrayBuilder } from "./ArrayBuilder.sol";
 import { BatchLockupBuilder } from "./BatchLockupBuilder.sol";
@@ -253,8 +252,8 @@ contract Defaults is Constants {
                                     BATCH-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
-    function incrementalStreamIds() public pure returns (uint256[] memory streamIds) {
-        return ArrayBuilder.fillStreamIds({ firstStreamId: 1, batchSize: BATCH_SIZE });
+    function incrementalStreamIds(uint256 firstStreamId) public pure returns (uint256[] memory streamIds) {
+        return ArrayBuilder.fillStreamIds({ firstStreamId: firstStreamId, batchSize: BATCH_SIZE });
     }
 
     /// @dev Returns a default-size batch of {BatchLockup.CreateWithDurationsLD} parameters.
