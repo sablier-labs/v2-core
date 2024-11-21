@@ -13,7 +13,7 @@ abstract contract Batch is IBatch {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc IBatch
-    /// @dev The `msg.value` should not be used any method called in the batch.
+    /// @dev The `msg.value` should not be used on any method called in the batch.
     function batch(bytes[] calldata calls) external payable override {
         uint256 count = calls.length;
 

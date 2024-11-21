@@ -61,10 +61,6 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
         recipientGood = new RecipientGood();
         usdt = new ERC20MissingReturn("Tether USD", "USDT", 6);
 
-        // Fund the contracts that need it.
-        vm.deal({ account: address(contractWithoutReceive), newBalance: 100 ether });
-        vm.deal({ account: address(contractWithReceive), newBalance: 100 ether });
-
         // Label the base test contracts.
         vm.label({ account: address(contractWithoutReceive), newLabel: "Contract without Receive" });
         vm.label({ account: address(contractWithReceive), newLabel: "Contract with Receive" });
