@@ -58,7 +58,7 @@ interface ISablierLockupBase is
         address indexed admin, ILockupNFTDescriptor oldNFTDescriptor, ILockupNFTDescriptor newNFTDescriptor
     );
 
-    /// @notice Emitted when the admin withdraws the accrued fees.
+    /// @notice Emitted when accrued fees is sent to the admin.
     /// @param admin The address of the current contract admin, which has received the fees.
     /// @param feeAmount The amount of fees withdrawn.
     event WithdrawFees(address indexed admin, uint256 indexed feeAmount);
