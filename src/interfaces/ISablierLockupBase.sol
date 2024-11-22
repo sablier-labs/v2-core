@@ -232,7 +232,7 @@ interface ISablierLockupBase is
     /// - `msg.sender` must be either the NFT owner or an approved third party.
     ///
     /// @param streamId The ID of the stream NFT to burn.
-    function burn(uint256 streamId) external;
+    function burn(uint256 streamId) external payable;
 
     /// @notice Cancels the stream and refunds any remaining assets to the sender.
     ///

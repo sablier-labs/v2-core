@@ -271,7 +271,7 @@ abstract contract SablierLockupBase is
     }
 
     /// @inheritdoc ISablierLockupBase
-    function burn(uint256 streamId) external override noDelegateCall notNull(streamId) {
+    function burn(uint256 streamId) external payable override noDelegateCall notNull(streamId) {
         // Check: only depleted streams can be burned.
         if (!_streams[streamId].isDepleted) {
             revert Errors.SablierLockupBase_StreamNotDepleted(streamId);
