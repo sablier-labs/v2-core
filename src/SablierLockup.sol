@@ -158,7 +158,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
                 cancelable: params.cancelable,
                 transferable: params.transferable,
                 timestamps: timestamps,
-                broker: params.broker
+                broker: params.broker,
+                shape: params.shape
             }),
             segments
         );
@@ -201,7 +202,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
                 cancelable: params.cancelable,
                 transferable: params.transferable,
                 timestamps: timestamps,
-                broker: params.broker
+                broker: params.broker,
+                shape: params.shape
             }),
             unlockAmounts,
             cliffTime
@@ -236,7 +238,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
                 cancelable: params.cancelable,
                 transferable: params.transferable,
                 timestamps: timestamps,
-                broker: params.broker
+                broker: params.broker,
+                shape: params.shape
             }),
             tranches
         );
@@ -353,6 +356,11 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         internal
         returns (Lockup.CreateEventCommon memory)
     {
+        // Check: the shape name is not greater than 32 bytes to prevent HTML injection attacks.
+        if (bytes(params.shape).length > 32) {
+            revert Errors.SablierLockup_ShapeNameTooLong({ nameLength: bytes(params.shape).length, maxLength: 32 });
+        }
+
         // Effect: create the stream.
         _streams[streamId] = Lockup.Stream({
             sender: params.sender,
@@ -393,7 +401,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             cancelable: params.cancelable,
             transferable: params.transferable,
             timestamps: params.timestamps,
-            broker: params.broker.account
+            broker: params.broker.account,
+            shape: params.shape
         });
     }
 

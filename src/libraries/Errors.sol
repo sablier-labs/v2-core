@@ -171,4 +171,7 @@ library Errors {
 
     /// @notice Thrown when a function is called on a stream that does not use the expected Lockup model.
     error SablierLockup_NotExpectedModel(Lockup.Model actualLockupModel, Lockup.Model expectedLockupModel);
+
+    /// @notice Thrown when the shape name is longer than max length.
+    error SablierLockup_ShapeNameTooLong(uint256 nameLength, uint256 maxLength);
 }
