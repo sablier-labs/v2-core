@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { Solarray } from "solarray/src/Solarray.sol";
 import { ISablierLockupBase } from "src/interfaces/ISablierLockupBase.sol";
 import { Errors } from "src/libraries/Errors.sol";
-import { Lockup } from "src/types/DataTypes.sol";
 
 import { Integration_Test } from "../../../Integration.t.sol";
 
-contract WithdrawFees_Integration_Concrete_Test is Integration_Test {
+contract CollectFees_Integration_Concrete_Test is Integration_Test {
     function test_WhenAdminIsNotContract() external {
-        _test_WithdrawFees(users.admin);
+        _test_CollectFees(users.admin);
     }
 
     function test_RevertWhen_AdminDoesNotImplementReceiveFunction() external whenAdminIsContract {
@@ -30,8 +28,8 @@ contract WithdrawFees_Integration_Concrete_Test is Integration_Test {
             )
         );
 
-        // Withdraw the fees.
-        lockup.withdrawFees();
+        // Collect the fees.
+        lockup.collectFees();
     }
 
     function test_WhenAdminImplementsReceiveFunction() external whenAdminIsContract {
@@ -43,10 +41,10 @@ contract WithdrawFees_Integration_Concrete_Test is Integration_Test {
         resetPrank({ msgSender: address(contractWithReceive) });
 
         // Run the tests.
-        _test_WithdrawFees(address(contractWithReceive));
+        _test_CollectFees(address(contractWithReceive));
     }
 
-    function _test_WithdrawFees(address admin) private {
+    function _test_CollectFees(address admin) private {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
 
         // Load the initial ETH balance of the admin.
@@ -58,11 +56,11 @@ contract WithdrawFees_Integration_Concrete_Test is Integration_Test {
         // Make a withdrawal and pay the fee.
         lockup.withdrawMax{ value: FEE }({ streamId: defaultStreamId, to: users.recipient });
 
-        // It should emit {WithdrawFees} event.
+        // It should emit a {CollectFees} event.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.WithdrawFees({ admin: admin, feeAmount: FEE });
+        emit ISablierLockupBase.CollectFees({ admin: admin, feeAmount: FEE });
 
-        lockup.withdrawFees();
+        lockup.collectFees();
 
         // It should transfer the fee.
         assertEq(admin.balance, initialAdminBalance + FEE, "admin ETH balance");

@@ -320,6 +320,22 @@ abstract contract SablierLockupBase is
     }
 
     /// @inheritdoc ISablierLockupBase
+    function collectFees() external override {
+        uint256 feeAmount = address(this).balance;
+
+        // Effect: transfer the fees to the admin.
+        (bool success,) = admin.call{ value: feeAmount }("");
+
+        // Revert if the call failed.
+        if (!success) {
+            revert Errors.SablierLockupBase_FeeTransferFail(admin, feeAmount);
+        }
+
+        // Log the fee withdrawal.
+        emit ISablierLockupBase.CollectFees({ admin: admin, feeAmount: feeAmount });
+    }
+
+    /// @inheritdoc ISablierLockupBase
     function renounce(uint256 streamId) public payable override noDelegateCall notNull(streamId) {
         // Check: the stream is not cold.
         Lockup.Status status = _statusOf(streamId);
@@ -471,22 +487,6 @@ abstract contract SablierLockupBase is
 
         // Checks and Effects: transfer the NFT.
         _transfer({ from: currentRecipient, to: newRecipient, tokenId: streamId });
-    }
-
-    /// @inheritdoc ISablierLockupBase
-    function withdrawFees() external override {
-        uint256 feeAmount = address(this).balance;
-
-        // Effect: transfer the fees to the admin.
-        (bool success,) = admin.call{ value: feeAmount }("");
-
-        // Revert if the call failed.
-        if (!success) {
-            revert Errors.SablierLockupBase_FeeTransferFail(admin, feeAmount);
-        }
-
-        // Log the fee withdrawal.
-        emit ISablierLockupBase.WithdrawFees({ admin: admin, feeAmount: feeAmount });
     }
 
     /// @inheritdoc ISablierLockupBase

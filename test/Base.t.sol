@@ -84,7 +84,7 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
         // Deploy the NFT descriptor mock.
         nftDescriptorMock = new NFTDescriptorMock();
 
-        // Create users for testing. Note that this has to go after the protocol is deployed due to ERC-20 approvals.
+        // Create users for testing. Note that due to ERC-20 approvals, this has to go after the protocol deployment.
         users.alice = createUser("Alice");
         users.broker = createUser("Broker");
         users.eve = createUser("Eve");

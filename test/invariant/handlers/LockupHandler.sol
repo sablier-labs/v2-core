@@ -164,8 +164,8 @@ contract LockupHandler is BaseHandler {
         lockup.withdraw{ value: payFee ? FEE : 0 }({ streamId: currentStreamId, to: to, amount: withdrawAmount });
     }
 
-    function withdrawFees() external instrument("withdrawFees") {
-        lockup.withdrawFees();
+    function collectFees() external instrument("collectFees") {
+        lockup.collectFees();
     }
 
     function withdrawMax(

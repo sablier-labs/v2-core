@@ -46,6 +46,11 @@ interface ISablierLockupBase is
         uint128 recipientAmount
     );
 
+    /// @notice Emitted when the accrued fees are collected.
+    /// @param admin The address of the current contract admin, which has received the fees.
+    /// @param feeAmount The amount of collected fees.
+    event CollectFees(address indexed admin, uint256 indexed feeAmount);
+
     /// @notice Emitted when a sender gives up the right to cancel a stream.
     /// @param streamId The ID of the stream.
     event RenounceLockupStream(uint256 indexed streamId);
@@ -57,11 +62,6 @@ interface ISablierLockupBase is
     event SetNFTDescriptor(
         address indexed admin, ILockupNFTDescriptor oldNFTDescriptor, ILockupNFTDescriptor newNFTDescriptor
     );
-
-    /// @notice Emitted when accrued fees is sent to the admin.
-    /// @param admin The address of the current contract admin, which has received the fees.
-    /// @param feeAmount The amount of fees withdrawn.
-    event WithdrawFees(address indexed admin, uint256 indexed feeAmount);
 
     /// @notice Emitted when assets are withdrawn from a stream.
     /// @param streamId The ID of the stream.
@@ -264,6 +264,14 @@ interface ISablierLockupBase is
     /// @param streamIds The IDs of the streams to cancel.
     function cancelMultiple(uint256[] calldata streamIds) external payable;
 
+    /// @notice Collects the accrued fees by transferring them to the contract admin.
+    ///
+    /// @dev Emits a {CollectFees} event.
+    ///
+    /// Notes:
+    /// - If the admin is a contract, it must be able to receive ETH.
+    function collectFees() external;
+
     /// @notice Removes the right of the stream's sender to cancel the stream.
     ///
     /// @dev Emits a {RenounceLockupStream} and {MetadataUpdate} event.
@@ -324,14 +332,6 @@ interface ISablierLockupBase is
     /// @param to The address receiving the withdrawn assets.
     /// @param amount The amount to withdraw, denoted in units of the asset's decimals.
     function withdraw(uint256 streamId, address to, uint128 amount) external payable;
-
-    /// @notice Withdraws the accrued fees to the contract admin.
-    ///
-    /// @dev Emits a {WithdrawFees} event.
-    ///
-    /// Notes:
-    /// - If the admin is a contract, it must be able to receive ETH.
-    function withdrawFees() external;
 
     /// @notice Withdraws the maximum withdrawable amount from the stream to the provided address `to`.
     ///
