@@ -77,14 +77,6 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
-    modifier whenTokenContract() {
-        _;
-    }
-
-    modifier whenTokenERC20() {
-        _;
-    }
-
     modifier whenCallerAdmin() {
         // Make the Admin the caller in the rest of this test suite.
         resetPrank({ msgSender: users.admin });
@@ -118,6 +110,14 @@ abstract contract Modifiers is Fuzzers {
     }
 
     modifier whenShapeNameNotExceed32Bytes() {
+        _;
+    }
+
+    modifier whenTokenContract() {
+        _;
+    }
+
+    modifier whenTokenERC20() {
         _;
     }
 
