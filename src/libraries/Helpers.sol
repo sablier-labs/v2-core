@@ -256,9 +256,9 @@ library Helpers {
             revert Errors.SablierHelpers_StartTimeZero();
         }
 
-        // Check: the shape name is not greater than 32 bytes to prevent HTML injection attacks.
+        // Check: the shape is not greater than 32 bytes.
         if (bytes(shape).length > 32) {
-            revert Errors.SablierHelpers_ShapeNameExceeds32Bytes(bytes(shape).length);
+            revert Errors.SablierHelpers_ShapeExceeds32Bytes(bytes(shape).length);
         }
     }
 

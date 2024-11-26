@@ -142,7 +142,7 @@ library Lockup {
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
     /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, all as Unix timestamps.
     /// @param broker The address of the broker who has helped create the stream, e.g. a front-end website.
-    /// @param shape The name of the stream shape that it should represent. This is useful to differentiate between
+    /// @param shape An optional parameter to specify the shape of the distribution function. This helps differentiate
     /// streams in the UI.
     struct CreateEventCommon {
         address funder;
@@ -168,8 +168,8 @@ library Lockup {
     /// @param transferable Indicates if the stream NFT is transferable.
     /// @param broker Struct encapsulating (i) the address of the broker assisting in creating the stream, and (ii) the
     /// percentage fee paid to the broker from `totalAmount`, denoted as a fixed-point number. Both can be set to zero.
-    /// @param shape An optional name for the stream shape that it should represent. This is useful to differentiate
-    /// between streams in the UI.
+    /// @param shape An optional parameter to specify the shape of the distribution function. This helps differentiate
+    /// streams in the UI.
     struct CreateWithDurations {
         address sender;
         address recipient;
@@ -191,10 +191,10 @@ library Lockup {
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
     /// @param timestamps Struct encapsulating (i) the stream's start time and (ii) end time, both as Unix timestamps.
+    /// @param shape An optional parameter to specify the shape of the distribution function. This helps differentiate
+    /// streams in the UI.
     /// @param broker Struct encapsulating (i) the address of the broker assisting in creating the stream, and (ii) the
     /// percentage fee paid to the broker from `totalAmount`, denoted as a fixed-point number. Both can be set to zero.
-    /// @param shape An optional name for the stream shape that it should represent. This is useful to differentiate
-    /// between streams in the UI.
     struct CreateWithTimestamps {
         address sender;
         address recipient;
@@ -203,8 +203,8 @@ library Lockup {
         bool cancelable;
         bool transferable;
         Timestamps timestamps;
-        Broker broker;
         string shape;
+        Broker broker;
     }
 
     /// @notice Enum representing the different distribution models used to create lockup streams.
