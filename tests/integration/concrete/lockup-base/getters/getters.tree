@@ -1,8 +1,8 @@
-Getters_Integration_Concrete_Test::getAsset
+Getters_Integration_Concrete_Test::getToken
 ├── given null
 │  └── it should revert
 └── given not null
-   └── it should return the correct address of the asset
+   └── it should return the correct address of the token
 
 Getters_Integration_Concrete_Test::getDepositedAmount
 ├── given null

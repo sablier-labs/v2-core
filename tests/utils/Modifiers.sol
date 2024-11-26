@@ -77,11 +77,11 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
-    modifier whenAssetContract() {
+    modifier whenTokenContract() {
         _;
     }
 
-    modifier whenAssetERC20() {
+    modifier whenTokenERC20() {
         _;
     }
 
@@ -324,7 +324,7 @@ abstract contract Modifiers is Fuzzers {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                 SAFE-ASSET-SYMBOL
+                                 SAFE-TOKEN-SYMBOL
     //////////////////////////////////////////////////////////////////////////*/
 
     modifier givenSymbolImplemented() {
@@ -355,7 +355,7 @@ abstract contract Modifiers is Fuzzers {
                                      STATUS-OF
     //////////////////////////////////////////////////////////////////////////*/
 
-    modifier givenAssetsNotFullyWithdrawn() {
+    modifier givenTokensNotFullyWithdrawn() {
         _;
     }
 
