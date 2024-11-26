@@ -70,15 +70,15 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
         vars.tokenSymbol = safeTokenSymbol(vars.token);
         vars.depositedAmount = vars.lockup.getDepositedAmount(streamId);
 
-        // Load the token's address based on the contract version.
+        // Retrieve the token's address based on the Lockup contract version.
         if (vars.lockupModel.equal("Sablier Lockup")) {
-            // For the latest version of the Lockup contract, use the `getToken` function.
+            // For Lockup contract versions v2.0.0 and later, use the `getToken` function.
             vars.token = address(vars.lockup.getToken(streamId));
         }
-        // For older versions of the Lockup contract, use the `getAsset` function.
+        // For Lockup contract versions earlier than v2.0.0, use the `getAsset` function.
         else {
             (, bytes memory returnData) =
-                address(lockup).staticcall(abi.encodeWithSelector(bytes4(keccak256("getAsset(uint256)")), streamId));
+                address(lockup).staticcall(abi.encodeWithSignature("getAsset(uint256)", streamId));
             vars.token = abi.decode(returnData, (address));
         }
 
