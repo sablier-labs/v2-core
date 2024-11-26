@@ -139,8 +139,8 @@ contract Defaults is Constants {
             cancelable: true,
             transferable: true,
             timestamps: timestamps,
-            broker: users.broker,
-            shape: SHAPE
+            shape: SHAPE,
+            broker: users.broker
         });
     }
 
@@ -221,8 +221,8 @@ contract Defaults is Constants {
             token: token,
             cancelable: true,
             transferable: true,
-            broker: broker(),
-            shape: SHAPE
+            shape: SHAPE,
+            broker: broker()
         });
     }
 
@@ -241,8 +241,8 @@ contract Defaults is Constants {
             cancelable: true,
             transferable: true,
             timestamps: lockupTimestamps(),
-            broker: broker(),
-            shape: SHAPE
+            shape: SHAPE,
+            broker: broker()
         });
     }
 

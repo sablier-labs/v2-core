@@ -194,8 +194,8 @@ contract CreateWithTimestampsLL_Integration_Fuzz_Test is Lockup_Linear_Integrati
                 cancelable: params.cancelable,
                 transferable: params.transferable,
                 timestamps: Lockup.Timestamps({ start: params.timestamps.start, end: params.timestamps.end }),
-                broker: params.broker.account,
-                shape: params.shape
+                shape: params.shape,
+                broker: params.broker.account
             }),
             cliffTime: cliffTime,
             unlockAmounts: unlockAmounts

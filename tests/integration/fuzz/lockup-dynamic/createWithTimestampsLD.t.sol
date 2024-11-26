@@ -250,8 +250,8 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
                 cancelable: params.cancelable,
                 transferable: params.transferable,
                 timestamps: params.timestamps,
-                broker: params.broker.account,
-                shape: params.shape
+                shape: params.shape,
+                broker: params.broker.account
             }),
             segments: segments
         });
