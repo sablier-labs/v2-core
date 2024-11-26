@@ -72,10 +72,10 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
 
         // Load the token's address based on the contract version.
         if (vars.lockupModel.equal("Sablier Lockup")) {
-            // If the Lockup contract is the latest version, use the `getToken` function.
+            // For the latest version of the Lockup contract, use the `getToken` function.
             vars.token = address(vars.lockup.getToken(streamId));
         }
-        // Otherwise, if there is an older version of the Lockup contract, use the `getAsset` function.
+        // For older versions of the Lockup contract, use the `getAsset` function.
         else {
             (, bytes memory returnData) =
                 address(lockup).staticcall(abi.encodeWithSelector(bytes4(keccak256("getAsset(uint256)")), streamId));
