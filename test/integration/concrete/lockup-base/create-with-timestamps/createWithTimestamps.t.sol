@@ -70,7 +70,7 @@ abstract contract CreateWithTimestamps_Integration_Concrete_Test is Integration_
 
     function test_RevertWhen_ShapeNameExceeds32Bytes() external whenNoDelegateCall {
         _defaultParams.createWithTimestamps.shape = "this name is longer than 32 bytes";
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockup_ShapeNameTooLong.selector, 33, 32));
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierHelpers_ShapeNameExceeds32Bytes.selector, 33));
         createDefaultStream();
     }
 

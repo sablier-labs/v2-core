@@ -31,7 +31,7 @@ contract Defaults is Constants {
     uint256 public constant MAX_TRANCHE_COUNT = 10_000;
     uint128 public constant REFUND_AMOUNT = DEPOSIT_AMOUNT - WITHDRAW_AMOUNT;
     uint256 public constant SEGMENT_COUNT = 2;
-    string public constant SHAPE_NAME = "";
+    string public constant SHAPE_NAME = "emits in the event";
     uint40 public immutable START_TIME;
     uint128 public constant START_AMOUNT = 0;
     uint128 public constant STREAMED_AMOUNT_26_PERCENT = 2600e18;

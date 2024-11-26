@@ -19,7 +19,7 @@ contract CreateWithTimestampsLL_Integration_Fuzz_Test is Lockup_Linear_Integrati
     {
         vm.assume(bytes(shapeName).length > 32);
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierLockup_ShapeNameTooLong.selector, bytes(shapeName).length, 32)
+            abi.encodeWithSelector(Errors.SablierHelpers_ShapeNameExceeds32Bytes.selector, bytes(shapeName).length)
         );
 
         _defaultParams.createWithTimestamps.shape = shapeName;

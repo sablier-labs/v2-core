@@ -77,6 +77,9 @@ library Errors {
     /// @notice Thrown when trying to create a stream with the sender as the zero address.
     error SablierHelpers_SenderZeroAddress();
 
+    /// @notice Thrown when trying to create a stream with shape name exceeding 32 bytes.
+    error SablierHelpers_ShapeNameExceeds32Bytes(uint256 nameLength);
+
     /// @notice Thrown when trying to create a linear stream with a start time not strictly less than the cliff time,
     /// when the cliff time does not have a zero value.
     error SablierHelpers_StartTimeNotLessThanCliffTime(uint40 startTime, uint40 cliffTime);
@@ -171,7 +174,4 @@ library Errors {
 
     /// @notice Thrown when a function is called on a stream that does not use the expected Lockup model.
     error SablierLockup_NotExpectedModel(Lockup.Model actualLockupModel, Lockup.Model expectedLockupModel);
-
-    /// @notice Thrown when the shape name is longer than max length.
-    error SablierLockup_ShapeNameTooLong(uint256 nameLength, uint256 maxLength);
 }

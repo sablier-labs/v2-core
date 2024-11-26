@@ -356,11 +356,6 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         internal
         returns (Lockup.CreateEventCommon memory)
     {
-        // Check: the shape name is not greater than 32 bytes to prevent HTML injection attacks.
-        if (bytes(params.shape).length > 32) {
-            revert Errors.SablierLockup_ShapeNameTooLong({ nameLength: bytes(params.shape).length, maxLength: 32 });
-        }
-
         // Effect: create the stream.
         _streams[streamId] = Lockup.Stream({
             sender: params.sender,
@@ -422,7 +417,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             segments: segments,
             maxCount: MAX_COUNT,
             brokerFee: params.broker.fee,
-            maxBrokerFee: MAX_BROKER_FEE
+            maxBrokerFee: MAX_BROKER_FEE,
+            shape: params.shape
         });
 
         // Load the stream ID in a variable.
@@ -468,7 +464,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             totalAmount: params.totalAmount,
             unlockAmounts: unlockAmounts,
             brokerFee: params.broker.fee,
-            maxBrokerFee: MAX_BROKER_FEE
+            maxBrokerFee: MAX_BROKER_FEE,
+            shape: params.shape
         });
 
         // Load the stream ID in a variable.
@@ -522,7 +519,8 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
             tranches: tranches,
             maxCount: MAX_COUNT,
             brokerFee: params.broker.fee,
-            maxBrokerFee: MAX_BROKER_FEE
+            maxBrokerFee: MAX_BROKER_FEE,
+            shape: params.shape
         });
 
         // Load the stream ID in a variable.
