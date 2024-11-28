@@ -506,10 +506,16 @@ abstract contract SablierLockupBase is
             revert Errors.SablierLockupBase_WithdrawArrayCountsNotEqual(streamIdsCount, amountsCount);
         }
 
-        // Iterate over the provided array of stream IDs, and withdraw from each stream to the recipient.
+        // Iterate over the provided array of stream IDs, and withdraw from each stream to the recipient using `try`
+        // statement.
         for (uint256 i = 0; i < streamIdsCount; ++i) {
-            // Checks, Effects and Interactions: check the parameters and make the withdrawal.
-            withdraw({ streamId: streamIds[i], to: _ownerOf(streamIds[i]), amount: amounts[i] });
+            // Checks, Effects and Interactions: try the withdrawal. `msg.sender` context inside the `withdraw` will be
+            // `this` contract.
+            try this.withdraw({ streamId: streamIds[i], to: _ownerOf(streamIds[i]), amount: amounts[i] }) { }
+            // If the withdrawal reverts, emit an event and continue with the next stream.
+            catch (bytes memory errorData) {
+                emit InvalidStreamIdInWithdrawMultiple(streamIds[i], errorData);
+            }
         }
     }
 

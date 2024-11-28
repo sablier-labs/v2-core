@@ -8,17 +8,21 @@ WithdrawMultiple_Integration_Concrete_Test
       ├── when zero array length
       │  └── it should do nothing
       └── when non zero array length
-         ├── given atleast one null stream
-         │  └── it should revert
-         └── given no null streams
-            ├── given atleast one DEPLETED stream
-            │  └── it should revert
-            └── given no DEPLETED streams
-               ├── when atleast one zero amount
-               │  └── it should revert
+         ├── when one null stream
+         │  ├── it should emit {InvalidStreamIdInWithdrawMultiple} event for the null stream
+         │  └── it should emit 2 {WithdrawFromLockupStream} events
+         └── when no null streams
+            ├── when one DEPLETED stream
+            │  ├── it should emit {InvalidStreamIdInWithdrawMultiple} event for the depleted stream
+            │  └── it should emit 2 {WithdrawFromLockupStream} events
+            └── when no DEPLETED streams
+               ├── when withdrawing zero amounts
+               │  ├── it should emit 1 {WithdrawFromLockupStream} event for first stream
+               │  └── it should emit 2 {InvalidStreamIdInWithdrawMultiple} events
                └── when no zero amounts
-                  ├── when atleast one amount overdraws
-                  │  └── it should revert
+                  ├── when one amount overdraws
+                  │  ├── it should emit 2 {WithdrawFromLockupStream} events
+                  │  └── it should emit {InvalidStreamIdInWithdrawMultiple} event for third stream
                   └── when no amounts overdraw
                      ├── it should make the withdrawals
                      ├── it should update the statuses

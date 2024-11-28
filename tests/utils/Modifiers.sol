@@ -43,6 +43,10 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
+    modifier givenNoNullStreams() {
+        _;
+    }
+
     modifier givenNotCanceledStream() {
         _;
     }
@@ -456,12 +460,12 @@ abstract contract Modifiers is Fuzzers {
         _;
     }
 
-    modifier givenNoDEPLETEDStreams() {
+    modifier whenNoDEPLETEDStreams() {
         vm.warp({ newTimestamp: defaults.START_TIME() });
         _;
     }
 
-    modifier givenNoNullStreams() {
+    modifier whenNoNullStreams() {
         _;
     }
 
