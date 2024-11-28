@@ -514,7 +514,7 @@ abstract contract SablierLockupBase is
             try this.withdraw({ streamId: streamIds[i], to: _ownerOf(streamIds[i]), amount: amounts[i] }) { }
             // If the withdrawal reverts, emit an event and continue with the next stream.
             catch (bytes memory errorData) {
-                emit InvalidStreamIdInWithdrawMultiple(streamIds[i], errorData);
+                emit InvalidWithdrawInWithdrawMultiple(streamIds[i], errorData);
             }
         }
     }

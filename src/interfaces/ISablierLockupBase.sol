@@ -54,7 +54,7 @@ interface ISablierLockupBase is
     /// @notice Emitted in the `withdrawMultiple` function when withdrawing from a stream ID does not succeed.
     /// @param streamId The stream ID that reverted during withdraw.
     /// @param errorData The error data returned by the failed withdraw.
-    event InvalidStreamIdInWithdrawMultiple(uint256 streamId, bytes errorData);
+    event InvalidWithdrawInWithdrawMultiple(uint256 streamId, bytes errorData);
 
     /// @notice Emitted when a sender gives up the right to cancel a stream.
     /// @param streamId The ID of the stream.
@@ -381,7 +381,7 @@ interface ISablierLockupBase is
     /// @notice Withdraws tokens from streams to the recipient of each stream using `try..catch` statements.
     ///
     /// @dev Emits multiple {Transfer}, {WithdrawFromLockupStream}, and {MetadataUpdate} events. For stream IDs with
-    /// failed withdraw, emits {InvalidStreamIdInWithdrawMultiple} event.
+    /// failed withdraw, emits {InvalidWithdrawInWithdrawMultiple} event.
     ///
     /// Notes:
     /// - This function attempts to call a hook on the recipient of each stream, even when `msg.sender` is the
