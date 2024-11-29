@@ -58,8 +58,11 @@ const config: HardhatUserConfig = {
     sources: "./contracts",
     cache: "./cache_hardhat",
   },
+  etherscan: {
+    apiKey: process.env.ZKSYNC_API_KEY as string,
+  },
   zksolc: {
-    version: "latest",
+    version: "1.5.1",
     settings: {
       optimizer: {
         enabled: true,
