@@ -76,9 +76,9 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         // Simulate the passage of time.
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() + 1 });
 
-        // It should emit {InvalidWithdrawInWithdrawMultiple} event for the null stream.
+        // It should emit {InvalidWithdrawalInWithdrawMultiple} event for the null stream.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.InvalidWithdrawInWithdrawMultiple({
+        emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: nullStreamId,
             errorData: abi.encodeWithSelector(Errors.SablierLockupBase_Null.selector, nullStreamId)
         });
@@ -116,9 +116,9 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         // Deplete the first test stream.
         lockup.withdrawMax({ streamId: withdrawMultipleStreamIds[0], to: users.recipient });
 
-        // It should emit {InvalidWithdrawInWithdrawMultiple} event for the depleted stream.
+        // It should emit {InvalidWithdrawalInWithdrawMultiple} event for the depleted stream.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.InvalidWithdrawInWithdrawMultiple({
+        emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: withdrawMultipleStreamIds[0],
             errorData: abi.encodeWithSelector(
                 Errors.SablierLockupBase_StreamDepleted.selector, withdrawMultipleStreamIds[0]
@@ -165,16 +165,16 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
             amount: withdrawAmounts[0]
         });
 
-        // It should emit 2 {InvalidWithdrawInWithdrawMultiple} events.
+        // It should emit 2 {InvalidWithdrawalInWithdrawMultiple} events.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.InvalidWithdrawInWithdrawMultiple({
+        emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: withdrawMultipleStreamIds[1],
             errorData: abi.encodeWithSelector(
                 Errors.SablierLockupBase_WithdrawAmountZero.selector, withdrawMultipleStreamIds[1]
             )
         });
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.InvalidWithdrawInWithdrawMultiple({
+        emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: withdrawMultipleStreamIds[2],
             errorData: abi.encodeWithSelector(
                 Errors.SablierLockupBase_WithdrawAmountZero.selector, withdrawMultipleStreamIds[2]
@@ -214,9 +214,9 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
             amount: withdrawAmounts[1]
         });
 
-        // It should emit {InvalidWithdrawInWithdrawMultiple} event for third stream.
+        // It should emit {InvalidWithdrawalInWithdrawMultiple} event for third stream.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.InvalidWithdrawInWithdrawMultiple({
+        emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: withdrawMultipleStreamIds[2],
             errorData: abi.encodeWithSelector(
                 Errors.SablierLockupBase_Overdraw.selector,
