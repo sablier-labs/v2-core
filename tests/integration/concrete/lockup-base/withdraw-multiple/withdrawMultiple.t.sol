@@ -80,7 +80,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: nullStreamId,
-            errorData: abi.encodeWithSelector(Errors.SablierLockupBase_Null.selector, nullStreamId)
+            revertData: abi.encodeWithSelector(Errors.SablierLockupBase_Null.selector, nullStreamId)
         });
 
         // It should emit 2 {WithdrawFromLockupStream} events.
@@ -120,7 +120,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: withdrawMultipleStreamIds[0],
-            errorData: abi.encodeWithSelector(
+            revertData: abi.encodeWithSelector(
                 Errors.SablierLockupBase_StreamDepleted.selector, withdrawMultipleStreamIds[0]
             )
         });
@@ -169,14 +169,14 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: withdrawMultipleStreamIds[1],
-            errorData: abi.encodeWithSelector(
+            revertData: abi.encodeWithSelector(
                 Errors.SablierLockupBase_WithdrawAmountZero.selector, withdrawMultipleStreamIds[1]
             )
         });
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: withdrawMultipleStreamIds[2],
-            errorData: abi.encodeWithSelector(
+            revertData: abi.encodeWithSelector(
                 Errors.SablierLockupBase_WithdrawAmountZero.selector, withdrawMultipleStreamIds[2]
             )
         });
@@ -218,7 +218,7 @@ contract WithdrawMultiple_Integration_Concrete_Test is Integration_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.InvalidWithdrawalInWithdrawMultiple({
             streamId: withdrawMultipleStreamIds[2],
-            errorData: abi.encodeWithSelector(
+            revertData: abi.encodeWithSelector(
                 Errors.SablierLockupBase_Overdraw.selector,
                 withdrawMultipleStreamIds[2],
                 MAX_UINT128,

@@ -384,9 +384,7 @@ interface ISablierLockupBase is
     /// reverted the withdrawal, it emits an {InvalidWithdrawalInWithdrawMultiple} event.
     ///
     /// Notes:
-    /// - This function attempts to call a hook on the recipient of each stream, even when `msg.sender` is the
-    /// recipient. This is because the the `try` statement makes an external call to `withdraw` which resets the
-    /// `msg.sender` to the contract itself.
+    /// - This function attempts to call a hook on the recipient of each stream, unless `msg.sender` is the recipient.
     ///
     /// Requirements:
     /// - Must not be delegate called.
