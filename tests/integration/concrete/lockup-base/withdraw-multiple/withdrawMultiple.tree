@@ -8,23 +8,12 @@ WithdrawMultiple_Integration_Concrete_Test
       ├── when zero array length
       │  └── it should do nothing
       └── when non zero array length
-         ├── when one null stream
-         │  ├── it should emit {InvalidWithdrawalInWithdrawMultiple} event for the null stream
-         │  └── it should emit 2 {WithdrawFromLockupStream} events
-         └── when no null streams
-            ├── when one DEPLETED stream
-            │  ├── it should emit {InvalidWithdrawalInWithdrawMultiple} event for the depleted stream
-            │  └── it should emit 2 {WithdrawFromLockupStream} events
-            └── when no DEPLETED streams
-               ├── when withdrawing zero amounts
-               │  ├── it should emit 1 {WithdrawFromLockupStream} event for first stream
-               │  └── it should emit 2 {InvalidWithdrawalInWithdrawMultiple} events
-               └── when no zero amounts
-                  ├── when one amount overdraws
-                  │  ├── it should emit 2 {WithdrawFromLockupStream} events
-                  │  └── it should emit {InvalidWithdrawalInWithdrawMultiple} event for third stream
-                  └── when no amounts overdraw
-                     ├── it should make the withdrawals
-                     ├── it should update the statuses
-                     ├── it should update the withdrawn amounts
-                     └── it should emit multiple {WithdrawFromLockupStream} events
+         ├── when one stream ID reverts
+         │  ├── it should emit {WithdrawFromLockupStream} events for first two streams
+         │  ├── it should emit {InvalidWithdrawalInWithdrawMultiple} event for third stream
+         │  └── it should update the withdrawn amounts only for first two streams
+         └── when no stream IDs revert
+            ├── it should make the withdrawals on all streams
+            ├── it should update the statuses
+            ├── it should update the withdrawn amounts
+            └── it should emit {WithdrawFromLockupStream} events for all streams
