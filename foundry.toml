@@ -3,12 +3,18 @@
   bytecode_hash = "none"
   evm_version = "shanghai"
   fs_permissions = [
-    { access = "read", path = "./out-optimized" },
+    { access = "read", path = "./out" },
     { access = "read", path = "package.json" },
     { access = "read-write", path = "./benchmark/results" },
     { access = "read-write", path = "./script/"}
   ]
   gas_limit = 9223372036854775807
+  # https://book.getfoundry.sh/reference/config/solidity-compiler#libraries
+  # TODO: Update addresses once deployed.
+ libraries = [
+  "src/libraries/Helpers.sol:Helpers:0x7715bE116061E014Bb721b46Dc78Dd57C91FDF9b",
+  "src/libraries/VestingMath.sol:VestingMath:0x26F9d826BDed47Fc472526aE8095B75ac336963C"
+ ]
   optimizer = true
   optimizer_runs = 800
   out = "out"
@@ -17,6 +23,7 @@
   solc = "0.8.26"
   src = "src"
   test = "tests"
+  via_ir = true
 
 [profile.default.fuzz]
   max_test_rejects = 1_000_000 # Number of times `vm.assume` can fail
@@ -28,6 +35,15 @@
   fail_on_revert = true
   runs = 20
 
+additional_compiler_profiles = [
+  { name = "tests/", via_ir = false }
+]
+
+compilation_restrictions = [
+  { paths = "tests/mocks", via_ir = true },
+  { paths = "tests/**", via_ir = false }
+]
+
 # Run only the code inside benchmark directory
 [profile.benchmark]
   test = "benchmark"
@@ -35,29 +51,15 @@
 # Speed up compilation and tests during development
 [profile.lite]
   optimizer = false
-
-# Compile only the production code and the test mocks with via IR
-[profile.optimized]
-  # https://book.getfoundry.sh/reference/config/solidity-compiler#libraries
-  # TODO: Update addresses once deployed.
-  libraries = [
-    "src/libraries/Helpers.sol:Helpers:0x7715bE116061E014Bb721b46Dc78Dd57C91FDF9b",
-    "src/libraries/VestingMath.sol:VestingMath:0x26F9d826BDed47Fc472526aE8095B75ac336963C"
-  ]
-  out = "out-optimized"
-  test = "tests/mocks"
-  via_ir = true
-
+  via_ir = false
 
 # See "SMTChecker and Formal Verification" in the Solidity docs
 [profile.smt]
   ignored_error_codes = [
     7737, # Disable inline assembly warnings
   ]
-  out = "out-optimized"
   script = "src"
   test = "src"
-  via_ir = true
 
 [profile.smt.model_checker]
   engine = "chc" # constrained Horn clauses
@@ -78,10 +80,6 @@
 [profile.smt.model_checker.contracts]
   "src/LockupNFTDescriptor.sol" = ["LockupNFTDescriptor"]
   "src/SablierLockup.sol" = ["SablierLockup"]
-
-# Test the optimized contracts without re-compiling them
-[profile.test-optimized]
-  src = "tests"
 
 [doc]
   ignore = ["**/*.t.sol"]

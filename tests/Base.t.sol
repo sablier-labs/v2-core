@@ -6,9 +6,6 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ILockupNFTDescriptor } from "src/interfaces/ILockupNFTDescriptor.sol";
 import { ISablierBatchLockup } from "src/interfaces/ISablierBatchLockup.sol";
 import { ISablierLockup } from "src/interfaces/ISablierLockup.sol";
-import { LockupNFTDescriptor } from "src/LockupNFTDescriptor.sol";
-import { SablierBatchLockup } from "src/SablierBatchLockup.sol";
-import { SablierLockup } from "src/SablierLockup.sol";
 import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "src/types/DataTypes.sol";
 
 import { ERC20MissingReturn } from "./mocks/erc20/ERC20MissingReturn.sol";
@@ -144,13 +141,8 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
     /// deployer's nonce, which would in turn lead to different addresses (recall that the addresses
     /// for contracts deployed via `CREATE` are based on the caller-and-nonce-hash).
     function deployProtocolConditionally() internal {
-        if (!isBenchmarkProfile() && !isTestOptimizedProfile()) {
-            batchLockup = new SablierBatchLockup();
-            nftDescriptor = new LockupNFTDescriptor();
-            lockup = new SablierLockup(users.admin, nftDescriptor, defaults.MAX_COUNT());
-        } else {
-            (nftDescriptor, lockup, batchLockup) = deployOptimizedProtocol(users.admin, defaults.MAX_COUNT());
-        }
+        (nftDescriptor, lockup, batchLockup) = deployOptimizedProtocol(users.admin, defaults.MAX_COUNT());
+
         vm.label({ account: address(batchLockup), newLabel: "BatchLockup" });
         vm.label({ account: address(lockup), newLabel: "Lockup" });
         vm.label({ account: address(nftDescriptor), newLabel: "NFTDescriptor" });

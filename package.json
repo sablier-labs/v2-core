@@ -62,11 +62,10 @@
   },
   "repository": "github.com/sablier-labs/lockup",
   "scripts": {
-    "benchmark": "bun run build:optimized && FOUNDRY_PROFILE=benchmark forge test --mt testGas && bun run prettier:write",
+    "benchmark": "bun run build && FOUNDRY_PROFILE=benchmark forge test --mt testGas && bun run prettier:write",
     "build": "forge build",
-    "build:optimized": "FOUNDRY_PROFILE=optimized forge build",
     "build:smt": "FOUNDRY_PROFILE=smt forge build",
-    "clean": "rm -rf artifacts broadcast cache docs out out-optimized out-svg",
+    "clean": "rm -rf artifacts broadcast cache docs out out-svg",
     "lint": "bun run lint:sol && bun run prettier:check",
     "lint:fix": "bun run lint:sol:fix && forge fmt",
     "lint:sol": "forge fmt --check && bun solhint \"{benchmark,precompiles,script,src,tests}/**/*.sol\"",
@@ -76,7 +75,6 @@
     "prettier:check": "prettier --check \"**/*.{json,md,svg,yml}\"",
     "prettier:write": "prettier --write \"**/*.{json,md,svg,yml}\"",
     "test": "forge test",
-    "test:lite": "FOUNDRY_PROFILE=lite forge test",
-    "test:optimized": "bun run build:optimized && FOUNDRY_PROFILE=test-optimized forge test"
+    "test:lite": "FOUNDRY_PROFILE=lite forge test --nmt \"testFork\" --nmc \"Precompiles_Test\""
   }
 }

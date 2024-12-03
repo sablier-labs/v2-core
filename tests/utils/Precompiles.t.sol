@@ -14,32 +14,26 @@ contract Precompiles_Test is Base_Test {
 
     Precompiles internal precompiles = new Precompiles();
 
-    modifier onlyTestOptimizedProfile() {
-        if (isTestOptimizedProfile()) {
-            _;
-        }
-    }
-
-    function test_DeployBatchLockup() external onlyTestOptimizedProfile {
+    function test_DeployBatchLockup() external {
         address actualBatchLockup = address(precompiles.deployBatchLockup());
         address expectedBatchLockup = address(deployOptimizedBatchLockup());
         assertEq(actualBatchLockup.code, expectedBatchLockup.code, "bytecodes mismatch");
     }
 
-    function test_DeployLockup() external onlyTestOptimizedProfile {
+    function test_DeployLockup() external {
         address actualLockup = address(precompiles.deployLockup(users.admin, nftDescriptor));
         address expectedLockup = address(deployOptimizedLockup(users.admin, nftDescriptor, precompiles.MAX_COUNT()));
         bytes memory expectedLockupCode = adjustBytecode(expectedLockup.code, expectedLockup, actualLockup);
         assertEq(actualLockup.code, expectedLockupCode, "bytecodes mismatch");
     }
 
-    function test_DeployNFTDescriptor() external onlyTestOptimizedProfile {
+    function test_DeployNFTDescriptor() external {
         address actualNFTDescriptor = address(precompiles.deployNFTDescriptor());
         address expectedNFTDescriptor = address(deployOptimizedNFTDescriptor());
         assertEq(actualNFTDescriptor.code, expectedNFTDescriptor.code, "bytecodes mismatch");
     }
 
-    function test_DeployProtocol() external onlyTestOptimizedProfile {
+    function test_DeployProtocol() external {
         (ILockupNFTDescriptor actualNFTDescriptor, ISablierLockup actualLockup, ISablierBatchLockup actualBatchLockup) =
             precompiles.deployProtocol(users.admin);
 
