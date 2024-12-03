@@ -11,13 +11,13 @@ import { ISablierLockup } from "../../src/interfaces/ISablierLockup.sol";
 abstract contract DeployOptimized is StdCheats, CommonBase {
     /// @dev Deploys {SablierBatchLockup} from an optimized source compiled with `--via-ir`.
     function deployOptimizedBatchLockup() internal returns (ISablierBatchLockup) {
-        return ISablierBatchLockup(deployCode("out-optimized/SablierBatchLockup.sol/SablierBatchLockup.json"));
+        return ISablierBatchLockup(deployCode("out/SablierBatchLockup.sol/SablierBatchLockup.json"));
     }
 
     /// @dev Deploys the optimized {Helpers} and {VestingMath} libraries and assign them to linked addresses.
     function deployOptimizedLibraries() internal {
-        address helpers = deployCode("out-optimized/Helpers.sol/Helpers.json");
-        address vestingMath = deployCode("out-optimized/VestingMath.sol/VestingMath.json");
+        address helpers = deployCode("out/Helpers.sol/Helpers.json");
+        address vestingMath = deployCode("out/VestingMath.sol/VestingMath.json");
         vm.etch(0x7715bE116061E014Bb721b46Dc78Dd57C91FDF9b, helpers.code);
         vm.etch(0x26F9d826BDed47Fc472526aE8095B75ac336963C, vestingMath.code);
     }
@@ -37,15 +37,14 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         // Deploy the Lockup contract.
         return ISablierLockup(
             deployCode(
-                "out-optimized/SablierLockup.sol/SablierLockup.json",
-                abi.encode(initialAdmin, address(nftDescriptor_), maxCount)
+                "out/SablierLockup.sol/SablierLockup.json", abi.encode(initialAdmin, address(nftDescriptor_), maxCount)
             )
         );
     }
 
     /// @dev Deploys {LockupNFTDescriptor} from an optimized source compiled with `--via-ir`.
     function deployOptimizedNFTDescriptor() internal returns (ILockupNFTDescriptor) {
-        return ILockupNFTDescriptor(deployCode("out-optimized/LockupNFTDescriptor.sol/LockupNFTDescriptor.json"));
+        return ILockupNFTDescriptor(deployCode("out/LockupNFTDescriptor.sol/LockupNFTDescriptor.json"));
     }
 
     /// @notice Deploys all contracts from an optimized source compiled with `--via-ir` in the following order:

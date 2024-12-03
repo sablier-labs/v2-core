@@ -15,12 +15,8 @@ abstract contract Adminable_Unit_Shared_Test is Base_Test {
 
     /// @dev Conditionally deploys {AdminableMock} normally or from a source precompiled with `--via-ir`.
     function deployConditionally() internal {
-        if (!isTestOptimizedProfile()) {
-            adminableMock = new AdminableMock(users.admin);
-        } else {
-            adminableMock =
-                AdminableMock(deployCode("out-optimized/AdminableMock.sol/AdminableMock.json", abi.encode(users.admin)));
-        }
+        adminableMock = AdminableMock(deployCode("out/AdminableMock.sol/AdminableMock.json", abi.encode(users.admin)));
+
         vm.label({ account: address(adminableMock), newLabel: "AdminableMock" });
     }
 }

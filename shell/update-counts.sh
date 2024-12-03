@@ -11,8 +11,8 @@ set -euo pipefail
 # Path to the Base Script
 BASE_SCRIPT="script/Base.s.sol"
 
-# Compile the contracts with the optimized profile
-bun run build:optimized
+# Compile the contracts
+bun run build
 
 # Generalized function to update counts
 update_counts() {

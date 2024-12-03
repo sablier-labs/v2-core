@@ -9,12 +9,12 @@
 set -euo pipefail
 
 # Compile the contracts with Forge
-FOUNDRY_PROFILE=optimized forge build
+forge build
 
 # Retrieve the raw bytecodes, removing the "0x" prefix
-batch_lockup=$(cat out-optimized/SablierBatchLockup.sol/SablierBatchLockup.json | jq -r '.bytecode.object' | cut -c 3-)
-lockup=$(cat out-optimized/SablierLockup.sol/SablierLockup.json | jq -r '.bytecode.object' | cut -c 3-)
-nft_descriptor=$(cat out-optimized/LockupNFTDescriptor.sol/LockupNFTDescriptor.json | jq -r '.bytecode.object' | cut -c 3-)
+batch_lockup=$(cat out/SablierBatchLockup.sol/SablierBatchLockup.json | jq -r '.bytecode.object' | cut -c 3-)
+lockup=$(cat out/SablierLockup.sol/SablierLockup.json | jq -r '.bytecode.object' | cut -c 3-)
+nft_descriptor=$(cat out/LockupNFTDescriptor.sol/LockupNFTDescriptor.json | jq -r '.bytecode.object' | cut -c 3-)
 
 precompiles_path="precompiles/Precompiles.sol"
 if [ ! -f $precompiles_path ]; then
