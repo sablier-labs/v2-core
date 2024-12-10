@@ -7,7 +7,7 @@ import { console2 } from "forge-std/src/console2.sol";
 import { StdStyle } from "forge-std/src/StdStyle.sol";
 import { Base64 } from "solady/src/utils/Base64.sol";
 
-import { Integration_Test } from "../LockupLinear.t.sol";
+import { Integration_Test } from "../../../Integration.t.sol";
 
 /// @dev Requirements for these tests to work:
 /// - The stream ID must be 1
@@ -16,7 +16,7 @@ import { Integration_Test } from "../LockupLinear.t.sol";
 /// - The contract deployer, i.e. the `sender` config option in `foundry.toml`, must have the default value
 /// 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38 so that the deployed contracts have the same addresses as
 /// the values hard coded in the tests below
-contract TokenURI_Lockup_Linear_Integration_Concrete_Test is Integration_Test {
+contract TokenURI_Lockup_Integration_Concrete_Test is Integration_Test {
     address internal constant LOCKUP = 0x923b5Ab3714FD343316aF5A5434582Fd16722523;
 
     /// @dev To make these tests noninvasive, they are run only when the contract address matches the hard coded value.
@@ -24,7 +24,7 @@ contract TokenURI_Lockup_Linear_Integration_Concrete_Test is Integration_Test {
         if (address(lockup) == LOCKUP) {
             _;
         } else {
-            console2.log(StdStyle.yellow('Warning: "LockupLinear.tokenURI" tests skipped due to address mismatch'));
+            console2.log(StdStyle.yellow('Warning: "Lockup.tokenURI" tests skipped due to address mismatch'));
         }
     }
 
