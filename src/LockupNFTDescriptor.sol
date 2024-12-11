@@ -8,7 +8,6 @@ import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { ILockupNFTDescriptor } from "./interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockup } from "./interfaces/ISablierLockup.sol";
-import { ISablierLockupBase } from "./interfaces/ISablierLockupBase.sol";
 import { NFTSVG } from "./libraries/NFTSVG.sol";
 import { SVGElements } from "./libraries/SVGElements.sol";
 import { Lockup } from "./types/DataTypes.sol";
@@ -47,15 +46,12 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
         address token;
         string tokenSymbol;
         uint128 depositedAmount;
-        bool isTransferable;
         string json;
         ISablierLockup lockup;
         string lockupStringified;
-        bytes returnData;
         string status;
         string svg;
         uint256 streamedPercentage;
-        bool success;
     }
 
     /// @inheritdoc ILockupNFTDescriptor
@@ -96,13 +92,6 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
             })
         );
 
-        // Performs a low-level call to handle older deployments that miss the `isTransferable` function.
-        (vars.success, vars.returnData) =
-            address(vars.lockup).staticcall(abi.encodeCall(ISablierLockupBase.isTransferable, (streamId)));
-
-        // When the call has failed, the stream NFT is assumed to be transferable.
-        vars.isTransferable = vars.success ? abi.decode(vars.returnData, (bool)) : true;
-
         // Generate the JSON metadata.
         vars.json = string.concat(
             '{"attributes":',
@@ -117,7 +106,7 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
                 lockupStringified: vars.lockupStringified,
                 tokenAddress: vars.token.toHexString(),
                 streamId: streamId.toString(),
-                isTransferable: vars.isTransferable
+                isTransferable: vars.lockup.isTransferable(streamId)
             }),
             '","external_url":"https://sablier.com","name":"',
             string.concat("Sablier Lockup #", streamId.toString()),
