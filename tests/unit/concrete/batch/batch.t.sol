@@ -7,8 +7,8 @@ import { BatchMock } from "../../../mocks/BatchMock.sol";
 contract Batch_Unit_Concrete_Test is Base_Test {
     BatchMock internal batchMock;
     bytes[] internal calls;
-    bytes[] internal results;
     uint256 internal newNumber = 100;
+    bytes[] internal results;
 
     function setUp() public virtual override {
         Base_Test.setUp();
@@ -29,11 +29,11 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         _;
     }
 
-    modifier givenNonStateChangingFunction() {
+    modifier whenNonStateChangingFunction() {
         _;
     }
 
-    function test_RevertWhen_FunctionReverts() external whenFunctionExists givenNonStateChangingFunction {
+    function test_RevertWhen_FunctionReverts() external whenFunctionExists whenNonStateChangingFunction {
         calls = new bytes[](1);
         calls[0] = abi.encodeCall(batchMock.getNumberAndRevert, ());
 
@@ -42,7 +42,7 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         batchMock.batch(calls);
     }
 
-    function test_WhenFunctionNotRevert() external whenFunctionExists givenNonStateChangingFunction {
+    function test_WhenFunctionNotRevert() external whenFunctionExists whenNonStateChangingFunction {
         calls = new bytes[](1);
         calls[0] = abi.encodeCall(batchMock.getNumber, ());
         results = batchMock.batch(calls);
@@ -52,7 +52,7 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         assertEq(abi.decode(results[0], (uint256)), 10);
     }
 
-    modifier givenStateChangingFunction() {
+    modifier whenStateChangingFunction() {
         _;
     }
 
@@ -63,7 +63,7 @@ contract Batch_Unit_Concrete_Test is Base_Test {
     function test_RevertWhen_BatchIncludesETHValue()
         external
         whenFunctionExists
-        givenStateChangingFunction
+        whenStateChangingFunction
         whenNotPayable
     {
         calls = new bytes[](1);
@@ -74,13 +74,13 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         batchMock.batch{ value: 1 wei }(calls);
     }
 
-    function test_WhenBatchNotIncludeETHValue() external whenFunctionExists givenStateChangingFunction whenNotPayable {
+    function test_WhenBatchNotIncludeETHValue() external whenFunctionExists whenStateChangingFunction whenNotPayable {
         calls = new bytes[](1);
         calls[0] = abi.encodeCall(batchMock.setNumber, (newNumber));
 
         results = batchMock.batch(calls);
 
-        // It should return empty value.
+        // It should return the empty string.
         assertEq(results.length, 1);
         assertEq(results[0], hex"");
     }
@@ -92,11 +92,11 @@ contract Batch_Unit_Concrete_Test is Base_Test {
     function test_RevertWhen_FunctionRevertsWithCustomError()
         external
         whenFunctionExists
-        givenStateChangingFunction
+        whenStateChangingFunction
         whenPayable
     {
         calls = new bytes[](1);
-        calls[0] = abi.encodeCall(batchMock.setNumberWithPayableAndRevert, (newNumber));
+        calls[0] = abi.encodeCall(batchMock.setNumberWithPayableAndRevertError, (newNumber));
 
         // It should revert.
         vm.expectRevert(abi.encodeWithSelector(BatchMock.InvalidNumber.selector, newNumber));
@@ -106,7 +106,7 @@ contract Batch_Unit_Concrete_Test is Base_Test {
     function test_RevertWhen_FunctionRevertsWithStringError()
         external
         whenFunctionExists
-        givenStateChangingFunction
+        whenStateChangingFunction
         whenPayable
     {
         calls = new bytes[](1);
@@ -117,7 +117,7 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         batchMock.batch{ value: 1 wei }(calls);
     }
 
-    function test_WhenFunctionReturnsAValue() external whenFunctionExists givenStateChangingFunction whenPayable {
+    function test_WhenFunctionReturnsAValue() external whenFunctionExists whenStateChangingFunction whenPayable {
         calls = new bytes[](1);
         calls[0] = abi.encodeCall(batchMock.setNumberWithPayableAndReturn, (newNumber));
         results = batchMock.batch{ value: 1 wei }(calls);
@@ -127,17 +127,12 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         assertEq(abi.decode(results[0], (uint256)), newNumber);
     }
 
-    function test_WhenFunctionDoesNotReturnAValue()
-        external
-        whenFunctionExists
-        givenStateChangingFunction
-        whenPayable
-    {
+    function test_WhenFunctionDoesNotReturnAValue() external whenFunctionExists whenStateChangingFunction whenPayable {
         calls = new bytes[](1);
         calls[0] = abi.encodeCall(batchMock.setNumberWithPayable, (newNumber));
         results = batchMock.batch{ value: 1 wei }(calls);
 
-        // It should return empty value.
+        // It should return an empty value.
         assertEq(results.length, 1);
         assertEq(results[0], hex"");
     }

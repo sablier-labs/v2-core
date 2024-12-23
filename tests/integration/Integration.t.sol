@@ -96,15 +96,15 @@ abstract contract Integration_Test is Base_Test {
         // Set the default Lockup model as Dynamic, we will override the default stream IDs where necessary.
         lockupModel = Lockup.Model.LOCKUP_DYNAMIC;
 
-        // Initialize default streams IDs.
-        initializeDefaultStreamIds();
+        // Initialize default streams.
+        initializeDefaultStreams();
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                                 INITIALIZE-FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    function initializeDefaultStreamIds() internal {
+    function initializeDefaultStreams() internal {
         defaultStreamId = createDefaultStream();
         notCancelableStreamId = createDefaultStreamNonCancelable();
         notTransferableStreamId = createDefaultStreamNonTransferable();
