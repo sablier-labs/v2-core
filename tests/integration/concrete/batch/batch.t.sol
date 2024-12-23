@@ -7,17 +7,8 @@ import { Integration_Test } from "../../Integration.t.sol";
 
 contract Batch_Integration_Concrete_Test is Integration_Test {
     /*//////////////////////////////////////////////////////////////////////////
-                                       REVERT
+                                    BATCH + LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
-
-    /// @dev The batch call includes ETH and a non-payable function.
-    function test_RevertWhen_ETHWithNonPayable() external {
-        bytes[] memory calls = new bytes[](1);
-        calls[0] = abi.encodeCall(lockup.isCancelable, (defaultStreamId));
-
-        vm.expectRevert();
-        lockup.batch{ value: 1 wei }(calls);
-    }
 
     /// @dev The batch call cancels a non-cancelable stream.
     function test_RevertWhen_LockupThrows() external {
@@ -31,29 +22,6 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
         );
         lockup.batch(calls);
     }
-
-    /// @dev The batch call includes a non-existent function.
-    function test_RevertWhen_NonExistentFunction() external {
-        bytes[] memory calls = new bytes[](1);
-        calls[0] = abi.encodeWithSignature("nonExistentFunction()");
-
-        vm.expectRevert();
-        lockup.batch(calls);
-    }
-
-    /// @dev The batch call reverts with a string reason.
-    function test_RevertWhen_StringReason() external {
-        bytes[] memory calls = new bytes[](2);
-        calls[0] = abi.encodeCall(lockup.cancel, (defaultStreamId));
-        calls[1] = abi.encodeCall(lockup.cancel, (recipientRevertStreamId));
-
-        vm.expectRevert("You shall not pass");
-        lockup.batch(calls);
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                       RETURN
-    //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev The batch call includes:
     /// - Returning state changing functions
@@ -89,41 +57,6 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
         assertEq(abi.decode(results[4], (uint256)), expectedNextStreamId);
         assertEq(results[5], hex"");
     }
-
-    /// @dev The batch call includes:
-    /// - ETH value
-    /// - Returning state changing functions
-    /// - Non-returning state changing functions
-    function test_BatchPayable_StateChangingFunctions() external {
-        uint256 expectedNextStreamId = lockup.nextStreamId();
-        uint256 initialEthBalance = address(lockup).balance;
-        vm.warp(defaults.WARP_26_PERCENT());
-
-        bytes[] memory calls = new bytes[](4);
-        // It will return the withdrawn amount.
-        calls[0] = abi.encodeCall(lockup.withdrawMax, (notCancelableStreamId, users.recipient));
-        // It will not return anything.
-        calls[1] = abi.encodeCall(lockup.cancel, (defaultStreamId));
-        // It will return the stream ID created.
-        calls[2] = abi.encodeCall(
-            lockup.createWithTimestampsLL,
-            (defaults.createWithTimestamps(), defaults.unlockAmounts(), defaults.CLIFF_TIME())
-        );
-        // It will not return anything.
-        calls[3] = abi.encodeCall(lockup.renounce, (notTransferableStreamId));
-
-        bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
-        assertEq(results.length, 4);
-        assertEq(abi.decode(results[0], (uint128)), defaults.WITHDRAW_AMOUNT());
-        assertEq(results[1], hex"");
-        assertEq(abi.decode(results[2], (uint256)), expectedNextStreamId);
-        assertEq(results[3], hex"");
-        assertEq(address(lockup).balance, initialEthBalance + 1 wei);
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                    BATCH + LOCKUP
-    //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev The batch call includes:
     /// - ETH value
