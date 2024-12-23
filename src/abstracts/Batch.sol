@@ -13,7 +13,7 @@ abstract contract Batch is IBatch {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc IBatch
-    /// @dev Since `msg.value` can be reused across the calls, BE VERY CAREFUL when using it. Refer to
+    /// @dev Since `msg.value` can be reused across the calls, be VERY CAREFUL when using it. Refer to
     /// https://www.paradigm.xyz/2021/08/two-rights-might-make-a-wrong for more information.
     function batch(bytes[] calldata calls) external payable override returns (bytes[] memory results) {
         uint256 count = calls.length;
@@ -22,18 +22,18 @@ abstract contract Batch is IBatch {
         for (uint256 i = 0; i < count; ++i) {
             (bool success, bytes memory result) = address(this).delegatecall(calls[i]);
 
-            // Revert with result data if delegatecall fails. Assembly code is used to bubble up the revert reason.
+            // Check: If delegatecall fails, load and bubble up the revert reason.
             if (!success) {
                 assembly {
                     // Get the length of the result stored in the first 32 bytes.
                     let resultSize := mload(result)
 
-                    // Forward the pointer by 32 bytes at the beginning of the result data.
+                    // Forward the pointer by 32 bytes at the beginning of the result data and revert it.
                     revert(add(32, result), resultSize)
                 }
             }
 
-            // Store the result of the delegatecall.
+            // Push the result onto the results array.
             results[i] = result;
         }
     }
