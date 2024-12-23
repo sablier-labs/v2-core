@@ -47,9 +47,9 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         calls[0] = abi.encodeCall(batchMock.getNumber, ());
         results = batchMock.batch(calls);
 
-        // It should return expected value.
-        assertEq(results.length, 1);
-        assertEq(abi.decode(results[0], (uint256)), 10);
+        // It should return the expected value.
+        assertEq(results.length, 1, "batch results length");
+        assertEq(abi.decode(results[0], (uint256)), 42, "batch results[0]");
     }
 
     modifier whenStateChangingFunction() {
@@ -81,8 +81,8 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         results = batchMock.batch(calls);
 
         // It should return the empty string.
-        assertEq(results.length, 1);
-        assertEq(results[0], hex"");
+        assertEq(results.length, 1, "batch results length");
+        assertEq(results[0], hex"", "batch results[0]");
     }
 
     modifier whenPayable() {
@@ -123,8 +123,8 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         results = batchMock.batch{ value: 1 wei }(calls);
 
         // It should return expected value.
-        assertEq(results.length, 1);
-        assertEq(abi.decode(results[0], (uint256)), newNumber);
+        assertEq(results.length, 1, "batch results length");
+        assertEq(abi.decode(results[0], (uint256)), newNumber, "batch results[0]");
     }
 
     function test_WhenFunctionDoesNotReturnAValue() external whenFunctionExists whenStateChangingFunction whenPayable {
@@ -133,7 +133,7 @@ contract Batch_Unit_Concrete_Test is Base_Test {
         results = batchMock.batch{ value: 1 wei }(calls);
 
         // It should return an empty value.
-        assertEq(results.length, 1);
-        assertEq(results[0], hex"");
+        assertEq(results.length, 1, "batch results length");
+        assertEq(results[0], hex"", "batch results[0]");
     }
 }
