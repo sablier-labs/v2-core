@@ -1,0 +1,233 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity >=0.8.22;
+
+import { Errors } from "src/libraries/Errors.sol";
+
+import { Integration_Test } from "../../Integration.t.sol";
+
+contract Batch_Integration_Concrete_Test is Integration_Test {
+    /*//////////////////////////////////////////////////////////////////////////
+                                       REVERT
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev The batch call includes ETH and a non-payable function.
+    function test_RevertWhen_ETHWithNonPayable() external {
+        bytes[] memory calls = new bytes[](1);
+        calls[0] = abi.encodeCall(lockup.isCancelable, (defaultStreamId));
+
+        vm.expectRevert();
+        lockup.batch{ value: 1 wei }(calls);
+    }
+
+    /// @dev The batch call cancels a non-cancelable stream.
+    function test_RevertWhen_LockupThrows() external {
+        bytes[] memory calls = new bytes[](2);
+        calls[0] = abi.encodeCall(lockup.cancel, (defaultStreamId));
+        calls[1] = abi.encodeCall(lockup.cancel, (notCancelableStreamId));
+
+        // Expect revert on notCancelableStreamId.
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, notCancelableStreamId)
+        );
+        lockup.batch(calls);
+    }
+
+    /// @dev The batch call includes a non-existent function.
+    function test_RevertWhen_NonExistentFunction() external {
+        bytes[] memory calls = new bytes[](1);
+        calls[0] = abi.encodeWithSignature("nonExistentFunction()");
+
+        vm.expectRevert();
+        lockup.batch(calls);
+    }
+
+    /// @dev The batch call reverts with a string reason.
+    function test_RevertWhen_StringReason() external {
+        bytes[] memory calls = new bytes[](2);
+        calls[0] = abi.encodeCall(lockup.cancel, (defaultStreamId));
+        calls[1] = abi.encodeCall(lockup.cancel, (recipientRevertStreamId));
+
+        vm.expectRevert("You shall not pass");
+        lockup.batch(calls);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                       RETURN
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev The batch call includes:
+    /// - Returning state changing functions
+    /// - Non-returning state changing functions
+    /// - View only functions
+    function test_Batch_StateChangingAndViewFunctions() external {
+        uint256 expectedNextStreamId = lockup.nextStreamId();
+        vm.warp(defaults.WARP_26_PERCENT());
+
+        bytes[] memory calls = new bytes[](6);
+        // It will return True.
+        calls[0] = abi.encodeCall(lockup.isCancelable, (defaultStreamId));
+        // It will return the withdrawn amount.
+        calls[1] = abi.encodeCall(lockup.withdrawMax, (notCancelableStreamId, users.recipient));
+        // It will not return anything.
+        calls[2] = abi.encodeCall(lockup.cancel, (defaultStreamId));
+        // It will return the next stream ID.
+        calls[3] = abi.encodeCall(lockup.nextStreamId, ());
+        // It will return the stream ID created.
+        calls[4] = abi.encodeCall(
+            lockup.createWithTimestampsLL,
+            (defaults.createWithTimestamps(), defaults.unlockAmounts(), defaults.CLIFF_TIME())
+        );
+        // It will not return anything.
+        calls[5] = abi.encodeCall(lockup.renounce, (notTransferableStreamId));
+
+        bytes[] memory results = lockup.batch(calls);
+        assertEq(results.length, 6);
+        assertEq(abi.decode(results[0], (bool)), true);
+        assertEq(abi.decode(results[1], (uint128)), defaults.WITHDRAW_AMOUNT());
+        assertEq(results[2], hex"");
+        assertEq(abi.decode(results[3], (uint256)), expectedNextStreamId);
+        assertEq(abi.decode(results[4], (uint256)), expectedNextStreamId);
+        assertEq(results[5], hex"");
+    }
+
+    /// @dev The batch call includes:
+    /// - ETH value
+    /// - Returning state changing functions
+    /// - Non-returning state changing functions
+    function test_BatchPayable_StateChangingFunctions() external {
+        uint256 expectedNextStreamId = lockup.nextStreamId();
+        uint256 initialEthBalance = address(lockup).balance;
+        vm.warp(defaults.WARP_26_PERCENT());
+
+        bytes[] memory calls = new bytes[](4);
+        // It will return the withdrawn amount.
+        calls[0] = abi.encodeCall(lockup.withdrawMax, (notCancelableStreamId, users.recipient));
+        // It will not return anything.
+        calls[1] = abi.encodeCall(lockup.cancel, (defaultStreamId));
+        // It will return the stream ID created.
+        calls[2] = abi.encodeCall(
+            lockup.createWithTimestampsLL,
+            (defaults.createWithTimestamps(), defaults.unlockAmounts(), defaults.CLIFF_TIME())
+        );
+        // It will not return anything.
+        calls[3] = abi.encodeCall(lockup.renounce, (notTransferableStreamId));
+
+        bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
+        assertEq(results.length, 4);
+        assertEq(abi.decode(results[0], (uint128)), defaults.WITHDRAW_AMOUNT());
+        assertEq(results[1], hex"");
+        assertEq(abi.decode(results[2], (uint256)), expectedNextStreamId);
+        assertEq(results[3], hex"");
+        assertEq(address(lockup).balance, initialEthBalance + 1 wei);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                    BATCH + LOCKUP
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev The batch call includes:
+    /// - ETH value
+    /// - All create stream functions that return a value
+    function test_BatchPayable_CreateStreams() external {
+        uint256 expectedNextStreamId = lockup.nextStreamId();
+        uint256 initialEthBalance = address(lockup).balance;
+
+        bytes[] memory calls = new bytes[](6);
+        calls[0] = abi.encodeCall(
+            lockup.createWithDurationsLD, (defaults.createWithDurations(), defaults.segmentsWithDurations())
+        );
+        calls[1] = abi.encodeCall(
+            lockup.createWithDurationsLL,
+            (defaults.createWithDurations(), defaults.unlockAmounts(), defaults.durations())
+        );
+        calls[2] = abi.encodeCall(
+            lockup.createWithDurationsLT, (defaults.createWithDurations(), defaults.tranchesWithDurations())
+        );
+        calls[3] = abi.encodeCall(lockup.createWithTimestampsLD, (defaults.createWithTimestamps(), defaults.segments()));
+        calls[4] = abi.encodeCall(
+            lockup.createWithTimestampsLL,
+            (defaults.createWithTimestamps(), defaults.unlockAmounts(), defaults.CLIFF_TIME())
+        );
+        calls[5] = abi.encodeCall(lockup.createWithTimestampsLT, (defaults.createWithTimestamps(), defaults.tranches()));
+
+        // It should return the stream IDs created.
+        bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
+        assertEq(results.length, 6);
+        assertEq(abi.decode(results[0], (uint256)), expectedNextStreamId);
+        assertEq(abi.decode(results[1], (uint256)), expectedNextStreamId + 1);
+        assertEq(abi.decode(results[2], (uint256)), expectedNextStreamId + 2);
+        assertEq(abi.decode(results[3], (uint256)), expectedNextStreamId + 3);
+        assertEq(abi.decode(results[4], (uint256)), expectedNextStreamId + 4);
+        assertEq(abi.decode(results[5], (uint256)), expectedNextStreamId + 5);
+        assertEq(address(lockup).balance, initialEthBalance + 1 wei);
+    }
+
+    /// @dev The batch call includes:
+    /// - ETH value
+    /// - All recipient related functions with both returns and non-returns
+    function test_BatchPayable_RecipientFunctions() external {
+        uint256 initialEthBalance = address(lockup).balance;
+        vm.warp(defaults.WARP_26_PERCENT());
+
+        bytes[] memory calls = new bytes[](4);
+        calls[0] = abi.encodeCall(lockup.cancel, (defaultStreamId));
+
+        uint256[] memory streamIds = new uint256[](2);
+        streamIds[0] = recipientGoodStreamId;
+        streamIds[1] = recipientInvalidSelectorStreamId;
+        calls[1] = abi.encodeCall(lockup.cancelMultiple, (streamIds));
+
+        calls[2] = abi.encodeCall(lockup.renounce, (recipientReentrantStreamId));
+
+        streamIds = new uint256[](1);
+        streamIds[0] = recipientRevertStreamId;
+        calls[3] = abi.encodeCall(lockup.renounceMultiple, (streamIds));
+
+        bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
+
+        assertEq(results.length, 4);
+        assertEq(results[0], hex"");
+        assertEq(results[1], hex"");
+        assertEq(results[2], hex"");
+        assertEq(results[3], hex"");
+        assertEq(address(lockup).balance, initialEthBalance + 1 wei);
+    }
+
+    /// @dev The batch call includes:
+    /// - ETH value
+    /// - All sender related functions with both returns and non-returns
+    function test_BatchPayable_SenderFunctions() external {
+        uint256 initialEthBalance = address(lockup).balance;
+        // Warp to the end time so that `burn` can be added to the call list.
+        vm.warp(defaults.END_TIME());
+
+        bytes[] memory calls = new bytes[](5);
+        // It should not return anything.
+        calls[0] = abi.encodeCall(lockup.withdraw, (defaultStreamId, users.recipient, 1));
+        // It should return the withdrawn amount.
+        calls[1] = abi.encodeCall(lockup.withdrawMax, (defaultStreamId, users.recipient));
+
+        uint256[] memory streamIds = new uint256[](2);
+        streamIds[0] = streamIds[1] = notCancelableStreamId;
+        uint128[] memory amounts = new uint128[](2);
+        amounts[0] = amounts[1] = 1;
+        // It should not return anything.
+        calls[2] = abi.encodeCall(lockup.withdrawMultiple, (streamIds, amounts));
+
+        // It should return the withdrawn amount.
+        calls[3] = abi.encodeCall(lockup.withdrawMaxAndTransfer, (notCancelableStreamId, users.recipient));
+        // It should not return anything.
+        calls[4] = abi.encodeCall(lockup.burn, (defaultStreamId));
+
+        resetPrank({ msgSender: users.recipient });
+        bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
+
+        assertEq(results.length, 5);
+        assertEq(results[0], hex"");
+        assertEq(abi.decode(results[1], (uint128)), defaults.DEPOSIT_AMOUNT() - 1);
+        assertEq(results[2], hex"");
+        assertEq(abi.decode(results[3], (uint128)), defaults.DEPOSIT_AMOUNT() - 2);
+        assertEq(results[4], hex"");
+        assertEq(address(lockup).balance, initialEthBalance + 1 wei);
+    }
+}
