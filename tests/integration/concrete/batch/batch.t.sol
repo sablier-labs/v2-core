@@ -60,7 +60,7 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
     }
 
     /// @dev The batch call includes:
-    /// - Payable functions
+    /// - ETH value
     /// - All create stream functions that return a value
     function test_BatchPayable_CreateStreams() external {
         uint256 expectedNextStreamId = lockup.nextStreamId();
@@ -97,7 +97,7 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
     }
 
     /// @dev The batch call includes:
-    /// - Payable functions
+    /// - ETH value
     /// - All recipient related functions with both returns and non-returns
     function test_BatchPayable_RecipientFunctions() external {
         uint256 initialEthBalance = address(lockup).balance;
@@ -128,7 +128,7 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
     }
 
     /// @dev The batch call includes:
-    /// - Payable functions
+    /// - ETH value
     /// - All sender related functions with both returns and non-returns
     function test_BatchPayable_SenderFunctions() external {
         uint256 initialEthBalance = address(lockup).balance;
