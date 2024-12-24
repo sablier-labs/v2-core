@@ -6,7 +6,6 @@ import { IBatch } from "../interfaces/IBatch.sol";
 
 /// @title Batch
 /// @notice See the documentation in {IBatch}.
-/// @dev Forked from: https://github.com/boringcrypto/BoringSolidity/blob/master/contracts/BoringBatchable.sol
 abstract contract Batch is IBatch {
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING NON-CONSTANT FUNCTIONS
@@ -22,7 +21,7 @@ abstract contract Batch is IBatch {
         for (uint256 i = 0; i < count; ++i) {
             (bool success, bytes memory result) = address(this).delegatecall(calls[i]);
 
-            // Check: If the delegate call failed, load and bubble up the revert data.
+            // Check: If the delegatecall failed, load and bubble up the revert data.
             if (!success) {
                 assembly {
                     // Get the length of the result stored in the first 32 bytes.

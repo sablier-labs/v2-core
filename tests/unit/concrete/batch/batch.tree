@@ -2,12 +2,12 @@ Batch_Unit_Concrete_Test
 ├── when function does not exist
 │  └── it should revert
 └── when function exists
-   ├── when non state-changing function
+   ├── when non state changing function
    │  ├── when function reverts
    │  │  └── it should revert
    │  └── when function not revert
    │     └── it should return expected value
-   └── when state-changing function
+   └── when state changing function
       ├── when not payable
       │  ├── when batch includes ETH value
       │  │  └── it should revert

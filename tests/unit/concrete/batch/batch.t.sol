@@ -82,7 +82,7 @@ contract Batch_Unit_Concrete_Test is Base_Test {
 
         // It should return the empty string.
         assertEq(results.length, 1, "batch results length");
-        assertEq(results[0], hex"", "batch results[0]");
+        assertEq(results[0], "", "batch results[0]");
     }
 
     modifier whenPayable() {
@@ -134,6 +134,6 @@ contract Batch_Unit_Concrete_Test is Base_Test {
 
         // It should return an empty value.
         assertEq(results.length, 1, "batch results length");
-        assertEq(results[0], hex"", "batch results[0]");
+        assertEq(results[0], "", "batch results[0]");
     }
 }

@@ -53,10 +53,10 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
         assertEq(results.length, 6, "batch results length");
         assertTrue(abi.decode(results[0], (bool)), "batch results[0]");
         assertEq(abi.decode(results[1], (uint128)), defaults.WITHDRAW_AMOUNT(), "batch results[1]");
-        assertEq(results[2], hex"", "batch results[2]");
+        assertEq(results[2], "", "batch results[2]");
         assertEq(abi.decode(results[3], (uint256)), expectedNextStreamId, "batch results[3]");
         assertEq(abi.decode(results[4], (uint256)), expectedNextStreamId, "batch results[4]");
-        assertEq(results[5], hex"", "batch results[5]");
+        assertEq(results[5], "", "batch results[5]");
     }
 
     /// @dev The batch call includes:
@@ -93,7 +93,7 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
         assertEq(abi.decode(results[3], (uint256)), expectedNextStreamId + 3, "batch results[3]");
         assertEq(abi.decode(results[4], (uint256)), expectedNextStreamId + 4, "batch results[4]");
         assertEq(abi.decode(results[5], (uint256)), expectedNextStreamId + 5, "batch results[5]");
-        assertEq(address(lockup).balance, initialEthBalance + 1 wei, "batch contract balance");
+        assertEq(address(lockup).balance, initialEthBalance + 1 wei, "lockup contract balance");
     }
 
     /// @dev The batch call includes:
@@ -119,12 +119,12 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
 
         bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
 
-        assertEq(results.length, 4);
-        assertEq(results[0], hex"");
-        assertEq(results[1], hex"");
-        assertEq(results[2], hex"");
-        assertEq(results[3], hex"");
-        assertEq(address(lockup).balance, initialEthBalance + 1 wei);
+        assertEq(results.length, 4, "batch results length");
+        assertEq(results[0], "", "batch results[0]");
+        assertEq(results[1], "", "batch results[1]");
+        assertEq(results[2], "", "batch results[2]");
+        assertEq(results[3], "", "batch results[3]");
+        assertEq(address(lockup).balance, initialEthBalance + 1 wei, "lockup contract balance");
     }
 
     /// @dev The batch call includes:
@@ -155,11 +155,11 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
         bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
 
         assertEq(results.length, 5, "batch results length");
-        assertEq(results[0], hex"", "batch results[0]");
+        assertEq(results[0], "", "batch results[0]");
         assertEq(abi.decode(results[1], (uint128)), defaults.DEPOSIT_AMOUNT() - 1, "batch results[1]");
-        assertEq(results[2], hex"", "batch results[2]");
+        assertEq(results[2], "", "batch results[2]");
         assertEq(abi.decode(results[3], (uint128)), defaults.DEPOSIT_AMOUNT() - 2, "batch results[3]");
-        assertEq(results[4], hex"", "batch results[4]");
-        assertEq(address(lockup).balance, initialEthBalance + 1 wei, "batch contract balance");
+        assertEq(results[4], "", "batch results[4]");
+        assertEq(address(lockup).balance, initialEthBalance + 1 wei, "lockup contract balance");
     }
 }
