@@ -33,18 +33,23 @@ library VestingMath {
     /// 2. The stream's start time must be in the past so that the calculations below do not overflow.
     /// 3. The stream's end time must be in the future so that the loop below does not panic with an "index out of
     /// bounds" error.
+    ///
+    /// Assumptions:
+    /// 1. The sum of all segment amounts does not overflow uint128.
+    /// 2. The segment timestamps are ordered chronologically.
+    /// 3. There are no duplicate segment timestamps.
+    /// 4. The number of segments does not exceed MAX_COUNT.
     function calculateLockupDynamicStreamedAmount(
         LockupDynamic.Segment[] memory segments,
+        uint40 blockTimestamp,
         uint40 startTime,
         uint128 withdrawnAmount
     )
         public
-        view
+        pure
         returns (uint128)
     {
         unchecked {
-            uint40 blockTimestamp = uint40(block.timestamp);
-
             // Sum the amounts in all segments that precede the block timestamp.
             uint128 previousSegmentAmounts;
             uint40 currentSegmentTimestamp = segments[0].timestamp;
@@ -100,7 +105,9 @@ library VestingMath {
     /// @dev Lockup linear model uses the following distribution function:
     ///
     /// $$
-    /// f(x) = x * sa + s + c
+    ///        ( x * sa + s,  cliffTime > blockTimestamp
+    /// f(x) = (
+    ///        ( x * sa + s + c, cliffTime <= blockTimestamp
     /// $$
     ///
     /// Where:
@@ -109,19 +116,23 @@ library VestingMath {
     /// - $sa$ is the streamable amount, i.e. deposited amount minus unlock amounts' sum.
     /// - $s$ is the start unlock amount.
     /// - $c$ is the cliff unlock amount.
+    ///
+    /// Assumptions:
+    /// 1. unlockAmounts.start + unlockAmounts.cliff does not overflow uint128
+    /// 2. timestamps.start < timestamps.end and timestamps.start <= block.timestamp <= timestamps.end
+    /// 3. If cliffTime > 0, timestamps.start < cliffTime < timestamps.end
     function calculateLockupLinearStreamedAmount(
         uint128 depositedAmount,
+        uint40 blockTimestamp,
         Lockup.Timestamps memory timestamps,
         uint40 cliffTime,
         LockupLinear.UnlockAmounts memory unlockAmounts,
         uint128 withdrawnAmount
     )
         public
-        view
+        pure
         returns (uint128)
     {
-        uint256 blockTimestamp = block.timestamp;
-
         // If the cliff time is in the future, return the start unlock amount.
         if (cliffTime > blockTimestamp) {
             return unlockAmounts.start;
@@ -177,13 +188,20 @@ library VestingMath {
     /// Where:
     ///
     /// - $\Sigma(eta)$ is the sum of all vested tranches' amounts.
-    function calculateLockupTranchedStreamedAmount(LockupTranched.Tranche[] memory tranches)
+    ///
+    /// Assumptions:
+    /// 1. The sum of all tranche amounts does not overflow uint128.
+    /// 2. The tranche timestamps are ordered chronologically.
+    /// 3. There are no duplicate tranche timestamps.
+    /// 4. The number of segments does not exceed MAX_COUNT.
+    function calculateLockupTranchedStreamedAmount(
+        uint40 blockTimestamp,
+        LockupTranched.Tranche[] memory tranches
+    )
         public
-        view
+        pure
         returns (uint128)
     {
-        uint256 blockTimestamp = block.timestamp;
-
         // If the first tranche's timestamp is in the future, return zero.
         if (tranches[0].timestamp > blockTimestamp) {
             return 0;

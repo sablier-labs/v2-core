@@ -184,7 +184,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
         // Calculate the cliff time and the end time. It is safe to use unchecked arithmetic because {_createLL} will
         // nonetheless check that the end time is greater than the cliff time, and also that the cliff time, if set,
-        // is greater than or equal to the start time.
+        // is greater than the start time.
         unchecked {
             if (durations.cliff > 0) {
                 cliffTime = timestamps.start + durations.cliff;
@@ -302,7 +302,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
         // If the start time is in the future, return zero.
         uint40 blockTimestamp = uint40(block.timestamp);
-        if (timestamps.start >= blockTimestamp) {
+        if (timestamps.start > blockTimestamp) {
             return 0;
         }
 
@@ -319,6 +319,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
             streamedAmount = VestingMath.calculateLockupDynamicStreamedAmount({
                 segments: _segments[streamId],
+                blockTimestamp: blockTimestamp,
                 startTime: timestamps.start,
                 withdrawnAmount: _streams[streamId].amounts.withdrawn
             });
@@ -327,6 +328,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
             streamedAmount = VestingMath.calculateLockupLinearStreamedAmount({
                 depositedAmount: depositedAmount,
+                blockTimestamp: blockTimestamp,
                 timestamps: timestamps,
                 cliffTime: _cliffs[streamId],
                 unlockAmounts: _unlockAmounts[streamId],
@@ -335,7 +337,10 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
         // Calculate streamed amount for Lockup Tranched model.
         else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
-            streamedAmount = VestingMath.calculateLockupTranchedStreamedAmount({ tranches: _tranches[streamId] });
+            streamedAmount = VestingMath.calculateLockupTranchedStreamedAmount({
+                blockTimestamp: blockTimestamp,
+                tranches: _tranches[streamId]
+            });
         }
 
         return streamedAmount;

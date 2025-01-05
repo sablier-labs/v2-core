@@ -246,7 +246,8 @@ interface ISablierLockupBase is
     /// Notes:
     /// - If there any tokens left for the recipient to withdraw, the stream is marked as canceled. Otherwise, the
     /// stream is marked as depleted.
-    /// - This function attempts to invoke a hook on the recipient, if the resolved address is a contract.
+    /// - This function attempts to call a hook on the recipient of the stream, unless msg.sender is the recipient or
+    /// the recipient is not on the allowlist.
     ///
     /// Requirements:
     /// - Must not be delegate called.
