@@ -184,15 +184,11 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
         uint40 cliffTime;
 
-        // Calculate the cliff time and the end time. It is safe to use unchecked arithmetic because {_createLL} will
-        // nonetheless check that the end time is greater than the cliff time, and also that the cliff time, if set,
-        // is greater than the start time.
-        unchecked {
-            if (durations.cliff > 0) {
-                cliffTime = timestamps.start + durations.cliff;
-            }
-            timestamps.end = timestamps.start + durations.total;
+        // Calculate the cliff time and the end time.
+        if (durations.cliff > 0) {
+            cliffTime = timestamps.start + durations.cliff;
         }
+        timestamps.end = timestamps.start + durations.total;
 
         // Checks, Effects and Interactions: create the stream.
         streamId = _createLL(
