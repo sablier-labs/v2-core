@@ -9,7 +9,7 @@ export default async function () {
   const chainId = Number(network.chainId);
 
   const provider = new Provider(hre.network.config.url);
-  const deployerAddressPV = new Wallet(process.env.PV_KEY as string).connect(provider);
+  const deployerAddressPV = new Wallet(process.env.PRIVATE_KEY as string).connect(provider);
   const deployerAddress = deployerAddressPV.address;
 
   if (!deployerAddress) {
@@ -33,7 +33,7 @@ export default async function () {
   const artifactLockupLinear = await deployer.loadArtifact("SablierV2LockupLinear");
   const artifactLockupTranched = await deployer.loadArtifact("SablierV2LockupTranched");
 
-  const safeMultisig = "0xaFeA787Ef04E280ad5Bb907363f214E4BAB9e288";
+  const safeMultisig = "0xD427d37B5F6d33f7D42C4125979361E011FFbfD9";
 
   const svg = await deployer.deploy(artifactSVG, []);
   console.log("NFTSVG deployed to:", svg.target);
