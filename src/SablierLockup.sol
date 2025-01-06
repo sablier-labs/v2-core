@@ -141,12 +141,14 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         noDelegateCall
         returns (uint256 streamId)
     {
+        uint40 startTime = uint40(block.timestamp);
+
         // Generate the canonical segments.
-        LockupDynamic.Segment[] memory segments = Helpers.calculateSegmentTimestamps(segmentsWithDuration);
+        LockupDynamic.Segment[] memory segments = Helpers.calculateSegmentTimestamps(segmentsWithDuration, startTime);
 
         // Declare the timestamps for the stream.
         Lockup.Timestamps memory timestamps =
-            Lockup.Timestamps({ start: uint40(block.timestamp), end: segments[segments.length - 1].timestamp });
+            Lockup.Timestamps({ start: startTime, end: segments[segments.length - 1].timestamp });
 
         // Checks, Effects and Interactions: create the stream.
         streamId = _createLD(
@@ -221,12 +223,14 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         noDelegateCall
         returns (uint256 streamId)
     {
+        uint40 startTime = uint40(block.timestamp);
+
         // Generate the canonical tranches.
-        LockupTranched.Tranche[] memory tranches = Helpers.calculateTrancheTimestamps(tranchesWithDuration);
+        LockupTranched.Tranche[] memory tranches = Helpers.calculateTrancheTimestamps(tranchesWithDuration, startTime);
 
         // Declare the timestamps for the stream.
         Lockup.Timestamps memory timestamps =
-            Lockup.Timestamps({ start: uint40(block.timestamp), end: tranches[tranches.length - 1].timestamp });
+            Lockup.Timestamps({ start: startTime, end: tranches[tranches.length - 1].timestamp });
 
         // Checks, Effects and Interactions: create the stream.
         streamId = _createLT(
