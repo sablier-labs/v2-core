@@ -141,6 +141,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         noDelegateCall
         returns (uint256 streamId)
     {
+        // Use the block timestamp as the start time.
         uint40 startTime = uint40(block.timestamp);
 
         // Generate the canonical segments.
@@ -219,6 +220,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         noDelegateCall
         returns (uint256 streamId)
     {
+        // Use the block timestamp as the start time.
         uint40 startTime = uint40(block.timestamp);
 
         // Generate the canonical tranches.

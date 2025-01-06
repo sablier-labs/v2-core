@@ -89,7 +89,7 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         givenNoColdStreams
         whenCallerAuthorizedForAllStreams
     {
-        // It should emit {RenounceLockupStream} events for both the streams.
+        // It should emit {RenounceLockupStream} events for both streams.
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.RenounceLockupStream(streamIds[0]);
         vm.expectEmit({ emitter: address(lockup) });

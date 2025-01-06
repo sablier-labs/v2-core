@@ -228,7 +228,7 @@ interface ISablierLockupBase is
 
     /// @notice Burns the NFT associated with the stream.
     ///
-    /// @dev Emits a {Transfer}, and {MetadataUpdate} event.
+    /// @dev Emits a {Transfer} and {MetadataUpdate} event.
     ///
     /// Requirements:
     /// - Must not be delegate called.
@@ -241,7 +241,7 @@ interface ISablierLockupBase is
 
     /// @notice Cancels the stream and refunds any remaining tokens to the sender.
     ///
-    /// @dev Emits a {Transfer}, {CancelLockupStream}, and {MetadataUpdate} event.
+    /// @dev Emits a {Transfer}, {CancelLockupStream} and {MetadataUpdate} event.
     ///
     /// Notes:
     /// - If there any tokens left for the recipient to withdraw, the stream is marked as canceled. Otherwise, the
@@ -258,7 +258,7 @@ interface ISablierLockupBase is
 
     /// @notice Cancels multiple streams and refunds any remaining tokens to the sender.
     ///
-    /// @dev Emits multiple {Transfer}, {CancelLockupStream}, and {MetadataUpdate} events.
+    /// @dev Emits multiple {Transfer}, {CancelLockupStream} and {MetadataUpdate} events.
     ///
     /// Notes:
     /// - Refer to the notes in {cancel}.
@@ -321,7 +321,7 @@ interface ISablierLockupBase is
 
     /// @notice Withdraws the provided amount of tokens from the stream to the `to` address.
     ///
-    /// @dev Emits a {Transfer}, {WithdrawFromLockupStream}, and {MetadataUpdate} event.
+    /// @dev Emits a {Transfer}, {WithdrawFromLockupStream} and {MetadataUpdate} event.
     ///
     /// Notes:
     /// - If `msg.sender` is not the recipient and the address is on the allowlist, this function will invoke a hook on
@@ -341,7 +341,7 @@ interface ISablierLockupBase is
 
     /// @notice Withdraws the maximum withdrawable amount from the stream to the provided address `to`.
     ///
-    /// @dev Emits a {Transfer}, {WithdrawFromLockupStream}, and {MetadataUpdate} event.
+    /// @dev Emits a {Transfer}, {WithdrawFromLockupStream} and {MetadataUpdate} event.
     ///
     /// Notes:
     /// - Refer to the notes in {withdraw}.
@@ -381,7 +381,7 @@ interface ISablierLockupBase is
 
     /// @notice Withdraws tokens from streams to the recipient of each stream.
     ///
-    /// @dev Emits multiple {Transfer}, {WithdrawFromLockupStream}, and {MetadataUpdate} events. For each stream that
+    /// @dev Emits multiple {Transfer}, {WithdrawFromLockupStream} and {MetadataUpdate} events. For each stream that
     /// reverted the withdrawal, it emits an {InvalidWithdrawalInWithdrawMultiple} event.
     ///
     /// Notes:
