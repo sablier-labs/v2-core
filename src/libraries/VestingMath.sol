@@ -117,6 +117,7 @@ library VestingMath {
     /// - $s$ is the start unlock amount.
     /// - $c$ is the cliff unlock amount.
     ///
+    /// TODO: edit this
     /// Assumptions:
     /// 1. unlockAmounts.start + unlockAmounts.cliff does not overflow uint128
     /// 2. timestamps.start < timestamps.end and timestamps.start <= block.timestamp <= timestamps.end
