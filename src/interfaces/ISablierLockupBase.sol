@@ -228,7 +228,7 @@ interface ISablierLockupBase is
 
     /// @notice Burns the NFT associated with the stream.
     ///
-    /// @dev Emits a {Transfer} event.
+    /// @dev Emits a {Transfer}, and {MetadataUpdate} event.
     ///
     /// Requirements:
     /// - Must not be delegate called.
@@ -279,7 +279,7 @@ interface ISablierLockupBase is
 
     /// @notice Removes the right of the stream's sender to cancel the stream.
     ///
-    /// @dev Emits a {RenounceLockupStream} and {MetadataUpdate} event.
+    /// @dev Emits a {RenounceLockupStream} event.
     ///
     /// Notes:
     /// - This is an irreversible operation.
@@ -295,7 +295,7 @@ interface ISablierLockupBase is
 
     /// @notice Renounces multiple streams.
     ///
-    /// @dev Emits multiple {RenounceLockupStream} and {MetadataUpdate} events.
+    /// @dev Emits multiple {RenounceLockupStream} events.
     ///
     /// Notes:
     /// - Refer to the notes in {renounce}.
@@ -357,7 +357,7 @@ interface ISablierLockupBase is
     /// @notice Withdraws the maximum withdrawable amount from the stream to the current recipient, and transfers the
     /// NFT to `newRecipient`.
     ///
-    /// @dev Emits a {WithdrawFromLockupStream} and a {Transfer} event.
+    /// @dev Emits a {WithdrawFromLockupStream}, {Transfer} and {MetadataUpdate} event.
     ///
     /// Notes:
     /// - If the withdrawable amount is zero, the withdrawal is skipped.
