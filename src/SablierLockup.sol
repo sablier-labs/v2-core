@@ -315,7 +315,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         uint128 streamedAmount;
         Lockup.Model lockupModel = _streams[streamId].lockupModel;
 
-        // Calculate streamed amount for Lockup Dynamic model.
+        // Calculate streamed amount for the Lockup Dynamic model.
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
             streamedAmount = VestingMath.calculateLockupDynamicStreamedAmount({
                 segments: _segments[streamId],
@@ -324,7 +324,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
                 withdrawnAmount: _streams[streamId].amounts.withdrawn
             });
         }
-        // Calculate streamed amount for Lockup Linear model.
+        // Calculate streamed amount for the Lockup Linear model.
         else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
             streamedAmount = VestingMath.calculateLockupLinearStreamedAmount({
                 depositedAmount: depositedAmount,
@@ -335,7 +335,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
                 withdrawnAmount: _streams[streamId].amounts.withdrawn
             });
         }
-        // Calculate streamed amount for Lockup Tranched model.
+        // Calculate streamed amount for the Lockup Tranched model.
         else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
             streamedAmount = VestingMath.calculateLockupTranchedStreamedAmount({
                 blockTimestamp: blockTimestamp,
@@ -476,16 +476,16 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         // Load the stream ID in a variable.
         streamId = nextStreamId;
 
-        // Effect: set the start unlock amount if its non-zero.
+        // Effect: set the start unlock amount if it is non-zero.
         if (unlockAmounts.start > 0) {
             _unlockAmounts[streamId].start = unlockAmounts.start;
         }
 
-        // Effect: update cliff time if its non-zero.
+        // Effect: update cliff time if it is non-zero.
         if (cliffTime > 0) {
             _cliffs[streamId] = cliffTime;
 
-            // Effect: set the cliff unlock amount if its non-zero.
+            // Effect: set the cliff unlock amount if it is non-zero.
             if (unlockAmounts.cliff > 0) {
                 _unlockAmounts[streamId].cliff = unlockAmounts.cliff;
             }
