@@ -198,7 +198,10 @@ contract LockupNFTDescriptor is ILockupNFTDescriptor {
         pure
         returns (uint256)
     {
-        return streamedAmount * 10_000 / depositedAmount;
+        // This cannot overflow because both inputs are uint128s, and zero deposit amounts are not allowed in Sablier.
+        unchecked {
+            return uint256(streamedAmount) * 10_000 / depositedAmount;
+        }
     }
 
     /// @notice Generates a pseudo-random HSL color by hashing together the `chainid`, the `sablier` address,

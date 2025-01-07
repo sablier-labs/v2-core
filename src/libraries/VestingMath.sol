@@ -115,9 +115,9 @@ library VestingMath {
     /// @dev Lockup linear model uses the following distribution function:
     ///
     /// $$
-    ///        ( x * sa + s,  cliffTime > blockTimestamp
+    ///        ( x * sa + s, block timestamp < cliff time
     /// f(x) = (
-    ///        ( x * sa + s + c, cliffTime <= blockTimestamp
+    ///        ( x * sa + s + c, block timestamp => cliff time
     /// $$
     ///
     /// Where:

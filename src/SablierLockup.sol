@@ -297,7 +297,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
     /// @inheritdoc SablierLockupBase
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
-        // Load the stream's parameters in memory.
+        // Load in memory the parameters used in {VestingMath}.
         uint40 blockTimestamp = uint40(block.timestamp);
         uint128 depositedAmount = _streams[streamId].amounts.deposited;
         Lockup.Model lockupModel = _streams[streamId].lockupModel;
@@ -305,7 +305,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         Lockup.Timestamps memory timestamps =
             Lockup.Timestamps({ start: _streams[streamId].startTime, end: _streams[streamId].endTime });
 
-        // Calculate streamed amount for the Lockup Dynamic model.
+        // Calculate the streamed amount for the Lockup Dynamic model.
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
             streamedAmount = VestingMath.calculateLockupDynamicStreamedAmount({
                 depositedAmount: depositedAmount,
@@ -315,7 +315,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
                 withdrawnAmount: _streams[streamId].amounts.withdrawn
             });
         }
-        // Calculate streamed amount for the Lockup Linear model.
+        // Calculate the streamed amount for the Lockup Linear model.
         else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
             streamedAmount = VestingMath.calculateLockupLinearStreamedAmount({
                 depositedAmount: depositedAmount,
@@ -326,7 +326,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
                 withdrawnAmount: _streams[streamId].amounts.withdrawn
             });
         }
-        // Calculate streamed amount for the Lockup Tranched model.
+        // Calculate the streamed amount for the Lockup Tranched model.
         else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
             streamedAmount = VestingMath.calculateLockupTranchedStreamedAmount({
                 depositedAmount: depositedAmount,
