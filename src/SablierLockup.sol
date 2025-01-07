@@ -297,30 +297,21 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
     /// @inheritdoc SablierLockupBase
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
+        // Load the stream's parameters in memory.
+        uint40 blockTimestamp = uint40(block.timestamp);
+        uint128 depositedAmount = _streams[streamId].amounts.deposited;
+        Lockup.Model lockupModel = _streams[streamId].lockupModel;
+        uint128 streamedAmount;
         Lockup.Timestamps memory timestamps =
             Lockup.Timestamps({ start: _streams[streamId].startTime, end: _streams[streamId].endTime });
-
-        // If the start time is in the future, return zero.
-        uint40 blockTimestamp = uint40(block.timestamp);
-        if (timestamps.start > blockTimestamp) {
-            return 0;
-        }
-
-        // If the end time is not in the future, return the deposited amount.
-        uint128 depositedAmount = _streams[streamId].amounts.deposited;
-        if (timestamps.end <= blockTimestamp) {
-            return depositedAmount;
-        }
-
-        uint128 streamedAmount;
-        Lockup.Model lockupModel = _streams[streamId].lockupModel;
 
         // Calculate streamed amount for the Lockup Dynamic model.
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
             streamedAmount = VestingMath.calculateLockupDynamicStreamedAmount({
+                depositedAmount: depositedAmount,
                 segments: _segments[streamId],
                 blockTimestamp: blockTimestamp,
-                startTime: timestamps.start,
+                timestamps: timestamps,
                 withdrawnAmount: _streams[streamId].amounts.withdrawn
             });
         }
@@ -338,7 +329,9 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         // Calculate streamed amount for the Lockup Tranched model.
         else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
             streamedAmount = VestingMath.calculateLockupTranchedStreamedAmount({
+                depositedAmount: depositedAmount,
                 blockTimestamp: blockTimestamp,
+                timestamps: timestamps,
                 tranches: _tranches[streamId]
             });
         }
