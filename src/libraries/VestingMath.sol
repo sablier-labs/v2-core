@@ -127,11 +127,10 @@ library VestingMath {
     /// - $s$ is the start unlock amount.
     /// - $c$ is the cliff unlock amount.
     ///
-    /// TODO: edit this
     /// Assumptions:
-    /// 1. unlockAmounts.start + unlockAmounts.cliff does not overflow uint128
-    /// 2. timestamps.start < timestamps.end and timestamps.start <= block.timestamp <= timestamps.end
-    /// 3. If cliffTime > 0, timestamps.start < cliffTime < timestamps.end
+    /// 1. The sum of the unlock amounts (start and cliff) does not overflow uint128.
+    /// 2. The start time is before the end time, and the block timestamp is between the start and end times.
+    /// 3. If the cliff time is not zero, it is after the start time and before the end time.
     function calculateLockupLinearStreamedAmount(
         uint128 depositedAmount,
         uint40 blockTimestamp,
