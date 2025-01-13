@@ -36,9 +36,9 @@ library VestingMath {
     ///
     /// Assumptions:
     /// 1. The sum of all segment amounts does not overflow uint128 and equals the deposited amount.
-    /// 2. The first segment's timestamp is greater than the start time and the last segment's timestamp
-    /// equals the end time.
-    /// 3. The segment timestamps are arranged in ascending order.
+    /// 2. The first segment's timestamp is greater than the start time.
+    /// 3. The last segment's timestamp equals the end time.
+    /// 4. The segment timestamps are arranged in ascending order.
     function calculateLockupDynamicStreamedAmount(
         uint128 depositedAmount,
         LockupDynamic.Segment[] memory segments,
