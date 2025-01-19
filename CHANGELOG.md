@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Common Changelog](https://common-changelog.org/).
 
+[2.0.0]: https://github.com/sablier-labs/lockup/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/sablier-labs/lockup/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/sablier-labs/lockup/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/sablier-labs/lockup/compare/v1.1.0...v1.1.1
@@ -11,6 +12,41 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 [1.0.2]: https://github.com/sablier-labs/lockup/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/sablier-labs/lockup/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/sablier-labs/lockup/releases/tag/v1.0.0
+
+## [2.0.0] - 2025-01-24
+
+### Changed
+
+- **Breaking:** merged `SablierV2LockupLinear`, `SablierV2LockupDynamic` and `SablierV2LockupTranched` into a single
+  contract called `SablierLockup` ([#1069](https://github.com/sablier-labs/v2-core/pull/1069))
+- Emit revert errors in `withdrawMultiple` instead of halting execution on failed withdrawals
+  ([#1101](https://github.com/sablier-labs/v2-core/pull/1101))
+- Rename this repo to **Lockup** ([#994](https://github.com/sablier-labs/v2-core/pull/994))
+
+### Added
+
+- Allow setting the end time of linear streams to a past date
+  ([#1015](https://github.com/sablier-labs/v2-core/pull/1015))
+- Introduce explicit cliff amount configuration for linear streams
+  ([#1075](https://github.com/sablier-labs/v2-core/pull/1075))
+- Allow setting the amount unlocked at the start of a linear stream
+  ([#1075](https://github.com/sablier-labs/v2-core/pull/1075))
+- Add a `batch` function to execute multiple functions in a single transaction
+  ([#1070](https://github.com/sablier-labs/v2-core/pull/1070),
+  [#1126](https://github.com/sablier-labs/v2-core/pull/1126))
+- Emit the expected shape name of the stream through create functions
+  ([#1094](https://github.com/sablier-labs/v2-core/pull/1094),
+  [#1100](https://github.com/sablier-labs/v2-core/pull/1100))
+- Add `renounceMultiple` function to renounce multiple streams in a single transaction
+  ([#1091](https://github.com/sablier-labs/v2-core/pull/1091))
+- Allow approved accounts to execute `withdrawMaxAndTranfer` on behalf of recipients
+  ([#1054](https://github.com/sablier-labs/v2-core/pull/1054))
+- Migrated the `SablierBatchLockup` contract from v2 periphery to the Lockup repository
+  ([#1084](https://github.com/sablier-labs/v2-core/pull/1084))
+
+### Removed
+
+- Remove `V2` from the contract names and related references ([#994](https://github.com/sablier-labs/v2-core/pull/994))
 
 ## [1.2.0] - 2024-07-04
 
