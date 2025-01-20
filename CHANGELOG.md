@@ -27,7 +27,7 @@ The format is based on [Common Changelog](https://common-changelog.org/).
   ([#1101](https://github.com/sablier-labs/v2-core/pull/1101))
 - Allow approved accounts to execute `withdrawMaxAndTranfer` on behalf of recipients
   ([#1054](https://github.com/sablier-labs/v2-core/pull/1054))
-- Refactor `asset` to `token` when referring to ERC20 tokens
+- Refactor `asset` to `token` when referring to `ERC20` tokens
   ([#1097](https://github.com/sablier-labs/v2-core/pull/1097))
 - Rename this repo to **Lockup** ([#994](https://github.com/sablier-labs/v2-core/pull/994))
 
