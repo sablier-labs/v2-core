@@ -17,35 +17,40 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 
 ### Changed
 
-- **Breaking:** merged `SablierV2LockupLinear`, `SablierV2LockupDynamic` and `SablierV2LockupTranched` into a single
+- **Breaking:** merge `SablierV2LockupLinear`, `SablierV2LockupDynamic` and `SablierV2LockupTranched` into a single
   contract called `SablierLockup` ([#1069](https://github.com/sablier-labs/v2-core/pull/1069))
+  - Implement two public libraries `VestingMath` and `Helpers`
+  - Implement `Model` enum to differentiate between linear, dynamic and tranched streams
+- Allow setting the end time of linear streams to a past date
+  ([#1015](https://github.com/sablier-labs/v2-core/pull/1015))
 - Emit revert errors in `withdrawMultiple` instead of halting execution on failed withdrawals
   ([#1101](https://github.com/sablier-labs/v2-core/pull/1101))
+- Allow approved accounts to execute `withdrawMaxAndTranfer` on behalf of recipients
+  ([#1054](https://github.com/sablier-labs/v2-core/pull/1054))
+- Refactor `asset` to `token` when referring to ERC20 tokens
+  ([#1097](https://github.com/sablier-labs/v2-core/pull/1097))
 - Rename this repo to **Lockup** ([#994](https://github.com/sablier-labs/v2-core/pull/994))
 
 ### Added
 
-- Allow setting the end time of linear streams to a past date
-  ([#1015](https://github.com/sablier-labs/v2-core/pull/1015))
-- Introduce explicit cliff amount configuration for linear streams
+- **Breaking:** introduce new configurations for unlock amounts at start time and cliff time in create Linear functions
   ([#1075](https://github.com/sablier-labs/v2-core/pull/1075))
-- Allow setting the amount unlocked at the start of a linear stream
-  ([#1075](https://github.com/sablier-labs/v2-core/pull/1075))
-- Add a `batch` function to execute multiple functions in a single transaction
+- Implement a `batch` function to execute multiple functions in a single transaction
   ([#1070](https://github.com/sablier-labs/v2-core/pull/1070),
   [#1126](https://github.com/sablier-labs/v2-core/pull/1126))
 - Emit the expected shape name of the stream through create functions
   ([#1094](https://github.com/sablier-labs/v2-core/pull/1094),
   [#1100](https://github.com/sablier-labs/v2-core/pull/1100))
-- Add `renounceMultiple` function to renounce multiple streams in a single transaction
+- Implement `renounceMultiple` function to renounce multiple streams in a single transaction
   ([#1091](https://github.com/sablier-labs/v2-core/pull/1091))
-- Allow approved accounts to execute `withdrawMaxAndTranfer` on behalf of recipients
-  ([#1054](https://github.com/sablier-labs/v2-core/pull/1054))
-- Migrated the `SablierBatchLockup` contract from v2 periphery to the Lockup repository
-  ([#1084](https://github.com/sablier-labs/v2-core/pull/1084))
+- Moved the `SablierBatchLockup` contract from [v2-periphery](https://github.com/sablier-labs/v2-periphery/) to the
+  Lockup repository ([#1084](https://github.com/sablier-labs/v2-core/pull/1084))
+- Add `payable` modifier to all the functions ([#1093](https://github.com/sablier-labs/v2-core/pull/1093))
 
 ### Removed
 
+- **Breaking:** remove backward compatibility of `SablierNFTDescriptor` with previous versions
+  ([#1113](https://github.com/sablier-labs/v2-core/pull/1113))
 - Remove `V2` from the contract names and related references ([#994](https://github.com/sablier-labs/v2-core/pull/994))
 
 ## [1.2.0] - 2024-07-04
