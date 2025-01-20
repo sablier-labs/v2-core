@@ -49,7 +49,7 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 
 ### Removed
 
-- **Breaking:** remove backward compatibility of `SablierNFTDescriptor` with previous versions
+- No longer support backward compatibility with previous versions of the `NFTDescriptor` contract
   ([#1113](https://github.com/sablier-labs/v2-core/pull/1113))
 - Remove `V2` from the contract names and related references ([#994](https://github.com/sablier-labs/v2-core/pull/994))
 
