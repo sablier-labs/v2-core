@@ -14,12 +14,30 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         return ISablierBatchLockup(deployCode("out-optimized/SablierBatchLockup.sol/SablierBatchLockup.json"));
     }
 
-    /// @dev Deploys the optimized {Helpers} and {VestingMath} libraries and assign them to linked addresses.
+    /// @dev Deploys the optimized {Helpers} and {VestingMath} libraries, and replace libraries placeholders in
+    /// {SablierLockup} artifact.
     function deployOptimizedLibraries() internal {
+        // Deploy public libraries.
         address helpers = deployCode("out-optimized/Helpers.sol/Helpers.json");
         address vestingMath = deployCode("out-optimized/VestingMath.sol/VestingMath.json");
-        vm.etch(0x7715bE116061E014Bb721b46Dc78Dd57C91FDF9b, helpers.code);
-        vm.etch(0x26F9d826BDed47Fc472526aE8095B75ac336963C, vestingMath.code);
+
+        // Read {SablierLockup} artifact.
+        string memory artifact = vm.readFile("out-optimized/SablierLockup.sol/SablierLockup.json");
+
+        // Replace libraries placeholders.
+        artifact = vm.replace({
+            input: artifact,
+            from: "__$70ac0b9f44f1ad43af70526685fc041161$__",
+            to: vm.replace(vm.toString(helpers), "0x", "")
+        });
+        artifact = vm.replace({
+            input: artifact,
+            from: "__$a5f83f921acff269341ef3c300f67f6dd4$__",
+            to: vm.replace(vm.toString(vestingMath), "0x", "")
+        });
+
+        // Write the updated artifact.
+        vm.writeFile("out-optimized/SablierLockup.sol/SablierLockup.json", artifact);
     }
 
     /// @dev Deploys {SablierLockup} from an optimized source compiled with `--via-ir`.
