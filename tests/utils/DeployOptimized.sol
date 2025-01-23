@@ -3,41 +3,25 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { CommonBase } from "forge-std/src/Base.sol";
 import { StdCheats } from "forge-std/src/StdCheats.sol";
+import { stdJson } from "forge-std/src/StdJson.sol";
 
 import { ILockupNFTDescriptor } from "../../src/interfaces/ILockupNFTDescriptor.sol";
 import { ISablierBatchLockup } from "../../src/interfaces/ISablierBatchLockup.sol";
 import { ISablierLockup } from "../../src/interfaces/ISablierLockup.sol";
 
 abstract contract DeployOptimized is StdCheats, CommonBase {
+    using stdJson for string;
+
     /// @dev Deploys {SablierBatchLockup} from an optimized source compiled with `--via-ir`.
     function deployOptimizedBatchLockup() internal returns (ISablierBatchLockup) {
         return ISablierBatchLockup(deployCode("out-optimized/SablierBatchLockup.sol/SablierBatchLockup.json"));
     }
 
-    /// @dev Deploys the optimized {Helpers} and {VestingMath} libraries, and replace libraries placeholders in
-    /// {SablierLockup} artifact.
-    function deployOptimizedLibraries() internal {
+    /// @dev Deploys the optimized {Helpers} and {VestingMath} libraries.
+    function deployOptimizedLibraries() internal returns (address helpers, address vestingMath) {
         // Deploy public libraries.
-        address helpers = deployCode("out-optimized/Helpers.sol/Helpers.json");
-        address vestingMath = deployCode("out-optimized/VestingMath.sol/VestingMath.json");
-
-        // Read {SablierLockup} artifact.
-        string memory artifact = vm.readFile("out-optimized/SablierLockup.sol/SablierLockup.json");
-
-        // Replace libraries placeholders.
-        artifact = vm.replace({
-            input: artifact,
-            from: "__$70ac0b9f44f1ad43af70526685fc041161$__",
-            to: vm.replace(vm.toString(helpers), "0x", "")
-        });
-        artifact = vm.replace({
-            input: artifact,
-            from: "__$a5f83f921acff269341ef3c300f67f6dd4$__",
-            to: vm.replace(vm.toString(vestingMath), "0x", "")
-        });
-
-        // Write the updated artifact.
-        vm.writeFile("out-optimized/SablierLockup.sol/SablierLockup.json", artifact);
+        helpers = deployCode("out-optimized/Helpers.sol/Helpers.json");
+        vestingMath = deployCode("out-optimized/VestingMath.sol/VestingMath.json");
     }
 
     /// @dev Deploys {SablierLockup} from an optimized source compiled with `--via-ir`.
@@ -47,18 +31,38 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         uint256 maxCount
     )
         internal
-        returns (ISablierLockup)
+        returns (address helpers, address vestingMath, ISablierLockup lockup)
     {
         // Deploy the libraries.
-        deployOptimizedLibraries();
+        (helpers, vestingMath) = deployOptimizedLibraries();
 
-        // Deploy the Lockup contract.
-        return ISablierLockup(
-            deployCode(
-                "out-optimized/SablierLockup.sol/SablierLockup.json",
-                abi.encode(initialAdmin, address(nftDescriptor_), maxCount)
-            )
-        );
+        // Get the bytecode from {SablierLockup} artifact.
+        string memory artifactJson = vm.readFile("out-optimized/SablierLockup.sol/SablierLockup.json");
+        string memory rawBytecode = artifactJson.readString(".bytecode.object");
+
+        // Replace libraries placeholders.
+        rawBytecode = vm.replace({
+            input: rawBytecode,
+            from: "__$70ac0b9f44f1ad43af70526685fc041161$__",
+            to: vm.replace(vm.toString(helpers), "0x", "")
+        });
+        rawBytecode = vm.replace({
+            input: rawBytecode,
+            from: "__$a5f83f921acff269341ef3c300f67f6dd4$__",
+            to: vm.replace(vm.toString(vestingMath), "0x", "")
+        });
+
+        // Generate the creation bytecode with the constructor arguments.
+        bytes memory createBytecode =
+            bytes.concat(vm.parseBytes(rawBytecode), abi.encode(initialAdmin, nftDescriptor_, maxCount));
+        assembly {
+            // Deploy the Lockup contract.
+            lockup := create(0, add(createBytecode, 0x20), mload(createBytecode))
+        }
+
+        require(address(lockup) != address(0), "Lockup deployment failed.");
+
+        return (helpers, vestingMath, ISablierLockup(lockup));
     }
 
     /// @dev Deploys {LockupNFTDescriptor} from an optimized source compiled with `--via-ir`.
@@ -76,10 +80,16 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         uint256 maxCount
     )
         internal
-        returns (ILockupNFTDescriptor nftDescriptor_, ISablierLockup lockup_, ISablierBatchLockup batchLockup_)
+        returns (
+            ILockupNFTDescriptor nftDescriptor_,
+            address helpers,
+            address vestingMath,
+            ISablierLockup lockup_,
+            ISablierBatchLockup batchLockup_
+        )
     {
         nftDescriptor_ = deployOptimizedNFTDescriptor();
-        lockup_ = deployOptimizedLockup(initialAdmin, nftDescriptor_, maxCount);
+        (helpers, vestingMath, lockup_) = deployOptimizedLockup(initialAdmin, nftDescriptor_, maxCount);
         batchLockup_ = deployOptimizedBatchLockup();
     }
 }

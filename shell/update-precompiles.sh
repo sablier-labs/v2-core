@@ -22,6 +22,14 @@ if [ ! -f $precompiles_path ]; then
     exit 1
 fi
 
+# TODO: Update these with mainnet addresses
+HELPERS_LIBRARY="7715bE116061E014Bb721b46Dc78Dd57C91FDF9b"
+VESTINGMATH_LIBRARY="26F9d826BDed47Fc472526aE8095B75ac336963C"
+
+# Replace the placeholders in lockup bytecode with mainnet addresses of libraries
+lockup=$(echo "$lockup" | sd "__\\\$70ac0b9f44f1ad43af70526685fc041161\\\$__" "$HELPERS_LIBRARY")
+lockup=$(echo "$lockup" | sd "__\\\$a5f83f921acff269341ef3c300f67f6dd4\\\$__" "$VESTINGMATH_LIBRARY")
+
 # Replace the current bytecodes
 sd "(BYTECODE_BATCH_LOCKUP =)[^;]+;" "\$1 hex\"$batch_lockup\";" $precompiles_path
 sd "(BYTECODE_LOCKUP =)[^;]+;" "\$1 hex\"$lockup\";" $precompiles_path
