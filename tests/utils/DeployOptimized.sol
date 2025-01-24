@@ -41,7 +41,9 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         string memory artifactJson = vm.readFile("out-optimized/SablierLockup.sol/SablierLockup.json");
         string memory rawBytecode = artifactJson.readString(".bytecode.object");
 
-        // Replace libraries placeholders.
+        // The placeholder `__$<value>$__` is a unique marker generated during compilation to represent where the
+        // address of the library will be inserted.
+        // By replacing this placeholder, we "link" the library address into the contract's bytecode.
         rawBytecode = vm.replace({
             input: rawBytecode,
             from: "__$70ac0b9f44f1ad43af70526685fc041161$__",
