@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
+// solhint-disable no-inline-assembly
 pragma solidity >=0.8.22 <0.9.0;
 
 import { CommonBase } from "forge-std/src/Base.sol";
@@ -31,10 +32,10 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         uint256 maxCount
     )
         internal
-        returns (address helpers, address vestingMath, ISablierLockup lockup)
+        returns (ISablierLockup lockup)
     {
         // Deploy the libraries.
-        (helpers, vestingMath) = deployOptimizedLibraries();
+        (address helpers, address vestingMath) = deployOptimizedLibraries();
 
         // Get the bytecode from {SablierLockup} artifact.
         string memory artifactJson = vm.readFile("out-optimized/SablierLockup.sol/SablierLockup.json");
@@ -62,7 +63,7 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
 
         require(address(lockup) != address(0), "Lockup deployment failed.");
 
-        return (helpers, vestingMath, ISablierLockup(lockup));
+        return ISablierLockup(lockup);
     }
 
     /// @dev Deploys {LockupNFTDescriptor} from an optimized source compiled with `--via-ir`.
@@ -80,16 +81,10 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         uint256 maxCount
     )
         internal
-        returns (
-            ILockupNFTDescriptor nftDescriptor_,
-            address helpers,
-            address vestingMath,
-            ISablierLockup lockup_,
-            ISablierBatchLockup batchLockup_
-        )
+        returns (ILockupNFTDescriptor nftDescriptor_, ISablierLockup lockup_, ISablierBatchLockup batchLockup_)
     {
         nftDescriptor_ = deployOptimizedNFTDescriptor();
-        (helpers, vestingMath, lockup_) = deployOptimizedLockup(initialAdmin, nftDescriptor_, maxCount);
+        lockup_ = deployOptimizedLockup(initialAdmin, nftDescriptor_, maxCount);
         batchLockup_ = deployOptimizedBatchLockup();
     }
 }
