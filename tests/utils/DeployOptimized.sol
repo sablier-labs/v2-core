@@ -41,17 +41,15 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         string memory artifactJson = vm.readFile("out-optimized/SablierLockup.sol/SablierLockup.json");
         string memory rawBytecode = artifactJson.readString(".bytecode.object");
 
-        // The placeholder `__$<value>$__` is a unique marker generated during compilation to represent where the
-        // address of the library will be inserted.
-        // By replacing this placeholder, we "link" the library address into the contract's bytecode.
+        // Replace the library placeholders with the library addresses to link the libraries with the contract.
         rawBytecode = vm.replace({
             input: rawBytecode,
-            from: "__$70ac0b9f44f1ad43af70526685fc041161$__",
+            from: libraryPlaceholder("src/libraries/Helpers.sol:Helpers"),
             to: vm.replace(vm.toString(helpers), "0x", "")
         });
         rawBytecode = vm.replace({
             input: rawBytecode,
-            from: "__$a5f83f921acff269341ef3c300f67f6dd4$__",
+            from: libraryPlaceholder("src/libraries/VestingMath.sol:VestingMath"),
             to: vm.replace(vm.toString(vestingMath), "0x", "")
         });
 
@@ -88,5 +86,19 @@ abstract contract DeployOptimized is StdCheats, CommonBase {
         nftDescriptor_ = deployOptimizedNFTDescriptor();
         lockup_ = deployOptimizedLockup(initialAdmin, nftDescriptor_, maxCount);
         batchLockup_ = deployOptimizedBatchLockup();
+    }
+
+    /// @dev Get the library placeholder which is a 34 character prefix of the hex encoding of the keccak256 hash of the
+    /// fully qualified library name. It is a unique marker generated during compilation to represent the location in
+    /// the bytecode where the address of the library should be inserted.
+    function libraryPlaceholder(string memory libraryName) internal pure returns (string memory) {
+        // Get the first 17 bytes of the hex encoding of the keccak256 hash of the library name.
+        bytes memory placeholder = abi.encodePacked(bytes17(keccak256(abi.encodePacked(libraryName))));
+
+        // Remove "0x" from the placeholder.
+        string memory placeholderWithout0x = vm.replace(vm.toString(placeholder), "0x", "");
+
+        // Append the expected prefix and suffix to the placeholder.
+        return string.concat("__$", placeholderWithout0x, "$__");
     }
 }
