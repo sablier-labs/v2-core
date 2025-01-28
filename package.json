@@ -11,17 +11,24 @@
     "url": "https://github.com/sablier-labs/lockup/issues"
   },
   "dependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@openzeppelin/contracts": "5.0.2",
-    "@prb/math": "4.1.0"
+    "@prb/math": "4.1.0",
+    "@types/node": "^22.10.1",
+    "dotenv": "^16.4.7",
+    "ethers": "^5.7.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
-    "forge-std": "github:foundry-rs/forge-std#v1.8.2",
-    "husky": "^9.1.4",
-    "lint-staged": "^15.2.8",
+    "@nomicfoundation/hardhat-ethers": "^3.0.7",
+    "@nomicfoundation/hardhat-ignition": "^0.15.5",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.5",
+    "@nomicfoundation/hardhat-verify": "^2.0.9",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
+    "hardhat": "^2.22.17",
     "prettier": "^3.3.2",
-    "solady": "0.0.208",
-    "solarray": "github:evmcheb/solarray#a547630",
-    "solhint": "^5.0.3"
+    "solhint": "^5.0.1"
   },
   "files": [
     "artifacts",
@@ -71,7 +78,6 @@
     "lint:sol": "forge fmt --check && bun solhint \"{benchmark,script,src,tests}/**/*.sol\"",
     "lint:sol:fix": "bun solhint \"{benchmark,script,src,tests}/**/*.sol\" --fix --noPrompt",
     "prepack": "bun install && bash ./shell/prepare-artifacts.sh",
-    "prepare": "husky",
     "prettier:check": "prettier --check \"**/*.{json,md,svg,yml}\"",
     "prettier:write": "prettier --write \"**/*.{json,md,svg,yml}\"",
     "test": "forge test",
