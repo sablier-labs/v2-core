@@ -32,26 +32,13 @@ const config: HardhatUserConfig = {
     },
     // @ts-ignore
   },
+  defaultNetwork: "abstractMainnet",
   networks: {
-    zkSyncTestnet: {
-      url: "https://sepolia.era.zksync.dev",
-      ethNetwork: "sepolia",
-      zksync: true,
-      verifyURL: "https://explorer.sepolia.era.zksync.dev/contract_verification",
-      chainId: 300,
-    },
-    zkSyncMainnet: {
-      url: "https://mainnet.era.zksync.io",
+    abstractMainnet: {
+      url: "https://api.mainnet.abs.xyz",
       ethNetwork: "mainnet",
       zksync: true,
-      verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
-      chainId: 324,
-    },
-    inMemoryNode: {
-      url: "http://127.0.0.1:8011",
-      ethNetwork: "localhost", // in-memory node doesn't support eth node; removing this line will cause an error
-      zksync: true,
-      chainId: 260,
+      chainId: 2741,
     },
   },
   paths: {
@@ -59,11 +46,24 @@ const config: HardhatUserConfig = {
     cache: "./cache_hardhat",
   },
   etherscan: {
-    apiKey: process.env.ZKSYNC_API_KEY as string,
+    apiKey: {
+      abstractMainnet: "IEYKU3EEM5XCD76N7Y7HF9HG7M9ARZ2H4A",
+    },
+    customChains: [
+      {
+        network: "abstractMainnet",
+        chainId: 2741,
+        urls: {
+          apiURL: "https://api.abscan.org/api",
+          browserURL: "https://abscan.org/",
+        },
+      },
+    ],
   },
   zksolc: {
     version: "1.5.11",
     settings: {
+      enableEraVMExtensions: false,
       optimizer: {
         enabled: true,
         runs: 1000,

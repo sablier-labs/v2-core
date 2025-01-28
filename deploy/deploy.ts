@@ -3,8 +3,8 @@ import hre from "hardhat";
 import { Deployer } from "@matterlabs/hardhat-zksync";
 import { Wallet, Provider } from "zksync-ethers";
 
-// First you need to deploy the public libraries: `npx hardhat deploy-zksync:libraries --network zkSyncMainnet/zkSyncTestnet --private-key-or-index $PV_KEY`
-// Then deploy the rest of the contracts: `npx hardhat deploy-zksync --script deploy.ts --network zkSyncMainnet/zkSyncTestnet
+// First you need to deploy the public libraries: `npx hardhat deploy-zksync:libraries --network abstractMainnet --private-key-or-index $PV_KEY`
+// Then deploy the rest of the contracts: `npx hardhat deploy-zksync --script deploy.ts --network abstractMainnet
 export default async function () {
   const network = await hre.network.config;
   const networkName = await hre.network.name;
@@ -32,7 +32,7 @@ export default async function () {
   const artifactBatchLockup = await deployer.loadArtifact("SablierBatchLockup");
   const artifactLockup = await deployer.loadArtifact("SablierLockup");
 
-  const safeMultisig = "0xaFeA787Ef04E280ad5Bb907363f214E4BAB9e288";
+  const admin = "0xb1bEF51ebCA01EB12001a639bDBbFF6eEcA12B9F";
 
   // Deploy the NFTDescriptor contract
   const nftDescriptor = await deployer.deploy(artifactNFTDescriptor, []);
@@ -42,10 +42,10 @@ export default async function () {
   await verifyContract(nftDescriptorAddress, []);
 
   // Deploy the SablierLockup contract
-  const lockup = await deployer.deploy(artifactLockup, [safeMultisig, nftDescriptorAddress, "2000"]);
+  const lockup = await deployer.deploy(artifactLockup, [admin, nftDescriptorAddress, "2000"]);
   const lockupAddress = typeof lockup.target === "string" ? lockup.target : lockup.target.toString();
   console.log("SablierLockup deployed to:", lockupAddress);
-  await verifyContract(lockupAddress, [safeMultisig, nftDescriptorAddress, "2000"]);
+  await verifyContract(lockupAddress, [admin, nftDescriptorAddress, "2000"]);
 
   // Deploy the BatchLockup contract
   const batchLockup = await deployer.deploy(artifactBatchLockup, []);
