@@ -3,6 +3,10 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { ILockupNFTDescriptor } from "src/interfaces/ILockupNFTDescriptor.sol";
+import { ISablierBatchLockup } from "src/interfaces/ISablierBatchLockup.sol";
+import { ISablierLockup } from "src/interfaces/ISablierLockup.sol";
+
 import { Base_Test } from "./../Base.t.sol";
 
 /// @notice Common logic needed by all fork tests.
@@ -30,10 +34,12 @@ abstract contract Fork_Test is Base_Test {
 
     function setUp() public virtual override {
         // Fork Ethereum Mainnet at a specific block number.
-        vm.createSelectFork({ blockNumber: 20_428_723, urlOrAlias: "mainnet" });
+        vm.createSelectFork({ blockNumber: 21_719_029, urlOrAlias: "mainnet" });
 
-        // The base is set up after the fork is selected so that the base test contracts are deployed on the fork.
-        Base_Test.setUp();
+        // Load deployed addresses from Ethereum mainnet.
+        batchLockup = ISablierBatchLockup(0x3F6E8a8Cffe377c4649aCeB01e6F20c60fAA356c);
+        nftDescriptor = ILockupNFTDescriptor(0xA9dC6878C979B5cc1d98a1803F0664ad725A1f56);
+        lockup = ISablierLockup(0x7C01AA3783577E15fD7e272443D44B92d5b21056);
 
         // Label the contracts.
         labelContracts();
