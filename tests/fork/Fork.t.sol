@@ -47,7 +47,7 @@ abstract contract Fork_Test is Base_Test {
         labelContracts();
 
         // Deal token balance to the user.
-        initialHolderBalance = 10e6 * 10 ** IERC20Metadata(address(FORK_TOKEN)).decimals();
+        initialHolderBalance = 1e7 * 10 ** IERC20Metadata(address(FORK_TOKEN)).decimals();
         deal({ token: address(FORK_TOKEN), to: forkTokenHolder, give: initialHolderBalance });
 
         resetPrank({ msgSender: forkTokenHolder });
