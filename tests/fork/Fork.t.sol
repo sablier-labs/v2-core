@@ -58,19 +58,18 @@ abstract contract Fork_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Checks the user assumptions.
-    function checkUsers(address sender, address recipient, address broker, address lockupContract) internal virtual {
+    function checkUsers(address sender, address recipient, address lockupContract) internal virtual {
         // The protocol does not allow the zero address to interact with it.
-        vm.assume(sender != address(0) && recipient != address(0) && broker != address(0));
+        vm.assume(sender != address(0) && recipient != address(0));
 
         // The goal is to not have overlapping users because the forked token balance tests would fail otherwise.
-        vm.assume(sender != recipient && sender != broker && recipient != broker);
-        vm.assume(sender != forkTokenHolder && recipient != forkTokenHolder && broker != forkTokenHolder);
-        vm.assume(sender != lockupContract && recipient != lockupContract && broker != lockupContract);
+        vm.assume(sender != recipient);
+        vm.assume(sender != forkTokenHolder && recipient != forkTokenHolder);
+        vm.assume(sender != lockupContract && recipient != lockupContract);
 
         // Avoid users blacklisted by USDC or USDT.
         assumeNoBlacklisted(address(FORK_TOKEN), sender);
         assumeNoBlacklisted(address(FORK_TOKEN), recipient);
-        assumeNoBlacklisted(address(FORK_TOKEN), broker);
     }
 
     /// @dev Labels the most relevant addresses.

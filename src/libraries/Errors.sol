@@ -39,9 +39,6 @@ library Errors {
                                     HELPERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Thrown when the broker fee exceeds the maximum allowed fee.
-    error SablierHelpers_BrokerFeeTooHigh(UD60x18 brokerFee, UD60x18 maxBrokerFee);
-
     /// @notice Thrown when trying to create a linear stream with a cliff time not strictly less than the end time.
     error SablierHelpers_CliffTimeNotLessThanEndTime(uint40 cliffTime, uint40 endTime);
 

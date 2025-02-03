@@ -74,21 +74,7 @@ abstract contract CreateWithTimestamps_Integration_Concrete_Test is Integration_
         createDefaultStream();
     }
 
-    function test_RevertWhen_BrokerFeeExceedsMaxValue() external whenNoDelegateCall whenShapeNotExceed32Bytes {
-        UD60x18 brokerFee = MAX_BROKER_FEE + ud(1);
-        _defaultParams.createWithTimestamps.broker.fee = brokerFee;
-        vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierHelpers_BrokerFeeTooHigh.selector, brokerFee, MAX_BROKER_FEE)
-        );
-        createDefaultStream();
-    }
-
-    function test_RevertWhen_SenderZeroAddress()
-        external
-        whenNoDelegateCall
-        whenShapeNotExceed32Bytes
-        whenBrokerFeeNotExceedMaxValue
-    {
+    function test_RevertWhen_SenderZeroAddress() external whenNoDelegateCall whenShapeNotExceed32Bytes {
         _defaultParams.createWithTimestamps.sender = address(0);
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierHelpers_SenderZeroAddress.selector));
         createDefaultStream();
@@ -98,7 +84,6 @@ abstract contract CreateWithTimestamps_Integration_Concrete_Test is Integration_
         external
         whenNoDelegateCall
         whenShapeNotExceed32Bytes
-        whenBrokerFeeNotExceedMaxValue
         whenSenderNotZeroAddress
     {
         _defaultParams.createWithTimestamps.recipient = address(0);
@@ -110,11 +95,10 @@ abstract contract CreateWithTimestamps_Integration_Concrete_Test is Integration_
         external
         whenNoDelegateCall
         whenShapeNotExceed32Bytes
-        whenBrokerFeeNotExceedMaxValue
         whenSenderNotZeroAddress
         whenRecipientNotZeroAddress
     {
-        _defaultParams.createWithTimestamps.totalAmount = 0;
+        _defaultParams.createWithTimestamps.depositAmount = 0;
         vm.expectRevert(abi.encodeWithSelector(Errors.SablierHelpers_DepositAmountZero.selector));
         createDefaultStream();
     }
@@ -123,7 +107,6 @@ abstract contract CreateWithTimestamps_Integration_Concrete_Test is Integration_
         external
         whenNoDelegateCall
         whenShapeNotExceed32Bytes
-        whenBrokerFeeNotExceedMaxValue
         whenSenderNotZeroAddress
         whenRecipientNotZeroAddress
         whenDepositAmountNotZero
@@ -137,7 +120,6 @@ abstract contract CreateWithTimestamps_Integration_Concrete_Test is Integration_
         external
         whenNoDelegateCall
         whenShapeNotExceed32Bytes
-        whenBrokerFeeNotExceedMaxValue
         whenSenderNotZeroAddress
         whenRecipientNotZeroAddress
         whenDepositAmountNotZero

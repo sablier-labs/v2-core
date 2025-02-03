@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { MAX_UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 import { stdError } from "forge-std/src/StdError.sol";
 import { ISablierLockup } from "src/interfaces/ISablierLockup.sol";
 import { Errors } from "src/libraries/Errors.sol";
-import { Broker, Lockup, LockupDynamic } from "src/types/DataTypes.sol";
+import { Lockup, LockupDynamic } from "src/types/DataTypes.sol";
 import { Lockup_Dynamic_Integration_Fuzz_Test } from "./LockupDynamic.t.sol";
 
 contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integration_Fuzz_Test {
@@ -102,7 +101,7 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
         whenStartTimeLessThanFirstTimestamp
         whenTimestampsStrictlyIncreasing
     {
-        depositDiff = boundUint128(depositDiff, 100, defaults.TOTAL_AMOUNT());
+        depositDiff = boundUint128(depositDiff, 100, defaults.DEPOSIT_AMOUNT());
 
         resetPrank({ msgSender: users.sender });
 
@@ -111,8 +110,7 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
         uint128 depositAmount = defaultDepositAmount + depositDiff;
 
         // Prepare the params.
-        _defaultParams.createWithTimestamps.totalAmount = depositAmount;
-        _defaultParams.createWithTimestamps.broker = defaults.brokerNull();
+        _defaultParams.createWithTimestamps.depositAmount = depositAmount;
 
         // Expect the relevant error to be thrown.
         vm.expectRevert(
@@ -125,52 +123,27 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
         createDefaultStream();
     }
 
-    function testFuzz_RevertWhen_BrokerFeeTooHigh(Broker memory broker)
-        external
-        whenNoDelegateCall
-        whenShapeNotExceed32Bytes
-        whenSenderNotZeroAddress
-        whenRecipientNotZeroAddress
-        whenDepositAmountNotZero
-        whenSegmentCountNotZero
-        whenSegmentCountNotExceedMaxValue
-        whenSegmentAmountsSumNotOverflow
-        whenStartTimeLessThanFirstTimestamp
-        whenTimestampsStrictlyIncreasing
-        whenDepositAmountNotEqualSegmentAmountsSum
-    {
-        vm.assume(broker.account != address(0));
-        broker.fee = _bound(broker.fee, MAX_BROKER_FEE + ud(1), MAX_UD60x18);
-        _defaultParams.createWithTimestamps.broker = broker;
-        vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierHelpers_BrokerFeeTooHigh.selector, broker.fee, MAX_BROKER_FEE)
-        );
-        createDefaultStream();
-    }
-
     struct Vars {
         uint256 actualNextStreamId;
         address actualNFTOwner;
         Lockup.Status actualStatus;
-        Lockup.CreateAmounts createAmounts;
         uint256 expectedNextStreamId;
         address expectedNFTOwner;
         Lockup.Status expectedStatus;
         bool isCancelable;
         bool isSettled;
-        uint128 totalAmount;
+        uint128 depositAmount;
     }
 
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
     ///
-    /// - All possible permutations for the funder, sender, recipient, and broker
+    /// - All possible permutations for the funder, sender and recipient
     /// - Multiple values for the segment amounts, exponents, and timestamps
     /// - Cancelable and not cancelable
     /// - Start time in the past
     /// - Start time in the present
     /// - Start time in the future
     /// - Start time equal and not equal to the first segment timestamp
-    /// - Multiple values for the broker fee, including zero
     function testFuzz_CreateWithTimestampsLD(
         address funder,
         Lockup.CreateWithTimestamps memory params,
@@ -189,16 +162,11 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
         whenStartTimeLessThanFirstTimestamp
         whenTimestampsStrictlyIncreasing
         whenDepositAmountNotEqualSegmentAmountsSum
-        whenBrokerFeeNotExceedMaxValue
         whenTokenContract
         whenTokenERC20
     {
-        vm.assume(
-            funder != address(0) && params.sender != address(0) && params.recipient != address(0)
-                && params.broker.account != address(0)
-        );
+        vm.assume(funder != address(0) && params.sender != address(0) && params.recipient != address(0));
         vm.assume(segments.length != 0);
-        params.broker.fee = _bound(params.broker.fee, 0, MAX_BROKER_FEE);
 
         params.token = dai;
         params.timestamps.start = boundUint40(params.timestamps.start, 1, defaults.START_TIME());
@@ -211,12 +179,11 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
         // If shape exceeds 32 bytes, use the default value.
         if (bytes(params.shape).length > 32) params.shape = defaults.SHAPE();
 
-        // Fuzz the segment amounts and calculate the total and create amounts (deposit and broker fee).
+        // Fuzz the segment amounts and calculate the deposit amount
         Vars memory vars;
-        (vars.totalAmount, vars.createAmounts) =
-            fuzzDynamicStreamAmounts({ upperBound: MAX_UINT128, segments: segments, brokerFee: params.broker.fee });
+        vars.depositAmount = fuzzDynamicStreamAmounts({ upperBound: MAX_UINT128, segments: segments });
 
-        params.totalAmount = vars.totalAmount;
+        params.depositAmount = vars.depositAmount;
 
         // Make the fuzzed funder the caller in the rest of this test.
         resetPrank(funder);
@@ -224,18 +191,13 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
         uint256 expectedStreamId = lockup.nextStreamId();
 
         // Mint enough tokens to the fuzzed funder.
-        deal({ token: address(dai), to: funder, give: vars.totalAmount });
+        deal({ token: address(dai), to: funder, give: vars.depositAmount });
 
         // Approve {SablierLockup} to transfer the tokens from the fuzzed funder.
         dai.approve({ spender: address(lockup), value: MAX_UINT256 });
 
         // Expect the tokens to be transferred from the funder to {SablierLockup}.
-        expectCallToTransferFrom({ from: funder, to: address(lockup), value: vars.createAmounts.deposit });
-
-        // Expect the broker fee to be paid to the broker, if not zero.
-        if (vars.createAmounts.brokerFee > 0) {
-            expectCallToTransferFrom({ from: funder, to: params.broker.account, value: vars.createAmounts.brokerFee });
-        }
+        expectCallToTransferFrom({ from: funder, to: address(lockup), value: vars.depositAmount });
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
@@ -245,13 +207,12 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
                 funder: funder,
                 sender: params.sender,
                 recipient: params.recipient,
-                amounts: vars.createAmounts,
+                depositAmount: vars.depositAmount,
                 token: dai,
                 cancelable: params.cancelable,
                 transferable: params.transferable,
                 timestamps: params.timestamps,
-                shape: params.shape,
-                broker: params.broker.account
+                shape: params.shape
             }),
             segments: segments
         });
@@ -265,7 +226,7 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
         vars.isCancelable = vars.isSettled ? false : params.cancelable;
 
         // It should create the stream.
-        assertEq(lockup.getDepositedAmount(streamId), vars.createAmounts.deposit, "depositedAmount");
+        assertEq(lockup.getDepositedAmount(streamId), vars.depositAmount, "depositedAmount");
         assertEq(lockup.getEndTime(streamId), params.timestamps.end, "endTime");
         assertEq(lockup.isCancelable(streamId), vars.isCancelable, "isCancelable");
         assertFalse(lockup.isDepleted(streamId), "isDepleted");
