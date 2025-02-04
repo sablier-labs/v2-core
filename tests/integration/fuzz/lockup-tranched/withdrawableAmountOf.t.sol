@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { Lockup } from "src/types/DataTypes.sol";
-
 import { Lockup_Tranched_Integration_Fuzz_Test } from "./LockupTranched.t.sol";
 
 contract WithdrawableAmountOf_Lockup_Tranched_Integration_Fuzz_Test is Lockup_Tranched_Integration_Fuzz_Test {

@@ -57,7 +57,7 @@ contract CreateWithDurationsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrati
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupDynamicStream({
             streamId: expectedStreamId,
-            commonParams: defaults.lockupCreateEvent(timestamps),
+            commonParams: defaults.lockupCreateEvent(vars.depositAmount, timestamps),
             segments: vars.segmentsWithTimestamps
         });
 

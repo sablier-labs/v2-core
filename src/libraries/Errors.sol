@@ -2,7 +2,6 @@
 pragma solidity >=0.8.22;
 
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import { UD60x18 } from "@prb/math/src/UD60x18.sol";
 
 import { Lockup } from "../types/DataTypes.sol";
 

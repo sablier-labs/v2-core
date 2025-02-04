@@ -3,8 +3,8 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { IERC4906 } from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { ud } from "@prb/math/src/UD60x18.sol";
 import { Solarray } from "solarray/src/Solarray.sol";
+
 import { ISablierLockup } from "src/interfaces/ISablierLockup.sol";
 import { ISablierLockupBase } from "src/interfaces/ISablierLockupBase.sol";
 import { Lockup, LockupLinear } from "src/types/DataTypes.sol";
