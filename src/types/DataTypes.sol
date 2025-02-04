@@ -111,7 +111,7 @@ library Lockup {
     /// @param funder The address which has funded the stream.
     /// @param sender The address distributing the tokens, which is able to cancel the stream.
     /// @param recipient The address receiving the tokens, as well as the NFT owner.
-    /// @param depositAmount The deposita amount, both denoted in units of the token's decimals.
+    /// @param depositAmount The deposit amount, both denoted in units of the token's decimals.
     /// @param token The contract address of the ERC-20 token to be distributed.
     /// @param cancelable Boolean indicating whether the stream is cancelable or not.
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
