@@ -106,17 +106,6 @@ contract Defaults is Constants {
     }
 
     function lockupCreateEvent(
-        IERC20 token_,
-        Lockup.Timestamps memory timestamps
-    )
-        public
-        view
-        returns (Lockup.CreateEventCommon memory)
-    {
-        return lockupCreateEvent(DEPOSIT_AMOUNT, token_, timestamps);
-    }
-
-    function lockupCreateEvent(
         uint128 depositAmount,
         IERC20 token_,
         Lockup.Timestamps memory timestamps

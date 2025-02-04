@@ -139,7 +139,6 @@ contract CreateWithTimestampsLT_Integration_Fuzz_Test is Lockup_Tranched_Integra
         Lockup.Status expectedStatus;
         bool isCancelable;
         bool isSettled;
-        uint128 depositAmount;
     }
 
     /// @dev Given enough fuzz runs, all of the following scenarios will be fuzzed:
@@ -186,23 +185,19 @@ contract CreateWithTimestampsLT_Integration_Fuzz_Test is Lockup_Tranched_Integra
         fuzzTrancheTimestamps(tranches, params.timestamps.start);
         params.timestamps.end = tranches[tranches.length - 1].timestamp;
 
-        // Fuzz the tranche amounts and calculate the deposit amount.
-        Vars memory vars;
-        vars.depositAmount = fuzzTranchedStreamAmounts({ upperBound: MAX_UINT128, tranches: tranches });
-
-        params.depositAmount = vars.depositAmount;
+        params.depositAmount = fuzzTranchedStreamAmounts({ upperBound: MAX_UINT128, tranches: tranches });
 
         // Make the fuzzed funder the caller in the rest of this test.
         resetPrank(funder);
 
         // Mint enough tokens to the fuzzed funder.
-        deal({ token: address(dai), to: funder, give: vars.depositAmount });
+        deal({ token: address(dai), to: funder, give: params.depositAmount });
 
         // Approve {SablierLockup} to transfer the tokens from the fuzzed funder.
         dai.approve({ spender: address(lockup), value: MAX_UINT256 });
 
         // Expect the tokens to be transferred from the funder to {SablierLockup}.
-        expectCallToTransferFrom({ from: funder, to: address(lockup), value: vars.depositAmount });
+        expectCallToTransferFrom({ from: funder, to: address(lockup), value: params.depositAmount });
 
         uint256 expectedStreamId = lockup.nextStreamId();
 
@@ -214,7 +209,7 @@ contract CreateWithTimestampsLT_Integration_Fuzz_Test is Lockup_Tranched_Integra
                 funder: funder,
                 sender: params.sender,
                 recipient: params.recipient,
-                depositAmount: vars.depositAmount,
+                depositAmount: params.depositAmount,
                 token: dai,
                 cancelable: params.cancelable,
                 transferable: params.transferable,
@@ -227,13 +222,16 @@ contract CreateWithTimestampsLT_Integration_Fuzz_Test is Lockup_Tranched_Integra
         // Create the stream.
         uint256 streamId = lockup.createWithTimestampsLT(params, tranches);
 
+        // Fuzz the tranche amounts and calculate the deposit amount.
+        Vars memory vars;
+
         // Check if the stream is settled. It is possible for a Lockup Tranched stream to settle at the time of creation
         // because some tranche amounts can be zero.
         vars.isSettled = (lockup.getDepositedAmount(streamId) - lockup.streamedAmountOf(streamId)) == 0;
         vars.isCancelable = vars.isSettled ? false : params.cancelable;
 
         // It should create the stream.
-        assertEq(lockup.getDepositedAmount(streamId), vars.depositAmount, "depositedAmount");
+        assertEq(lockup.getDepositedAmount(streamId), params.depositAmount, "depositedAmount");
         assertEq(lockup.getEndTime(streamId), params.timestamps.end, "endTime");
         assertEq(lockup.isCancelable(streamId), vars.isCancelable, "isCancelable");
         assertFalse(lockup.isDepleted(streamId), "isDepleted");

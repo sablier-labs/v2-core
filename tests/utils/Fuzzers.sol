@@ -63,20 +63,15 @@ abstract contract Fuzzers is Constants, Utils {
 
         // Precompute the first segment amount to prevent zero deposit amounts.
         segments[0].amount = boundUint128(segments[0].amount, 100, maxSegmentAmount);
-        uint128 estimatedDepositAmount = segments[0].amount;
+        depositAmount = segments[0].amount;
 
         // Fuzz the other segment amounts by bounding from 0.
         unchecked {
             for (uint256 i = 1; i < segmentCount; ++i) {
                 segments[i].amount = boundUint128(segments[i].amount, 0, maxSegmentAmount);
-                estimatedDepositAmount += segments[i].amount;
+                depositAmount += segments[i].amount;
             }
         }
-
-        depositAmount = estimatedDepositAmount;
-
-        // Here, we account for rounding errors and adjust the estimated deposit amount and the segments.
-        segments[segments.length - 1].amount += (depositAmount - estimatedDepositAmount);
     }
 
     /// @dev Fuzzes the segment durations.
@@ -219,19 +214,14 @@ abstract contract Fuzzers is Constants, Utils {
 
         // Precompute the first tranche amount to prevent zero deposit amounts.
         tranches[0].amount = boundUint128(tranches[0].amount, 100, maxTrancheAmount);
-        uint128 estimatedDepositAmount = tranches[0].amount;
+        depositAmount = tranches[0].amount;
 
         // Fuzz the other tranche amounts by bounding from 0.
         unchecked {
             for (uint256 i = 1; i < trancheCount; ++i) {
                 tranches[i].amount = boundUint128(tranches[i].amount, 0, maxTrancheAmount);
-                estimatedDepositAmount += tranches[i].amount;
+                depositAmount += tranches[i].amount;
             }
         }
-
-        depositAmount = estimatedDepositAmount;
-
-        // Here, we account for rounding errors and adjust the estimated deposit amount and the tranches.
-        tranches[tranches.length - 1].amount += (depositAmount - estimatedDepositAmount);
     }
 }
