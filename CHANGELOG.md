@@ -21,6 +21,10 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 - Use relative path to import source contracts in `utils` files
   ([#1169](https://github.com/sablier-labs/lockup/pull/1169))
 
+### Removed
+
+- Remove `DeployOptimized.sol` from npm package ([#1169](https://github.com/sablier-labs/lockup/pull/1169))
+
 ## [2.0.0] - 2025-01-28
 
 ### Changed
