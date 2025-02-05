@@ -18,7 +18,7 @@ The format is based on [Common Changelog](https://common-changelog.org/).
 
 ### Changed
 
-- Use relative path to import source contracts in `utils` files
+- Use relative path to import source contracts in test utils files
   ([#1169](https://github.com/sablier-labs/lockup/pull/1169))
 
 ### Removed
