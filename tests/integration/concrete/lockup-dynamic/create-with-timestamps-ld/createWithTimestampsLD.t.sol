@@ -136,6 +136,31 @@ contract CreateWithTimestampsLD_Integration_Concrete_Test is CreateWithTimestamp
         createDefaultStreamWithSegments(segments);
     }
 
+    function test_RevertWhen_EndTimeNotEqualLastTimestamp()
+        external
+        whenNoDelegateCall
+        whenShapeNotExceed32Bytes
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenTokenContract
+        whenSegmentCountNotZero
+        whenSegmentCountNotExceedMaxValue
+        whenSegmentAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+    {
+        _defaultParams.createWithTimestamps.timestamps.end = defaults.END_TIME() + 1 seconds;
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierHelpers_EndTimeNotEqualToLastSegmentTimestamp.selector,
+                _defaultParams.createWithTimestamps.timestamps.end,
+                _defaultParams.createWithTimestamps.timestamps.end - 1
+            )
+        );
+        createDefaultStream();
+    }
+
     function test_RevertWhen_TimestampsNotStrictlyIncreasing()
         external
         whenNoDelegateCall
@@ -149,6 +174,7 @@ contract CreateWithTimestampsLD_Integration_Concrete_Test is CreateWithTimestamp
         whenSegmentCountNotExceedMaxValue
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
+        whenEndTimeEqualsLastTimestamp
     {
         // Swap the segment timestamps.
         LockupDynamic.Segment[] memory segments = defaults.segments();
@@ -180,6 +206,7 @@ contract CreateWithTimestampsLD_Integration_Concrete_Test is CreateWithTimestamp
         whenSegmentCountNotExceedMaxValue
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
+        whenEndTimeEqualsLastTimestamp
         whenTimestampsStrictlyIncreasing
     {
         resetPrank({ msgSender: users.sender });
@@ -215,6 +242,7 @@ contract CreateWithTimestampsLD_Integration_Concrete_Test is CreateWithTimestamp
         whenSegmentCountNotExceedMaxValue
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
+        whenEndTimeEqualsLastTimestamp
         whenTimestampsStrictlyIncreasing
         whenDepositAmountEqualsSegmentAmountsSum
     {
@@ -233,6 +261,7 @@ contract CreateWithTimestampsLD_Integration_Concrete_Test is CreateWithTimestamp
         whenSegmentCountNotExceedMaxValue
         whenSegmentAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
+        whenEndTimeEqualsLastTimestamp
         whenTimestampsStrictlyIncreasing
         whenDepositAmountNotEqualSegmentAmountsSum
         whenTokenContract

@@ -195,6 +195,10 @@ abstract contract Modifiers is Fuzzers {
                                    CREATE-COMMON
     //////////////////////////////////////////////////////////////////////////*/
 
+    modifier whenEndTimeEqualsLastTimestamp() {
+        _;
+    }
+
     modifier whenSegmentCountNotExceedMaxValue() {
         _;
     }

@@ -126,6 +126,31 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         createDefaultStream();
     }
 
+    function test_RevertWhen_EndTimeNotEqualLastTimestamp()
+        external
+        whenNoDelegateCall
+        whenShapeNotExceed32Bytes
+        whenSenderNotZeroAddress
+        whenRecipientNotZeroAddress
+        whenDepositAmountNotZero
+        whenStartTimeNotZero
+        whenTokenContract
+        whenTrancheCountNotZero
+        whenTrancheCountNotExceedMaxValue
+        whenTrancheAmountsSumNotOverflow
+        whenStartTimeLessThanFirstTimestamp
+    {
+        _defaultParams.createWithTimestamps.timestamps.end = defaults.END_TIME() + 1 seconds;
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierHelpers_EndTimeNotEqualToLastTrancheTimestamp.selector,
+                _defaultParams.createWithTimestamps.timestamps.end,
+                _defaultParams.createWithTimestamps.timestamps.end - 1
+            )
+        );
+        createDefaultStream();
+    }
+
     function test_RevertWhen_TimestampsNotStrictlyIncreasing()
         external
         whenNoDelegateCall
@@ -139,6 +164,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         whenTrancheCountNotExceedMaxValue
         whenTrancheAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
+        whenEndTimeEqualsLastTimestamp
     {
         // Swap the tranche timestamps.
         // LockupTranched.Tranche[] memory tranches = defaults.tranches();
@@ -172,6 +198,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         whenTrancheCountNotExceedMaxValue
         whenTrancheAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
+        whenEndTimeEqualsLastTimestamp
         whenTimestampsStrictlyIncreasing
     {
         resetPrank({ msgSender: users.sender });
@@ -205,6 +232,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         whenTrancheCountNotExceedMaxValue
         whenTrancheAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
+        whenEndTimeEqualsLastTimestamp
         whenTimestampsStrictlyIncreasing
         whenDepositAmountEqualsTrancheAmountsSum
     {
@@ -224,6 +252,7 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         whenTrancheCountNotExceedMaxValue
         whenTrancheAmountsSumNotOverflow
         whenStartTimeLessThanFirstTimestamp
+        whenEndTimeEqualsLastTimestamp
         whenTimestampsStrictlyIncreasing
         whenDepositAmountEqualsTrancheAmountsSum
     {
