@@ -96,7 +96,7 @@ library Lockup {
     /// decimals.
     /// @dev Because the deposited and the withdrawn amount are often read together, declaring them in the same slot
     /// saves gas.
-    /// @param deposited The initial amount deposited in the stream.
+    /// @param deposited The amount deposited in the stream.
     /// @param withdrawn The cumulative amount withdrawn from the stream.
     /// @param refunded The amount refunded to the sender. Unless the stream was canceled, this is always zero.
     struct Amounts {
@@ -111,7 +111,7 @@ library Lockup {
     /// @param funder The address which has funded the stream.
     /// @param sender The address distributing the tokens, which is able to cancel the stream.
     /// @param recipient The address receiving the tokens, as well as the NFT owner.
-    /// @param depositAmount The deposit amount, both denoted in units of the token's decimals.
+    /// @param depositAmount The deposit amount, denoted in units of the token's decimals.
     /// @param token The contract address of the ERC-20 token to be distributed.
     /// @param cancelable Boolean indicating whether the stream is cancelable or not.
     /// @param transferable Boolean indicating whether the stream NFT is transferable or not.
@@ -154,7 +154,7 @@ library Lockup {
     /// @param sender The address distributing the tokens, with the ability to cancel the stream. It doesn't have to be
     /// the same as `msg.sender`.
     /// @param recipient The address receiving the tokens, as well as the NFT owner.
-    /// @param depositAmount The total amount deposited, denoted in units of the token's decimals.
+    /// @param depositAmount The deposit amount, denoted in units of the token's decimals.
     /// @param token The contract address of the ERC-20 token to be distributed.
     /// @param cancelable Indicates if the stream is cancelable.
     /// @param transferable Indicates if the stream NFT is transferable.
