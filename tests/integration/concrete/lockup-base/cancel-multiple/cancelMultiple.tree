@@ -17,6 +17,7 @@ CancelMultiple_Integration_Concrete_Test
                ├── given atleast one non cancelable stream
                │  └── it should revert
                └── given all streams cancelable
+                  ├── it should return the expected refunded amounts
                   ├── it should mark the streams as canceled
                   ├── it should make the streams as non cancelable
                   ├── it should refund the sender

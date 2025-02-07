@@ -288,7 +288,14 @@ abstract contract SablierLockupBase is
     }
 
     /// @inheritdoc ISablierLockupBase
-    function cancel(uint256 streamId) public payable override noDelegateCall notNull(streamId) {
+    function cancel(uint256 streamId)
+        public
+        payable
+        override
+        noDelegateCall
+        notNull(streamId)
+        returns (uint128 refundedAmount)
+    {
         // Check: the stream is neither depleted nor canceled.
         if (_streams[streamId].isDepleted) {
             revert Errors.SablierLockupBase_StreamDepleted(streamId);
@@ -302,16 +309,29 @@ abstract contract SablierLockupBase is
         }
 
         // Checks, Effects and Interactions: cancel the stream.
-        _cancel(streamId);
+        refundedAmount = _cancel(streamId);
     }
 
     /// @inheritdoc ISablierLockupBase
-    function cancelMultiple(uint256[] calldata streamIds) external payable override noDelegateCall {
-        // Iterate over the provided array of stream IDs and cancel each stream.
+    function cancelMultiple(uint256[] calldata streamIds)
+        external
+        payable
+        override
+        noDelegateCall
+        returns (uint128[] memory refundedAmounts)
+    {
         uint256 count = streamIds.length;
+
+        // Initialize the returned array.
+        refundedAmounts = new uint128[](count);
+
+        // Iterate over the provided array of stream IDs and cancel each stream.
         for (uint256 i = 0; i < count; ++i) {
             // Effects and Interactions: cancel the stream.
-            cancel(streamIds[i]);
+            uint128 amount = cancel(streamIds[i]);
+
+            // Update the amounts array.
+            refundedAmounts[i] = amount;
         }
     }
 
@@ -577,7 +597,7 @@ abstract contract SablierLockupBase is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _cancel(uint256 streamId) internal {
+    function _cancel(uint256 streamId) internal returns (uint128 senderAmount) {
         // Calculate the streamed amount.
         uint128 streamedAmount = _calculateStreamedAmount(streamId);
 
@@ -595,7 +615,6 @@ abstract contract SablierLockupBase is
         }
 
         // Calculate the sender's amount.
-        uint128 senderAmount;
         unchecked {
             senderAmount = amounts.deposited - streamedAmount;
         }

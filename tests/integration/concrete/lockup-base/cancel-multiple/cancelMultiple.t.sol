@@ -30,7 +30,9 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
     function test_WhenZeroArrayLength() external whenNoDelegateCall {
         // It should do nothing.
         uint256[] memory nullStreamIds = new uint256[](0);
-        lockup.cancelMultiple(nullStreamIds);
+        uint128[] memory refundedAmounts = lockup.cancelMultiple(nullStreamIds);
+
+        assertEq(refundedAmounts.length, 0, "refundedAmounts.length");
     }
 
     function test_RevertGiven_AtleastOneNullStream() external whenNoDelegateCall whenNonZeroArrayLength {
@@ -121,7 +123,12 @@ contract CancelMultiple_Integration_Concrete_Test is Integration_Test {
         });
 
         // Cancel the streams.
-        lockup.cancelMultiple(streamIds);
+        uint128[] memory refundedAmounts = lockup.cancelMultiple(streamIds);
+
+        // It should return the expected refunded amounts.
+        assertEq(refundedAmounts.length, 2, "refundedAmounts.length");
+        assertEq(refundedAmounts[0], senderAmount0, "refundedAmount0");
+        assertEq(refundedAmounts[1], senderAmount1, "refundedAmount1");
 
         // It should mark the streams as canceled.
         Lockup.Status expectedStatus = Lockup.Status.CANCELED;

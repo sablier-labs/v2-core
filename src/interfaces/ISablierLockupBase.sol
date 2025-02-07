@@ -248,7 +248,8 @@ interface ISablierLockupBase is
     /// - `msg.sender` must be the stream's sender.
     ///
     /// @param streamId The ID of the stream to cancel.
-    function cancel(uint256 streamId) external payable;
+    /// @return refundedAmount The amount refunded to the sender, denoted in units of the token's decimals.
+    function cancel(uint256 streamId) external payable returns (uint128 refundedAmount);
 
     /// @notice Cancels multiple streams and refunds any remaining tokens to the sender.
     ///
@@ -261,7 +262,9 @@ interface ISablierLockupBase is
     /// - All requirements from {cancel} must be met for each stream.
     ///
     /// @param streamIds The IDs of the streams to cancel.
-    function cancelMultiple(uint256[] calldata streamIds) external payable;
+    /// @return refundedAmounts An array of amounts refunded to the sender for each stream ID, denoted in units of the
+    /// token's decimals.
+    function cancelMultiple(uint256[] calldata streamIds) external payable returns (uint128[] memory refundedAmounts);
 
     /// @notice Collects the accrued fees by transferring them to the contract admin.
     ///
