@@ -327,11 +327,19 @@ abstract contract SablierLockupBase is
 
         // Iterate over the provided array of stream IDs and cancel each stream.
         for (uint256 i = 0; i < count; ++i) {
-            // Effects and Interactions: cancel the stream.
-            uint128 amount = cancel(streamIds[i]);
+            // Effects and Interactions: cancel the stream using delegatecall.
+            (bool success, bytes memory result) =
+                address(this).delegatecall(abi.encodeCall(ISablierLockupBase.cancel, (streamIds[i])));
 
-            // Update the amounts array.
-            refundedAmounts[i] = amount;
+            // If the cancel reverts, log it using an event, and continue with the next stream.
+            if (!success) {
+                emit InvalidStreamInCancelMultiple(streamIds[i], result);
+            }
+            // If the cancel was successful, push the refunded amount to the amounts array.
+            else {
+                // Update the amounts array.
+                refundedAmounts[i] = abi.decode(result, (uint128));
+            }
         }
     }
 

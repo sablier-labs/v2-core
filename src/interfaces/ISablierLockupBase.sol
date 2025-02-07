@@ -50,6 +50,11 @@ interface ISablierLockupBase is
     /// @param feeAmount The amount of collected fees.
     event CollectFees(address indexed admin, uint256 indexed feeAmount);
 
+    /// @notice Emitted when canceling multiple streams and one particular cancellation reverts.
+    /// @param streamId The stream ID that reverted during cancel.
+    /// @param revertData The error data returned by the reverted cancel.
+    event InvalidStreamInCancelMultiple(uint256 streamId, bytes revertData);
+
     /// @notice Emitted when withdrawing from multiple streams and one particular withdrawal reverts.
     /// @param streamId The stream ID that reverted during withdraw.
     /// @param revertData The error data returned by the reverted withdraw.
@@ -253,13 +258,12 @@ interface ISablierLockupBase is
 
     /// @notice Cancels multiple streams and refunds any remaining tokens to the sender.
     ///
-    /// @dev Emits multiple {Transfer}, {CancelLockupStream} and {MetadataUpdate} events.
+    /// @dev Emits multiple {Transfer}, {CancelLockupStream} and {MetadataUpdate} events. For each stream that
+    /// reverted, it emits an {InvalidStreamInCancelMultiple} event.
     ///
     /// Notes:
-    /// - Refer to the notes in {cancel}.
-    ///
-    /// Requirements:
-    /// - All requirements from {cancel} must be met for each stream.
+    /// - Refer to the notes and requirements from {cancel}.
+    /// - This function does not revert if call to `cancel` reverts for any stream.
     ///
     /// @param streamIds The IDs of the streams to cancel.
     /// @return refundedAmounts An array of amounts refunded to the sender for each stream ID, denoted in units of the
@@ -382,13 +386,13 @@ interface ISablierLockupBase is
     /// reverted the withdrawal, it emits an {InvalidWithdrawalInWithdrawMultiple} event.
     ///
     /// Notes:
+    /// - This function does not revert if call to `withdraw` reverts for any stream.
     /// - This function attempts to call a hook on the recipient of each stream, unless `msg.sender` is the recipient.
+    /// - Refer to the notes and requirements from {withdraw}.
     ///
     /// Requirements:
     /// - Must not be delegate called.
     /// - There must be an equal number of `streamIds` and `amounts`.
-    /// - Each stream ID in the array must not reference a null or depleted stream.
-    /// - Each amount in the array must be greater than zero and must not exceed the withdrawable amount.
     ///
     /// @param streamIds The IDs of the streams to withdraw from.
     /// @param amounts The amounts to withdraw, denoted in units of the token's decimals.
