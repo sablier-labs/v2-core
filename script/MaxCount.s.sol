@@ -11,6 +11,16 @@ abstract contract MaxCountScript is BaseScript {
     /// @dev Maximum count for segments and tranches mapped by the chain Id.
     mapping(uint256 chainId => uint256 count) internal maxCountMap;
 
+    constructor() {
+        // Populate the max count map for segments and tranches.
+        populateMaxCountMap();
+
+        // If there is no maximum value set for a specific chain, use the default value.
+        if (maxCountMap[block.chainid] == 0) {
+            maxCountMap[block.chainid] = DEFAULT_MAX_COUNT;
+        }
+    }
+
     /// @dev Updates max values for segments and tranches. Values can be updated using the `update-counts.sh` script.
     function populateMaxCountMap() internal {
         // forgefmt: disable-start
