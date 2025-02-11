@@ -327,7 +327,7 @@ abstract contract SablierLockupBase is
 
         // Iterate over the provided array of stream IDs and cancel each stream.
         for (uint256 i = 0; i < count; ++i) {
-            // Effects and Interactions: cancel the stream using delegatecall.
+            // Checks, Effects and Interactions: cancel the stream using delegatecall.
             (bool success, bytes memory result) =
                 address(this).delegatecall(abi.encodeCall(ISablierLockupBase.cancel, (streamIds[i])));
 

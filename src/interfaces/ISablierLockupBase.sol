@@ -259,11 +259,12 @@ interface ISablierLockupBase is
     /// @notice Cancels multiple streams and refunds any remaining tokens to the sender.
     ///
     /// @dev Emits multiple {Transfer}, {CancelLockupStream} and {MetadataUpdate} events. For each stream that
-    /// reverted, it emits an {InvalidStreamInCancelMultiple} event.
+    /// failed, it emits an {InvalidStreamInCancelMultiple} event.
     ///
     /// Notes:
+    /// - This function will not revert if a {cancel} call for one ID fails. A zero amount is returned
+    /// for the failed stream.
     /// - Refer to the notes and requirements from {cancel}.
-    /// - This function does not revert if call to `cancel` reverts for any stream.
     ///
     /// @param streamIds The IDs of the streams to cancel.
     /// @return refundedAmounts An array of amounts refunded to the sender for each stream ID, denoted in units of the
@@ -383,10 +384,10 @@ interface ISablierLockupBase is
     /// @notice Withdraws tokens from streams to the recipient of each stream.
     ///
     /// @dev Emits multiple {Transfer}, {WithdrawFromLockupStream} and {MetadataUpdate} events. For each stream that
-    /// reverted the withdrawal, it emits an {InvalidWithdrawalInWithdrawMultiple} event.
+    /// failed the withdrawal, it emits an {InvalidWithdrawalInWithdrawMultiple} event.
     ///
     /// Notes:
-    /// - This function does not revert if call to `withdraw` reverts for any stream.
+    /// - This function will not revert if a {withdraw} call for one ID fails.
     /// - This function attempts to call a hook on the recipient of each stream, unless `msg.sender` is the recipient.
     /// - Refer to the notes and requirements from {withdraw}.
     ///

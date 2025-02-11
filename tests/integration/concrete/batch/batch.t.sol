@@ -128,7 +128,7 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
 
         bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
 
-        uint128 expectedRefundedAmount = defaults.DEPOSIT_AMOUNT() - defaults.WITHDRAW_AMOUNT();
+        uint128 expectedRefundedAmount = defaults.REFUND_AMOUNT();
         assertEq(results.length, 4, "batch results length");
         assertEq(abi.decode(results[0], (uint128)), expectedRefundedAmount, "batch results[0]");
         uint128[] memory refundedAmounts = abi.decode(results[1], (uint128[]));
