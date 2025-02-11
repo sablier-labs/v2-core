@@ -96,7 +96,7 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
         resetPrank({ msgSender: users.sender });
 
         // Warp to Feb 1, 2025 at 00:00 UTC to provide a more realistic testing environment.
-        vm.warp({ newTimestamp: FEB_1_2025 });
+        vm.warp({ newTimestamp: defaults.FEB_1_2025() });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
