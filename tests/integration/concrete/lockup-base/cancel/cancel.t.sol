@@ -12,23 +12,23 @@ import { Integration_Test } from "../../../Integration.t.sol";
 
 abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
     function test_RevertWhen_DelegateCall() external {
-        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.cancel, defaultStreamId) });
+        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.cancel, streamIds.defaultStream) });
     }
 
     function test_RevertGiven_Null() external whenNoDelegateCall {
-        expectRevert_Null({ callData: abi.encodeCall(lockup.cancel, nullStreamId) });
+        expectRevert_Null({ callData: abi.encodeCall(lockup.cancel, streamIds.nullStream) });
     }
 
     function test_RevertGiven_DEPLETEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
-        expectRevert_DEPLETEDStatus({ callData: abi.encodeCall(lockup.cancel, defaultStreamId) });
+        expectRevert_DEPLETEDStatus({ callData: abi.encodeCall(lockup.cancel, streamIds.defaultStream) });
     }
 
     function test_RevertGiven_CANCELEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
-        expectRevert_CANCELEDStatus({ callData: abi.encodeCall(lockup.cancel, defaultStreamId) });
+        expectRevert_CANCELEDStatus({ callData: abi.encodeCall(lockup.cancel, streamIds.defaultStream) });
     }
 
     function test_RevertGiven_SETTLEDStatus() external whenNoDelegateCall givenNotNull givenColdStream {
-        expectRevert_SETTLEDStatus({ callData: abi.encodeCall(lockup.cancel, defaultStreamId) });
+        expectRevert_SETTLEDStatus({ callData: abi.encodeCall(lockup.cancel, streamIds.defaultStream) });
     }
 
     function test_RevertWhen_CallerMaliciousThirdParty()
@@ -38,7 +38,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         givenWarmStream
         whenCallerNotSender
     {
-        expectRevert_CallerMaliciousThirdParty({ callData: abi.encodeCall(lockup.cancel, defaultStreamId) });
+        expectRevert_CallerMaliciousThirdParty({ callData: abi.encodeCall(lockup.cancel, streamIds.defaultStream) });
     }
 
     function test_RevertWhen_CallerRecipient()
@@ -53,9 +53,11 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
 
         // Run the test.
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, defaultStreamId, users.recipient)
+            abi.encodeWithSelector(
+                Errors.SablierLockupBase_Unauthorized.selector, streamIds.defaultStream, users.recipient
+            )
         );
-        lockup.cancel(defaultStreamId);
+        lockup.cancel(streamIds.defaultStream);
     }
 
     function test_RevertGiven_NonCancelableStream()
@@ -66,9 +68,9 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenCallerSender
     {
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, notCancelableStreamId)
+            abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, streamIds.notCancelableStream)
         );
-        lockup.cancel(notCancelableStreamId);
+        lockup.cancel(streamIds.notCancelableStream);
     }
 
     function test_GivenPENDINGStatus()
@@ -83,15 +85,15 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         vm.warp({ newTimestamp: getBlockTimestamp() - 1 seconds });
 
         // Cancel the stream.
-        lockup.cancel(defaultStreamId);
+        lockup.cancel(streamIds.defaultStream);
 
         // It should mark the stream as depleted.
-        Lockup.Status actualStatus = lockup.statusOf(defaultStreamId);
+        Lockup.Status actualStatus = lockup.statusOf(streamIds.defaultStream);
         Lockup.Status expectedStatus = Lockup.Status.DEPLETED;
         assertEq(actualStatus, expectedStatus);
 
         // It should make the stream not cancelable.
-        bool isCancelable = lockup.isCancelable(defaultStreamId);
+        bool isCancelable = lockup.isCancelable(streamIds.defaultStream);
         assertFalse(isCancelable, "isCancelable");
     }
 
@@ -105,25 +107,25 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         givenSTREAMINGStatus
     {
         // It should not make Sablier run the recipient hook.
-        uint128 senderAmount = lockup.refundableAmountOf(notAllowedtoHookStreamId);
-        uint128 recipientAmount = lockup.withdrawableAmountOf(notAllowedtoHookStreamId);
+        uint128 senderAmount = lockup.refundableAmountOf(streamIds.notAllowedtoHookStream);
+        uint128 recipientAmount = lockup.withdrawableAmountOf(streamIds.notAllowedtoHookStream);
         vm.expectCall({
             callee: address(recipientGood),
             data: abi.encodeCall(
                 ISablierLockupRecipient.onSablierLockupCancel,
-                (notAllowedtoHookStreamId, users.sender, senderAmount, recipientAmount)
+                (streamIds.notAllowedtoHookStream, users.sender, senderAmount, recipientAmount)
             ),
             count: 0
         });
 
         // Cancel the stream.
-        uint128 refundedAmount = lockup.cancel(notAllowedtoHookStreamId);
+        uint128 refundedAmount = lockup.cancel(streamIds.notAllowedtoHookStream);
 
         // It should return the correct refunded amount.
         assertEq(refundedAmount, senderAmount, "refundedAmount");
 
         // It should mark the stream as canceled.
-        Lockup.Status actualStatus = lockup.statusOf(notAllowedtoHookStreamId);
+        Lockup.Status actualStatus = lockup.statusOf(streamIds.notAllowedtoHookStream);
         Lockup.Status expectedStatus = Lockup.Status.CANCELED;
         assertEq(actualStatus, expectedStatus);
     }
@@ -142,7 +144,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         vm.expectRevert("You shall not pass");
 
         // Cancel the stream.
-        lockup.cancel(recipientRevertStreamId);
+        lockup.cancel(streamIds.recipientRevertStream);
     }
 
     function test_RevertWhen_RecipientReturnsInvalidSelector()
@@ -164,7 +166,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         );
 
         // Cancel the stream.
-        lockup.cancel(recipientInvalidSelectorStreamId);
+        lockup.cancel(streamIds.recipientInvalidSelectorStream);
     }
 
     function test_WhenReentrancy()
@@ -180,13 +182,13 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenRecipientReturnsValidSelector
     {
         // It should make Sablier run the recipient hook.
-        uint128 senderAmount = lockup.refundableAmountOf(recipientReentrantStreamId);
-        uint128 recipientAmount = lockup.withdrawableAmountOf(recipientReentrantStreamId);
+        uint128 senderAmount = lockup.refundableAmountOf(streamIds.recipientReentrantStream);
+        uint128 recipientAmount = lockup.withdrawableAmountOf(streamIds.recipientReentrantStream);
         vm.expectCall(
             address(recipientReentrant),
             abi.encodeCall(
                 ISablierLockupRecipient.onSablierLockupCancel,
-                (recipientReentrantStreamId, users.sender, senderAmount, recipientAmount)
+                (streamIds.recipientReentrantStream, users.sender, senderAmount, recipientAmount)
             )
         );
 
@@ -194,23 +196,24 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         vm.expectCall(
             address(lockup),
             abi.encodeCall(
-                ISablierLockupBase.withdraw, (recipientReentrantStreamId, address(recipientReentrant), recipientAmount)
+                ISablierLockupBase.withdraw,
+                (streamIds.recipientReentrantStream, address(recipientReentrant), recipientAmount)
             )
         );
 
         // Cancel the stream.
-        uint128 refundedAmount = lockup.cancel(recipientReentrantStreamId);
+        uint128 refundedAmount = lockup.cancel(streamIds.recipientReentrantStream);
 
         // It should return the correct refunded amount.
         assertEq(refundedAmount, senderAmount, "refundedAmount");
 
         // It should mark the stream as depleted. The reentrant recipient withdrew all the funds.
-        Lockup.Status actualStatus = lockup.statusOf(recipientReentrantStreamId);
+        Lockup.Status actualStatus = lockup.statusOf(streamIds.recipientReentrantStream);
         Lockup.Status expectedStatus = Lockup.Status.DEPLETED;
         assertEq(actualStatus, expectedStatus);
 
         // It should make the withdrawal via the reentrancy.
-        uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(recipientReentrantStreamId);
+        uint128 actualWithdrawnAmount = lockup.getWithdrawnAmount(streamIds.recipientReentrantStream);
         assertEq(actualWithdrawnAmount, recipientAmount, "withdrawnAmount");
     }
 
@@ -227,49 +230,49 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
         whenRecipientReturnsValidSelector
     {
         // It should refund the sender.
-        uint128 senderAmount = lockup.refundableAmountOf(recipientGoodStreamId);
+        uint128 senderAmount = lockup.refundableAmountOf(streamIds.recipientGoodStream);
         expectCallToTransfer({ to: users.sender, value: senderAmount });
 
         // It should make Sablier run the recipient hook.
-        uint128 recipientAmount = lockup.withdrawableAmountOf(recipientGoodStreamId);
+        uint128 recipientAmount = lockup.withdrawableAmountOf(streamIds.recipientGoodStream);
         vm.expectCall(
             address(recipientGood),
             abi.encodeCall(
                 ISablierLockupRecipient.onSablierLockupCancel,
-                (recipientGoodStreamId, users.sender, senderAmount, recipientAmount)
+                (streamIds.recipientGoodStream, users.sender, senderAmount, recipientAmount)
             )
         );
 
         // It should emit {MetadataUpdate} and {CancelLockupStream} events.
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockupBase.CancelLockupStream(
-            recipientGoodStreamId, users.sender, address(recipientGood), dai, senderAmount, recipientAmount
+            streamIds.recipientGoodStream, users.sender, address(recipientGood), dai, senderAmount, recipientAmount
         );
         vm.expectEmit({ emitter: address(lockup) });
-        emit IERC4906.MetadataUpdate({ _tokenId: recipientGoodStreamId });
+        emit IERC4906.MetadataUpdate({ _tokenId: streamIds.recipientGoodStream });
 
         // Cancel the stream.
-        uint128 refundedAmount = lockup.cancel(recipientGoodStreamId);
+        uint128 refundedAmount = lockup.cancel(streamIds.recipientGoodStream);
 
         // It should return the correct refunded amount.
         assertEq(refundedAmount, senderAmount, "refundedAmount");
 
         // It should mark the stream as canceled.
-        Lockup.Status actualStatus = lockup.statusOf(recipientGoodStreamId);
+        Lockup.Status actualStatus = lockup.statusOf(streamIds.recipientGoodStream);
         Lockup.Status expectedStatus = Lockup.Status.CANCELED;
         assertEq(actualStatus, expectedStatus);
 
         // It should make the stream as non cancelable.
-        bool isCancelable = lockup.isCancelable(recipientGoodStreamId);
+        bool isCancelable = lockup.isCancelable(streamIds.recipientGoodStream);
         assertFalse(isCancelable, "isCancelable");
 
         // It should update the refunded amount.
-        uint128 actualRefundedAmount = lockup.getRefundedAmount(recipientGoodStreamId);
+        uint128 actualRefundedAmount = lockup.getRefundedAmount(streamIds.recipientGoodStream);
         uint128 expectedRefundedAmount = senderAmount;
         assertEq(actualRefundedAmount, expectedRefundedAmount, "refundedAmount");
 
         // It should not burn the NFT.
-        address actualNFTOwner = lockup.ownerOf({ tokenId: recipientGoodStreamId });
+        address actualNFTOwner = lockup.ownerOf({ tokenId: streamIds.recipientGoodStream });
         address expectedNFTOwner = address(recipientGood);
         assertEq(actualNFTOwner, expectedNFTOwner, "NFT owner");
     }

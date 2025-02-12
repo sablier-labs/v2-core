@@ -23,26 +23,6 @@ abstract contract Integration_Test is Base_Test {
 
     Lockup.Model internal lockupModel;
 
-    // Common stream IDs to be used across the tests.
-    // Default stream ID.
-    uint256 internal defaultStreamId;
-    // A stream with a recipient contract that is not allowed to hook.
-    uint256 internal notAllowedtoHookStreamId;
-    // A non-cancelable stream ID.
-    uint256 internal notCancelableStreamId;
-    // A non-transferable stream ID.
-    uint256 internal notTransferableStreamId;
-    // A stream ID that does not exist.
-    uint256 internal nullStreamId = 1729;
-    // A stream with a recipient contract that implements {ISablierLockupRecipient}.
-    uint256 internal recipientGoodStreamId;
-    // A stream with a recipient contract that returns invalid selector bytes on the hook call.
-    uint256 internal recipientInvalidSelectorStreamId;
-    // A stream with a reentrant contract as the recipient.
-    uint256 internal recipientReentrantStreamId;
-    // A stream with a reverting contract as the stream's recipient.
-    uint256 internal recipientRevertStreamId;
-
     struct CreateParams {
         Lockup.CreateWithTimestamps createWithTimestamps;
         Lockup.CreateWithDurations createWithDurations;
@@ -112,14 +92,15 @@ abstract contract Integration_Test is Base_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function initializeDefaultStreams() internal {
-        defaultStreamId = createDefaultStream();
-        notAllowedtoHookStreamId = createDefaultStreamWithRecipient(address(recipientInterfaceIDIncorrect));
-        notCancelableStreamId = createDefaultStreamNonCancelable();
-        notTransferableStreamId = createDefaultStreamNonTransferable();
-        recipientGoodStreamId = createDefaultStreamWithRecipient(address(recipientGood));
-        recipientInvalidSelectorStreamId = createDefaultStreamWithRecipient(address(recipientInvalidSelector));
-        recipientReentrantStreamId = createDefaultStreamWithRecipient(address(recipientReentrant));
-        recipientRevertStreamId = createDefaultStreamWithRecipient(address(recipientReverting));
+        streamIds.defaultStream = createDefaultStream();
+        streamIds.notAllowedtoHookStream = createDefaultStreamWithRecipient(address(recipientInterfaceIDIncorrect));
+        streamIds.notCancelableStream = createDefaultStreamNonCancelable();
+        streamIds.notTransferableStream = createDefaultStreamNonTransferable();
+        streamIds.nullStream = 1729;
+        streamIds.recipientGoodStream = createDefaultStreamWithRecipient(address(recipientGood));
+        streamIds.recipientInvalidSelectorStream = createDefaultStreamWithRecipient(address(recipientInvalidSelector));
+        streamIds.recipientReentrantStream = createDefaultStreamWithRecipient(address(recipientReentrant));
+        streamIds.recipientRevertStream = createDefaultStreamWithRecipient(address(recipientReverting));
     }
 
     function initializeRecipientsWithHooks() internal {
@@ -224,20 +205,20 @@ abstract contract Integration_Test is Base_Test {
         assertFalse(success, "malicious call success");
         assertEq(
             returnData,
-            abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, defaultStreamId, users.eve),
+            abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, streamIds.defaultStream, users.eve),
             "malicious call return data"
         );
     }
 
     function expectRevert_CANCELEDStatus(bytes memory callData) internal {
         vm.warp({ newTimestamp: defaults.WARP_26_PERCENT() });
-        lockup.cancel(defaultStreamId);
+        lockup.cancel(streamIds.defaultStream);
 
         (bool success, bytes memory returnData) = address(lockup).call(callData);
         assertFalse(success, "canceled status call success");
         assertEq(
             returnData,
-            abi.encodeWithSelector(Errors.SablierLockupBase_StreamCanceled.selector, defaultStreamId),
+            abi.encodeWithSelector(Errors.SablierLockupBase_StreamCanceled.selector, streamIds.defaultStream),
             "canceled status call return data"
         );
     }
@@ -250,13 +231,13 @@ abstract contract Integration_Test is Base_Test {
 
     function expectRevert_DEPLETEDStatus(bytes memory callData) internal {
         vm.warp({ newTimestamp: defaults.END_TIME() });
-        lockup.withdrawMax({ streamId: defaultStreamId, to: users.recipient });
+        lockup.withdrawMax({ streamId: streamIds.defaultStream, to: users.recipient });
 
         (bool success, bytes memory returnData) = address(lockup).call(callData);
         assertFalse(success, "depleted status call success");
         assertEq(
             returnData,
-            abi.encodeWithSelector(Errors.SablierLockupBase_StreamDepleted.selector, defaultStreamId),
+            abi.encodeWithSelector(Errors.SablierLockupBase_StreamDepleted.selector, streamIds.defaultStream),
             "depleted status call return data"
         );
     }
@@ -266,7 +247,7 @@ abstract contract Integration_Test is Base_Test {
         assertFalse(success, "null call success");
         assertEq(
             returnData,
-            abi.encodeWithSelector(Errors.SablierLockupBase_Null.selector, nullStreamId),
+            abi.encodeWithSelector(Errors.SablierLockupBase_Null.selector, streamIds.nullStream),
             "null call return data"
         );
     }
@@ -278,7 +259,7 @@ abstract contract Integration_Test is Base_Test {
         assertFalse(success, "settled status call success");
         assertEq(
             returnData,
-            abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, defaultStreamId),
+            abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, streamIds.defaultStream),
             "settled status call return data"
         );
     }

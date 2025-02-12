@@ -10,29 +10,29 @@ import { Integration_Test } from "../../../Integration.t.sol";
 
 contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
     // An array of stream IDs to be renounces.
-    uint256[] internal streamIds;
+    uint256[] internal ids;
 
     function setUp() public virtual override {
         Integration_Test.setUp();
 
         // Create test streams.
-        streamIds.push(defaultStreamId);
-        streamIds.push(createDefaultStream());
+        ids.push(streamIds.defaultStream);
+        ids.push(createDefaultStream());
     }
 
     function test_RevertWhen_DelegateCall() external {
-        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.renounceMultiple, streamIds) });
+        expectRevert_DelegateCall({ callData: abi.encodeCall(lockup.renounceMultiple, ids) });
     }
 
     function test_WhenZeroArrayLength() external whenNoDelegateCall {
         // It should do nothing.
-        uint256[] memory nullStreamIds = new uint256[](0);
-        lockup.renounceMultiple(nullStreamIds);
+        uint256[] memory nullIds = new uint256[](0);
+        lockup.renounceMultiple(nullIds);
     }
 
     function test_RevertGiven_AtLeastOneNullStream() external whenNoDelegateCall whenNonZeroArrayLength {
         expectRevert_Null({
-            callData: abi.encodeCall(lockup.renounceMultiple, Solarray.uint256s(streamIds[0], nullStreamId))
+            callData: abi.encodeCall(lockup.renounceMultiple, Solarray.uint256s(ids[0], streamIds.nullStream))
         });
     }
 
@@ -43,11 +43,11 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         givenNoNullStreams
     {
         uint40 earlyEndTime = defaults.END_TIME() - 10;
-        uint256 earlyEndtimeStreamId = createDefaultStreamWithEndTime(earlyEndTime);
+        uint256 earlyEndtimeStream = createDefaultStreamWithEndTime(earlyEndTime);
         vm.warp({ newTimestamp: earlyEndTime + 1 seconds });
 
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, earlyEndtimeStreamId));
-        lockup.renounceMultiple({ streamIds: Solarray.uint256s(streamIds[0], earlyEndtimeStreamId) });
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_StreamSettled.selector, earlyEndtimeStream));
+        lockup.renounceMultiple({ streamIds: Solarray.uint256s(ids[0], earlyEndtimeStream) });
     }
 
     function test_RevertWhen_CallerUnauthorizedForAny()
@@ -61,10 +61,8 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         resetPrank({ msgSender: users.recipient });
 
         // Run the test.
-        vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, streamIds[0], users.recipient)
-        );
-        lockup.renounceMultiple(streamIds);
+        vm.expectRevert(abi.encodeWithSelector(Errors.SablierLockupBase_Unauthorized.selector, ids[0], users.recipient));
+        lockup.renounceMultiple(ids);
     }
 
     function test_RevertGiven_AtLeastOneNonCancelableStream()
@@ -76,9 +74,9 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
         whenCallerAuthorizedForAllStreams
     {
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, notCancelableStreamId)
+            abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, streamIds.notCancelableStream)
         );
-        lockup.renounceMultiple({ streamIds: Solarray.uint256s(streamIds[0], notCancelableStreamId) });
+        lockup.renounceMultiple({ streamIds: Solarray.uint256s(ids[0], streamIds.notCancelableStream) });
     }
 
     function test_GivenAllStreamsCancelable()
@@ -91,15 +89,15 @@ contract RenounceMultiple_Integration_Concrete_Test is Integration_Test {
     {
         // It should emit {RenounceLockupStream} events for both streams.
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.RenounceLockupStream(streamIds[0]);
+        emit ISablierLockupBase.RenounceLockupStream(ids[0]);
         vm.expectEmit({ emitter: address(lockup) });
-        emit ISablierLockupBase.RenounceLockupStream(streamIds[1]);
+        emit ISablierLockupBase.RenounceLockupStream(ids[1]);
 
         // Renounce the streams.
-        lockup.renounceMultiple(streamIds);
+        lockup.renounceMultiple(ids);
 
         // It should make streams non cancelable.
-        assertFalse(lockup.isCancelable(streamIds[0]), "isCancelable0");
-        assertFalse(lockup.isCancelable(streamIds[1]), "isCancelable1");
+        assertFalse(lockup.isCancelable(ids[0]), "isCancelable0");
+        assertFalse(lockup.isCancelable(ids[1]), "isCancelable1");
     }
 }
