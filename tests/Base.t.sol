@@ -27,7 +27,7 @@ abstract contract Base_Test is Assertions, Calculations, DeployOptimized, Modifi
                                      VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
-    StreamIds internal streamIds;
+    StreamIds internal ids;
     Users internal users;
 
     /*//////////////////////////////////////////////////////////////////////////

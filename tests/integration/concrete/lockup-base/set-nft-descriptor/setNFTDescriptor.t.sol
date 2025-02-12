@@ -31,9 +31,9 @@ contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test {
 
         // It should re-set the NFT descriptor.
         vm.expectCall(
-            address(nftDescriptor), abi.encodeCall(ILockupNFTDescriptor.tokenURI, (lockup, streamIds.defaultStream))
+            address(nftDescriptor), abi.encodeCall(ILockupNFTDescriptor.tokenURI, (lockup, ids.defaultStream))
         );
-        lockup.tokenURI({ tokenId: streamIds.defaultStream });
+        lockup.tokenURI({ tokenId: ids.defaultStream });
     }
 
     function test_WhenProvidedAddressNotMatchCurrentNFTDescriptor() external whenCallerAdmin {
@@ -51,6 +51,6 @@ contract SetNFTDescriptor_Integration_Concrete_Test is Integration_Test {
 
         // It should set the new NFT descriptor.
         vm.expectCall(address(newNFTDescriptor), abi.encodeCall(ILockupNFTDescriptor.tokenURI, (lockup, 1)));
-        lockup.tokenURI({ tokenId: streamIds.defaultStream });
+        lockup.tokenURI({ tokenId: ids.defaultStream });
     }
 }

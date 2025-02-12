@@ -14,12 +14,12 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
     /// @dev The batch call cancels a non-cancelable stream.
     function test_RevertWhen_LockupThrows() external {
         bytes[] memory calls = new bytes[](2);
-        calls[0] = abi.encodeCall(lockup.cancel, (streamIds.defaultStream));
-        calls[1] = abi.encodeCall(lockup.cancel, (streamIds.notCancelableStream));
+        calls[0] = abi.encodeCall(lockup.cancel, (ids.defaultStream));
+        calls[1] = abi.encodeCall(lockup.cancel, (ids.notCancelableStream));
 
-        // Expect revert on streamIds.notCancelableStream.
+        // Expect revert on ids.notCancelableStream.
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, streamIds.notCancelableStream)
+            abi.encodeWithSelector(Errors.SablierLockupBase_StreamNotCancelable.selector, ids.notCancelableStream)
         );
         lockup.batch(calls);
     }
@@ -34,11 +34,11 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
 
         bytes[] memory calls = new bytes[](6);
         // It should return True.
-        calls[0] = abi.encodeCall(lockup.isCancelable, (streamIds.defaultStream));
+        calls[0] = abi.encodeCall(lockup.isCancelable, (ids.defaultStream));
         // It should return the withdrawn amount.
-        calls[1] = abi.encodeCall(lockup.withdrawMax, (streamIds.notCancelableStream, users.recipient));
+        calls[1] = abi.encodeCall(lockup.withdrawMax, (ids.notCancelableStream, users.recipient));
         // It should return refunded amount.
-        calls[2] = abi.encodeCall(lockup.cancel, (streamIds.defaultStream));
+        calls[2] = abi.encodeCall(lockup.cancel, (ids.defaultStream));
         // It should return the next stream ID.
         calls[3] = abi.encodeCall(lockup.nextStreamId, ());
         // It should return the stream ID created.
@@ -47,7 +47,7 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
             (defaults.createWithTimestamps(), defaults.unlockAmounts(), defaults.CLIFF_TIME())
         );
         // It should return nothing.
-        calls[5] = abi.encodeCall(lockup.renounce, (streamIds.notTransferableStream));
+        calls[5] = abi.encodeCall(lockup.renounce, (ids.notTransferableStream));
 
         bytes[] memory results = lockup.batch(calls);
         assertEq(results.length, 6, "batch results length");
@@ -110,21 +110,21 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
         bytes[] memory calls = new bytes[](4);
 
         // It should return the refunded amount.
-        calls[0] = abi.encodeCall(lockup.cancel, (streamIds.defaultStream));
+        calls[0] = abi.encodeCall(lockup.cancel, (ids.defaultStream));
 
-        uint256[] memory ids = new uint256[](2);
-        ids[0] = streamIds.recipientGoodStream;
-        ids[1] = streamIds.notTransferableStream;
+        uint256[] memory streamIds = new uint256[](2);
+        streamIds[0] = ids.recipientGoodStream;
+        streamIds[1] = ids.notTransferableStream;
         // It should return the array of refunded amounts.
-        calls[1] = abi.encodeCall(lockup.cancelMultiple, (ids));
+        calls[1] = abi.encodeCall(lockup.cancelMultiple, (streamIds));
 
         // It should return nothing.
-        calls[2] = abi.encodeCall(lockup.renounce, (streamIds.recipientReentrantStream));
+        calls[2] = abi.encodeCall(lockup.renounce, (ids.recipientReentrantStream));
 
-        ids = new uint256[](1);
-        ids[0] = streamIds.recipientRevertStream;
+        streamIds = new uint256[](1);
+        streamIds[0] = ids.recipientRevertStream;
         // It should return nothing.
-        calls[3] = abi.encodeCall(lockup.renounceMultiple, (ids));
+        calls[3] = abi.encodeCall(lockup.renounceMultiple, (streamIds));
 
         bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
 
@@ -149,19 +149,19 @@ contract Batch_Integration_Concrete_Test is Integration_Test {
 
         bytes[] memory calls = new bytes[](5);
         // It should return nothing.
-        calls[0] = abi.encodeCall(lockup.withdraw, (streamIds.defaultStream, users.recipient, 1));
+        calls[0] = abi.encodeCall(lockup.withdraw, (ids.defaultStream, users.recipient, 1));
         // It should return the withdrawn amount.
-        calls[1] = abi.encodeCall(lockup.withdrawMax, (streamIds.defaultStream, users.recipient));
+        calls[1] = abi.encodeCall(lockup.withdrawMax, (ids.defaultStream, users.recipient));
 
-        uint256[] memory ids = Solarray.uint256s(streamIds.notCancelableStream, streamIds.notCancelableStream);
+        uint256[] memory streamIds = Solarray.uint256s(ids.notCancelableStream, ids.notCancelableStream);
         uint128[] memory amounts = Solarray.uint128s(1, 1);
 
         // It should return nothing.
-        calls[2] = abi.encodeCall(lockup.withdrawMultiple, (ids, amounts));
+        calls[2] = abi.encodeCall(lockup.withdrawMultiple, (streamIds, amounts));
         // It should return the withdrawn amount.
-        calls[3] = abi.encodeCall(lockup.withdrawMaxAndTransfer, (streamIds.notCancelableStream, users.recipient));
+        calls[3] = abi.encodeCall(lockup.withdrawMaxAndTransfer, (ids.notCancelableStream, users.recipient));
         // It should return nothing.
-        calls[4] = abi.encodeCall(lockup.burn, (streamIds.defaultStream));
+        calls[4] = abi.encodeCall(lockup.burn, (ids.defaultStream));
 
         resetPrank({ msgSender: users.recipient });
         bytes[] memory results = lockup.batch{ value: 1 wei }(calls);
