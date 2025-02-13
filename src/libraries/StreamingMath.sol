@@ -39,7 +39,7 @@ library StreamingMath {
     /// 2. The first segment's timestamp is greater than the start time.
     /// 3. The last segment's timestamp equals the end time.
     /// 4. The segment timestamps are arranged in ascending order.
-    function calculateLockupDynamicStreamedAmount(
+    function calculateStreamedAmountLD(
         uint128 depositedAmount,
         LockupDynamic.Segment[] memory segments,
         uint40 blockTimestamp,
@@ -133,7 +133,7 @@ library StreamingMath {
     /// the deposit amount.
     /// 2. The start time is before the end time.
     /// 3. If the cliff time is not zero, it is after the start time and before the end time.
-    function calculateLockupLinearStreamedAmount(
+    function calculateStreamedAmountLL(
         uint128 depositedAmount,
         uint40 blockTimestamp,
         Lockup.Timestamps memory timestamps,
@@ -216,7 +216,7 @@ library StreamingMath {
     /// 2. The first tranche's timestamp is greater than the start time.
     /// 3. The last tranche's timestamp equals the end time.
     /// 4. The tranche timestamps are arranged in ascending order.
-    function calculateLockupTranchedStreamedAmount(
+    function calculateStreamedAmountLT(
         uint128 depositedAmount,
         uint40 blockTimestamp,
         Lockup.Timestamps memory timestamps,

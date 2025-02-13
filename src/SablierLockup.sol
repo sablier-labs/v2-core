@@ -306,7 +306,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
         // Calculate the streamed amount for the Lockup Dynamic model.
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
-            streamedAmount = StreamingMath.calculateLockupDynamicStreamedAmount({
+            streamedAmount = StreamingMath.calculateStreamedAmountLD({
                 depositedAmount: depositedAmount,
                 segments: _segments[streamId],
                 blockTimestamp: blockTimestamp,
@@ -316,7 +316,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
         // Calculate the streamed amount for the Lockup Linear model.
         else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
-            streamedAmount = StreamingMath.calculateLockupLinearStreamedAmount({
+            streamedAmount = StreamingMath.calculateStreamedAmountLL({
                 depositedAmount: depositedAmount,
                 blockTimestamp: blockTimestamp,
                 timestamps: timestamps,
@@ -327,7 +327,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
         // Calculate the streamed amount for the Lockup Tranched model.
         else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
-            streamedAmount = StreamingMath.calculateLockupTranchedStreamedAmount({
+            streamedAmount = StreamingMath.calculateStreamedAmountLT({
                 depositedAmount: depositedAmount,
                 blockTimestamp: blockTimestamp,
                 timestamps: timestamps,
@@ -400,7 +400,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         returns (uint256 streamId)
     {
         // Check: validate the user-provided parameters and segments.
-        Helpers.checkCreateLockupDynamic({
+        Helpers.checkCreateLD({
             sender: params.sender,
             timestamps: params.timestamps,
             depositAmount: params.depositAmount,
@@ -441,7 +441,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         returns (uint256 streamId)
     {
         // Check: validate the user-provided parameters and cliff time.
-        Helpers.checkCreateLockupLinear({
+        Helpers.checkCreateLL({
             sender: params.sender,
             timestamps: params.timestamps,
             cliffTime: cliffTime,
@@ -490,7 +490,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         returns (uint256 streamId)
     {
         // Check: validate the user-provided parameters and tranches.
-        Helpers.checkCreateLockupTranched({
+        Helpers.checkCreateLT({
             sender: params.sender,
             timestamps: params.timestamps,
             depositAmount: params.depositAmount,
