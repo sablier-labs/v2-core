@@ -173,7 +173,7 @@ library Lockup {
     }
 
     /// @notice Enum representing the different distribution models used to create lockup streams.
-    /// @dev These distribution models determine the vesting function used in the calculations of the unlocked tokens.
+    /// @dev These distribution models determine the streaming function used in the calculations of the unlocked tokens.
     enum Model {
         LOCKUP_LINEAR,
         LOCKUP_DYNAMIC,

@@ -12,7 +12,7 @@ abstract contract Calculations {
     using CastingUint128 for uint128;
     using CastingUint40 for uint40;
 
-    /// @dev Replicates the logic of {VestingMath.calculateLockupDynamicStreamedAmount}.
+    /// @dev Replicates the logic of {StreamingMath.calculateLockupDynamicStreamedAmount}.
     function calculateLockupDynamicStreamedAmount(
         LockupDynamic.Segment[] memory segments,
         uint40 startTime,
@@ -58,7 +58,7 @@ abstract contract Calculations {
         }
     }
 
-    /// @dev Helper function that replicates the logic of {VestingMath.calculateLockupLinearStreamedAmount}.
+    /// @dev Helper function that replicates the logic of {StreamingMath.calculateLockupLinearStreamedAmount}.
     function calculateLockupLinearStreamedAmount(
         uint40 startTime,
         uint40 cliffTime,
@@ -99,7 +99,7 @@ abstract contract Calculations {
         }
     }
 
-    /// @dev Helper function that replicates the logic of {VestingMath.calculateLockupTranchedStreamedAmount}.
+    /// @dev Helper function that replicates the logic of {StreamingMath.calculateLockupTranchedStreamedAmount}.
     function calculateLockupTranchedStreamedAmount(
         LockupTranched.Tranche[] memory tranches,
         uint128 depositAmount

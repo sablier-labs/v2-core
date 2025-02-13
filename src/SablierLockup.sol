@@ -10,7 +10,7 @@ import { ILockupNFTDescriptor } from "./interfaces/ILockupNFTDescriptor.sol";
 import { ISablierLockup } from "./interfaces/ISablierLockup.sol";
 import { Errors } from "./libraries/Errors.sol";
 import { Helpers } from "./libraries/Helpers.sol";
-import { VestingMath } from "./libraries/VestingMath.sol";
+import { StreamingMath } from "./libraries/StreamingMath.sol";
 import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "./types/DataTypes.sol";
 
 /*
@@ -296,7 +296,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
     /// @inheritdoc SablierLockupBase
     function _calculateStreamedAmount(uint256 streamId) internal view override returns (uint128) {
-        // Load in memory the parameters used in {VestingMath}.
+        // Load in memory the parameters used in {StreamingMath}.
         uint40 blockTimestamp = uint40(block.timestamp);
         uint128 depositedAmount = _streams[streamId].amounts.deposited;
         Lockup.Model lockupModel = _streams[streamId].lockupModel;
@@ -306,7 +306,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
 
         // Calculate the streamed amount for the Lockup Dynamic model.
         if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
-            streamedAmount = VestingMath.calculateLockupDynamicStreamedAmount({
+            streamedAmount = StreamingMath.calculateLockupDynamicStreamedAmount({
                 depositedAmount: depositedAmount,
                 segments: _segments[streamId],
                 blockTimestamp: blockTimestamp,
@@ -316,7 +316,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
         // Calculate the streamed amount for the Lockup Linear model.
         else if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
-            streamedAmount = VestingMath.calculateLockupLinearStreamedAmount({
+            streamedAmount = StreamingMath.calculateLockupLinearStreamedAmount({
                 depositedAmount: depositedAmount,
                 blockTimestamp: blockTimestamp,
                 timestamps: timestamps,
@@ -327,7 +327,7 @@ contract SablierLockup is ISablierLockup, SablierLockupBase {
         }
         // Calculate the streamed amount for the Lockup Tranched model.
         else if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
-            streamedAmount = VestingMath.calculateLockupTranchedStreamedAmount({
+            streamedAmount = StreamingMath.calculateLockupTranchedStreamedAmount({
                 depositedAmount: depositedAmount,
                 blockTimestamp: blockTimestamp,
                 timestamps: timestamps,

@@ -8,9 +8,9 @@ import { UD60x18, ud } from "@prb/math/src/UD60x18.sol";
 
 import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "./../types/DataTypes.sol";
 
-/// @title VestingMath
-/// @notice Library with functions needed to calculate vested amount across lockup streams.
-library VestingMath {
+/// @title StreamingMath
+/// @notice Library with functions needed to calculate streamed amount across lockup streams.
+library StreamingMath {
     using CastingUint128 for uint128;
     using CastingUint40 for uint40;
 
@@ -26,7 +26,7 @@ library VestingMath {
     /// - $x$ is the elapsed time divided by the total duration of the current segment.
     /// - $exp$ is the current segment exponent.
     /// - $csa$ is the current segment amount.
-    /// - $\Sigma(esa)$ is the sum of all vested segments' amounts.
+    /// - $\Sigma(esa)$ is the sum of all streamed segments' amounts.
     ///
     /// Notes:
     /// 1. Normalization to 18 decimals is not needed because there is no mix of amounts with different decimals.
@@ -209,7 +209,7 @@ library VestingMath {
     ///
     /// Where:
     ///
-    /// - $\Sigma(eta)$ is the sum of all vested tranches' amounts.
+    /// - $\Sigma(eta)$ is the sum of all streamed tranches' amounts.
     ///
     /// Assumptions:
     /// 1. The sum of all tranche amounts does not overflow uint128, and equals the deposited amount.
@@ -241,13 +241,13 @@ library VestingMath {
             return 0;
         }
 
-        // Sum the amounts in all tranches that have already been vested.
+        // Sum the amounts in all tranches that have already been streamed.
         // Using unchecked arithmetic is safe because the sum of the tranche amounts is equal to the total amount
         // at this point.
         uint128 streamedAmount = tranches[0].amount;
         uint256 tranchesCount = tranches.length;
         for (uint256 i = 1; i < tranchesCount; ++i) {
-            // The loop breaks at the first tranche with a timestamp in the future. A tranche is considered vested if
+            // The loop breaks at the first tranche with a timestamp in the future. A tranche is considered streamed if
             // its timestamp is less than or equal to the block timestamp.
             if (tranches[i].timestamp > blockTimestamp) {
                 break;
