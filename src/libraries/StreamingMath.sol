@@ -14,8 +14,8 @@ library StreamingMath {
     using CastingUint128 for uint128;
     using CastingUint40 for uint40;
 
-    /// @notice Calculates the streamed amount for a Lockup dynamic stream.
-    /// @dev Lockup dynamic model uses the following distribution function:
+    /// @notice Calculates the streamed amount of LD model.
+    /// @dev LD model uses the following distribution function:
     ///
     /// $$
     /// f(x) = x^{exp} * csa + \Sigma(esa)
@@ -112,8 +112,8 @@ library StreamingMath {
         }
     }
 
-    /// @notice Calculates the streamed amount for a Lockup linear stream.
-    /// @dev Lockup linear model uses the following distribution function:
+    /// @notice Calculates the streamed amount of LL model.
+    /// @dev LL model uses the following distribution function:
     ///
     /// $$
     ///        ( x * sa + s, block timestamp < cliff time
@@ -200,8 +200,8 @@ library StreamingMath {
         }
     }
 
-    /// @notice Calculates the streamed amount for a Lockup tranched stream.
-    /// @dev Lockup tranched model uses the following distribution function:
+    /// @notice Calculates the streamed amount of LT model.
+    /// @dev LT model uses the following distribution function:
     ///
     /// $$
     /// f(x) = \Sigma(eta)
