@@ -5,7 +5,6 @@
   fs_permissions = [
     { access = "read", path = "./out-optimized" },
     { access = "read", path = "package.json" },
-    { access = "read-write", path = "./benchmark/results" },
     { access = "read-write", path = "./script/"}
   ]
   gas_limit = 9223372036854775807
@@ -27,10 +26,6 @@
   depth = 20            # Number of calls executed in one run
   fail_on_revert = true
   runs = 20
-
-# Run only the code inside benchmark directory
-[profile.benchmark]
-  test = "benchmark"
 
 # Speed up compilation and tests during development
 [profile.lite]
@@ -104,7 +99,7 @@
   berachain_artio = "https://bartio.rpc.berachain.com/"
   blast = "https://rpc.blast.io"
   blast_sepolia = "https://sepolia.blast.io"
-  bnb = "https://bsc-dataseed.binance.org"
+  bsc = "https://bsc-dataseed.binance.org"
   core_dao = "https://rpc.coredao.org"
   gnosis = "https://rpc.gnosischain.com"
   lightlink = "https://replicator.phoenix.lightlink.io/rpc/v1"
