@@ -5,6 +5,7 @@ pragma solidity >=0.8.22;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { PRBMathAssertions } from "@prb/math/test/utils/Assertions.sol";
 
+import { ISablierLockup } from "../../src/interfaces/ISablierLockup.sol";
 import { Lockup, LockupDynamic, LockupTranched } from "../../src/types/DataTypes.sol";
 
 abstract contract Assertions is PRBMathAssertions {
@@ -38,8 +39,8 @@ abstract contract Assertions is PRBMathAssertions {
     }
 
     /// @dev Compares two {Lockup.Model} enum values.
-    function assertEq(Lockup.Model a, Lockup.Model b) internal pure {
-        assertEq(uint8(a), uint8(b), "lockup model");
+    function assertEq(Lockup.Model a, Lockup.Model b, string memory err) internal pure {
+        assertEq(uint256(a), uint256(b), err);
     }
 
     /// @dev Compares two {Lockup.Timestamps} struct entities.
@@ -86,5 +87,29 @@ abstract contract Assertions is PRBMathAssertions {
     /// @dev Compares two {Lockup.Status} enum values.
     function assertNotEq(Lockup.Status a, Lockup.Status b, string memory err) internal pure {
         assertNotEq(uint256(a), uint256(b), err);
+    }
+
+    /// @dev Compares {SablierLockupBase} states with {Lockup.CreateWithTimestamps} parameters for a given stream ID.
+    function assertEq(
+        uint256 streamId,
+        ISablierLockup lockup,
+        Lockup.CreateWithTimestamps memory expectedLockup
+    )
+        internal
+        view
+    {
+        assertEq(lockup.getDepositedAmount(streamId), expectedLockup.depositAmount, "depositedAmount");
+        assertEq(lockup.getEndTime(streamId), expectedLockup.timestamps.end, "endTime");
+        assertEq(lockup.getRecipient(streamId), expectedLockup.recipient, "recipient");
+        assertEq(lockup.getSender(streamId), expectedLockup.sender, "sender");
+        assertEq(lockup.getStartTime(streamId), expectedLockup.timestamps.start, "startTime");
+        assertEq(lockup.getUnderlyingToken(streamId), expectedLockup.token, "underlyingToken");
+        assertEq(lockup.getWithdrawnAmount(streamId), 0, "withdrawnAmount");
+        assertFalse(lockup.isDepleted(streamId), "isDepleted");
+        assertTrue(lockup.isStream(streamId), "isStream");
+        assertEq(lockup.isTransferable(streamId), expectedLockup.transferable, "isTransferable");
+        assertEq(lockup.nextStreamId(), streamId + 1, "post-create nextStreamId");
+        assertFalse(lockup.wasCanceled(streamId), "wasCanceled");
+        assertEq(lockup.ownerOf(streamId), expectedLockup.recipient, "post-create NFT owner");
     }
 }

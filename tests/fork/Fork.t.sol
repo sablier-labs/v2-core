@@ -6,7 +6,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import { Base_Test } from "./../Base.t.sol";
 
-/// @notice Common logic needed by all fork tests.
+/// @notice Base logic needed by the fork tests.
 abstract contract Fork_Test is Base_Test {
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
@@ -46,10 +46,15 @@ abstract contract Fork_Test is Base_Test {
         labelContracts();
 
         // Deal token balance to the user.
-        initialHolderBalance = 1e7 * 10 ** IERC20Metadata(address(FORK_TOKEN)).decimals();
+        initialHolderBalance = 1_000_000 ** IERC20Metadata(address(FORK_TOKEN)).decimals();
         deal({ token: address(FORK_TOKEN), to: forkTokenHolder, give: initialHolderBalance });
 
         resetPrank({ msgSender: forkTokenHolder });
+
+        // Approve {SablierLockup} to transfer the holder's tokens.
+        // We use a low-level call to ignore reverts because the token can have the missing return value bug.
+        (bool success,) = address(FORK_TOKEN).call(abi.encodeCall(IERC20.approve, (address(lockup), MAX_UINT256)));
+        success;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -69,6 +74,9 @@ abstract contract Fork_Test is Base_Test {
         // Avoid users blacklisted by USDC or USDT.
         assumeNoBlacklisted(address(FORK_TOKEN), sender);
         assumeNoBlacklisted(address(FORK_TOKEN), recipient);
+
+        // Make the holder the caller.
+        resetPrank(forkTokenHolder);
     }
 
     /// @dev Labels the most relevant addresses.
