@@ -189,6 +189,8 @@ contract CreateWithTimestampsLL_Integration_Concrete_Test is CreateWithTimestamp
     /// @dev Shared logic between {test_WhenStartTimeLessThanEndTime}, {test_WhenTokenMissesERC20ReturnValue} and
     /// {test_WhenTokenNotMissERC20ReturnValue}.
     function _testCreateWithTimestampsLL(address token, uint40 cliffTime) private {
+        uint256 previousAggregateAmount = lockup.aggregateBalance(IERC20(token));
+
         // Make the Sender the stream's funder.
         address funder = users.sender;
         uint256 expectedStreamId = lockup.nextStreamId();
@@ -226,5 +228,10 @@ contract CreateWithTimestampsLL_Integration_Concrete_Test is CreateWithTimestamp
         assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_LINEAR);
         assertEq(lockup.getUnderlyingToken(streamId), IERC20(token));
         assertEq(lockup.getUnlockAmounts(streamId), _defaultParams.unlockAmounts);
+        assertEq(
+            lockup.aggregateBalance(IERC20(token)),
+            previousAggregateAmount + defaults.DEPOSIT_AMOUNT(),
+            "aggregateBalance"
+        );
     }
 }

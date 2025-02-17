@@ -261,6 +261,8 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
 
     /// @dev Shared logic between {test_CreateWithTimestamps_TokenMissingReturnValue} and {test_CreateWithTimestamps}.
     function _testCreateWithTimestampsLT(address token) internal {
+        uint256 previousAggregateAmount = lockup.aggregateBalance(IERC20(token));
+
         // Make the Sender the stream's funder.
         address funder = users.sender;
         uint256 expectedStreamId = lockup.nextStreamId();
@@ -290,6 +292,11 @@ contract CreateWithTimestampsLT_Integration_Concrete_Test is CreateWithTimestamp
         // It should create the stream.
         assertEqStream(streamId);
         assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_TRANCHED);
+        assertEq(
+            lockup.aggregateBalance(IERC20(token)),
+            previousAggregateAmount + defaults.DEPOSIT_AMOUNT(),
+            "aggregateBalance"
+        );
         assertEq(lockup.getTranches(streamId), defaults.tranches());
         assertEq(lockup.getUnderlyingToken(streamId), IERC20(token));
     }

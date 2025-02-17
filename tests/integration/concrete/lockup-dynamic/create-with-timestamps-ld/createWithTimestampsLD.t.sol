@@ -270,6 +270,8 @@ contract CreateWithTimestampsLD_Integration_Concrete_Test is CreateWithTimestamp
     }
 
     function _testCreateWithTimestampsLD(address token) private {
+        uint256 previousAggregateAmount = lockup.aggregateBalance(IERC20(token));
+
         // Make the Sender the stream's funder.
         address funder = users.sender;
 
@@ -302,5 +304,10 @@ contract CreateWithTimestampsLD_Integration_Concrete_Test is CreateWithTimestamp
         assertEq(lockup.getUnderlyingToken(streamId), IERC20(token));
         assertEq(lockup.getSegments(streamId), defaults.segments());
         assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_DYNAMIC);
+        assertEq(
+            lockup.aggregateBalance(IERC20(token)),
+            previousAggregateAmount + defaults.DEPOSIT_AMOUNT(),
+            "aggregateBalance"
+        );
     }
 }
