@@ -237,23 +237,6 @@ contract Defaults is CommonConstants {
         });
     }
 
-    function createWithTimestamps(Lockup.CreateWithTimestamps memory params)
-        public
-        pure
-        returns (Lockup.CreateWithTimestamps memory)
-    {
-        return Lockup.CreateWithTimestamps({
-            sender: params.sender,
-            recipient: params.recipient,
-            depositAmount: params.depositAmount,
-            token: params.token,
-            cancelable: params.cancelable,
-            transferable: params.transferable,
-            timestamps: params.timestamps,
-            shape: params.shape
-        });
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                                     BATCH-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/

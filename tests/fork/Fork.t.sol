@@ -14,7 +14,7 @@ abstract contract Fork_Test is Base_Test {
 
     IERC20 internal immutable FORK_TOKEN;
     address internal forkTokenHolder;
-    uint256 internal initialHolderBalance;
+    uint128 internal initialHolderBalance;
 
     /*//////////////////////////////////////////////////////////////////////////
                                     CONSTRUCTOR
@@ -46,15 +46,13 @@ abstract contract Fork_Test is Base_Test {
         labelContracts();
 
         // Deal 1M tokens to the user.
-        initialHolderBalance = 1e6 * (10 ** IERC20Metadata(address(FORK_TOKEN)).decimals());
+        initialHolderBalance = uint128(1e6 * (10 ** IERC20Metadata(address(FORK_TOKEN)).decimals()));
         deal({ token: address(FORK_TOKEN), to: forkTokenHolder, give: initialHolderBalance });
 
         resetPrank({ msgSender: forkTokenHolder });
 
         // Approve {SablierLockup} to transfer the holder's tokens.
-        // We use a low-level call to ignore reverts because the token can have the missing return value bug.
-        (bool success,) = address(FORK_TOKEN).call(abi.encodeCall(IERC20.approve, (address(lockup), MAX_UINT256)));
-        success;
+        approveContract({ token_: address(FORK_TOKEN), from: forkTokenHolder, spender: address(lockup) });
     }
 
     /*//////////////////////////////////////////////////////////////////////////

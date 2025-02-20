@@ -54,45 +54,32 @@ abstract contract Lockup_Linear_Fork_Test is Lockup_Fork_Test {
         // Bound the fuzzed parameters and load values into `vars`.
         preCreateStream(params);
 
-        // Bound deposit amount and stream's end time.
-        boundDepositAmountAndEndTime(params);
-
-        // Bound the unlock amounts.
-        params.unlockAmounts.start = boundUint128(params.unlockAmounts.start, 0, params.lockup.depositAmount);
-        // Bound the cliff unlock amount only if the cliff is set.
-        params.unlockAmounts.cliff = vars.hasCliff
-            ? boundUint128(params.unlockAmounts.cliff, 0, params.lockup.depositAmount - params.unlockAmounts.start)
-            : 0;
-
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
         emit IERC4906.MetadataUpdate({ _tokenId: vars.streamId });
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupLinearStream({
             streamId: vars.streamId,
-            commonParams: defaults.lockupCreateEvent({ funder: forkTokenHolder, params: params.lockup, token_: FORK_TOKEN }),
+            commonParams: defaults.lockupCreateEvent({ funder: forkTokenHolder, params: params.create, token_: FORK_TOKEN }),
             cliffTime: params.cliffTime,
             unlockAmounts: params.unlockAmounts
         });
 
         // Create the stream.
-        lockup.createWithTimestampsLL(
-            defaults.createWithTimestamps(params.lockup), params.unlockAmounts, params.cliffTime
-        );
+        lockup.createWithTimestampsLL(params.create, params.unlockAmounts, params.cliffTime);
 
         // Assert that the stream is created with the correct parameters.
-        assertEq({ streamId: vars.streamId, lockup: lockup, expectedLockup: params.lockup });
+        assertEq({ lockup: lockup, streamId: vars.streamId, expectedLockup: params.create });
         assertEq(lockup.getCliffTime(vars.streamId), params.cliffTime, "cliffTime");
-        assertEq(lockup.getUnlockAmounts(vars.streamId).start, params.unlockAmounts.start, "unlockAmounts.start");
-        assertEq(lockup.getUnlockAmounts(vars.streamId).cliff, params.unlockAmounts.cliff, "unlockAmounts.cliff");
-        assertEq(lockup.getLockupModel(vars.streamId), Lockup.Model.LOCKUP_LINEAR, "lockup model");
+        assertEq(lockup.getUnlockAmounts(vars.streamId), params.unlockAmounts);
+        assertEq(lockup.getLockupModel(vars.streamId), Lockup.Model.LOCKUP_LINEAR);
 
         // Update the streamed amount.
         vars.streamedAmount = calculateStreamedAmountLL(
-            params.lockup.timestamps.start,
+            params.create.timestamps.start,
             params.cliffTime,
-            params.lockup.timestamps.end,
-            params.lockup.depositAmount,
+            params.create.timestamps.end,
+            params.create.depositAmount,
             params.unlockAmounts
         );
 
@@ -106,12 +93,12 @@ abstract contract Lockup_Linear_Fork_Test is Lockup_Fork_Test {
         // Bound the warp timestamp according to the cliff status, if it exists.
         if (vars.hasCliff) {
             params.warpTimestamp =
-                boundUint40(params.warpTimestamp, params.cliffTime, params.lockup.timestamps.end + 100 seconds);
+                boundUint40(params.warpTimestamp, params.cliffTime, params.create.timestamps.end + 100 seconds);
         } else {
             params.warpTimestamp = boundUint40(
                 params.warpTimestamp,
-                params.lockup.timestamps.start + 1 seconds,
-                params.lockup.timestamps.end + 100 seconds
+                params.create.timestamps.start + 1 seconds,
+                params.create.timestamps.end + 100 seconds
             );
         }
 
@@ -120,10 +107,10 @@ abstract contract Lockup_Linear_Fork_Test is Lockup_Fork_Test {
 
         // Update the streamed amount.
         vars.streamedAmount = calculateStreamedAmountLL(
-            params.lockup.timestamps.start,
+            params.create.timestamps.start,
             params.cliffTime,
-            params.lockup.timestamps.end,
-            params.lockup.depositAmount,
+            params.create.timestamps.end,
+            params.create.depositAmount,
             params.unlockAmounts
         );
 

@@ -17,7 +17,7 @@ abstract contract Lockup_Fork_Test is Fork_Test {
 
     // Struct with parameters to be fuzzed during the fork tests.
     struct Params {
-        Lockup.CreateWithTimestamps lockup;
+        Lockup.CreateWithTimestamps create;
         uint40 cliffTime;
         LockupDynamic.Segment[] segments;
         LockupTranched.Tranche[] tranches;
@@ -67,55 +67,22 @@ abstract contract Lockup_Fork_Test is Fork_Test {
                                   CREATE HELPERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev A helper function to bound the deposit amount and the end time of the stream based on the Lockup model.
-    function boundDepositAmountAndEndTime(Params memory params) internal view {
-        if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
-            // Bound the deposit amount.
-            params.lockup.depositAmount = boundUint128(params.lockup.depositAmount, 1, uint128(initialHolderBalance));
-
-            // Bound the minimum value of end time so that it is always greater than the start time, and the cliff time.
-            uint40 endTimeLowerBound = maxOfTwo(params.lockup.timestamps.start, params.cliffTime);
-
-            // Bound the end time of the stream.
-            params.lockup.timestamps.end =
-                boundUint40(params.lockup.timestamps.end, endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
-        }
-
-        if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
-            // Fuzz the segment amounts and calculate the deposit.
-            params.lockup.depositAmount =
-                fuzzDynamicStreamAmounts({ upperBound: uint128(initialHolderBalance), segments: params.segments });
-
-            // Bound the end time of the stream.
-            params.lockup.timestamps.end = params.segments[params.segments.length - 1].timestamp;
-        }
-
-        if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
-            // Fuzz the tranche amounts and calculate the deposit.
-            params.lockup.depositAmount =
-                fuzzTranchedStreamAmounts({ upperBound: uint128(initialHolderBalance), tranches: params.tranches });
-
-            // Bound the end time of the stream.
-            params.lockup.timestamps.end = params.tranches[params.tranches.length - 1].timestamp;
-        }
-    }
-
     /// @dev A pre-create helper function to set up the parameters for the stream creation.
     function preCreateStream(Params memory params) internal {
-        checkUsers(params.lockup.sender, params.lockup.recipient, address(lockup));
+        checkUsers(params.create.sender, params.create.recipient, address(lockup));
 
         // Store the pre-create token balances of Lockup and Holder.
         uint256[] memory balances =
             getTokenBalances(address(FORK_TOKEN), Solarray.addresses(address(lockup), forkTokenHolder));
         vars.initialLockupBalance = balances[0];
-        initialHolderBalance = balances[1];
+        initialHolderBalance = uint128(balances[1]);
 
         // Store the next stream ID.
         vars.streamId = lockup.nextStreamId();
 
         // Bound the start time.
-        params.lockup.timestamps.start = boundUint40(
-            params.lockup.timestamps.start, getBlockTimestamp() - 1000 seconds, getBlockTimestamp() + 10_000 seconds
+        params.create.timestamps.start = boundUint40(
+            params.create.timestamps.start, getBlockTimestamp() - 1000 seconds, getBlockTimestamp() + 10_000 seconds
         );
 
         vars.hasCliff = params.cliffTime > 0;
@@ -123,16 +90,57 @@ abstract contract Lockup_Fork_Test is Fork_Test {
         // and Tranched models.
         params.cliffTime = vars.hasCliff
             ? boundUint40(
-                params.cliffTime, params.lockup.timestamps.start + 1 seconds, params.lockup.timestamps.start + 52 weeks
+                params.cliffTime, params.create.timestamps.start + 1 seconds, params.create.timestamps.start + 52 weeks
             )
             : 0;
 
         // Set fixed values for shape name and token.
-        params.lockup.shape = "Custom shape";
-        params.lockup.token = FORK_TOKEN;
+        params.create.shape = "Custom shape";
+        params.create.token = FORK_TOKEN;
 
         // Make the stream cancelable so that the cancel tests can be run.
-        params.lockup.cancelable = true;
+        params.create.cancelable = true;
+
+        if (lockupModel == Lockup.Model.LOCKUP_LINEAR) {
+            // Bound the deposit amount.
+            params.create.depositAmount = boundUint128(params.create.depositAmount, 1, initialHolderBalance);
+
+            // Bound the minimum value of end time so that it is always greater than the start time, and the cliff time.
+            uint40 endTimeLowerBound = maxOfTwo(params.create.timestamps.start, params.cliffTime);
+
+            // Bound the end time of the stream.
+            params.create.timestamps.end =
+                boundUint40(params.create.timestamps.end, endTimeLowerBound + 1 seconds, MAX_UNIX_TIMESTAMP);
+
+            // Bound the unlock amounts.
+            params.unlockAmounts.start = boundUint128(params.unlockAmounts.start, 0, params.create.depositAmount);
+            // Bound the cliff unlock amount only if the cliff is set.
+            params.unlockAmounts.cliff = vars.hasCliff
+                ? boundUint128(params.unlockAmounts.cliff, 0, params.create.depositAmount - params.unlockAmounts.start)
+                : 0;
+        }
+
+        if (lockupModel == Lockup.Model.LOCKUP_DYNAMIC) {
+            fuzzSegmentTimestamps(params.segments, params.create.timestamps.start);
+
+            // Fuzz the segment amounts and calculate the deposit.
+            params.create.depositAmount =
+                fuzzDynamicStreamAmounts({ upperBound: initialHolderBalance, segments: params.segments });
+
+            // Bound the end time of the stream.
+            params.create.timestamps.end = params.segments[params.segments.length - 1].timestamp;
+        }
+
+        if (lockupModel == Lockup.Model.LOCKUP_TRANCHED) {
+            fuzzTrancheTimestamps(params.tranches, params.create.timestamps.start);
+
+            // Fuzz the tranche amounts and calculate the deposit.
+            params.create.depositAmount =
+                fuzzTranchedStreamAmounts({ upperBound: initialHolderBalance, tranches: params.tranches });
+
+            // Bound the end time of the stream.
+            params.create.timestamps.end = params.tranches[params.tranches.length - 1].timestamp;
+        }
     }
 
     /// @dev A post-create helper function to compare values and set up the parameters for withdraw and cancel tests.
@@ -141,7 +149,7 @@ abstract contract Lockup_Fork_Test is Fork_Test {
         // following cases:
         // 1. The streamed amount equals the deposited amount.
         // 2. The end time is in the past.
-        vars.isSettled = vars.streamedAmount >= params.lockup.depositAmount
+        vars.isSettled = vars.streamedAmount >= params.create.depositAmount
             || lockup.getEndTime(vars.streamId) <= getBlockTimestamp();
 
         // Check that the stream status is correct.
@@ -159,7 +167,7 @@ abstract contract Lockup_Fork_Test is Fork_Test {
             assertFalse(lockup.isCancelable(vars.streamId), "isCancelable");
         } else {
             // Otherwise, it should match the parameter value.
-            assertEq(lockup.isCancelable(vars.streamId), params.lockup.cancelable, "isCancelable");
+            assertEq(lockup.isCancelable(vars.streamId), params.create.cancelable, "isCancelable");
         }
 
         // Store the post-create token balances of Lockup and Holder.
@@ -169,11 +177,11 @@ abstract contract Lockup_Fork_Test is Fork_Test {
         vars.actualHolderBalance = balances[1];
 
         // Assert that the Lockup contract's balance has been updated.
-        uint256 expectedLockupBalance = vars.initialLockupBalance + params.lockup.depositAmount;
+        uint256 expectedLockupBalance = vars.initialLockupBalance + params.create.depositAmount;
         assertEq(vars.actualLockupBalance, expectedLockupBalance, "post-create Lockup balance");
 
         // Assert that the holder's balance has been updated.
-        uint128 expectedHolderBalance = uint128(initialHolderBalance) - params.lockup.depositAmount;
+        uint128 expectedHolderBalance = initialHolderBalance - params.create.depositAmount;
         assertEq(vars.actualHolderBalance, expectedHolderBalance, "post-create Holder balance");
     }
 
@@ -188,22 +196,22 @@ abstract contract Lockup_Fork_Test is Fork_Test {
 
         // Check if the stream has settled or will get depleted. It is possible for the stream to be just settled
         // and not depleted because the withdraw amount is fuzzed.
-        vars.isSettled = vars.streamedAmount >= params.lockup.depositAmount
+        vars.isSettled = vars.streamedAmount >= params.create.depositAmount
             || lockup.getEndTime(vars.streamId) <= getBlockTimestamp();
-        vars.isDepleted = params.withdrawAmount == params.lockup.depositAmount;
+        vars.isDepleted = params.withdrawAmount == params.create.depositAmount;
 
         // Run the withdraw tests only if the withdraw amount is not zero.
         if (params.withdrawAmount > 0) {
             // Load the pre-withdraw token balances.
             vars.initialLockupBalance = vars.actualLockupBalance;
             vars.initialLockupBalanceETH = address(lockup).balance;
-            vars.initialRecipientBalance = FORK_TOKEN.balanceOf(params.lockup.recipient);
+            vars.initialRecipientBalance = FORK_TOKEN.balanceOf(params.create.recipient);
 
             // Expect the relevant events to be emitted.
             vm.expectEmit({ emitter: address(lockup) });
             emit ISablierLockupBase.WithdrawFromLockupStream({
                 streamId: vars.streamId,
-                to: params.lockup.recipient,
+                to: params.create.recipient,
                 token: FORK_TOKEN,
                 amount: params.withdrawAmount
             });
@@ -211,11 +219,11 @@ abstract contract Lockup_Fork_Test is Fork_Test {
             emit IERC4906.MetadataUpdate({ _tokenId: vars.streamId });
 
             // Make the withdrawal and pay a fee.
-            resetPrank({ msgSender: params.lockup.recipient });
-            vm.deal({ account: params.lockup.recipient, newBalance: 100 ether });
+            resetPrank({ msgSender: params.create.recipient });
+            vm.deal({ account: params.create.recipient, newBalance: 100 ether });
             lockup.withdraw{ value: FEE }({
                 streamId: vars.streamId,
-                to: params.lockup.recipient,
+                to: params.create.recipient,
                 amount: params.withdrawAmount
             });
 
@@ -234,7 +242,7 @@ abstract contract Lockup_Fork_Test is Fork_Test {
 
             // Load the post-withdraw token balances.
             uint256[] memory balances =
-                getTokenBalances(address(FORK_TOKEN), Solarray.addresses(address(lockup), params.lockup.recipient));
+                getTokenBalances(address(FORK_TOKEN), Solarray.addresses(address(lockup), params.create.recipient));
             vars.actualLockupBalance = balances[0];
             vars.actualRecipientBalance = balances[1];
 
@@ -258,10 +266,10 @@ abstract contract Lockup_Fork_Test is Fork_Test {
     /// @dev A shared cancel function to be used by all the fork tests.
     function cancel(Params memory params) internal {
         // Run the cancel tests only if the stream is cancelable and is neither depleted nor settled.
-        if (params.lockup.cancelable && !vars.isDepleted && !vars.isSettled) {
+        if (params.create.cancelable && !vars.isDepleted && !vars.isSettled) {
             // Load the pre-cancel token balances.
             uint256[] memory balances = getTokenBalances(
-                address(FORK_TOKEN), Solarray.addresses(address(lockup), params.lockup.sender, params.lockup.recipient)
+                address(FORK_TOKEN), Solarray.addresses(address(lockup), params.create.sender, params.create.recipient)
             );
             vars.initialLockupBalance = balances[0];
             vars.initialSenderBalance = balances[1];
@@ -273,8 +281,8 @@ abstract contract Lockup_Fork_Test is Fork_Test {
             vars.recipientAmount = lockup.withdrawableAmountOf(vars.streamId);
             emit ISablierLockupBase.CancelLockupStream(
                 vars.streamId,
-                params.lockup.sender,
-                params.lockup.recipient,
+                params.create.sender,
+                params.create.recipient,
                 FORK_TOKEN,
                 vars.senderAmount,
                 vars.recipientAmount
@@ -283,7 +291,7 @@ abstract contract Lockup_Fork_Test is Fork_Test {
             emit IERC4906.MetadataUpdate({ _tokenId: vars.streamId });
 
             // Cancel the stream.
-            resetPrank({ msgSender: params.lockup.sender });
+            resetPrank({ msgSender: params.create.sender });
             uint128 refundedAmount = lockup.cancel(vars.streamId);
 
             // Assert that the refunded amount is correct.
@@ -295,7 +303,7 @@ abstract contract Lockup_Fork_Test is Fork_Test {
 
             // Load the post-cancel token balances.
             balances = getTokenBalances(
-                address(FORK_TOKEN), Solarray.addresses(address(lockup), params.lockup.sender, params.lockup.recipient)
+                address(FORK_TOKEN), Solarray.addresses(address(lockup), params.create.sender, params.create.recipient)
             );
             vars.actualLockupBalance = balances[0];
             vars.actualSenderBalance = balances[1];
@@ -314,6 +322,6 @@ abstract contract Lockup_Fork_Test is Fork_Test {
         }
 
         // Assert that the not burned NFT.
-        assertEq(lockup.ownerOf(vars.streamId), params.lockup.recipient, "post-cancel NFT owner");
+        assertEq(lockup.ownerOf(vars.streamId), params.create.recipient, "post-cancel NFT owner");
     }
 }

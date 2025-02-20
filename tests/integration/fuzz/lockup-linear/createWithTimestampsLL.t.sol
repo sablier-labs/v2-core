@@ -168,13 +168,12 @@ contract CreateWithTimestampsLL_Integration_Fuzz_Test is Lockup_Linear_Integrati
         assertFalse(lockup.isDepleted(vars.actualStreamId), "isDepleted");
         assertTrue(lockup.isStream(vars.actualStreamId), "isStream");
         assertTrue(lockup.isTransferable(vars.actualStreamId), "isTransferable");
-        assertEq(lockup.getLockupModel(vars.actualStreamId), Lockup.Model.LOCKUP_LINEAR, "lockup model");
+        assertEq(lockup.getLockupModel(vars.actualStreamId), Lockup.Model.LOCKUP_LINEAR);
         assertEq(lockup.getRecipient(vars.actualStreamId), params.recipient, "recipient");
         assertEq(lockup.getSender(vars.actualStreamId), params.sender, "sender");
         assertEq(lockup.getStartTime(vars.actualStreamId), params.timestamps.start, "startTime");
-        assertEq(lockup.getUnderlyingToken(vars.actualStreamId), dai, "underlyingToken");
-        assertEq(lockup.getUnlockAmounts(vars.actualStreamId).start, unlockAmounts.start, "unlockAmounts.start");
-        assertEq(lockup.getUnlockAmounts(vars.actualStreamId).cliff, unlockAmounts.cliff, "unlockAmounts.cliff");
+        assertEq(lockup.getUnderlyingToken(vars.actualStreamId), dai);
+        assertEq(lockup.getUnlockAmounts(vars.actualStreamId), unlockAmounts);
         assertFalse(lockup.wasCanceled(vars.actualStreamId), "wasCanceled");
 
         // Assert that the stream's status is correct.
