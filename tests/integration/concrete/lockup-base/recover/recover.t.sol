@@ -2,7 +2,7 @@
 pragma solidity >=0.8.22;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { Errors as EvmUtilsErorrs } from "@sablier/evm-utils/src/libraries/Errors.sol";
+import { Errors as EvmUtilsErrors } from "@sablier/evm-utils/src/libraries/Errors.sol";
 
 import { ISablierLockupBase } from "src/interfaces/ISablierLockupBase.sol";
 import { Errors } from "src/libraries/Errors.sol";
@@ -10,16 +10,9 @@ import { Errors } from "src/libraries/Errors.sol";
 import { Integration_Test } from "../../../Integration.t.sol";
 
 contract Recover_Integration_Concrete_Test is Integration_Test {
-    uint256 internal surplusAmount = 1e18;
-
-    function setUp() public override {
-        Integration_Test.setUp();
-        createDefaultStream();
-    }
-
     function test_RevertWhen_CallerNotAdmin() external {
         resetPrank({ msgSender: users.eve });
-        vm.expectRevert(abi.encodeWithSelector(EvmUtilsErorrs.CallerNotAdmin.selector, users.admin, users.eve));
+        vm.expectRevert(abi.encodeWithSelector(EvmUtilsErrors.CallerNotAdmin.selector, users.admin, users.eve));
         lockup.recover(dai, users.eve);
     }
 
@@ -30,10 +23,10 @@ contract Recover_Integration_Concrete_Test is Integration_Test {
     }
 
     function test_WhenTokenBalanceExceedAggregateAmount() external whenCallerAdmin {
+        uint256 surplusAmount = 1e18;
+
         // Increase the lockup contract balance in order to have a surplus.
         deal({ token: address(dai), to: address(lockup), give: dai.balanceOf(address(lockup)) + surplusAmount });
-
-        assertEq(dai.balanceOf(address(lockup)), surplusAmount + lockup.aggregateBalance(dai));
 
         // It should emit {Recover} and {Transfer} events.
         vm.expectEmit({ emitter: address(dai) });

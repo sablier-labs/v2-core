@@ -670,6 +670,7 @@ abstract contract SablierLockupBase is
         IERC20 token = _streams[streamId].token;
 
         unchecked {
+            // Effect: update the aggregate balance.
             aggregateBalance[token] -= senderAmount;
         }
 
@@ -754,6 +755,7 @@ abstract contract SablierLockupBase is
         IERC20 token = _streams[streamId].token;
 
         unchecked {
+            // Effect: update the aggregate balance.
             aggregateBalance[token] -= amount;
         }
 

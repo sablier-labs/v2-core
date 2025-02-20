@@ -273,7 +273,7 @@ abstract contract Cancel_Integration_Concrete_Test is Integration_Test {
 
         // It should update the aggrate balance.
         uint256 actualAggregateBalance = lockup.aggregateBalance(dai);
-        uint256 expectedAggregateBalance = previousAggregateAmount - actualRefundedAmount;
+        uint256 expectedAggregateBalance = previousAggregateAmount - senderAmount;
         assertEq(actualAggregateBalance, expectedAggregateBalance, "aggregateBalance");
 
         // It should not burn the NFT.
