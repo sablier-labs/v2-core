@@ -14,7 +14,7 @@ contract DeployProtocol is MaxCountScript {
         public
         returns (LockupNFTDescriptor nftDescriptor, SablierLockup lockup, SablierBatchLockup batchLockup)
     {
-        address initialAdmin = adminMap[block.chainid];
+        address initialAdmin = protocolAdmin();
         (nftDescriptor, lockup, batchLockup) = _run(initialAdmin);
     }
 

@@ -3,7 +3,6 @@ pragma solidity >=0.8.22;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ud2x18 } from "@prb/math/src/UD2x18.sol";
-import { CommonConstants } from "@sablier/evm-utils/tests/utils/Constants.sol";
 
 import { BatchLockup, Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/types/DataTypes.sol";
 
@@ -12,7 +11,7 @@ import { BatchLockupBuilder } from "./BatchLockupBuilder.sol";
 import { Users } from "./Types.sol";
 
 /// @notice Contract with default values used throughout the tests.
-contract Defaults is CommonConstants {
+contract Defaults {
     /*//////////////////////////////////////////////////////////////////////////
                                       GENERICS
     //////////////////////////////////////////////////////////////////////////*/
