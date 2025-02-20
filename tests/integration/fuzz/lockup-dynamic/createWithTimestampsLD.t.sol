@@ -219,11 +219,11 @@ contract CreateWithTimestampsLD_Integration_Fuzz_Test is Lockup_Dynamic_Integrat
         assertFalse(lockup.isDepleted(streamId), "isDepleted");
         assertTrue(lockup.isStream(streamId), "isStream");
         assertTrue(lockup.isTransferable(streamId), "isTransferable");
-        assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_DYNAMIC, "lockup model");
+        assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_DYNAMIC);
         assertEq(lockup.getRecipient(streamId), params.recipient, "recipient");
         assertEq(lockup.getSender(streamId), params.sender, "sender");
         assertEq(lockup.getStartTime(streamId), params.timestamps.start, "startTime");
-        assertEq(lockup.getUnderlyingToken(streamId), dai, "underlyingToken");
+        assertEq(lockup.getUnderlyingToken(streamId), dai);
         assertEq(lockup.getSegments(streamId), segments);
         assertFalse(lockup.wasCanceled(streamId), "wasCanceled");
 

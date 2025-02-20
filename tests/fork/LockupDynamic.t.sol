@@ -48,15 +48,10 @@ abstract contract Lockup_Dynamic_Fork_Test is Lockup_Fork_Test {
                                             CREATE
         //////////////////////////////////////////////////////////////////////////*/
 
+        vm.assume(params.segments.length != 0);
+
         // Bound the fuzzed parameters and load values into `vars`.
         preCreateStream(params);
-
-        // Fuzz the segment timestamps.
-        vm.assume(params.segments.length != 0);
-        fuzzSegmentTimestamps(params.segments, params.lockup.timestamps.start);
-
-        // Bound deposit amount and stream's end time.
-        boundDepositAmountAndEndTime(params);
 
         // Expect the relevant events to be emitted.
         vm.expectEmit({ emitter: address(lockup) });
@@ -64,20 +59,20 @@ abstract contract Lockup_Dynamic_Fork_Test is Lockup_Fork_Test {
         vm.expectEmit({ emitter: address(lockup) });
         emit ISablierLockup.CreateLockupDynamicStream({
             streamId: vars.streamId,
-            commonParams: defaults.lockupCreateEvent({ funder: forkTokenHolder, params: params.lockup, token_: FORK_TOKEN }),
+            commonParams: defaults.lockupCreateEvent({ funder: forkTokenHolder, params: params.create, token_: FORK_TOKEN }),
             segments: params.segments
         });
 
         // Create the stream.
-        lockup.createWithTimestampsLD(defaults.createWithTimestamps(params.lockup), params.segments);
+        lockup.createWithTimestampsLD(params.create, params.segments);
 
         // Assert that the stream is created with the correct parameters.
-        assertEq({ streamId: vars.streamId, lockup: lockup, expectedLockup: params.lockup });
+        assertEq({ lockup: lockup, streamId: vars.streamId, expectedLockup: params.create });
         assertEq(lockup.getSegments(vars.streamId), params.segments);
 
         // Update the streamed amount.
         vars.streamedAmount =
-            calculateStreamedAmountLD(params.segments, params.lockup.timestamps.start, params.lockup.depositAmount);
+            calculateStreamedAmountLD(params.segments, params.create.timestamps.start, params.create.depositAmount);
 
         // Run post-create assertions and update token balances in `vars`.
         postCreateStream(params);
@@ -88,7 +83,7 @@ abstract contract Lockup_Dynamic_Fork_Test is Lockup_Fork_Test {
 
         // Bound the warp timestamp.
         params.warpTimestamp = boundUint40(
-            params.warpTimestamp, params.lockup.timestamps.start + 1 seconds, params.lockup.timestamps.end + 100 seconds
+            params.warpTimestamp, params.create.timestamps.start + 1 seconds, params.create.timestamps.end + 100 seconds
         );
 
         // Simulate the passage of time.
@@ -96,7 +91,7 @@ abstract contract Lockup_Dynamic_Fork_Test is Lockup_Fork_Test {
 
         // Update the streamed amount.
         vars.streamedAmount =
-            calculateStreamedAmountLD(params.segments, params.lockup.timestamps.start, params.lockup.depositAmount);
+            calculateStreamedAmountLD(params.segments, params.create.timestamps.start, params.create.depositAmount);
 
         // Run the fork test for withdraw function and update the parameters.
         withdraw(params);

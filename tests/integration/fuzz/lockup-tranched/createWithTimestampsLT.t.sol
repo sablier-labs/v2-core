@@ -227,12 +227,12 @@ contract CreateWithTimestampsLT_Integration_Fuzz_Test is Lockup_Tranched_Integra
         assertFalse(lockup.isDepleted(streamId), "isDepleted");
         assertTrue(lockup.isStream(streamId), "isStream");
         assertTrue(lockup.isTransferable(streamId), "isTransferable");
-        assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_TRANCHED, "lockup model");
+        assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_TRANCHED);
         assertEq(lockup.getRecipient(streamId), params.recipient, "recipient");
         assertEq(lockup.getSender(streamId), params.sender, "sender");
         assertEq(lockup.getStartTime(streamId), params.timestamps.start, "startTime");
         assertEq(lockup.getTranches(streamId), tranches);
-        assertEq(lockup.getUnderlyingToken(streamId), dai, "underlyingToken");
+        assertEq(lockup.getUnderlyingToken(streamId), dai);
         assertFalse(lockup.wasCanceled(streamId), "wasCanceled");
 
         // Assert that the stream's status is correct.

@@ -6,7 +6,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { PRBMathAssertions } from "@prb/math/test/utils/Assertions.sol";
 
 import { ISablierLockup } from "../../src/interfaces/ISablierLockup.sol";
-import { Lockup, LockupDynamic, LockupTranched } from "../../src/types/DataTypes.sol";
+import { Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../../src/types/DataTypes.sol";
 
 abstract contract Assertions is PRBMathAssertions {
     /*//////////////////////////////////////////////////////////////////////////
@@ -33,14 +33,9 @@ abstract contract Assertions is PRBMathAssertions {
         assertEq(address(a), address(b));
     }
 
-    /// @dev Compares two {IERC20} values.
-    function assertEq(IERC20 a, IERC20 b, string memory err) internal pure {
-        assertEq(address(a), address(b), err);
-    }
-
     /// @dev Compares two {Lockup.Model} enum values.
-    function assertEq(Lockup.Model a, Lockup.Model b, string memory err) internal pure {
-        assertEq(uint256(a), uint256(b), err);
+    function assertEq(Lockup.Model a, Lockup.Model b) internal pure {
+        assertEq(uint256(a), uint256(b), "Lockup.Model");
     }
 
     /// @dev Compares two {Lockup.Timestamps} struct entities.
@@ -57,6 +52,12 @@ abstract contract Assertions is PRBMathAssertions {
             emit log_named_array("  Right", b);
             fail();
         }
+    }
+
+    /// @dev Compares two {LockupLinear.UnlockAmounts} structs.
+    function assertEq(LockupLinear.UnlockAmounts memory a, LockupLinear.UnlockAmounts memory b) internal pure {
+        assertEq(a.start, b.start, "unlockAmounts.start");
+        assertEq(a.cliff, b.cliff, "unlockAmounts.cliff");
     }
 
     /// @dev Compares two {LockupTranched.Tranche} arrays.
@@ -91,8 +92,8 @@ abstract contract Assertions is PRBMathAssertions {
 
     /// @dev Compares {SablierLockupBase} states with {Lockup.CreateWithTimestamps} parameters for a given stream ID.
     function assertEq(
-        uint256 streamId,
         ISablierLockup lockup,
+        uint256 streamId,
         Lockup.CreateWithTimestamps memory expectedLockup
     )
         internal
@@ -103,7 +104,7 @@ abstract contract Assertions is PRBMathAssertions {
         assertEq(lockup.getRecipient(streamId), expectedLockup.recipient, "recipient");
         assertEq(lockup.getSender(streamId), expectedLockup.sender, "sender");
         assertEq(lockup.getStartTime(streamId), expectedLockup.timestamps.start, "startTime");
-        assertEq(lockup.getUnderlyingToken(streamId), expectedLockup.token, "underlyingToken");
+        assertEq(lockup.getUnderlyingToken(streamId), expectedLockup.token);
         assertEq(lockup.getWithdrawnAmount(streamId), 0, "withdrawnAmount");
         assertFalse(lockup.isDepleted(streamId), "isDepleted");
         assertTrue(lockup.isStream(streamId), "isStream");

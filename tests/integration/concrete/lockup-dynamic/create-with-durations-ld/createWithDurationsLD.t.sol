@@ -169,11 +169,11 @@ contract CreateWithDurationsLD_Integration_Concrete_Test is Lockup_Dynamic_Integ
         assertTrue(lockup.isStream(streamId), "isStream");
         assertTrue(lockup.isCancelable(streamId), "isCancelable");
         assertTrue(lockup.isTransferable(streamId), "isTransferable");
-        assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_DYNAMIC, "lockup model");
+        assertEq(lockup.getLockupModel(streamId), Lockup.Model.LOCKUP_DYNAMIC);
         assertEq(lockup.getRecipient(streamId), users.recipient, "recipient");
         assertEq(lockup.getSender(streamId), users.sender, "sender");
         assertEq(lockup.getStartTime(streamId), timestamps.start, "startTime");
-        assertEq(lockup.getUnderlyingToken(streamId), dai, "underlyingToken");
+        assertEq(lockup.getUnderlyingToken(streamId), dai);
         assertFalse(lockup.wasCanceled(streamId), "wasCanceled");
 
         // Assert that the stream's status is "STREAMING".
