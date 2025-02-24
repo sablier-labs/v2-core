@@ -86,5 +86,27 @@ contract Init is MaxCountScript {
             }),
             segments
         );
+
+        /*//////////////////////////////////////////////////////////////////////////
+                                       LOCKUP-TRANCHED
+        //////////////////////////////////////////////////////////////////////////*/
+
+        // Create the default Lockup Tranched stream.
+        LockupTranched.TrancheWithDuration[] memory tranches = new LockupTranched.TrancheWithDuration[](2);
+        tranches[0] = LockupTranched.TrancheWithDuration({ amount: 1e18, duration: 1 hours });
+        tranches[1] = LockupTranched.TrancheWithDuration({ amount: 1.5e18, duration: 1 weeks });
+        lockup.createWithDurationsLT(
+            Lockup.CreateWithDurations({
+                sender: sender,
+                recipient: recipient,
+                totalAmount: 2.5e18,
+                token: token,
+                cancelable: true,
+                transferable: true,
+                shape: "Two Tranches",
+                broker: Broker(address(0), ud60x18(0))
+            }),
+            tranches
+        );
     }
 }

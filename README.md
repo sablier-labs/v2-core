@@ -1,4 +1,4 @@
-# Sablier Lockup [![Github Actions][gha-badge]][gha] [![Coverage][codecov-badge]][codecov] [![Foundry][foundry-badge]][foundry] [![Discord][discord-badge]][discord]
+# Sablier Lockup [![Github Actions][gha-badge]][gha] [![Coverage][codecov-badge]][codecov] [![Foundry][foundry-badge]][foundry] [![Discord][discord-badge]][discord] [![Twitter][twitter-badge]][twitter]
 
 [gha]: https://github.com/sablier-labs/lockup/actions
 [gha-badge]: https://github.com/sablier-labs/lockup/actions/workflows/ci.yml/badge.svg
@@ -8,6 +8,8 @@
 [discord-badge]: https://img.shields.io/discord/659709894315868191
 [foundry]: https://getfoundry.sh
 [foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg
+[twitter-badge]: https://img.shields.io/twitter/follow/Sablier
+[twitter]: https://x.com/Sablier
 
 In-depth documentation is available at [docs.sablier.com](https://docs.sablier.com).
 
@@ -65,6 +67,11 @@ Finally, add these to your `remappings.txt` file:
 @prb/math/=lib/prb-math/
 ```
 
+### Branching Tree Technique
+
+You may notice that some test files are accompanied by `.tree` files. This is because we are using Branching Tree
+Technique and [Bulloak](https://bulloak.dev/).
+
 ## Usage
 
 This is just a glimpse of Sablier Lockup. For more guides and examples, see the
@@ -91,15 +98,10 @@ contract, which is more gas-efficient and easier to maintain.
 For more information, see the [Technical Overview](https://docs.sablier.com/reference/overview) in our docs, as well as
 these [diagrams](https://docs.sablier.com/reference/lockup/diagrams).
 
-### Branching Tree Technique
-
-You may notice that some test files are accompanied by `.tree` files. This is called the Branching Tree Technique, and
-it is explained in depth [here](https://www.bulloak.dev/).
-
 ## Deployments
 
-The list of all deployment addresses can be found [here](https://docs.sablier.com). For guidance on the deploy scripts,
-see the [Deployments wiki](https://github.com/sablier-labs/lockup/wiki/Deployments).
+The list of all deployment addresses can be found [here](https://docs.sablier.com/guides/lockup/deployments). For
+guidance on the deployment scripts, see the [Deployments wiki](https://github.com/sablier-labs/lockup/wiki/Deployments).
 
 ## Security
 
