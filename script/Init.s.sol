@@ -7,7 +7,7 @@ import { ud60x18 } from "@prb/math/src/UD60x18.sol";
 import { Solarray } from "solarray/src/Solarray.sol";
 
 import { ISablierLockup } from "../src/interfaces/ISablierLockup.sol";
-import { Broker, Lockup, LockupDynamic, LockupLinear, LockupTranched } from "../src/types/DataTypes.sol";
+import { Broker, Lockup, LockupDynamic, LockupLinear } from "../src/types/DataTypes.sol";
 
 import { BaseScript } from "./Base.s.sol";
 
@@ -69,7 +69,7 @@ contract Init is BaseScript {
                                        LOCKUP-DYNAMIC
         //////////////////////////////////////////////////////////////////////////*/
 
-        // Create the default Lockup Dynamic stream.
+        // Create the default lockupDynamic stream.
         LockupDynamic.SegmentWithDuration[] memory segments = new LockupDynamic.SegmentWithDuration[](2);
         segments[0] =
             LockupDynamic.SegmentWithDuration({ amount: 2500e18, exponent: ud2x18(3.14e18), duration: 1 hours });
