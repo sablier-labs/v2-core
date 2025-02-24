@@ -52,7 +52,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
             revert Errors.SablierBatchLockup_BatchSizeZero();
         }
 
-        // Calculate the sum of all of stream amounts. It is safe to use unchecked addition because one of the create
+        // Calculate the sum of all the stream amounts. It is safe to use unchecked addition because one of the create
         // transactions will revert if there is overflow.
         uint256 i;
         uint256 transferAmount;
@@ -101,7 +101,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
             revert Errors.SablierBatchLockup_BatchSizeZero();
         }
 
-        // Calculate the sum of all of stream amounts. It is safe to use unchecked addition because one of the create
+        // Calculate the sum of all the stream amounts. It is safe to use unchecked addition because one of the create
         // transactions will revert if there is overflow.
         uint256 i;
         uint256 transferAmount;
@@ -162,7 +162,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
             revert Errors.SablierBatchLockup_BatchSizeZero();
         }
 
-        // Calculate the sum of all of stream amounts. It is safe to use unchecked addition because one of the create
+        // Calculate the sum of all the stream amounts. It is safe to use unchecked addition because one of the create
         // transactions will revert if there is overflow.
         uint256 i;
         uint256 transferAmount;
@@ -212,7 +212,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
             revert Errors.SablierBatchLockup_BatchSizeZero();
         }
 
-        // Calculate the sum of all of stream amounts. It is safe to use unchecked addition because one of the create
+        // Calculate the sum of all the stream amounts. It is safe to use unchecked addition because one of the create
         // transactions will revert if there is overflow.
         uint256 i;
         uint256 transferAmount;
@@ -267,7 +267,7 @@ contract SablierBatchLockup is ISablierBatchLockup {
             revert Errors.SablierBatchLockup_BatchSizeZero();
         }
 
-        // Calculate the sum of all of stream amounts. It is safe to use unchecked addition because one of the create
+        // Calculate the sum of all the stream amounts. It is safe to use unchecked addition because one of the create
         // transactions will revert if there is overflow.
         uint256 i;
         uint256 transferAmount;
